@@ -1450,13 +1450,16 @@
       gap: 12px;
     }
     .reader-title {
-      font-size: 16px;
-      font-weight: 800;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Plus Jakarta Sans", sans-serif;
+      font-size: 16.5px;
+      font-weight: 700;
       line-height: 1.35;
       color: #ffffff;
+      letter-spacing: -0.015em;
     }
     .reader-body-text {
-      font-size: 13px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      font-size: 13.5px;
       line-height: 1.5;
       color: #cbd5e1;
       white-space: pre-wrap;
@@ -1470,18 +1473,24 @@
     }
     .reader-action-btn {
       flex: 1;
-      background: #0060FE;
+      background: #0060fe;
       color: #ffffff;
       border: 0;
       border-radius: 10px;
       padding: 9px;
-      font-size: 12px;
-      font-weight: 700;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
       cursor: pointer;
       text-align: center;
+      transition: background 140ms var(--ease);
     }
+    .reader-action-btn:hover { background: #0050d6; }
     .reader-action-btn.secondary {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.14);
+    }
+    .reader-action-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.22);
     }
 
     /* ==========================================================================
@@ -1661,91 +1670,107 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: rgba(255, 255, 255, 0.85);
-      margin-bottom: -4px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: -6px;
     }
     .lockscreen-clock-box {
       text-align: center;
-      padding: 0 0 4px;
+      padding: 0 0 2px;
     }
     .lockscreen-time {
-      font-family: var(--font-title);
-      font-size: 60px;
-      font-weight: 800;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Plus Jakarta Sans", sans-serif;
+      font-size: 58px;
+      font-weight: 700;
       font-variant-numeric: tabular-nums;
       letter-spacing: -0.03em;
       color: #ffffff;
       line-height: 1;
-      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.9);
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
     }
     .lockscreen-date {
-      font-family: var(--font-sans);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
       font-size: 13.5px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.9);
-      margin-top: 6px;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+      color: rgba(255, 255, 255, 0.95);
+      margin-top: 4px;
+      letter-spacing: -0.01em;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
     }
 
+    /* Authentic iOS 18 Lockscreen Push Notification Banner */
     .notif-bubble {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      border-radius: 20px;
-      padding: 15px 16px;
-      box-shadow: 0 14px 36px -4px rgba(0, 0, 0, 0.55), 0 3px 10px rgba(0, 0, 0, 0.25);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(40px) saturate(200%);
+      -webkit-backdrop-filter: blur(40px) saturate(200%);
+      border: 0.5px solid rgba(255, 255, 255, 0.75);
+      border-radius: 22px;
+      padding: 12px 14px 13px;
+      box-shadow: 0 14px 34px -4px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.15);
       display: flex;
-      gap: 12px;
-      transition: all 160ms var(--ease);
+      gap: 11px;
+      transition: all 160ms cubic-bezier(0.23, 1, 0.32, 1);
     }
     .notif-bubble:hover {
-      background: rgba(255, 255, 255, 0.98);
-      box-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.65);
+      background: rgba(255, 255, 255, 0.95);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px -4px rgba(0, 0, 0, 0.55);
     }
     .notif-app-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 9px;
-      background: #EBF1FF;
+      width: 38px;
+      height: 38px;
+      border-radius: 9.5px;
+      background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      border: 1px solid rgba(0, 96, 254, 0.15);
+      box-shadow: 0 1.5px 5px rgba(0, 0, 0, 0.14);
+      border: 0.5px solid rgba(0, 0, 0, 0.08);
+      overflow: hidden;
     }
-    .notif-app-icon img { width: 24px; height: 24px; }
+    .notif-app-icon img { width: 26px; height: 26px; }
     .notif-body { flex: 1; min-width: 0; }
     .notif-meta-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 5px;
+      margin-bottom: 2px;
     }
     .notif-app-name {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #1d1d1f;
+      text-transform: none;
+    }
+    .notif-time {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
       font-size: 11.5px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: #0060FE;
+      color: #86868b;
+      font-weight: 400;
+      letter-spacing: -0.01em;
     }
-    .notif-time { font-size: 11px; color: #64748B; font-weight: 500; }
     .notif-title {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: #0F172A;
-      margin-bottom: 4px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #000000;
+      margin-bottom: 2px;
       word-break: break-word;
-      line-height: 1.35;
+      line-height: 1.32;
+      letter-spacing: -0.015em;
     }
-    .notif-title:empty::before { content: "Sarlavha kiritilmagan..."; color: #94A3B8; font-style: italic; }
+    .notif-title:empty::before { content: "Xabarnoma sarlavhasi"; color: #86868b; font-style: italic; }
     .notif-text {
-      font-size: 12.5px;
-      color: #334155;
-      line-height: 1.45;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      font-size: 13px;
+      color: #3a3a3c;
+      line-height: 1.38;
       word-break: break-word;
+      letter-spacing: -0.01em;
     }
-    .notif-text:empty::before { content: "Bildirishnoma matni kiritilmagan..."; color: #94A3B8; font-style: italic; }
+    .notif-text:empty::before { content: "Xabarnoma matni shu yerda ko‘rinadi..."; color: #86868b; font-style: italic; }
 
     /* Lockscreen Quick Action Circles */
     .lockscreen-quick-actions {
