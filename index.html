@@ -31,22 +31,22 @@
       --bg-app: #f4f6fa;
       --bg-surface: #ffffff;
       --bg-surface-elevated: #ffffff;
-      --bg-sunk: #ebf1ff;
+      --bg-sunk: #f8fafc;
       --bg-input: #ffffff;
-      --bg-hover: #f0f4ff;
-      --bg-active: #e2ebff;
+      --bg-hover: #f1f5f9;
+      --bg-active: #e2e8f0;
 
       /* Borders & Dividers */
-      --border-subtle: #f0f4fc;
-      --border-base: #e2e8f4;
-      --border-control: #cdd8ec;
+      --border-subtle: #f1f5f9;
+      --border-base: #e2e8f0;
+      --border-control: #cbd5e1;
       --border-focus: #0060fe;
 
       /* Typography Hierarchy */
-      --text-main: #171717;
-      --text-body: #2d3748;
-      --text-muted: #56678f;
-      --text-dim: #8c9bb5;
+      --text-main: #0f172a;
+      --text-body: #334155;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
       --text-inverse: #ffffff;
 
       /* Semantic Status */
@@ -55,20 +55,20 @@
       --info-text: #0060fe;
       --info-icon: #0060fe;
 
-      --warn-bg: #fff4ec;
-      --warn-border: #ffd7be;
+      --warn-bg: #fff7ed;
+      --warn-border: #ffedd5;
       --warn-text: #c2410c;
-      --warn-icon: #fa7319;
+      --warn-icon: #f97316;
 
       --crit-bg: #fef2f2;
       --crit-border: #fecaca;
       --crit-text: #b91c1c;
       --crit-icon: #ef4444;
 
-      --ok-bg: #e9f9f0;
-      --ok-border: #b1efcb;
-      --ok-text: #0f766e;
-      --ok-icon: #1fc16b;
+      --ok-bg: #ecfdf5;
+      --ok-border: #a7f3d0;
+      --ok-text: #047857;
+      --ok-icon: #10b981;
 
       /* Radii */
       --radius-xs: 6px;
@@ -79,16 +79,18 @@
       --radius-pill: 9999px;
 
       /* Minimal & Clean Shadows */
-      --shadow-xs: 0 1px 2px 0 rgba(10, 13, 20, 0.04);
-      --shadow-sm: 0 1px 3px 0 rgba(10, 13, 20, 0.05);
-      --shadow-md: 0 2px 6px 0 rgba(10, 13, 20, 0.06);
-      --shadow-lg: 0 4px 12px 0 rgba(10, 13, 20, 0.08);
+      --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+      --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.08);
       --shadow-brand: 0 1px 2px rgba(0, 0, 0, 0.06);
-      --shadow-device: 0 8px 24px -4px rgba(10, 13, 20, 0.12), 0 0 0 1px rgba(10, 13, 20, 0.08);
+      --shadow-device: 0 20px 48px -6px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.12);
+      --shadow-modal: 0 25px 50px -12px rgba(15, 23, 42, 0.35);
 
-      --font-sans: "Inter", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-title: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --font-mono: "JetBrains Mono", ui-monospace, monospace;
-      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease: cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     [data-theme="dark"] {
@@ -206,6 +208,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      font-family: var(--font-title);
       font-size: 15px;
       font-weight: 800;
       letter-spacing: -0.02em;
@@ -326,7 +329,8 @@
     }
 
     .page-title {
-      font-size: 23px;
+      font-family: var(--font-title);
+      font-size: 24px;
       font-weight: 800;
       letter-spacing: -0.025em;
       color: var(--text-main);
@@ -393,8 +397,10 @@
       background: var(--bg-sunk);
       border: 1.5px solid var(--border-control);
       color: var(--text-muted);
+      font-family: var(--font-title);
       font-size: 12px;
       font-weight: 800;
+      font-variant-numeric: tabular-nums;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -413,6 +419,7 @@
     }
 
     .step-main-title {
+      font-family: var(--font-title);
       font-size: 13px;
       font-weight: 600;
       color: var(--text-muted);
@@ -465,9 +472,10 @@
     }
 
     .form-card-title {
-      font-size: 15.5px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
+      font-family: var(--font-title);
+      font-size: 16.5px;
+      font-weight: 800;
+      letter-spacing: -0.015em;
       color: var(--text-main);
       display: flex;
       align-items: center;
@@ -477,6 +485,7 @@
       margin-bottom: 2px;
     }
     .form-card-title .sub {
+      font-family: var(--font-sans);
       font-size: 12px;
       font-weight: 600;
       color: var(--text-muted);
@@ -581,6 +590,7 @@
     }
 
     .scope-card-title {
+      font-family: var(--font-title);
       font-size: 14px;
       font-weight: 800;
       color: var(--text-main);
@@ -598,8 +608,10 @@
     }
 
     .scope-card-badge {
+      font-family: var(--font-title);
       font-size: 11px;
       font-weight: 700;
+      font-variant-numeric: tabular-nums;
       color: var(--text-body);
       background: var(--bg-sunk);
       border: 1px solid var(--border-base);
@@ -850,6 +862,7 @@
       justify-content: space-between;
     }
     .sev-card-title {
+      font-family: var(--font-title);
       font-size: 13.5px;
       font-weight: 800;
       display: flex;
@@ -868,6 +881,7 @@
       border: 1.5px solid var(--border-control);
       border-radius: var(--radius-sm);
       padding: 10px 14px;
+      font-family: var(--font-sans);
       font-size: 13px;
       font-weight: 600;
       color: var(--text-body);
@@ -1058,6 +1072,7 @@
       margin-bottom: 4px;
     }
     .review-box-title {
+      font-family: var(--font-title);
       font-size: 11px;
       font-weight: 800;
       color: var(--text-dim);
@@ -1079,7 +1094,12 @@
       transition: background 140ms var(--ease);
     }
     .review-jump-btn:hover { background: var(--primary-soft); text-decoration: underline; }
-    .review-box-val { font-size: 14.5px; font-weight: 800; color: var(--text-main); }
+    .review-box-val {
+      font-family: var(--font-title);
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
     .review-box-desc { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
 
     /* Formatting Tag Chips (Step 2) */
@@ -1263,8 +1283,10 @@
     .receipt-check-circle svg { width: 32px; height: 32px; }
 
     .receipt-title {
+      font-family: var(--font-title);
       font-size: 20px;
       font-weight: 800;
+      letter-spacing: -0.02em;
       color: var(--text-main);
       margin-bottom: 6px;
     }
@@ -1575,14 +1597,17 @@
       padding: 0 0 4px;
     }
     .lockscreen-time {
+      font-family: var(--font-title);
       font-size: 60px;
       font-weight: 800;
+      font-variant-numeric: tabular-nums;
       letter-spacing: -0.03em;
       color: #ffffff;
       line-height: 1;
       text-shadow: 0 4px 24px rgba(0, 0, 0, 0.9);
     }
     .lockscreen-date {
+      font-family: var(--font-sans);
       font-size: 13.5px;
       font-weight: 600;
       color: rgba(255, 255, 255, 0.9);
