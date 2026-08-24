@@ -827,8 +827,59 @@
       background: var(--primary);
       transition: width 150ms var(--ease), background 150ms var(--ease);
     }
-    .char-bar-fill.warn { background: var(--warn-icon); }
-    .char-bar-fill.crit { background: var(--crit-icon); }
+    /* Auto-Translation Status & Glow */
+    .auto-trans-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-soft);
+      border: 1px solid var(--primary-border);
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      transition: all 160ms var(--ease);
+    }
+    .auto-trans-status.busy {
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: #ea580c;
+    }
+    .auto-trans-status.busy svg {
+      animation: spinPulse 0.8s linear infinite;
+    }
+    @keyframes spinPulse {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.2); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    .trans-trigger-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-control);
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 140ms var(--ease);
+    }
+    .trans-trigger-btn:hover {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+    }
+
+    .translating-glow {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 3px var(--primary-soft) !important;
+      background: var(--bg-surface) !important;
+      transition: all 180ms var(--ease);
+    }
 
     /* Severity Cards */
     .severity-cards-grid {
@@ -2171,7 +2222,13 @@
             <div class="form-card">
               <div class="form-card-title">
                 <span>Xabarnoma matni (Ikki tilda)</span>
-                <span class="sub" id="langState">Ikkala til kerak</span>
+                <div style="display:flex; align-items:center; gap:8px">
+                  <div class="auto-trans-status" id="autoTransStatus" title="Yozganingizda avtomatik ikkinchi tilga tarjima qilinadi">
+                    <svg width="12" height="12"><use href="#i-sparkles"/></svg>
+                    <span id="autoTransStatusText">⚡️ Avto-tarjima faol</span>
+                  </div>
+                  <span class="sub" id="langState">Ikkala til kerak</span>
+                </div>
               </div>
 
               <!-- Mobbin Quick Templates Bar -->
@@ -2207,7 +2264,13 @@
                 <!-- O'zbekcha -->
                 <div class="bilingual-card">
                   <div style="display:flex; justify-content:space-between; align-items:center">
-                    <span class="bilingual-lang-badge" data-lang="uz">UZ · O‘zbekcha</span>
+                    <div style="display:flex; align-items:center; gap:6px">
+                      <span class="bilingual-lang-badge" data-lang="uz">UZ · O‘zbekcha</span>
+                      <button type="button" class="trans-trigger-btn" id="btnTranslateToRu" title="O‘zbekcha matnni ruschaga o‘girish">
+                        <svg width="11" height="11"><use href="#i-sparkles"/></svg>
+                        <span>RUga o‘girish</span>
+                      </button>
+                    </div>
                     <span class="sub" id="tcount-uz" style="font-size:11.5px; font-weight:700">0 / 120</span>
                   </div>
                   <div>
@@ -2230,7 +2293,13 @@
                 <!-- Ruscha -->
                 <div class="bilingual-card">
                   <div style="display:flex; justify-content:space-between; align-items:center">
-                    <span class="bilingual-lang-badge" data-lang="ru">RU · Русский</span>
+                    <div style="display:flex; align-items:center; gap:6px">
+                      <span class="bilingual-lang-badge" data-lang="ru">RU · Русский</span>
+                      <button type="button" class="trans-trigger-btn" id="btnTranslateToUz" title="Ruscha matnni o‘zbekchaga o‘girish">
+                        <svg width="11" height="11"><use href="#i-sparkles"/></svg>
+                        <span>UZga o‘girish</span>
+                      </button>
+                    </div>
                     <span class="sub" id="tcount-ru" style="font-size:11.5px; font-weight:700">0 / 120</span>
                   </div>
                   <div>
@@ -3091,6 +3160,14 @@
         $(`count-${lang}`).textContent = `${bLen} / ${BODY_MAX}`;
         updateProgressBar($(`bar-title-${lang}`), tLen, TITLE_MAX);
         updateProgressBar($(`bar-body-${lang}`), bLen, BODY_MAX);
+
+        // Sync inputs if not currently focused
+        for (const field of ["title", "body"]) {
+          const el = $(`${field}-${lang}`);
+          if (el && document.activeElement !== el && el.value !== state.texts[lang][field]) {
+            el.value = state.texts[lang][field] || "";
+          }
+        }
       }
 
       const missingLangs = ["uz", "ru"].filter((l) => !langComplete(l));
@@ -3365,12 +3442,112 @@
       btn.classList.toggle("open");
     });
 
-    // Form Field Listeners
+    // =========================================================================
+    // REAL-TIME BI-DIRECTIONAL AUTO-TRANSLATION (UZ <-> RU)
+    // =========================================================================
+    const transDebounceTimers = {
+      title: null,
+      body: null
+    };
+
+    async function fetchTranslation(text, fromLang, toLang) {
+      if (!text || !text.trim()) return "";
+      try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(text)}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Fetch failed");
+        const data = await res.json();
+        if (data && data[0]) {
+          return data[0].map((item) => item[0]).join("");
+        }
+        return "";
+      } catch (err) {
+        console.warn("Translation API notice:", err);
+        return "";
+      }
+    }
+
+    async function triggerFieldTranslation(field, sourceLang) {
+      const targetLang = sourceLang === "uz" ? "ru" : "uz";
+      const sourceEl = $(`${field}-${sourceLang}`);
+      const targetEl = $(`${field}-${targetLang}`);
+      const statusBadge = $("autoTransStatus");
+      const statusText = $("autoTransStatusText");
+
+      if (!sourceEl || !targetEl) return;
+      const sourceText = sourceEl.value.trim();
+
+      if (!sourceText) {
+        return;
+      }
+
+      if (statusBadge) {
+        statusBadge.classList.add("busy");
+        if (statusText) statusText.textContent = `${sourceLang.toUpperCase()} → ${targetLang.toUpperCase()} tarjima qilinmoqda...`;
+      }
+      targetEl.classList.add("translating-glow");
+
+      try {
+        const translated = await fetchTranslation(sourceText, sourceLang, targetLang);
+        if (translated && translated.trim()) {
+          targetEl.value = translated;
+          state.texts[targetLang][field] = translated;
+          saveDraft();
+          render();
+        }
+      } catch (e) {
+        console.warn("Auto-translate error:", e);
+      } finally {
+        setTimeout(() => {
+          targetEl.classList.remove("translating-glow");
+          if (statusBadge) {
+            statusBadge.classList.remove("busy");
+            if (statusText) statusText.textContent = "⚡️ Avto-tarjima faol";
+          }
+        }, 350);
+      }
+    }
+
+    function queueFieldTranslation(field, sourceLang) {
+      const key = `${field}-${sourceLang}`;
+      if (transDebounceTimers[key]) {
+        clearTimeout(transDebounceTimers[key]);
+      }
+      transDebounceTimers[key] = setTimeout(() => {
+        triggerFieldTranslation(field, sourceLang);
+      }, 550);
+    }
+
+    // Manual quick-translate buttons
+    $("btnTranslateToRu")?.addEventListener("click", async () => {
+      toast("O‘zbekchadan ruschaga tarjima qilinmoqda...");
+      await Promise.all([
+        triggerFieldTranslation("title", "uz"),
+        triggerFieldTranslation("body", "uz")
+      ]);
+      toast("Ruschaga tarjima qilindi!");
+    });
+
+    $("btnTranslateToUz")?.addEventListener("click", async () => {
+      toast("Ruschadan o‘zbekchaga tarjima qilinmoqda...");
+      await Promise.all([
+        triggerFieldTranslation("title", "ru"),
+        triggerFieldTranslation("body", "ru")
+      ]);
+      toast("O‘zbekchaga tarjima qilindi!");
+    });
+
+    // Form Field Listeners (With Bi-directional Auto-Translation)
     document.querySelectorAll("[data-field]").forEach((el) => {
       el.addEventListener("input", () => {
-        state.texts[el.dataset.lang][el.dataset.field] = el.value;
+        const field = el.dataset.field;
+        const lang = el.dataset.lang;
+        state.texts[lang][field] = el.value;
         saveDraft();
         render();
+
+        // Trigger debounced auto-translation to the opposite language
+        queueFieldTranslation(field, lang);
       });
       el.addEventListener("focus", () => {
         state.previewLang = el.dataset.lang;
