@@ -1,0 +1,2903 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Onlayn Mahalla · Tizim xabarnomasi</title>
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#f6f9fc" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b111e" media="(prefers-color-scheme: dark)" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ==========================================================================
+       ONLINE-MAHALLA.UZ OFFICIAL SOLID & CRISP DESIGN SYSTEM (NO GRADIENTS)
+       ========================================================================== */
+    :root {
+      color-scheme: light;
+
+      /* Primary Brand Colors (Official Solid Royal Blue) */
+      --primary: #0060fe;
+      --primary-hover: #0050d6;
+      --primary-active: #0040ab;
+      --primary-text: #ffffff;
+      --primary-soft: #ebf1ff;
+      --primary-border: #c2d6ff;
+      --primary-glow: rgba(0, 96, 254, 0.22);
+
+      /* Solid Canvas Backgrounds */
+      --bg-app: #f4f6fa;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #ffffff;
+      --bg-sunk: #ebf1ff;
+      --bg-input: #ffffff;
+      --bg-hover: #f0f4ff;
+      --bg-active: #e2ebff;
+
+      /* Borders & Dividers */
+      --border-subtle: #f0f4fc;
+      --border-base: #e2e8f4;
+      --border-control: #cdd8ec;
+      --border-focus: #0060fe;
+
+      /* Typography Hierarchy */
+      --text-main: #171717;
+      --text-body: #2d3748;
+      --text-muted: #56678f;
+      --text-dim: #8c9bb5;
+      --text-inverse: #ffffff;
+
+      /* Semantic Status */
+      --info-bg: #ebf1ff;
+      --info-border: #c2d6ff;
+      --info-text: #0060fe;
+      --info-icon: #0060fe;
+
+      --warn-bg: #fff4ec;
+      --warn-border: #ffd7be;
+      --warn-text: #c2410c;
+      --warn-icon: #fa7319;
+
+      --crit-bg: #fef2f2;
+      --crit-border: #fecaca;
+      --crit-text: #b91c1c;
+      --crit-icon: #ef4444;
+
+      --ok-bg: #e9f9f0;
+      --ok-border: #b1efcb;
+      --ok-text: #0f766e;
+      --ok-icon: #1fc16b;
+
+      /* Radii */
+      --radius-xs: 6px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --radius-pill: 9999px;
+
+      /* Minimal & Clean Shadows */
+      --shadow-xs: 0 1px 2px 0 rgba(10, 13, 20, 0.04);
+      --shadow-sm: 0 1px 3px 0 rgba(10, 13, 20, 0.05);
+      --shadow-md: 0 2px 6px 0 rgba(10, 13, 20, 0.06);
+      --shadow-lg: 0 4px 12px 0 rgba(10, 13, 20, 0.08);
+      --shadow-brand: 0 1px 2px rgba(0, 0, 0, 0.06);
+      --shadow-device: 0 8px 24px -4px rgba(10, 13, 20, 0.12), 0 0 0 1px rgba(10, 13, 20, 0.08);
+
+      --font-sans: "Inter", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, monospace;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+
+      --primary: #335cff;
+      --primary-hover: #4f73ff;
+      --primary-active: #6e8dff;
+      --primary-text: #ffffff;
+      --primary-soft: rgba(51, 92, 255, 0.16);
+      --primary-border: rgba(51, 92, 255, 0.4);
+      --primary-glow: rgba(51, 92, 255, 0.35);
+
+      --bg-app: #090e18;
+      --bg-surface: #111827;
+      --bg-surface-elevated: #182236;
+      --bg-sunk: #0d1422;
+      --bg-input: #0d1422;
+      --bg-hover: #1c2840;
+      --bg-active: #243554;
+
+      --border-subtle: #172338;
+      --border-base: #223048;
+      --border-control: #334464;
+      --border-focus: #335cff;
+
+      --text-main: #f8fafc;
+      --text-body: #cbd5e1;
+      --text-muted: #8c9bb5;
+      --text-dim: #64748b;
+      --text-inverse: #090e18;
+
+      --info-bg: rgba(51, 92, 255, 0.15);
+      --info-border: rgba(51, 92, 255, 0.35);
+      --info-text: #6e8dff;
+      --info-icon: #335cff;
+
+      --warn-bg: rgba(250, 115, 25, 0.15);
+      --warn-border: rgba(250, 115, 25, 0.35);
+      --warn-text: #fb923c;
+      --warn-icon: #fa7319;
+
+      --crit-bg: rgba(239, 68, 68, 0.15);
+      --crit-border: rgba(239, 68, 68, 0.35);
+      --crit-text: #f87171;
+      --crit-icon: #ef4444;
+
+      --ok-bg: rgba(31, 193, 107, 0.15);
+      --ok-border: rgba(31, 193, 107, 0.35);
+      --ok-text: #4ade80;
+      --ok-icon: #1fc16b;
+
+      --shadow-brand: 0 6px 22px rgba(51, 92, 255, 0.38);
+      --shadow-device: 0 24px 48px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Base Reset */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+
+    html, body {
+      min-height: 100%;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-main);
+      background-color: var(--bg-app);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* App Root Layout */
+    .app-root {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ==========================================================================
+       GLASSMORPHIС TOPBAR
+       ========================================================================== */
+    .top-navbar {
+      height: 62px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-base);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    }
+    [data-theme="dark"] .top-navbar {
+      background: rgba(16, 23, 38, 0.88);
+    }
+
+    .top-navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-logo-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      transition: background 140ms var(--ease);
+    }
+    .brand-logo-btn:hover { background: var(--bg-hover); }
+    .brand-logo-btn img { width: 28px; height: 28px; }
+
+    .brand-platform-badge {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--primary);
+      background: var(--primary-soft);
+      border: 1px solid var(--primary-border);
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.03em;
+    }
+
+    .nav-breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .nav-breadcrumbs svg { width: 14px; height: 14px; color: var(--text-dim); }
+    .nav-breadcrumbs .crumb-active { color: var(--text-main); font-weight: 600; }
+
+    .top-navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-live-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--ok-bg);
+      border: 1px solid var(--ok-border);
+      color: var(--ok-text);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: var(--radius-pill);
+    }
+    .status-live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ok-icon);
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+      animation: pulseDot 2s infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.25); opacity: 0.7; }
+    }
+
+    .icon-btn-quiet {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-base);
+      padding: 7px;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 150ms var(--ease);
+    }
+    .icon-btn-quiet:hover { background: var(--bg-hover); color: var(--text-main); border-color: var(--border-control); }
+    .icon-btn-quiet svg { width: 16px; height: 16px; }
+
+    /* ==========================================================================
+       12-COLUMN WORKSPACE (8/12 Form Editor + 4/12 Live Preview)
+       ========================================================================== */
+    .workspace-container {
+      flex: 1;
+      max-width: 1420px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 32px 70px;
+    }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 8fr 4fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .workspace-grid { grid-template-columns: 7fr 5fr; gap: 24px; }
+      .workspace-container { padding: 20px 20px 60px; }
+    }
+
+    @media (max-width: 900px) {
+      .workspace-grid { grid-template-columns: 1fr; gap: 28px; }
+      .workspace-container { padding: 16px; }
+    }
+
+    /* --------------------------------------------------------------------------
+       LEFT 8/12: FORM COMPOSER & STEPPER
+       -------------------------------------------------------------------------- */
+    .composer-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .hero-heading-box {
+      margin-bottom: 4px;
+    }
+
+    .page-title {
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-desc {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ==========================================================================
+       ELEGANT STEPPER BAR
+       ========================================================================== */
+    .stepper-nav {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    @media (max-width: 680px) {
+      .stepper-nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        padding: 6px;
+      }
+      .step-divider { display: none; }
+    }
+
+    .step-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: 0;
+      border-radius: var(--radius-md);
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 160ms var(--ease);
+    }
+    .step-tab-btn:hover { background: var(--bg-hover); }
+    .step-tab-btn.active {
+      background: var(--primary-soft);
+      box-shadow: inset 0 0 0 1.5px var(--primary-border);
+    }
+
+    .step-num-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--bg-sunk);
+      border: 1.5px solid var(--border-control);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 160ms var(--ease);
+    }
+    .step-tab-btn.active .step-num-badge {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+    .step-tab-btn.completed .step-num-badge {
+      background: var(--ok-bg);
+      border-color: var(--ok-border);
+      color: var(--ok-icon);
+    }
+
+    .step-main-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+      transition: color 140ms var(--ease);
+    }
+    .step-tab-btn.active .step-main-title {
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .step-tab-btn.completed .step-main-title {
+      color: var(--text-main);
+    }
+
+    .step-divider {
+      color: var(--border-control);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-divider svg { width: 14px; height: 14px; }
+
+    /* STEP PANELS */
+    .step-panel {
+      display: none;
+      flex-direction: column;
+      gap: 18px;
+      animation: stepFade 180ms var(--ease);
+    }
+    .step-panel.active { display: flex; }
+    @keyframes stepFade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* FORM CARD SURFACE */
+    .form-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 24px 26px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    [data-theme="dark"] .form-card {
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-card-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
+      margin-bottom: 2px;
+    }
+    .form-card-title .sub {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-sunk);
+      border: 1px solid var(--border-base);
+      padding: 2px 9px;
+      border-radius: var(--radius-pill);
+    }
+
+    /* ==========================================================================
+       MOBBIN SCOPE CARDS
+       ========================================================================== */
+    .scope-card-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .scope-card-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .scope-card-grid { grid-template-columns: 1fr; }
+    }
+
+    .scope-card-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-control);
+      border-radius: var(--radius-md);
+      padding: 16px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      cursor: pointer;
+      text-align: left;
+      position: relative;
+      transition: border-color 140ms var(--ease), background 140ms var(--ease);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .scope-card-btn:hover {
+      border-color: #94a3b8;
+      background: var(--bg-hover);
+    }
+
+    .scope-card-btn.active {
+      border-color: var(--primary);
+      background: var(--bg-surface);
+      box-shadow: 0 0 0 1.5px var(--primary);
+    }
+
+    .scope-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .scope-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 160ms var(--ease);
+    }
+    .scope-card-btn:hover .scope-icon-wrap { transform: scale(1.08); }
+    .scope-icon-wrap svg { width: 18px; height: 18px; }
+
+    .scope-icon-wrap[data-color="blue"] { background: #ebf1ff; color: #0060fe; }
+    .scope-icon-wrap[data-color="indigo"] { background: #f3eefe; color: #7d52f4; }
+    .scope-icon-wrap[data-color="amber"] { background: #fff2e8; color: #fa7319; }
+    .scope-icon-wrap[data-color="green"] { background: #e9f9f0; color: #1fc16b; }
+
+    [data-theme="dark"] .scope-icon-wrap[data-color="blue"] { background: rgba(51, 92, 255, 0.22); color: #6e8dff; }
+    [data-theme="dark"] .scope-icon-wrap[data-color="indigo"] { background: rgba(125, 82, 244, 0.22); color: #a78bfa; }
+    [data-theme="dark"] .scope-icon-wrap[data-color="amber"] { background: rgba(250, 115, 25, 0.22); color: #fb923c; }
+    [data-theme="dark"] .scope-icon-wrap[data-color="green"] { background: rgba(31, 193, 107, 0.22); color: #4ade80; }
+
+    .scope-radio-indicator {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border-control);
+      background: var(--bg-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 160ms var(--ease);
+    }
+    .scope-card-btn.active .scope-radio-indicator {
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+    .scope-card-btn.active .scope-radio-indicator::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    .scope-card-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+    .scope-card-btn.active .scope-card-title {
+      color: var(--primary);
+    }
+
+    .scope-card-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+      margin-top: 3px;
+    }
+
+    .scope-card-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-body);
+      background: var(--bg-sunk);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-sm);
+      padding: 3px 8px;
+      align-self: flex-start;
+      margin-top: 4px;
+      transition: all 160ms var(--ease);
+    }
+    .scope-card-btn.active .scope-card-badge {
+      background: var(--bg-surface);
+      color: var(--primary);
+      border-color: var(--primary-border);
+      font-weight: 800;
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* Scope Summary Banner */
+    .scope-summary-chip-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--primary-soft);
+      border: 1px solid var(--primary-border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--info-text);
+      font-weight: 600;
+    }
+    .scope-summary-chip-bar b { font-weight: 800; }
+
+    /* Cascading Dropdowns in Dynamic Grid */
+    .geo-dropdown-grid {
+      display: grid;
+      gap: 14px;
+      transition: all 200ms var(--ease);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .devin-select-wrap { position: relative; }
+    .devin-select {
+      width: 100%;
+      appearance: none;
+      background: var(--bg-input);
+      border: 1.5px solid var(--border-control);
+      border-radius: var(--radius-sm);
+      padding: 10px 36px 10px 14px;
+      font-size: 13.5px;
+      color: var(--text-main);
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      transition: all 160ms var(--ease);
+    }
+    .devin-select:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .devin-select-wrap svg {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    .devin-input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1.5px solid var(--border-control);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 13.5px;
+      color: var(--text-main);
+      font-weight: 500;
+      outline: none;
+      transition: all 160ms var(--ease);
+    }
+    .devin-input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .devin-input::placeholder { color: var(--text-dim); font-weight: 400; }
+
+    .devin-textarea {
+      width: 100%;
+      min-height: 100px;
+      background: var(--bg-input);
+      border: 1.5px solid var(--border-control);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      font-size: 13.5px;
+      color: var(--text-main);
+      font-weight: 500;
+      outline: none;
+      resize: vertical;
+      line-height: 1.55;
+      transition: all 160ms var(--ease);
+    }
+    .devin-textarea:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .devin-textarea::placeholder { color: var(--text-dim); font-weight: 400; }
+
+    /* ==========================================================================
+       MOBBIN QUICK TEMPLATE PILLS
+       ========================================================================== */
+    .templates-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--bg-sunk);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+    }
+    .templates-head {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .templates-grid {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .template-pill {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-control);
+      border-radius: var(--radius-pill);
+      padding: 4px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all 140ms var(--ease);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .template-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-soft);
+      transform: translateY(-1px);
+    }
+
+    /* Bilingual Composer Grid */
+    .bilingual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 780px) { .bilingual-grid { grid-template-columns: 1fr; } }
+
+    .bilingual-card {
+      border: 1.5px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      background: var(--bg-sunk);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+    }
+    .bilingual-lang-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+    .bilingual-lang-badge[data-lang="uz"] { background: #e0f2fe; color: #0369a1; }
+    .bilingual-lang-badge[data-lang="ru"] { background: #fef3c7; color: #b45309; }
+
+    /* Character Budget Bar */
+    .char-bar-track {
+      height: 4px;
+      background: var(--border-base);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .char-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      transition: width 150ms var(--ease), background 150ms var(--ease);
+    }
+    .char-bar-fill.warn { background: var(--warn-icon); }
+    .char-bar-fill.crit { background: var(--crit-icon); }
+
+    /* Severity Cards */
+    .severity-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 600px) { .severity-cards-grid { grid-template-columns: 1fr; } }
+
+    .sev-card-btn {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-control);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 160ms var(--ease);
+    }
+    .sev-card-btn:hover { border-color: #94a3b8; background: var(--bg-hover); }
+    .sev-card-btn.active {
+      border-color: var(--border-focus);
+      background: var(--primary-soft);
+      box-shadow: 0 0 0 1.5px var(--primary-border);
+    }
+    .sev-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sev-card-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sev-card-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* Severity Radio Buttons */
+    .sev-btn {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-control);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 160ms var(--ease);
+    }
+    .sev-btn:hover { border-color: var(--border-focus); color: var(--text-main); }
+    .sev-btn.active {
+      border-color: var(--border-focus);
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 800;
+      box-shadow: 0 0 0 1.5px var(--primary-border);
+    }
+
+    /* Advanced Settings Toggle */
+    .advanced-toggle-btn {
+      background: transparent;
+      border: 0;
+      padding: 6px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-start;
+      transition: color 140ms var(--ease);
+    }
+    .advanced-toggle-btn:hover { color: var(--primary-hover); text-decoration: underline; }
+    .advanced-toggle-btn svg { width: 14px; height: 14px; transition: transform 160ms var(--ease); }
+    .advanced-toggle-btn.open svg { transform: rotate(90deg); }
+
+    .advanced-drawer-box {
+      border-top: 1px dashed var(--border-base);
+      padding-top: 16px;
+      margin-top: 4px;
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .advanced-drawer-box.open { display: flex; }
+
+    /* Switch / Toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
+    .toggle-label-box b {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: block;
+    }
+    .toggle-label-box span {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .devin-switch {
+      position: relative;
+      display: inline-block;
+      width: 42px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .devin-switch input { opacity: 0; width: 0; height: 0; }
+    .devin-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: var(--border-control);
+      border-radius: var(--radius-pill);
+      transition: background-color 180ms var(--ease);
+    }
+    .devin-slider::before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: transform 180ms var(--ease);
+      box-shadow: var(--shadow-xs);
+    }
+    .devin-switch input:checked + .devin-slider { background-color: var(--primary); }
+    .devin-switch input:checked + .devin-slider::before { transform: translateX(18px); }
+
+    /* Day Chips */
+    .day-chip-grid { display: flex; gap: 6px; flex-wrap: wrap; }
+    .day-chip {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-control);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all 140ms var(--ease);
+    }
+    .day-chip:hover { border-color: var(--border-focus); }
+    .day-chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    /* Error Alerts */
+    .field-error {
+      font-size: 12px;
+      color: var(--crit-text);
+      display: none;
+      align-items: center;
+      gap: 5px;
+      margin-top: 4px;
+      font-weight: 700;
+    }
+    .field-error.active { display: flex; }
+    .field-error svg { width: 14px; height: 14px; color: var(--crit-icon); }
+
+    .devin-input.error, .devin-select.error, .devin-textarea.error {
+      border-color: var(--crit-border);
+      background: var(--crit-bg);
+    }
+
+    /* Step 4: Verification Checklist */
+    .checklist-card {
+      background: var(--bg-sunk);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .checklist-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-body);
+    }
+    .checklist-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--ok-bg);
+      border: 1px solid var(--ok-border);
+      color: var(--ok-icon);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .checklist-icon svg { width: 13px; height: 13px; }
+
+    /* Step 4: Review Cards */
+    .review-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 600px) { .review-grid { grid-template-columns: 1fr; } }
+
+    .review-box {
+      background: var(--bg-sunk);
+      border: 1.5px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+    .review-box-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .review-box-val { font-size: 14.5px; font-weight: 800; color: var(--text-main); }
+    .review-box-desc { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+    /* Stepper Footer Buttons */
+    .stepper-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      padding: 16px 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .keyboard-hint {
+      font-size: 11.5px;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .kbd-badge {
+      background: var(--bg-sunk);
+      border: 1px solid var(--border-control);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .btn-devin-primary {
+      background: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: var(--radius-sm);
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: background 140ms var(--ease), border-color 140ms var(--ease);
+    }
+    .btn-devin-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+    .btn-devin-primary:active {
+      background: var(--primary-active);
+      border-color: var(--primary-active);
+    }
+
+    .btn-devin-secondary {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-control);
+      border-radius: var(--radius-sm);
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      transition: background 140ms var(--ease), border-color 140ms var(--ease), color 140ms var(--ease);
+    }
+    .btn-devin-secondary:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
+      border-color: var(--border-focus);
+    }
+    .btn-devin-secondary:active {
+      background: var(--bg-active);
+    }
+    .btn-devin-secondary svg { width: 15px; height: 15px; color: var(--text-muted); }
+
+    /* ==========================================================================
+       RIGHT 4/12: REALISTIC IPHONE PRO PUSH NOTIFICATION SIMULATOR
+       ========================================================================== */
+    .preview-pane {
+      position: sticky;
+      top: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ==========================================================================
+       RIGHT 4/12: REALISTIC IPAD PRO / TABLET PUSH NOTIFICATION SIMULATOR
+       ========================================================================== */
+    .preview-pane {
+      position: sticky;
+      top: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .phone-simulator-frame {
+      background: #090e17;
+      border: 3.5px solid #1e293b;
+      border-radius: 36px;
+      padding: 10px 10px 14px;
+      box-shadow: 0 20px 48px -6px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: visible;
+      min-height: 690px;
+      display: flex;
+      flex-direction: column;
+    }
+    [data-theme="dark"] .phone-simulator-frame {
+      border-color: #334155;
+      background: #020617;
+      box-shadow: 0 20px 48px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+    /* Hardware Power Button (Top Edge) */
+    .phone-simulator-frame::before {
+      content: "";
+      position: absolute;
+      top: -3px;
+      right: 52px;
+      width: 44px;
+      height: 3px;
+      background: #334155;
+      border-radius: 2px 2px 0 0;
+    }
+    /* Hardware Volume Rocker (Right Edge) */
+    .phone-simulator-frame::after {
+      content: "";
+      position: absolute;
+      top: 75px;
+      right: -3px;
+      width: 3px;
+      height: 52px;
+      background: #334155;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Tablet Front Camera Dot */
+    .tablet-camera-dot {
+      width: 7px;
+      height: 7px;
+      background: #0f172a;
+      border: 1.5px solid #334155;
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 6px;
+      transform: translateX(-50%);
+      z-index: 20;
+      box-shadow: inset 0 0 2px #000;
+    }
+
+    /* Tablet Status Bar */
+    .phone-statusbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 10px 8px;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .phone-screen-canvas {
+      background: #090d16 url("assets/wallpaper.jpg") center/cover no-repeat;
+      border-radius: 26px;
+      padding: 16px 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 650px;
+      flex: 1;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+
+    .sim-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 7px 12px;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .sim-header-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.01em;
+    }
+    .sim-header-label svg {
+      color: #60a5fa;
+      width: 14px;
+      height: 14px;
+    }
+
+    .lang-toggle-bar {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-pill);
+      padding: 2px;
+      gap: 2px;
+    }
+    .lang-toggle-btn {
+      border: 0;
+      background: transparent;
+      padding: 3px 9px;
+      font-size: 10.5px;
+      font-weight: 700;
+      border-radius: var(--radius-pill);
+      color: #cbd5e1;
+      cursor: pointer;
+      transition: all 140ms var(--ease);
+    }
+    .lang-toggle-btn:hover {
+      color: #ffffff;
+    }
+    .lang-toggle-btn.active {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .simulator-target-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+    .simulator-target-bar b { color: #60a5fa; font-weight: 700; }
+
+    /* Lockscreen Box & Notification Bubble */
+    .lockscreen-preview-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 12px 0 8px;
+      flex: 1;
+      justify-content: center;
+    }
+    .lockscreen-padlock-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: -4px;
+    }
+    .lockscreen-clock-box {
+      text-align: center;
+      padding: 0 0 4px;
+    }
+    .lockscreen-time {
+      font-size: 60px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      line-height: 1;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.9);
+    }
+    .lockscreen-date {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 6px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+    }
+
+    .notif-bubble {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      padding: 15px 16px;
+      box-shadow: 0 14px 36px -4px rgba(0, 0, 0, 0.55), 0 3px 10px rgba(0, 0, 0, 0.25);
+      display: flex;
+      gap: 12px;
+      transition: all 160ms var(--ease);
+    }
+    .notif-bubble:hover {
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.65);
+    }
+    .notif-app-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: #EBF1FF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid rgba(0, 96, 254, 0.15);
+    }
+    .notif-app-icon img { width: 24px; height: 24px; }
+    .notif-body { flex: 1; min-width: 0; }
+    .notif-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .notif-app-name {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #0060FE;
+    }
+    .notif-time { font-size: 11px; color: #64748B; font-weight: 500; }
+    .notif-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 4px;
+      word-break: break-word;
+      line-height: 1.35;
+    }
+    .notif-title:empty::before { content: "Sarlavha kiritilmagan..."; color: #94A3B8; font-style: italic; }
+    .notif-text {
+      font-size: 12.5px;
+      color: #334155;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .notif-text:empty::before { content: "Bildirishnoma matni kiritilmagan..."; color: #94A3B8; font-style: italic; }
+
+    /* Lockscreen Quick Action Circles */
+    .lockscreen-quick-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+      margin-top: auto;
+    }
+    .lockscreen-action-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .lockscreen-action-btn svg { width: 16px; height: 16px; }
+
+    /* Tablet Home Indicator Bar */
+    .phone-home-indicator {
+      width: 140px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: var(--radius-pill);
+      margin: 8px auto 0;
+    }
+
+    /* Verdict status */
+    .verdict-line {
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #cbd5e1;
+    }
+    .verdict-line[data-v="ok"] { background: rgba(31, 193, 107, 0.25); color: #86efac; border: 1px solid rgba(31, 193, 107, 0.45); }
+    .verdict-line[data-v="warn"] { background: rgba(250, 115, 25, 0.25); color: #fed7aa; border: 1px solid rgba(250, 115, 25, 0.45); }
+    .verdict-line[data-v="crit"] { background: rgba(239, 68, 68, 0.25); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.45); }
+    .verdict-line[data-v="idle"] { background: rgba(0, 0, 0, 0.55); color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.12); }
+    .verdict-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* Popovers, Dialogs & Toasts */
+    .toast-pill {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      opacity: 0;
+      transition: all 250ms var(--ease);
+      pointer-events: none;
+    }
+    .toast-pill.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+    }
+    .modal-backdrop.show { display: flex; }
+
+    .devin-modal {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 440px;
+      box-shadow: var(--shadow-lg);
+      padding: 24px;
+      animation: modalPop 200ms var(--ease);
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .done-seal {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--ok-bg);
+      border: 1.5px solid var(--ok-border);
+      color: var(--ok-icon);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SOLAR ICONS (BOLD SUITE) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M12 6.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM12 2a1 1 0 0 1 1 1v1.5a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm0 17.5a1 1 0 0 1 1 1V22a1 1 0 1 1-2 0v-1.5a1 1 0 0 1 1-1ZM4.929 4.929a1 1 0 0 1 1.414 0l1.06 1.06a1 1 0 0 1-1.414 1.415l-1.06-1.06a1 1 0 0 1 0-1.415Zm11.668 11.667a1 1 0 0 1 1.414 0l1.06 1.06a1 1 0 0 1-1.414 1.415l-1.06-1.06a1 1 0 0 1 0-1.415ZM2 12a1 1 0 0 1 1-1h1.5a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm17.5 0a1 1 0 0 1 1-1H22a1 1 0 1 1 0 2h-1.5a1 1 0 0 1-1-1ZM6.343 17.657a1 1 0 0 1 0-1.414l1.06-1.06a1 1 0 0 1 1.415 1.414l-1.06 1.06a1 1 0 0 1-1.415 0Zm11.667-11.668a1 1 0 0 1 0-1.414l1.06-1.06a1 1 0 1 1 1.415 1.414l-1.06 1.06a1 1 0 0 1-1.415 0Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M12.028 2.072a1 1 0 0 1 .737 1.213 8.005 8.005 0 0 0 9.95 9.95 1 1 0 0 1 1.213.737A10.005 10.005 0 0 1 3.96 19.98a10.005 10.005 0 0 1 8.068-17.908Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M15.53 4.47a.75.75 0 0 1 0 1.06L9.06 12l6.47 6.47a.75.75 0 1 1-1.06 1.06l-7-7a.75.75 0 0 1 0-1.06l7-7a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M8.47 4.47a.75.75 0 0 1 1.06 0l7 7a.75.75 0 0 1 0 1.06l-7 7a.75.75 0 0 1-1.06-1.06L14.94 12 8.47 5.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-chevrons-up-down" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M12 3.47a.75.75 0 0 1 .53.22l4 4a.75.75 0 0 1-1.06 1.06L12 5.31 8.53 8.75a.75.75 0 1 1-1.06-1.06l4-4a.75.75 0 0 1 .53-.22Zm-4.53 11.25a.75.75 0 0 1 1.06 0L12 18.19l3.47-3.47a.75.75 0 0 1 1.06 1.06l-4 4a.75.75 0 0 1-1.06 0l-4-4a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M10.82 2.766a2.25 2.25 0 0 1 3.36 0l8.528 15.636A2.25 2.25 0 0 1 20.738 22H3.262a2.25 2.25 0 0 1-1.97-3.598L9.82 2.766ZM12 8.5a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 12 8.5Zm0 8.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm4.854 7.646a.75.75 0 0 1 0 1.06l-6 6a.75.75 0 0 1-1.06 0l-2.5-2.5a.75.75 0 1 1 1.06-1.06L10.323 15.116l5.47-5.47a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm3.354 6.646a.75.75 0 0 0-1.06 0L12 10.94 9.707 8.646a.75.75 0 1 0-1.06 1.06L10.94 12l-2.293 2.293a.75.75 0 0 0 1.06 1.06L12 13.06l2.293 2.293a.75.75 0 0 0 1.06-1.06L13.06 12l2.294-2.293a.75.75 0 0 0 0-1.06Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-globe-bold" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2Zm7.931 9H16.08c-.28-3.085-1.574-5.69-3.411-7.058A8.02 8.02 0 0 1 19.93 11ZM13.97 11h-3.94c.32-3.155 1.547-5.5 1.97-5.5.423 0 1.65 2.345 1.97 5.5Zm-5.89 0H4.069a8.02 8.02 0 0 1 7.262-7.058C9.493 5.31 8.2 7.915 8.08 11Zm-4.01 2h4.01c.12 3.085 1.413 5.69 3.251 7.058A8.02 8.02 0 0 1 4.07 13Zm5.96 0h3.94c-.32 3.155-1.547 5.5-1.97 5.5-.423 0-1.65-2.345-1.97-5.5Zm6.05 0h4.01a8.02 8.02 0 0 1-7.262 7.058c1.838-1.368 3.132-3.973 3.252-7.058Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-map-bold" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M2.5 6.545c0-.687.585-1.218 1.267-1.127l4.639.619a1.5 1.5 0 0 0 .394 0l6.4-.853a1.5 1.5 0 0 1 .394 0l4.639.619c.682.09 1.267.622 1.267 1.309v10.343c0 .687-.585 1.218-1.267 1.127l-4.639-.619a1.5 1.5 0 0 0-.394 0l-6.4.853a1.5 1.5 0 0 1-.394 0l-4.639-.619A1.135 1.135 0 0 1 2.5 17.455V6.545Zm7 10.963 5-1.111V6.59l-5 1.112v9.806Z"/>
+    </symbol>
+    <symbol id="i-building-bold" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M3.75 4.5A2.75 2.75 0 0 1 6.5 1.75h4A2.75 2.75 0 0 1 13.25 4.5v15.75h-9.5V4.5Zm2.75 2a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5H7.25a.75.75 0 0 1-.75-.75Zm0 3.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5H7.25a.75.75 0 0 1-.75-.75Zm0 3.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5H7.25a.75.75 0 0 1-.75-.75Zm8.25-6.5A2.75 2.75 0 0 1 17.5 4.25h.5A2.75 2.75 0 0 1 20.75 7v13.25h-6V7Zm2.75 2a.75.75 0 0 1 .75-.75h.5a.75.75 0 0 1 0 1.5H18.25a.75.75 0 0 1-.75-.75Zm0 3.5a.75.75 0 0 1 .75-.75h.5a.75.75 0 0 1 0 1.5H18.25a.75.75 0 0 1-.75-.75ZM2 21.25a.75.75 0 0 1 .75-.75h18.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-home-bold" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M11.264 2.45a1 1 0 0 1 1.472 0l8.75 9.155A1 1 0 0 1 20.75 13H19v7.25A1.75 1.75 0 0 1 17.25 22h-3.5A1.75 1.75 0 0 1 12 20.25V16h-1.5v4.25A1.75 1.75 0 0 1 8.75 22h-3.5A1.75 1.75 0 0 1 3.5 20.25V13H1.75a1 1 0 0 1-.736-1.395l8.75-9.155Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M12 2C7.582 2 4 5.582 4 10c0 5.25 6.53 11.378 7.424 12.186a.75.75 0 0 0 1.152 0C13.47 21.378 20 15.25 20 10c0-4.418-3.582-8-8-8Zm0 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M12 2a6.5 6.5 0 0 0-6.5 6.5c0 1.956-.513 3.655-1.282 4.975A2.75 2.75 0 0 0 6.6 17.5h10.8a2.75 2.75 0 0 0 2.382-4.025c-.769-1.32-1.282-3.019-1.282-4.975A6.5 6.5 0 0 0 12 2Zm-2.5 17a2.5 2.5 0 0 0 5 0h-5Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-send" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M2.57 2.115A1.5 1.5 0 0 1 4.22 1.94l17.25 9a1.5 1.5 0 0 1 0 2.66l-17.25 9A1.5 1.5 0 0 1 2.05 20.8l2.25-7.875A1 1 0 0 1 5.26 12.1l6.99-.1-6.99-.1a1 1 0 0 1-.96-.825L2.05 3.2a1.5 1.5 0 0 1 .52-1.085Z"/>
+    </symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M14.545 2.22a1 1 0 0 1 .932 1.348l-2.617 6.432h5.14a1 1 0 0 1 .78 1.625l-10 12.5a1 1 0 0 1-1.745-.983l3.204-7.892H5a1 1 0 0 1-.806-1.59l9.5-13.5a1 1 0 0 1 .851-.44Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M6.75 2a.75.75 0 0 1 .75.75V4h9V2.75a.75.75 0 0 1 1.5 0V4h1.25A3.75 3.75 0 0 1 23 7.75v11.5A3.75 3.75 0 0 1 19.25 23H4.75A3.75 3.75 0 0 1 1 19.25V7.75A3.75 3.75 0 0 1 4.75 4H6V2.75A.75.75 0 0 1 6.75 2ZM2.5 9.5v9.75c0 1.243 1.007 2.25 2.25 2.25h14.5c1.243 0 2.25-1.007 2.25-2.25V9.5h-19Zm6 4a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0Zm5.5 0a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0Zm5.5 0a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M4.75 3.5A2.75 2.75 0 0 0 2 6.25v3.5A2.75 2.75 0 0 0 4.75 12.5h11.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H4.75c-.69 0-1.25-.56-1.25-1.25v-3.5c0-.69.56-1.25 1.25-1.25h12.5a.75.75 0 0 0 0-1.5H4.75ZM19.25 20.5A2.75 2.75 0 0 0 22 17.75v-3.5A2.75 2.75 0 0 0 19.25 11.5H7.56l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06L7.56 13h11.69c.69 0 1.25.56 1.25 1.25v3.5c0 .69-.56 1.25-1.25 1.25H6.75a.75.75 0 0 0 0 1.5h12.5Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M12.75 2a.75.75 0 0 0-1.5 0v3.086a6.002 6.002 0 0 1-4.164 4.164H3.999a.75.75 0 0 0 0 1.5h3.087a6.002 6.002 0 0 1 4.164 4.164v3.086a.75.75 0 0 0 1.5 0v-3.086a6.002 6.002 0 0 1 4.164-4.164h3.086a.75.75 0 0 0 0-1.5h-3.086a6.002 6.002 0 0 1-4.164-4.164V2Zm6.5 13a.75.75 0 0 0-1.5 0v.586a3.001 3.001 0 0 1-1.914 1.914H15.25a.75.75 0 0 0 0 1.5h.586a3.001 3.001 0 0 1 1.914 1.914v.586a.75.75 0 0 0 1.5 0v-.586a3.001 3.001 0 0 1 1.914-1.914h.586a.75.75 0 0 0 0-1.5h-.586a3.001 3.001 0 0 1-1.914-1.914V15Z" clip-rule="evenodd"/>
+    </symbol>
+  </svg>
+
+  <div class="app-root">
+
+    <!-- TOP NAVBAR -->
+    <header class="top-navbar">
+      <div class="top-navbar-left">
+        <a href="#" class="brand-logo-btn">
+          <img src="assets/logo.svg" alt="logo" />
+          <div style="display:flex; flex-direction:column; line-height:1.2">
+            <span style="font-size:14px; font-weight:800; letter-spacing:-0.02em; color:var(--text-main)">onlayn mahalla</span>
+            <span style="font-size:10px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em">Davlat elektron platformasi</span>
+          </div>
+        </a>
+        <span class="brand-platform-badge">RASMIY MODUL</span>
+        <div class="nav-breadcrumbs">
+          <svg><use href="#i-chevron-right"/></svg>
+          <span>Tizim xabarnomalari</span>
+          <svg><use href="#i-chevron-right"/></svg>
+          <span class="crumb-active" id="crumbScopeLabel">Mahalla xabarnomasi</span>
+        </div>
+      </div>
+
+      <div class="top-navbar-right">
+        <div style="display:flex; align-items:center; gap:8px; background:var(--bg-sunk); border:1px solid var(--border-base); padding:4px 10px; border-radius:var(--radius-pill); font-size:12px; font-weight:600; color:var(--text-body)">
+          <svg width="14" height="14" style="color:var(--primary)"><use href="#i-home-bold"/></svg>
+          <span>8-sonli "Do‘stlik" MFY</span>
+        </div>
+        <div class="status-live-chip" title="SSL/GOV.UZ himoyalangan davlat axborot tizimi">
+          <span class="status-live-dot"></span>
+          <span>Himoyalangan tizim</span>
+        </div>
+        <button class="icon-btn-quiet" id="themeBtn" aria-label="Mavzuni almashtirish" title="Tungi/Kunduzgi rejim">
+          <svg><use href="#i-sun" id="themeIcon"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 12-COLUMN WORKSPACE -->
+    <div class="workspace-container">
+      <div class="workspace-grid">
+
+        <!-- LEFT 8/12: FORM STEPPER -->
+        <div class="composer-pane">
+
+          <div class="hero-heading-box">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px">
+              <span style="font-size:11.5px; font-weight:700; color:var(--primary); background:var(--primary-soft); border:1px solid var(--primary-border); padding:3px 10px; border-radius:var(--radius-pill); letter-spacing:0.02em">
+                O‘ZBEKISTON RESPUBLIKASI MAHALLA TIZIMI
+              </span>
+              <span style="font-size:11.5px; font-weight:600; color:var(--text-muted)">
+                Reestr №: <b style="color:var(--text-main); font-family:var(--font-mono)">XM-2026/08-0419</b>
+              </span>
+            </div>
+            <h1 class="page-title">
+              <span>Yangi rasmiy xabarnoma yaratish</span>
+            </h1>
+            <p class="page-desc">Fuqarolar va mas'ul idoralar uchun rasmiy bildirishnoma, rejaviy profilaktika yoki tezkor ogohlantirish yuborish shakli.</p>
+          </div>
+
+          <!-- SPACIOUS STEPPER NAVIGATION -->
+          <nav class="stepper-nav" aria-label="Jarayon bosqichlari">
+            <button type="button" class="step-tab-btn active" data-step="1">
+              <span class="step-num-badge">1</span>
+              <span class="step-main-title">Auditoriya</span>
+            </button>
+
+            <div class="step-divider"><svg><use href="#i-chevron-right"/></svg></div>
+
+            <button type="button" class="step-tab-btn" data-step="2">
+              <span class="step-num-badge">2</span>
+              <span class="step-main-title">Xabar matni</span>
+            </button>
+
+            <div class="step-divider"><svg><use href="#i-chevron-right"/></svg></div>
+
+            <button type="button" class="step-tab-btn" data-step="3">
+              <span class="step-num-badge">3</span>
+              <span class="step-main-title">Muhimlik va Jadval</span>
+            </button>
+
+            <div class="step-divider"><svg><use href="#i-chevron-right"/></svg></div>
+
+            <button type="button" class="step-tab-btn" data-step="4">
+              <span class="step-num-badge">4</span>
+              <span class="step-main-title">Tasdiqlash</span>
+            </button>
+          </nav>
+
+          <!-- ==================================================================
+               STEP 1: AUDIENCE & GEOGRAPHY
+               ================================================================== -->
+          <div class="step-panel active" id="stepPanel1">
+            <div class="form-card">
+              <div class="form-card-title">
+                <span>Auditoriya qamrovi va ma'muriy darajasi</span>
+                <span class="sub">1-bosqich / 4</span>
+              </div>
+
+              <!-- Scope Dynamic Context Banner (Placed at Top) -->
+              <div class="scope-summary-chip-bar" id="scopeSummaryChipBar">
+                <div style="display:flex; align-items:center; gap:8px">
+                  <svg width="16" height="16" style="color:var(--primary); flex-shrink:0"><use href="#i-pin"/></svg>
+                  <span id="scopeSummaryText">Mahalla miqyosidagi xabarnoma</span>
+                </div>
+                <b id="scopeAudienceBadge">~2,400 aholi</b>
+              </div>
+
+              <!-- High Contrast Scope Cards -->
+              <div class="scope-card-grid" role="radiogroup" aria-label="Auditoriya qamrovi">
+                <!-- Respublika -->
+                <button type="button" class="scope-card-btn" data-level="1" role="radio" aria-checked="false">
+                  <div class="scope-card-top">
+                    <div class="scope-icon-wrap" data-color="blue">
+                      <svg><use href="#i-globe-bold"/></svg>
+                    </div>
+                    <div class="scope-radio-indicator"></div>
+                  </div>
+                  <div>
+                    <div class="scope-card-title">Respublika</div>
+                    <div class="scope-card-desc">Butun mamlakat (14 hudud)</div>
+                  </div>
+                  <div class="scope-card-badge">~3.2M aholi</div>
+                </button>
+
+                <!-- Viloyat -->
+                <button type="button" class="scope-card-btn" data-level="2" role="radio" aria-checked="false">
+                  <div class="scope-card-top">
+                    <div class="scope-icon-wrap" data-color="indigo">
+                      <svg><use href="#i-map-bold"/></svg>
+                    </div>
+                    <div class="scope-radio-indicator"></div>
+                  </div>
+                  <div>
+                    <div class="scope-card-title">Viloyat</div>
+                    <div class="scope-card-desc">Bitta viloyat yoki shahar</div>
+                  </div>
+                  <div class="scope-card-badge">~350K aholi</div>
+                </button>
+
+                <!-- Tuman -->
+                <button type="button" class="scope-card-btn" data-level="3" role="radio" aria-checked="false">
+                  <div class="scope-card-top">
+                    <div class="scope-icon-wrap" data-color="amber">
+                      <svg><use href="#i-building-bold"/></svg>
+                    </div>
+                    <div class="scope-radio-indicator"></div>
+                  </div>
+                  <div>
+                    <div class="scope-card-title">Tuman</div>
+                    <div class="scope-card-desc">Bitta tuman yoki shahar</div>
+                  </div>
+                  <div class="scope-card-badge">~28K aholi</div>
+                </button>
+
+                <!-- Mahalla -->
+                <button type="button" class="scope-card-btn active" data-level="4" role="radio" aria-checked="true">
+                  <div class="scope-card-top">
+                    <div class="scope-icon-wrap" data-color="green">
+                      <svg><use href="#i-home-bold"/></svg>
+                    </div>
+                    <div class="scope-radio-indicator"></div>
+                  </div>
+                  <div>
+                    <div class="scope-card-title">Mahalla</div>
+                    <div class="scope-card-desc">Bitta aniq mahalla (MFY)</div>
+                  </div>
+                  <div class="scope-card-badge">~2.4K aholi</div>
+                </button>
+              </div>
+
+              <!-- Cascading Dropdowns (Hidden on Level 1 Respublika) -->
+              <div class="geo-dropdown-grid" id="geoDropdowns">
+                <!-- Region -->
+                <div class="form-group" id="regionField">
+                  <label class="form-label" for="region">Viloyat</label>
+                  <div class="devin-select-wrap">
+                    <select class="devin-select" id="region">
+                      <option value="">Viloyatni tanlang</option>
+                    </select>
+                    <svg><use href="#i-chevrons-up-down"/></svg>
+                  </div>
+                  <div class="field-error" id="err-region"><svg><use href="#i-warn"/></svg> Viloyatni tanlang</div>
+                </div>
+
+                <!-- District -->
+                <div class="form-group" id="districtField">
+                  <label class="form-label" for="district">Tuman / Shahar</label>
+                  <div class="devin-select-wrap">
+                    <select class="devin-select" id="district">
+                      <option value="">Tumanni tanlang</option>
+                    </select>
+                    <svg><use href="#i-chevrons-up-down"/></svg>
+                  </div>
+                  <div class="field-error" id="err-district"><svg><use href="#i-warn"/></svg> Tumanni tanlang</div>
+                </div>
+
+                <!-- Mahalla -->
+                <div class="form-group" id="mahallaField">
+                  <label class="form-label" for="mahalla">Mahalla</label>
+                  <div class="devin-select-wrap">
+                    <select class="devin-select" id="mahalla">
+                      <option value="">Mahallani tanlang</option>
+                    </select>
+                    <svg><use href="#i-chevrons-up-down"/></svg>
+                  </div>
+                  <div class="field-error" id="err-mahalla"><svg><use href="#i-warn"/></svg> Mahallani tanlang</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ==================================================================
+               STEP 2: BILINGUAL CONTENT WITH QUICK TEMPLATES
+               ================================================================== -->
+          <div class="step-panel" id="stepPanel2">
+            <div class="form-card">
+              <div class="form-card-title">
+                <span>Xabarnoma matni (Ikki tilda)</span>
+                <span class="sub" id="langState">Ikkala til kerak</span>
+              </div>
+
+              <!-- Mobbin Quick Templates Bar -->
+              <div class="templates-bar">
+                <div class="templates-head">
+                  <svg width="14" height="14" style="color:var(--primary)"><use href="#i-sparkles"/></svg>
+                  <span>Tayyor shablonlar (bitta bosishda to‘ldirish)</span>
+                </div>
+                <div class="templates-grid">
+                  <button type="button" class="template-pill" data-tpl="elektr">
+                    <span>⚡️ Elektr tarmog‘i ta‘miri</span>
+                  </button>
+                  <button type="button" class="template-pill" data-tpl="suv">
+                    <span>🚰 Suv ta‘minoti to‘xtatilishi</span>
+                  </button>
+                  <button type="button" class="template-pill" data-tpl="yigin">
+                    <span>📢 Mahalla umumiy yig‘ini</span>
+                  </button>
+                  <button type="button" class="template-pill" data-tpl="hashar">
+                    <span>🌳 Hashar va obodonlashtirish</span>
+                  </button>
+                  <button type="button" class="template-pill" data-tpl="emlash">
+                    <span>💉 Tibbiy ko‘rik va emlash</span>
+                  </button>
+                  <button type="button" class="template-pill" data-tpl="obhavo">
+                    <span>⚠️ Ob-havo ogohlantirishi</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="bilingual-grid">
+
+                <!-- O'zbekcha -->
+                <div class="bilingual-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center">
+                    <span class="bilingual-lang-badge" data-lang="uz">UZ · O‘zbekcha</span>
+                    <span class="sub" id="tcount-uz" style="font-size:11.5px; font-weight:700">0 / 120</span>
+                  </div>
+                  <div>
+                    <label class="form-label" for="title-uz" style="margin-bottom:4px">Sarlavha</label>
+                    <input type="text" class="devin-input" id="title-uz" data-field="title" data-lang="uz" maxlength="120" placeholder="Masalan, Profilaktika ishlari" />
+                    <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-uz"></div></div>
+                    <div class="field-error" id="err-title-uz"><svg><use href="#i-warn"/></svg> O‘zbekcha sarlavhani yozing</div>
+                  </div>
+                  <div>
+                    <label class="form-label" for="body-uz" style="margin-bottom:4px">Xabarnoma matni</label>
+                    <textarea class="devin-textarea" id="body-uz" data-field="body" data-lang="uz" maxlength="600" placeholder="Xabarnoma matnini yozing..."></textarea>
+                    <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-uz"></div></div>
+                    <div style="display:flex; justify-content:space-between; margin-top:4px">
+                      <div class="field-error" id="err-body-uz"><svg><use href="#i-warn"/></svg> O‘zbekcha matnni yozing</div>
+                      <span class="sub" id="count-uz" style="font-size:11.5px; margin-left:auto; font-weight:700">0 / 600</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ruscha -->
+                <div class="bilingual-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center">
+                    <span class="bilingual-lang-badge" data-lang="ru">RU · Русский</span>
+                    <span class="sub" id="tcount-ru" style="font-size:11.5px; font-weight:700">0 / 120</span>
+                  </div>
+                  <div>
+                    <label class="form-label" for="title-ru" style="margin-bottom:4px">Заголовок</label>
+                    <input type="text" class="devin-input" id="title-ru" data-field="title" data-lang="ru" maxlength="120" placeholder="Например, Профилактические работы" />
+                    <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-ru"></div></div>
+                    <div class="field-error" id="err-title-ru"><svg><use href="#i-warn"/></svg> Ruscha sarlavhani yozing</div>
+                  </div>
+                  <div>
+                    <label class="form-label" for="body-ru" style="margin-bottom:4px">Текст уведомления</label>
+                    <textarea class="devin-textarea" id="body-ru" data-field="body" data-lang="ru" maxlength="600" placeholder="Текст уведомления..."></textarea>
+                    <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-ru"></div></div>
+                    <div style="display:flex; justify-content:space-between; margin-top:4px">
+                      <div class="field-error" id="err-body-ru"><svg><use href="#i-warn"/></svg> Ruscha matnni yozing</div>
+                      <span class="sub" id="count-ru" style="font-size:11.5px; margin-left:auto; font-weight:700">0 / 600</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================================================================
+               STEP 3: SEVERITY & SCHEDULE
+               ================================================================== -->
+          <div class="step-panel" id="stepPanel3">
+            <div class="form-card">
+              <div class="form-card-title">
+                <span>Muhimlik va Yuborish tartibi</span>
+                <span class="sub">3-bosqich / 4</span>
+              </div>
+
+              <!-- Severity Rich Cards -->
+              <div class="form-group">
+                <label class="form-label">Muhimlik darajasi</label>
+                <div class="severity-cards-grid" role="radiogroup">
+                  <button type="button" class="sev-card-btn" data-sev="info" role="radio" aria-checked="false">
+                    <div class="sev-card-head">
+                      <span class="sev-card-title" style="color:var(--info-text)">
+                        <span class="status-live-dot" style="background:var(--info-icon); box-shadow:none"></span>
+                        <span>Ma‘lumot</span>
+                      </span>
+                    </div>
+                    <span class="sev-card-desc">Kundalik yangilik va e‘lonlar</span>
+                  </button>
+
+                  <button type="button" class="sev-card-btn active" data-sev="warning" role="radio" aria-checked="true">
+                    <div class="sev-card-head">
+                      <span class="sev-card-title" style="color:var(--warn-text)">
+                        <span class="status-live-dot" style="background:var(--warn-icon); box-shadow:none"></span>
+                        <span>Ogohlantirish</span>
+                      </span>
+                    </div>
+                    <span class="sev-card-desc">Ta‘mir va vaqtinchalik cheklovlar</span>
+                  </button>
+
+                  <button type="button" class="sev-card-btn" data-sev="critical" role="radio" aria-checked="false">
+                    <div class="sev-card-head">
+                      <span class="sev-card-title" style="color:var(--crit-text)">
+                        <span class="status-live-dot" style="background:var(--crit-icon); box-shadow:none"></span>
+                        <span>Kritik</span>
+                      </span>
+                    </div>
+                    <span class="sev-card-desc">Favqulodda va shoshilinch xabarlar</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Schedule Mode -->
+              <div class="form-group" style="margin-top:6px">
+                <label class="form-label">Yuborish tartibi</label>
+                <div class="scope-card-grid" role="radiogroup" style="grid-template-columns:repeat(3, 1fr)">
+                  <button type="button" class="sev-btn active" data-send="now" role="radio" aria-checked="true" style="padding:11px">
+                    <svg width="15" height="15" style="color:var(--primary)"><use href="#i-bolt"/></svg>
+                    <span>Hoziroq (Darhol)</span>
+                  </button>
+                  <button type="button" class="sev-btn" data-send="scheduled" role="radio" aria-checked="false" style="padding:11px">
+                    <svg width="15" height="15" style="color:var(--primary)"><use href="#i-calendar"/></svg>
+                    <span>Rejali (Keyinroq)</span>
+                  </button>
+                  <button type="button" class="sev-btn" data-send="recurring" role="radio" aria-checked="false" style="padding:11px">
+                    <svg width="15" height="15" style="color:var(--primary)"><use href="#i-repeat"/></svg>
+                    <span>Takroriy (Davriy)</span>
+                  </button>
+                </div>
+
+                <!-- Rejali sana-vaqt -->
+                <div id="scheduledBox" hidden style="margin-top:12px">
+                  <label class="form-label" for="sendAt">Yuborish sanasi va vaqti</label>
+                  <input type="datetime-local" class="devin-input" id="sendAt" />
+                  <div class="field-error" id="err-sendAt"><svg><use href="#i-warn"/></svg> Kelajakdagi sana va vaqtni tanlang</div>
+                </div>
+
+                <!-- Takroriy sozlamalar -->
+                <div id="recurringBox" hidden style="margin-top:12px; display:flex; flex-direction:column; gap:12px">
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+                    <div>
+                      <label class="form-label" for="freq">Davriylik</label>
+                      <div class="devin-select-wrap">
+                        <select class="devin-select" id="freq">
+                          <option value="daily">Har kuni</option>
+                          <option value="weekly">Har hafta</option>
+                          <option value="monthly">Har oy</option>
+                        </select>
+                        <svg><use href="#i-chevrons-up-down"/></svg>
+                      </div>
+                    </div>
+                    <div>
+                      <label class="form-label" for="sendTime">Soat</label>
+                      <input type="time" class="devin-input" id="sendTime" value="09:00" />
+                    </div>
+                  </div>
+
+                  <div id="weekdaysField" hidden>
+                    <label class="form-label">Hafta kunlari</label>
+                    <div class="day-chip-grid" id="weekdays">
+                      <button type="button" class="day-chip" data-wd="1">Du</button>
+                      <button type="button" class="day-chip" data-wd="2">Se</button>
+                      <button type="button" class="day-chip" data-wd="3">Cho</button>
+                      <button type="button" class="day-chip" data-wd="4">Pay</button>
+                      <button type="button" class="day-chip" data-wd="5">Ju</button>
+                      <button type="button" class="day-chip" data-wd="6">Sha</button>
+                      <button type="button" class="day-chip" data-wd="0">Yak</button>
+                    </div>
+                    <div class="field-error" id="err-weekdays"><svg><use href="#i-warn"/></svg> Kamida bitta kunni tanlang</div>
+                  </div>
+
+                  <div id="monthDayField" hidden>
+                    <label class="form-label" for="monthDay">Oyning kuni</label>
+                    <div class="devin-select-wrap">
+                      <select class="devin-select" id="monthDay"></select>
+                      <svg><use href="#i-chevrons-up-down"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Advanced Notification Toggles -->
+              <button type="button" class="advanced-toggle-btn" id="advStep3Btn">
+                <svg><use href="#i-chevron-right"/></svg>
+                <span>Qo‘shimcha sozlamalar (Ovoz va Favqulodda ustuvorlik)</span>
+              </button>
+
+              <div class="advanced-drawer-box" id="advStep3Box">
+                <div class="toggle-row">
+                  <div class="toggle-label-box">
+                    <b>Ovozli bildirishnoma</b>
+                    <span>Qurilmada ovoz va tebranish beradi</span>
+                  </div>
+                  <label class="devin-switch">
+                    <input type="checkbox" id="soundToggle" checked />
+                    <span class="devin-slider"></span>
+                  </label>
+                </div>
+
+                <div class="toggle-row">
+                  <div class="toggle-label-box">
+                    <b>Favqulodda ustuvorlik</b>
+                    <span>Boshqa xabarlardan yuqori o‘rinda chiqadi</span>
+                  </div>
+                  <label class="devin-switch">
+                    <input type="checkbox" id="priorityToggle" />
+                    <span class="devin-slider"></span>
+                  </label>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ==================================================================
+               STEP 4: FINAL REVIEW & DISPATCH
+               ================================================================== -->
+          <div class="step-panel" id="stepPanel4">
+            <div class="form-card">
+              <div class="form-card-title">
+                <span>Ma‘lumotlarni tekshirish va Tasdiqlash</span>
+                <span class="sub">4-bosqich / 4</span>
+              </div>
+
+              <div class="checklist-card">
+                <div class="checklist-row">
+                  <div class="checklist-icon"><svg><use href="#i-check"/></svg></div>
+                  <span>Auditoriya masshtabi va qamrov hududi to‘liq tanlandi</span>
+                </div>
+                <div class="checklist-row">
+                  <div class="checklist-icon"><svg><use href="#i-check"/></svg></div>
+                  <span>O‘zbekcha va Ruscha matnlar kiritildi va formatlandi</span>
+                </div>
+                <div class="checklist-row">
+                  <div class="checklist-icon"><svg><use href="#i-check"/></svg></div>
+                  <span>Yuborish tartibi va yetkazish kanallari tasdiqlandi</span>
+                </div>
+              </div>
+
+              <div class="review-grid">
+                <div class="review-box">
+                  <div class="review-box-title">Auditoriya va Hudud</div>
+                  <div class="review-box-val" id="revScope">Mahalla</div>
+                  <div class="review-box-desc" id="revAudienceCount">~2,400 aholi qamrovi</div>
+                </div>
+
+                <div class="review-box">
+                  <div class="review-box-title">Muhimlik darajasi</div>
+                  <div class="review-box-val" id="revSeverity">Ogohlantirish</div>
+                  <div class="review-box-desc" id="revSoundPriority">Ovozli bildirishnoma yoqilgan</div>
+                </div>
+
+                <div class="review-box">
+                  <div class="review-box-title">Yuborish tartibi</div>
+                  <div class="review-box-val" id="revSchedule">Hoziroq (Darhol)</div>
+                  <div class="review-box-desc">Toshkent vaqti (UTC+5)</div>
+                </div>
+
+                <div class="review-box">
+                  <div class="review-box-title">Tillar holati</div>
+                  <div class="review-box-val">UZ + RU (Ikki tilda)</div>
+                  <div class="review-box-desc" id="revLangSummary">Sarlavha va matn kiritilgan</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- STEPPER NAVIGATION BUTTONS -->
+          <div class="stepper-foot">
+            <button type="button" class="btn-devin-secondary" id="btnPrevStep" style="visibility:hidden">
+              <svg><use href="#i-chevron-left"/></svg>
+              <span>Orqaga</span>
+            </button>
+
+            <div style="display:flex; gap:12px">
+              <button type="button" class="btn-devin-secondary" id="testBtn" title="O‘z telefoningizga test yuborish">
+                <svg><use href="#i-send"/></svg>
+                <span>Test yuborish</span>
+              </button>
+
+              <button type="button" class="btn-devin-primary" id="btnNextStep">
+                <span id="btnNextLabel">Keyingisi: Xabar matni</span>
+                <svg width="16" height="16"><use href="#i-chevron-right"/></svg>
+              </button>
+
+              <button type="button" class="btn-devin-primary" id="submitBtn" hidden>
+                <span>Navbatga qo‘yish</span>
+                <svg width="16" height="16"><use href="#i-check"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT 4/12: REALISTIC IPAD PRO / TABLET SIMULATOR -->
+        <div class="preview-pane">
+
+          <div class="phone-simulator-frame">
+            <div class="tablet-camera-dot"></div>
+
+            <div class="phone-statusbar">
+              <span>09:41</span>
+              <div style="display:flex; align-items:center; gap:6px">
+                <span style="font-size:10px; font-weight:700">100%</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4z"/></svg>
+                <svg width="17" height="11" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="1" width="18" height="12" rx="3"/><path d="M22 5v4"/><rect x="3" y="3" width="14" height="8" rx="1.5" fill="currentColor"/></svg>
+              </div>
+            </div>
+
+            <div class="phone-screen-canvas">
+
+              <!-- Sim Header & Controls -->
+              <div class="sim-header-row">
+                <div class="sim-header-label">
+                  <svg><use href="#i-bell"/></svg>
+                  <span>Bildirishnoma ko‘rinishi</span>
+                </div>
+
+                <div class="lang-toggle-bar">
+                  <button type="button" class="lang-toggle-btn active" data-prev="uz">UZ</button>
+                  <button type="button" class="lang-toggle-btn" data-prev="ru">RU</button>
+                </div>
+              </div>
+
+              <!-- Audience Target Bar -->
+              <div class="simulator-target-bar">
+                <div style="display:flex; align-items:center; gap:6px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">
+                  <svg width="13" height="13" style="color:var(--primary); flex-shrink:0"><use href="#i-pin"/></svg>
+                  <span style="overflow:hidden; text-overflow:ellipsis"><b id="simTargetName">8-mahalla, Qo‘shko‘pir</b></span>
+                </div>
+                <span id="simAudienceCount" style="font-weight:800; color:var(--text-dim); flex-shrink:0; margin-left:6px">~2,400</span>
+              </div>
+
+              <!-- PUSH NOTIFICATION (LOCKSCREEN PREVIEW) -->
+              <div class="lockscreen-preview-container">
+                <div class="lockscreen-padlock-row">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                </div>
+
+                <div class="lockscreen-clock-box">
+                  <div class="lockscreen-time">09:41</div>
+                  <div class="lockscreen-date">Dushanba, 24-avgust</div>
+                </div>
+
+                <article class="notif-bubble">
+                  <div class="notif-app-icon">
+                    <img src="assets/logo.svg" alt="app" />
+                  </div>
+                  <div class="notif-body">
+                    <div class="notif-meta-row">
+                      <span class="notif-app-name" id="notifAppName">onlayn mahalla</span>
+                      <span class="notif-time" id="pvWhenBan">hozir</span>
+                    </div>
+                    <div class="notif-title" id="pvTitleBan"></div>
+                    <div class="notif-text" id="pvBodyBan"></div>
+                  </div>
+                </article>
+
+                <!-- Lockscreen Quick Actions (Torch & Camera) -->
+                <div class="lockscreen-quick-actions">
+                  <div class="lockscreen-action-btn" title="Chiroq"><svg><use href="#i-bolt"/></svg></div>
+                  <div class="lockscreen-action-btn" title="Kamera"><svg><use href="#i-sun"/></svg></div>
+                </div>
+              </div>
+
+              <!-- Live Character Limit Verdict Status -->
+              <div class="verdict-line" id="prevVerdict" data-v="idle">
+                <span class="verdict-dot"></span>
+                <span id="prevVerdictText">Bannerga 1 qator sarlavha va 2 qator matn sig‘adi</span>
+              </div>
+
+              <!-- Tablet Home Indicator Bar -->
+              <div class="phone-home-indicator"></div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TEST PHONE MODAL -->
+  <div class="modal-backdrop" id="testModal">
+    <div class="devin-modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px">
+        <h3 style="font-size:16px; font-weight:800">Test xabarnoma yuborish</h3>
+        <button type="button" class="icon-btn-quiet" id="testClose"><svg><use href="#i-x"/></svg></button>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px">
+        Xabar faqat ko‘rsatilgan telefon raqamdagi ilovaga boradi.
+      </p>
+      <div class="form-group" style="margin-bottom:18px">
+        <label class="form-label" for="testPhone">Telefon raqamingiz</label>
+        <input type="tel" class="devin-input" id="testPhone" placeholder="+998 90 123 45 67" />
+        <div class="field-error" id="testErr"><svg><use href="#i-warn"/></svg><span id="testErrText"></span></div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px">
+        <button type="button" class="btn-devin-secondary" id="testCancel">Bekor qilish</button>
+        <button type="button" class="btn-devin-primary" id="testSend">
+          <span id="testSendLabel">Yuborish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS DONE MODAL -->
+  <div class="modal-backdrop" id="doneModal">
+    <div class="devin-modal" style="text-align:center">
+      <div class="done-seal"><svg width="26" height="26"><use href="#i-check"/></svg></div>
+      <h3 style="font-size:18px; font-weight:800; margin-bottom:6px">Xabarnoma navbatga qo‘yildi</h3>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px">
+        Belgilangan qamrov va jadval bo‘yicha aholiga yetkaziladi.
+      </p>
+      <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom:22px" id="donePills"></div>
+      <button type="button" class="btn-devin-primary" id="againBtn" style="width:100%; justify-content:center">
+        <span>Yangi xabarnoma yaratish</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- FLOATING TOAST -->
+  <div class="toast-pill" id="toast"></div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    "use strict";
+
+    const REGIONS = [
+      [1, "Qoraqalpog‘iston Respublikasi", ["Amudaryo", "Beruniy", "Chimboy", "Ellikqal‘a", "Kegeyli", "Mo‘ynoq", "Nukus tumani", "Qanliko‘l", "Qo‘ng‘irot", "Qorao‘zak", "Shumanay", "Taxtako‘pir", "To‘rtko‘l", "Xo‘jayli", "Nukus shahri"]],
+      [2, "Andijon viloyati", ["Andijon tumani", "Asaka", "Baliqchi", "Bo‘z", "Buloqboshi", "Izboskan", "Jalaquduq", "Xo‘jaobod", "Qo‘rg‘ontepa", "Marhamat", "Oltinko‘l", "Paxtaobod", "Shahrixon", "Ulug‘nor", "Andijon shahri", "Xonobod shahri"]],
+      [3, "Buxoro viloyati", ["Buxoro tumani", "G‘ijduvon", "Jondor", "Kogon", "Olot", "Peshku", "Qorako‘l", "Qorovulbozor", "Romitan", "Shofirkon", "Vobkent", "Buxoro shahri"]],
+      [4, "Farg‘ona viloyati", ["Bag‘dod", "Beshariq", "Buvayda", "Dang‘ara", "Farg‘ona tumani", "Furqat", "Oltiariq", "Qo‘shtepa", "Quva", "Rishton", "So‘x", "Toshloq", "Uchko‘prik", "O‘zbekiston", "Yozyovon", "Farg‘ona shahri", "Marg‘ilon shahri", "Qo‘qon shahri", "Quvasoy shahri"]],
+      [5, "Jizzax viloyati", ["Arnasoy", "Baxmal", "Do‘stlik", "Forish", "G‘allaorol", "Sharof Rashidov", "Mirzacho‘l", "Paxtakor", "Yangiobod", "Zafarobod", "Zomin", "Jizzax shahri"]],
+      [6, "Xorazm viloyati", ["Bog‘ot", "Gurlan", "Xonqa", "Hazorasp", "Xiva tumani", "Qo‘shko‘pir", "Shovot", "Urganch tumani", "Yangiariq", "Yangibozor", "Tuproqqal‘a", "Urganch shahri", "Xiva shahri"]],
+      [7, "Namangan viloyati", ["Chortoq", "Chust", "Kosonsoy", "Mingbuloq", "Namangan tumani", "Norin", "Pop", "To‘raqo‘rg‘on", "Uychi", "Uchqo‘rg‘on", "Yangiqo‘rg‘on", "Namangan shahri"]],
+      [8, "Navoiy viloyati", ["Karmana", "Konimex", "Xatirchi", "Navbahor", "Nurota", "Qiziltepa", "Tomdi", "Uchquduq", "Navoiy shahri", "Zarafshon shahri"]],
+      [9, "Qashqadaryo viloyati", ["Chiroqchi", "Dehqonobod", "G‘uzor", "Kasbi", "Kitob", "Koson", "Mirishkor", "Muborak", "Nishon", "Qamashi", "Qarshi tumani", "Shahrisabz tumani", "Yakkabog‘", "Ko‘kdala", "Qarshi shahri", "Shahrisabz shahri"]],
+      [10, "Samarqand viloyati", ["Bulung‘ur", "Ishtixon", "Jomboy", "Kattaqo‘rg‘on tumani", "Qo‘shrabot", "Narpay", "Nurobod", "Oqdaryo", "Pastdarg‘om", "Paxtachi", "Payariq", "Samarqand tumani", "Toyloq", "Urgut", "Kattaqo‘rg‘on shahri", "Samarqand shahri"]],
+      [11, "Sirdaryo viloyati", ["Boyovut", "Guliston tumani", "Mirzaobod", "Oqoltin", "Sardoba", "Sayxunobod", "Sirdaryo tumani", "Xovos", "Guliston shahri", "Shirin shahri", "Yangiyer shahri"]],
+      [12, "Surxondaryo viloyati", ["Angor", "Bandixon", "Boysun", "Denov", "Jarqo‘rg‘on", "Muzrabot", "Oltinsoy", "Qiziriq", "Qumqo‘rg‘on", "Sariosiyo", "Sherobod", "Sho‘rchi", "Termiz tumani", "Uzun", "Termiz shahri"]],
+      [13, "Toshkent viloyati", ["Bekobod tumani", "Bo‘ka", "Bo‘stonliq", "Chinoz", "Qibray", "Ohangaron tumani", "Oqqo‘rg‘on", "Parkent", "Piskent", "Quyichirchiq", "O‘rtachirchiq", "Yangiyo‘l tumani", "Yuqorichirchiq", "Zangiota", "Angren shahri", "Bekobod shahri", "Chirchiq shahri", "Nurafshon shahri", "Olmaliq shahri", "Ohangaron shahri", "Yangiyo‘l shahri"]],
+      [14, "Toshkent shahri", ["Bektemir", "Chilonzor", "Mirobod", "Mirzo Ulug‘bek", "Olmazor", "Sergeli", "Shayxontohur", "Uchtepa", "Yakkasaroy", "Yashnobod", "Yunusobod"]]
+    ];
+
+    const TEMPLATES = {
+      elektr: {
+        uz: { title: "Elektr tarmog‘ida profilaktika ishlari", body: "Hurmatli mahalla ahli! Ertaga soat 10:00 dan 16:00 gacha podstansiyada ta‘mirlash ishlari olib borilishi sababli elektr energiyasi yetkazib berish vaqtincha to‘xtatiladi." },
+        ru: { title: "Профилактические работы в электросети", body: "Уважаемые жители! Завтра с 10:00 до 16:00 в связи с плановыми ремонтными работами на подстанции будет временно приостановлена подача электроэнергии." }
+      },
+      suv: {
+        uz: { title: "Ichimlik suvi ta‘minotidagi vaqtinchalik uzilish", body: "Markaziy quvurlarni ta‘mirlash munosabati bilan bugun soat 14:00 dan 20:00 gacha ichimlik suvi ta‘minotida uzilishlar kuzatiladi. Iltimos, suv zaxirangizni tayyorlab qo‘ying." },
+        ru: { title: "Временное отключение питьевой воды", body: "В связи с ремонтом центрального водопровода сегодня с 14:00 до 20:00 будет временно приостановлено водоснабжение. Просим запастись водой." }
+      },
+      yigin: {
+        uz: { title: "Mahalla faollari va fuqarolar umumiy yig‘ini", body: "Shanba kuni soat 18:00 da Mahalla markazida navbatdagi umumiy fuqarolar yig‘ini bo‘lib o‘tadi. Barcha fuqarolarni faol ishtirok etishga chorlaymiz." },
+        ru: { title: "Общее собрание жителей махалли", body: "В субботу в 18:00 в здании Махаллинского комитета состоится очередное собрание жителей. Приглашаем всех принять активное участие." }
+      },
+      hashar: {
+        uz: { title: "Umumxalq obodonlashtirish va ko‘kalamzorlashtirish hashari", body: "Yashil makon loyihasi doirasida mahallamizda daraxt ekish va tozalash hashari tashkil etilmoqda. Birgalikda mahallamizni obod qilaylik!" },
+        ru: { title: "Общенациональный хашар по благоустройству", body: "В рамках проекта «Яшил макон» в нашей махалле проводится субботник по посадке деревьев и уборке территории. Сделаем наш район чище!" }
+      },
+      emlash: {
+        uz: { title: "Bepul tibbiy ko‘rik va mavsumiy emlash", body: "Mahalla oilaviy poliklinikasida 1-sektor aholisi uchun bepul profilaktik tibbiy ko‘rik va bolalar emlash jarayoni o‘tkazilmoqda." },
+        ru: { title: "Бесплатный медосмотр и сезонная вакцинация", body: "В семейной поликлинике махалли проводится бесплатный медицинский осмотр и вакцинация для жителей 1-го сектора." }
+      },
+      obhavo: {
+        uz: { title: "Diqqat: Kuchli shamol va yog‘ingarchilik kutilmoqda", body: "Gidrometeorologiya xizmati ogohlantiradi: Ertaga kuchli shamol va yomg‘ir kutilmoqda. Avtomobillarni daraxtlar tagida qoldirmaslikni so‘raymiz." },
+        ru: { title: "Внимание: Ожидается сильный ветер и осадки", body: "Гидрометцентр предупреждает: завтра ожидается усиление ветра и дожди. Просим не парковать автомобили под деревьями." }
+      }
+    };
+
+    const MAHALLA_PER_DISTRICT = 14;
+    const LEVELS = { 1: "Respublika", 2: "Viloyat", 3: "Tuman", 4: "Mahalla" };
+    const SEV_NAME = { info: "Ma‘lumot", warning: "Ogohlantirish", critical: "Kritik" };
+    const LANG_NAME = { uz: "o‘zbekcha", ru: "ruscha" };
+    const DRAFT_KEY = "announce.draft.v11";
+    const TITLE_MAX = 120;
+    const BODY_MAX = 600;
+
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      currentStep: 1,
+      lang: "uz",
+      level: 4,
+      severity: "warning",
+      region: "6",
+      district: "606",
+      mahalla: "606008",
+      send: {
+        mode: "now",
+        at: "",
+        freq: "daily",
+        time: "09:00",
+        weekdays: [1],
+        monthDay: "1"
+      },
+      texts: { uz: { title: "", body: "" }, ru: { title: "", body: "" } },
+      touched: false,
+      previewLang: "uz"
+    };
+
+    const regionById = new Map(REGIONS.map((r) => [r[0], { id: r[0], name: r[1], districts: r[2] }]));
+
+    function districtsOf(regionId) {
+      const r = regionById.get(Number(regionId));
+      if (!r) return [];
+      return r.districts.map((name, i) => ({ id: r.id * 100 + i + 1, name }));
+    }
+
+    function mahallasOf(districtId) {
+      const id = Number(districtId);
+      if (!id) return [];
+      return Array.from({ length: MAHALLA_PER_DISTRICT }, (_, i) => ({ id: id * 1000 + i + 1, name: `${i + 1}-mahalla` }));
+    }
+
+    function nameOf(kind) {
+      if (kind === "region") return regionById.get(Number(state.region))?.name || "";
+      if (kind === "district") return districtsOf(state.region).find((d) => d.id === Number(state.district))?.name || "";
+      if (kind === "mahalla") return mahallasOf(state.district).find((m) => m.id === Number(state.mahalla))?.name || "";
+      return "";
+    }
+
+    function audienceLine() {
+      if (state.level === 1) return "Butun O‘zbekiston";
+      if (state.level === 2) return `${nameOf("region") || "Viloyat"}`;
+      if (state.level === 3) return `${nameOf("district") || "Tuman"}, ${nameOf("region")}`;
+      return `${nameOf("mahalla") || "Mahalla"}, ${nameOf("district")}`;
+    }
+
+    function fillSelect(el, items, value, placeholder) {
+      el.innerHTML = "";
+      const first = document.createElement("option");
+      first.value = "";
+      first.textContent = placeholder;
+      el.appendChild(first);
+      for (const it of items) {
+        const o = document.createElement("option");
+        o.value = String(it.id);
+        o.textContent = it.name;
+        el.appendChild(o);
+      }
+      el.value = items.some((i) => String(i.id) === String(value)) ? String(value) : "";
+    }
+
+    function stepProblems(step) {
+      const list = [];
+      if (step === 1) {
+        if (state.level >= 2 && !state.region) list.push("region");
+        if (state.level >= 3 && !state.district) list.push("district");
+        if (state.level >= 4 && !state.mahalla) list.push("mahalla");
+      } else if (step === 2) {
+        for (const lang of ["uz", "ru"]) {
+          if (!state.texts[lang].title.trim()) list.push(`title-${lang}`);
+          if (!state.texts[lang].body.trim()) list.push(`body-${lang}`);
+        }
+      } else if (step === 3) {
+        if (state.send.mode === "scheduled" && !state.send.at) list.push("sendAt");
+        if (state.send.mode === "recurring" && state.send.freq === "weekly" && state.send.weekdays.length === 0) list.push("weekdays");
+      }
+      return list;
+    }
+
+    function allProblems() {
+      return [...stepProblems(1), ...stepProblems(2), ...stepProblems(3)];
+    }
+
+    const langComplete = (lang) => Boolean(state.texts[lang].title.trim() && state.texts[lang].body.trim());
+
+    function toast(msg) {
+      const el = $("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.classList.remove("show"), 2800);
+    }
+
+    function setStep(step) {
+      if (step < 1) step = 1;
+      if (step > 4) step = 4;
+
+      if (step > state.currentStep) {
+        const errs = stepProblems(state.currentStep);
+        if (errs.length) {
+          state.touched = true;
+          render();
+          toast("Iltimos, maydonlarni to‘ldiring");
+          const first = $(errs[0]);
+          if (first) first.focus();
+          return;
+        }
+      }
+
+      state.currentStep = step;
+      render();
+    }
+
+    function updateProgressBar(fillEl, current, max) {
+      if (!fillEl) return;
+      const pct = Math.min(100, Math.round((current / max) * 100));
+      fillEl.style.width = `${pct}%`;
+      fillEl.classList.toggle("warn", pct >= 75 && pct < 95);
+      fillEl.classList.toggle("crit", pct >= 95);
+    }
+
+    function render() {
+      const step = state.currentStep;
+
+      // Stepper Tabs
+      document.querySelectorAll(".step-tab-btn").forEach((b) => {
+        const s = Number(b.dataset.step);
+        b.classList.toggle("active", s === step);
+        b.classList.toggle("completed", s < step);
+        const badge = b.querySelector(".step-num-badge");
+        if (badge) {
+          badge.innerHTML = s < step ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>` : String(s);
+        }
+      });
+
+      // Panels
+      for (let i = 1; i <= 4; i++) {
+        const panel = $(`stepPanel${i}`);
+        if (panel) panel.classList.toggle("active", i === step);
+      }
+
+      // Foot buttons
+      $("btnPrevStep").style.visibility = step > 1 ? "visible" : "hidden";
+      if (step < 4) {
+        $("btnNextStep").hidden = false;
+        $("submitBtn").hidden = true;
+        const nextTitles = { 1: "Keyingisi: Xabar matni", 2: "Keyingisi: Jadval", 3: "Keyingisi: Tasdiqlash" };
+        $("btnNextLabel").textContent = nextTitles[step];
+      } else {
+        $("btnNextStep").hidden = true;
+        $("submitBtn").hidden = false;
+      }
+
+      // Scope Logic
+      const lvl = state.level;
+      const regName = nameOf("region");
+      const distName = nameOf("district");
+      const mahName = nameOf("mahalla");
+
+      document.querySelectorAll(".scope-card-btn").forEach((b) => {
+        const on = Number(b.dataset.level) === state.level;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-checked", String(on));
+      });
+
+      const geoBox = $("geoDropdowns");
+      const regionEl = $("regionField");
+      const distEl = $("districtField");
+      const mahEl = $("mahallaField");
+
+      if (lvl === 1) {
+        // Respublika: Hide all geographic dropdowns
+        geoBox.style.display = "none";
+        regionEl.style.display = "none";
+        distEl.style.display = "none";
+        mahEl.style.display = "none";
+
+        $("scopeSummaryText").textContent = "Umumrespublika xabarnomasi (14 ta hudud)";
+        $("scopeAudienceBadge").textContent = "~3.2M aholi";
+        $("crumbScopeLabel").textContent = "Respublika";
+        $("simTargetName").textContent = "O‘zbekiston Respublikasi";
+        $("simAudienceCount").textContent = "~3.2M";
+        $("notifAppName").textContent = "onlayn mahalla · Respublika";
+        $("revScope").textContent = "Umumrespublika";
+        $("revAudienceCount").textContent = "~3,200,000 aholi";
+      } else if (lvl === 2) {
+        // Viloyat: 1 column Viloyat only
+        geoBox.style.display = "grid";
+        geoBox.style.gridTemplateColumns = "1fr";
+        regionEl.style.display = "flex";
+        distEl.style.display = "none";
+        mahEl.style.display = "none";
+
+        const dCount = state.region ? districtsOf(state.region).length : 0;
+        $("scopeSummaryText").textContent = `${regName || "Viloyat"} hududi (${dCount} ta tuman/shahar)`;
+        $("scopeAudienceBadge").textContent = "~350K aholi";
+        $("crumbScopeLabel").textContent = regName || "Viloyat";
+        $("simTargetName").textContent = regName || "Viloyat";
+        $("simAudienceCount").textContent = "~350K";
+        $("notifAppName").textContent = `onlayn mahalla · ${regName || "Viloyat"}`;
+        $("revScope").textContent = `${regName || "Viloyat"}`;
+        $("revAudienceCount").textContent = `~350,000 aholi (${dCount} ta tuman)`;
+      } else if (lvl === 3) {
+        // Tuman: 2 columns Viloyat + Tuman
+        geoBox.style.display = "grid";
+        geoBox.style.gridTemplateColumns = "1fr 1fr";
+        regionEl.style.display = "flex";
+        distEl.style.display = "flex";
+        mahEl.style.display = "none";
+
+        const dCount = state.region ? districtsOf(state.region).length : 0;
+        $("scopeSummaryText").textContent = `${distName || "Tuman"} hududi (14 ta mahalla)`;
+        $("scopeAudienceBadge").textContent = "~28K aholi";
+        $("crumbScopeLabel").textContent = distName || "Tuman";
+        $("simTargetName").textContent = `${distName || "Tuman"}, ${regName}`;
+        $("simAudienceCount").textContent = "~28K";
+        $("notifAppName").textContent = `onlayn mahalla · ${distName || "Tuman"}`;
+        $("revScope").textContent = `${distName || "Tuman"}, ${regName}`;
+        $("revAudienceCount").textContent = `~28,000 aholi (14 ta mahalla)`;
+      } else {
+        // Mahalla: 3 columns Viloyat + Tuman + Mahalla
+        geoBox.style.display = "grid";
+        geoBox.style.gridTemplateColumns = "1fr 1fr 1fr";
+        regionEl.style.display = "flex";
+        distEl.style.display = "flex";
+        mahEl.style.display = "flex";
+
+        $("scopeSummaryText").textContent = `${mahName || "Mahalla"} (${distName}, ${regName})`;
+        $("scopeAudienceBadge").textContent = "~2.4K aholi";
+        $("crumbScopeLabel").textContent = mahName || "Mahalla";
+        $("simTargetName").textContent = `${mahName || "Mahalla"}, ${distName}`;
+        $("simAudienceCount").textContent = "~2,400";
+        $("notifAppName").textContent = `onlayn mahalla · ${mahName || "Mahalla"}`;
+        $("revScope").textContent = `${mahName || "Mahalla"}, ${distName}`;
+        $("revAudienceCount").textContent = `~2,400 nafar aholi (1-sektor)`;
+      }
+
+      // Severity
+      document.querySelectorAll(".sev-card-btn").forEach((b) => {
+        const on = b.dataset.sev === state.severity;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-checked", String(on));
+      });
+      $("revSeverity").textContent = SEV_NAME[state.severity];
+      $("revSeverity").style.color = state.severity === "critical" ? "var(--crit-text)" : state.severity === "info" ? "var(--info-text)" : "var(--warn-text)";
+
+      // Schedule mode
+      document.querySelectorAll(".sev-btn[data-send]").forEach((b) => {
+        const on = b.dataset.send === state.send.mode;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-checked", String(on));
+      });
+      $("scheduledBox").hidden = state.send.mode !== "scheduled";
+      $("recurringBox").hidden = state.send.mode !== "recurring";
+      $("weekdaysField").hidden = !(state.send.mode === "recurring" && state.send.freq === "weekly");
+      $("monthDayField").hidden = !(state.send.mode === "recurring" && state.send.freq === "monthly");
+
+      document.querySelectorAll("#weekdays .day-chip").forEach((d) => {
+        d.classList.toggle("active", state.send.weekdays.includes(Number(d.dataset.wd)));
+      });
+
+      // Review labels
+      $("revSchedule").textContent = state.send.mode === "now" ? "Hoziroq (Darhol)" : state.send.mode === "scheduled" ? `Rejali: ${state.send.at || "Sana kiritilmagan"}` : "Takroriy jadval";
+      const soundOn = $("soundToggle").checked;
+      const prioOn = $("priorityToggle").checked;
+      $("revSoundPriority").textContent = `${soundOn ? "Ovozli" : "Ovozsiz"} · ${prioOn ? "Favqulodda" : "Oddiy"}`;
+
+      // Text counters & Progress bars
+      for (const lang of ["uz", "ru"]) {
+        const tLen = state.texts[lang].title.length;
+        const bLen = state.texts[lang].body.length;
+        $(`tcount-${lang}`).textContent = `${tLen} / ${TITLE_MAX}`;
+        $(`count-${lang}`).textContent = `${bLen} / ${BODY_MAX}`;
+        updateProgressBar($(`bar-title-${lang}`), tLen, TITLE_MAX);
+        updateProgressBar($(`bar-body-${lang}`), bLen, BODY_MAX);
+      }
+
+      const missingLangs = ["uz", "ru"].filter((l) => !langComplete(l));
+      $("langState").textContent =
+        missingLangs.length === 0 ? "Ikkala til tayyor"
+        : missingLangs.length === 2 ? "Ikkala til kerak"
+        : `${LANG_NAME[missingLangs[0]]} qoldi`;
+
+      // Simulator Preview Text
+      const pl = state.previewLang;
+      const t = state.texts[pl];
+      const pvTitle = t.title.trim();
+      const pvBody = t.body.trim();
+
+      document.querySelectorAll(".lang-toggle-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.prev === pl);
+      });
+
+      $("pvTitleBan").textContent = pvTitle;
+      $("pvBodyBan").textContent = pvBody;
+
+      // Verdict
+      let vKind = "idle";
+      let vText = "Bannerga 1 qator sarlavha va 2 qator matn sig‘adi";
+      if (pvTitle || pvBody) {
+        if (pvTitle.length > 60 || pvBody.length > 180) {
+          vKind = "crit";
+          vText = "Matn uzun — bildirishnomada to‘liq sig‘masligi mumkin";
+        } else if (pvTitle.length > 35 || pvBody.length > 90) {
+          vKind = "warn";
+          vText = "Matn biroz uzun — qisqartirilgan holda ko‘rinadi";
+        } else {
+          vKind = "ok";
+          vText = "Push bildirishnomada to‘liq va chiroyli sig‘adi";
+        }
+      }
+      $("prevVerdict").dataset.v = vKind;
+      $("prevVerdictText").textContent = vText;
+
+      // Inline errors
+      if (state.touched) {
+        const keys = new Set(stepProblems(state.currentStep));
+        for (const k of ["title-uz", "body-uz", "title-ru", "body-ru", "region", "district", "mahalla", "sendAt", "weekdays"]) {
+          const errEl = $(`err-${k}`);
+          const inpEl = $(k) || $(`f-${k}`);
+          if (errEl) errEl.classList.toggle("active", keys.has(k));
+          if (inpEl && inpEl.classList) inpEl.classList.toggle("error", keys.has(k));
+        }
+      }
+    }
+
+    function saveDraft() {
+      try {
+        const { touched, previewLang, ...keep } = state;
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(keep));
+      } catch (e) {}
+    }
+
+    function loadDraft() {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return false;
+        const d = JSON.parse(raw);
+        Object.assign(state, d);
+        return true;
+      } catch (e) { return false; }
+    }
+
+    // Init data
+    loadDraft();
+
+    fillSelect($("region"), REGIONS.map((r) => ({ id: r[0], name: r[1] })), state.region, "Viloyatni tanlang");
+    fillSelect($("district"), districtsOf(state.region), state.district, "Tumanni tanlang");
+    fillSelect($("mahalla"), mahallasOf(state.district), state.mahalla, "Mahallani tanlang");
+    state.region = $("region").value;
+    state.district = $("district").value;
+    state.mahalla = $("mahalla").value;
+
+    const monthDaySelect = $("monthDay");
+    for (let i = 1; i <= 31; i++) {
+      const o = document.createElement("option");
+      o.value = String(i);
+      o.textContent = `${i}-kun`;
+      monthDaySelect.appendChild(o);
+    }
+    const lastOpt = document.createElement("option");
+    lastOpt.value = "last";
+    lastOpt.textContent = "Oyning oxirgi kuni";
+    monthDaySelect.appendChild(lastOpt);
+    monthDaySelect.value = state.send.monthDay || "1";
+
+    $("sendTime").value = state.send.time || "09:00";
+    $("freq").value = state.send.freq || "daily";
+
+    for (const lang of ["uz", "ru"]) {
+      $(`title-${lang}`).value = state.texts[lang].title;
+      $(`body-${lang}`).value = state.texts[lang].body;
+    }
+
+    // Stepper Tab Clicks
+    document.querySelectorAll(".step-tab-btn").forEach((b) => {
+      b.addEventListener("click", () => setStep(Number(b.dataset.step)));
+    });
+
+    $("btnNextStep").addEventListener("click", () => setStep(state.currentStep + 1));
+    $("btnPrevStep").addEventListener("click", () => setStep(state.currentStep - 1));
+
+    // Template Pill Clicks
+    document.querySelectorAll(".template-pill").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.tpl;
+        const tpl = TEMPLATES[key];
+        if (!tpl) return;
+        state.texts.uz.title = tpl.uz.title;
+        state.texts.uz.body = tpl.uz.body;
+        state.texts.ru.title = tpl.ru.title;
+        state.texts.ru.body = tpl.ru.body;
+
+        $("title-uz").value = tpl.uz.title;
+        $("body-uz").value = tpl.uz.body;
+        $("title-ru").value = tpl.ru.title;
+        $("body-ru").value = tpl.ru.body;
+
+        saveDraft();
+        render();
+        toast("Shablon muvaffaqiyatli kiritildi!");
+      });
+    });
+
+    // Progressive Disclosure Toggle
+    $("advStep3Btn").addEventListener("click", () => {
+      const b = $("advStep3Box");
+      const btn = $("advStep3Btn");
+      b.classList.toggle("open");
+      btn.classList.toggle("open");
+    });
+
+    // Form Field Listeners
+    document.querySelectorAll("[data-field]").forEach((el) => {
+      el.addEventListener("input", () => {
+        state.texts[el.dataset.lang][el.dataset.field] = el.value;
+        saveDraft();
+        render();
+      });
+      el.addEventListener("focus", () => {
+        state.previewLang = el.dataset.lang;
+        render();
+      });
+    });
+
+    // Scope Card Click Listeners
+    document.querySelectorAll(".scope-card-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.level = Number(b.dataset.level);
+        saveDraft();
+        render();
+      });
+    });
+
+    document.querySelectorAll(".sev-card-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.severity = b.dataset.sev;
+        saveDraft();
+        render();
+      });
+    });
+
+    document.querySelectorAll(".sev-btn[data-send]").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.send.mode = b.dataset.send;
+        saveDraft();
+        render();
+      });
+    });
+
+    document.querySelectorAll(".lang-toggle-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.previewLang = b.dataset.prev;
+        render();
+      });
+    });
+
+    $("region").addEventListener("change", (e) => {
+      state.region = e.target.value;
+      state.district = "";
+      state.mahalla = "";
+      fillSelect($("district"), districtsOf(state.region), "", "Tumanni tanlang");
+      fillSelect($("mahalla"), [], "", "Avval tumanni tanlang");
+      saveDraft();
+      render();
+    });
+
+    $("district").addEventListener("change", (e) => {
+      state.district = e.target.value;
+      state.mahalla = "";
+      fillSelect($("mahalla"), mahallasOf(state.district), "", "Mahallani tanlang");
+      saveDraft();
+      render();
+    });
+
+    $("mahalla").addEventListener("change", (e) => { state.mahalla = e.target.value; saveDraft(); render(); });
+    $("sendAt").addEventListener("input", (e) => { state.send.at = e.target.value; saveDraft(); render(); });
+    $("sendTime").addEventListener("input", (e) => { state.send.time = e.target.value; saveDraft(); render(); });
+    $("freq").addEventListener("change", (e) => { state.send.freq = e.target.value; saveDraft(); render(); });
+    $("monthDay").addEventListener("change", (e) => { state.send.monthDay = e.target.value; saveDraft(); render(); });
+
+    document.querySelectorAll("#weekdays .day-chip").forEach((d) => {
+      d.addEventListener("click", () => {
+        const wd = Number(d.dataset.wd);
+        const idx = state.send.weekdays.indexOf(wd);
+        if (idx >= 0) state.send.weekdays.splice(idx, 1);
+        else state.send.weekdays.push(wd);
+        saveDraft();
+        render();
+      });
+    });
+
+    // Theme Switcher
+    $("themeBtn").addEventListener("click", () => {
+      const html = document.documentElement;
+      const next = html.dataset.theme === "dark" ? "light" : "dark";
+      html.dataset.theme = next;
+      $("themeIcon").setAttribute("href", next === "dark" ? "#i-moon" : "#i-sun");
+      try { localStorage.setItem("announce.theme", next); } catch (e) {}
+    });
+
+    try {
+      const savedTheme = localStorage.getItem("announce.theme");
+      if (savedTheme) {
+        document.documentElement.dataset.theme = savedTheme;
+        $("themeIcon").setAttribute("href", savedTheme === "dark" ? "#i-moon" : "#i-sun");
+      }
+    } catch (e) {}
+
+    // Keyboard Shortcuts (Cmd/Ctrl + Enter)
+    document.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        if (state.currentStep < 4) {
+          setStep(state.currentStep + 1);
+        } else {
+          $("submitBtn").click();
+        }
+      }
+      if (e.key === "Escape") {
+        $("testModal").classList.remove("show");
+        $("doneModal").classList.remove("show");
+      }
+    });
+
+    // Test Modal
+    $("testBtn").addEventListener("click", () => {
+      const bad = allProblems().filter((p) => p.startsWith("title") || p.startsWith("body"));
+      if (bad.length) {
+        state.touched = true;
+        setStep(2);
+        toast("Avval sarlavha va matnni to‘ldiring");
+        return;
+      }
+      $("testModal").classList.add("show");
+      $("testPhone").focus();
+    });
+    $("testClose").addEventListener("click", () => $("testModal").classList.remove("show"));
+    $("testCancel").addEventListener("click", () => $("testModal").classList.remove("show"));
+
+    $("testSend").addEventListener("click", () => {
+      const phone = $("testPhone").value.trim();
+      if (!phone || phone.length < 9) {
+        $("testErrText").textContent = "Telefon raqamni to‘liq kiriting";
+        $("testErr").classList.add("active");
+        return;
+      }
+      $("testErr").classList.remove("active");
+      $("testSendLabel").textContent = "Yuborilmoqda...";
+      setTimeout(() => {
+        $("testSendLabel").textContent = "Yuborish";
+        $("testModal").classList.remove("show");
+        toast(`Test bildirishnomasi ${phone} raqamiga yuborildi`);
+      }, 700);
+    });
+
+    // Submit
+    $("submitBtn").addEventListener("click", () => {
+      state.touched = true;
+      const bad = allProblems();
+      if (bad.length) {
+        toast(`${bad.length} ta maydon to‘ldirilmagan`);
+        if (stepProblems(1).length) setStep(1);
+        else if (stepProblems(2).length) setStep(2);
+        else if (stepProblems(3).length) setStep(3);
+        return;
+      }
+
+      $("donePills").innerHTML = [
+        SEV_NAME[state.severity],
+        audienceLine(),
+        state.send.mode === "now" ? "Darhol" : "Jadval bo‘yicha",
+        "O‘zbekcha + Ruscha"
+      ].map((p) => `<span class="nav-badge" style="font-size:12px; padding:4px 10px; background:var(--bg-sunk); border:1px solid var(--border-base); border-radius:9999px; margin:2px">${p}</span>`).join("");
+
+      $("doneModal").classList.add("show");
+    });
+
+    $("againBtn").addEventListener("click", () => {
+      $("doneModal").classList.remove("show");
+      state.touched = false;
+      setStep(1);
+    });
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+.DS_Store
+.claude/
+.claude-state/
+.playwright-mcp/
+.screenshots/
+.vercel/
+*.png
+.env*
+node_modules/
