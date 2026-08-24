@@ -1000,6 +1000,86 @@
       font-weight: 800;
     }
 
+    /* Month Day Visual Matrix */
+    .month-presets-grid {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .month-preset-chip {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-control);
+      border-radius: var(--radius-pill);
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-body);
+      cursor: pointer;
+      transition: all 140ms var(--ease);
+    }
+    .month-preset-chip:hover {
+      border-color: var(--border-focus);
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+    .month-preset-chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .month-days-matrix {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      background: var(--bg-sunk);
+      border: 1px solid var(--border-base);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-top: 4px;
+    }
+    @media (max-width: 540px) {
+      .month-days-matrix {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+    .month-day-cell {
+      height: 34px;
+      border: 1px solid var(--border-control);
+      background: var(--bg-surface);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-title);
+      font-size: 12px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 140ms var(--ease);
+    }
+    .month-day-cell:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-soft);
+      transform: translateY(-1px);
+    }
+    .month-day-cell.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      font-weight: 800;
+      box-shadow: var(--shadow-xs);
+    }
+    .month-day-cell.last-day-cell {
+      grid-column: span 2;
+      font-size: 11.5px;
+      font-family: var(--font-sans);
+    }
+
     /* Error Alerts */
     .field-error {
       font-size: 12px;
@@ -2279,11 +2359,21 @@
                   </div>
 
                   <div id="monthDayField" hidden>
-                    <label class="form-label" for="monthDay">Oyning kuni</label>
-                    <div class="devin-select-wrap">
-                      <select class="devin-select" id="monthDay"></select>
-                      <svg><use href="#i-chevrons-up-down"/></svg>
+                    <label class="form-label" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+                      <span>Oyning takrorlanish kuni</span>
+                      <span id="selectedMonthDayBadge" style="font-size:11.5px; font-weight:700; color:var(--primary); background:var(--primary-soft); padding:2px 8px; border-radius:var(--radius-pill)">1-sana</span>
+                    </label>
+
+                    <!-- Smart Presets -->
+                    <div class="month-presets-grid" id="monthPresets">
+                      <button type="button" class="month-preset-chip" data-mday="1">🗓 1-sana (Boshida)</button>
+                      <button type="button" class="month-preset-chip" data-mday="15">🗓 15-sana (O‘rtasida)</button>
+                      <button type="button" class="month-preset-chip" data-mday="25">🗓 25-sana (Hisobot)</button>
+                      <button type="button" class="month-preset-chip" data-mday="last">🗓 Oxirgi kuni</button>
                     </div>
+
+                    <!-- 1..31 Days Matrix -->
+                    <div class="month-days-matrix" id="monthDaysMatrix"></div>
                   </div>
                 </div>
               </div>
@@ -2930,8 +3020,28 @@
         d.classList.toggle("active", state.send.weekdays.includes(Number(d.dataset.wd)));
       });
 
+      // Month day active states & badge
+      const curMDay = state.send.monthDay || "1";
+      document.querySelectorAll("#monthPresets .month-preset-chip").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.mday === curMDay);
+      });
+      document.querySelectorAll("#monthDaysMatrix .month-day-cell").forEach((cell) => {
+        cell.classList.toggle("active", cell.dataset.mday === curMDay);
+      });
+      if ($("selectedMonthDayBadge")) {
+        $("selectedMonthDayBadge").textContent = curMDay === "last" ? "Oyning oxirgi kuni" : `${curMDay}-sana`;
+      }
+
       // Review labels
-      $("revSchedule").textContent = state.send.mode === "now" ? "Hoziroq (Darhol)" : state.send.mode === "scheduled" ? `Rejali: ${state.send.at || "Sana kiritilmagan"}` : "Takroriy jadval";
+      let scheduleText = "Hoziroq (Darhol)";
+      if (state.send.mode === "scheduled") {
+        scheduleText = `Rejali: ${state.send.at || "Sana kiritilmagan"}`;
+      } else if (state.send.mode === "recurring") {
+        if (state.send.freq === "daily") scheduleText = `Har kuni ${state.send.time}`;
+        else if (state.send.freq === "weekly") scheduleText = `Haftalik (${state.send.weekdays.length} kun) ${state.send.time}`;
+        else if (state.send.freq === "monthly") scheduleText = `Har oyning ${curMDay === "last" ? "oxirgi kuni" : curMDay + "-kuni"} ${state.send.time}`;
+      }
+      $("revSchedule").textContent = scheduleText;
       const soundOn = $("soundToggle").checked;
       const prioOn = $("priorityToggle").checked;
       $("revSoundPriority").textContent = `${soundOn ? "Ovozli" : "Ovozsiz"} · ${prioOn ? "Favqulodda" : "Oddiy"}`;
@@ -3022,18 +3132,44 @@
     state.district = $("district").value;
     state.mahalla = $("mahalla").value;
 
-    const monthDaySelect = $("monthDay");
-    for (let i = 1; i <= 31; i++) {
-      const o = document.createElement("option");
-      o.value = String(i);
-      o.textContent = `${i}-kun`;
-      monthDaySelect.appendChild(o);
+    const matrix = $("monthDaysMatrix");
+    if (matrix) {
+      matrix.innerHTML = "";
+      for (let i = 1; i <= 31; i++) {
+        const cell = document.createElement("button");
+        cell.type = "button";
+        cell.className = "month-day-cell";
+        cell.dataset.mday = String(i);
+        cell.textContent = String(i);
+        cell.title = `Har oyning ${i}-kuni`;
+        cell.addEventListener("click", () => {
+          state.send.monthDay = String(i);
+          saveDraft();
+          render();
+        });
+        matrix.appendChild(cell);
+      }
+      const lastCell = document.createElement("button");
+      lastCell.type = "button";
+      lastCell.className = "month-day-cell last-day-cell";
+      lastCell.dataset.mday = "last";
+      lastCell.textContent = "Oy oxiri";
+      lastCell.title = "Har oyning oxirgi kuni";
+      lastCell.addEventListener("click", () => {
+        state.send.monthDay = "last";
+        saveDraft();
+        render();
+      });
+      matrix.appendChild(lastCell);
     }
-    const lastOpt = document.createElement("option");
-    lastOpt.value = "last";
-    lastOpt.textContent = "Oyning oxirgi kuni";
-    monthDaySelect.appendChild(lastOpt);
-    monthDaySelect.value = state.send.monthDay || "1";
+
+    document.querySelectorAll("#monthPresets .month-preset-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.send.monthDay = btn.dataset.mday;
+        saveDraft();
+        render();
+      });
+    });
 
     $("sendTime").value = state.send.time || "09:00";
     $("freq").value = state.send.freq || "daily";
@@ -3233,7 +3369,6 @@
     $("sendAt").addEventListener("input", (e) => { state.send.at = e.target.value; saveDraft(); render(); });
     $("sendTime").addEventListener("input", (e) => { state.send.time = e.target.value; saveDraft(); render(); });
     $("freq").addEventListener("change", (e) => { state.send.freq = e.target.value; saveDraft(); render(); });
-    $("monthDay").addEventListener("change", (e) => { state.send.monthDay = e.target.value; saveDraft(); render(); });
 
     document.querySelectorAll("#weekdays .day-chip").forEach((d) => {
       d.addEventListener("click", () => {
