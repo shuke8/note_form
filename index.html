@@ -881,6 +881,119 @@
       transition: all 180ms var(--ease);
     }
 
+    /* ==========================================================================
+       WYSIWYG RICH TEXT EDITOR FOR NOTIFICATION BODY
+       ========================================================================== */
+    .wysiwyg-wrapper {
+      border: 1.5px solid var(--border-control);
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      transition: all 160ms var(--ease);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .wysiwyg-wrapper:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+      background: var(--bg-surface);
+    }
+    .wysiwyg-wrapper.error {
+      border-color: var(--crit-icon) !important;
+      box-shadow: 0 0 0 3px var(--crit-bg) !important;
+    }
+    .wysiwyg-wrapper.translating-glow {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 3px var(--primary-soft) !important;
+      background: var(--bg-surface) !important;
+    }
+
+    .wysiwyg-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 5px 8px;
+      background: var(--bg-hover);
+      border-bottom: 1px solid var(--border-base);
+      user-select: none;
+      flex-wrap: wrap;
+    }
+    .wysiwyg-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-body);
+      cursor: pointer;
+      font-size: 12px;
+      font-family: inherit;
+      transition: all 120ms var(--ease);
+    }
+    .wysiwyg-btn:hover {
+      background: var(--bg-surface);
+      border-color: var(--border-control);
+      color: var(--text-main);
+    }
+    .wysiwyg-btn.active {
+      background: var(--primary-soft);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+    .wysiwyg-sep {
+      width: 1px;
+      height: 16px;
+      background: var(--border-control);
+      margin: 0 3px;
+    }
+
+    .wysiwyg-editor {
+      min-height: 110px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding: 10px 12px;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--text-main);
+      outline: none;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    .wysiwyg-editor:empty::before {
+      content: attr(data-placeholder);
+      color: var(--text-dim);
+      font-style: normal;
+      pointer-events: none;
+    }
+    .wysiwyg-editor b, .wysiwyg-editor strong {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .wysiwyg-editor i, .wysiwyg-editor em {
+      font-style: italic;
+    }
+    .wysiwyg-editor u {
+      text-decoration: underline;
+    }
+    .wysiwyg-editor ul, .wysiwyg-editor ol {
+      padding-left: 20px;
+      margin: 4px 0;
+    }
+    .wysiwyg-editor li {
+      margin-bottom: 2px;
+    }
+    .wysiwyg-editor mark {
+      background: #fef08a;
+      color: #854d0e;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
     /* Severity Cards */
     .severity-cards-grid {
       display: grid;
@@ -2280,8 +2393,29 @@
                     <div class="field-error" id="err-title-uz"><svg><use href="#i-warn"/></svg> O‘zbekcha sarlavhani yozing</div>
                   </div>
                   <div>
-                    <label class="form-label" for="body-uz" style="margin-bottom:4px">Xabarnoma matni</label>
-                    <textarea class="devin-textarea" id="body-uz" data-field="body" data-lang="uz" maxlength="600" placeholder="Xabarnoma matnini yozing..."></textarea>
+                    <label class="form-label" for="body-uz" style="margin-bottom:4px">Xabarnoma matni (WYSIWYG)</label>
+                    <div class="wysiwyg-wrapper" id="wysiwyg-wrap-uz">
+                      <div class="wysiwyg-toolbar" data-target="body-uz">
+                        <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Qalin (Ctrl+B)"><b>B</b></button>
+                        <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Kursiv (Ctrl+I)"><i>I</i></button>
+                        <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Tagiga chizish (Ctrl+U)"><u>U</u></button>
+                        <span class="wysiwyg-sep"></span>
+                        <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Belgili ro‘yxat">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                        </button>
+                        <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Raqamli ro‘yxat">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+                        </button>
+                        <span class="wysiwyg-sep"></span>
+                        <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#fef08a" title="Ajratib ko‘rsatish">
+                          <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:10px">HL</span>
+                        </button>
+                        <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Formatni tozalash">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                        </button>
+                      </div>
+                      <div class="wysiwyg-editor" id="body-uz" contenteditable="true" data-field="body" data-lang="uz" data-placeholder="Xabarnoma matnini yozing..." role="textbox" aria-multiline="true"></div>
+                    </div>
                     <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-uz"></div></div>
                     <div style="display:flex; justify-content:space-between; margin-top:4px">
                       <div class="field-error" id="err-body-uz"><svg><use href="#i-warn"/></svg> O‘zbekcha matnni yozing</div>
@@ -2309,8 +2443,29 @@
                     <div class="field-error" id="err-title-ru"><svg><use href="#i-warn"/></svg> Ruscha sarlavhani yozing</div>
                   </div>
                   <div>
-                    <label class="form-label" for="body-ru" style="margin-bottom:4px">Текст уведомления</label>
-                    <textarea class="devin-textarea" id="body-ru" data-field="body" data-lang="ru" maxlength="600" placeholder="Текст уведомления..."></textarea>
+                    <label class="form-label" for="body-ru" style="margin-bottom:4px">Текст уведомления (WYSIWYG)</label>
+                    <div class="wysiwyg-wrapper" id="wysiwyg-wrap-ru">
+                      <div class="wysiwyg-toolbar" data-target="body-ru">
+                        <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Жирный (Ctrl+B)"><b>B</b></button>
+                        <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Курсив (Ctrl+I)"><i>I</i></button>
+                        <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Подчеркнутый (Ctrl+U)"><u>U</u></button>
+                        <span class="wysiwyg-sep"></span>
+                        <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Маркированный список">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                        </button>
+                        <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Нумерованный список">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+                        </button>
+                        <span class="wysiwyg-sep"></span>
+                        <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#fef08a" title="Выделить">
+                          <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:10px">HL</span>
+                        </button>
+                        <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Очистить форматирование">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                        </button>
+                      </div>
+                      <div class="wysiwyg-editor" id="body-ru" contenteditable="true" data-field="body" data-lang="ru" data-placeholder="Текст уведомления..." role="textbox" aria-multiline="true"></div>
+                    </div>
                     <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-ru"></div></div>
                     <div style="display:flex; justify-content:space-between; margin-top:4px">
                       <div class="field-error" id="err-body-ru"><svg><use href="#i-warn"/></svg> Ruscha matnni yozing</div>
@@ -3154,19 +3309,22 @@
 
       // Text counters & Progress bars
       for (const lang of ["uz", "ru"]) {
-        const tLen = state.texts[lang].title.length;
-        const bLen = state.texts[lang].body.length;
+        const tLen = (state.texts[lang].title || "").length;
+        const cleanBodyText = (state.texts[lang].body || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+        const bLen = cleanBodyText.length;
         $(`tcount-${lang}`).textContent = `${tLen} / ${TITLE_MAX}`;
         $(`count-${lang}`).textContent = `${bLen} / ${BODY_MAX}`;
         updateProgressBar($(`bar-title-${lang}`), tLen, TITLE_MAX);
         updateProgressBar($(`bar-body-${lang}`), bLen, BODY_MAX);
 
         // Sync inputs if not currently focused
-        for (const field of ["title", "body"]) {
-          const el = $(`${field}-${lang}`);
-          if (el && document.activeElement !== el && el.value !== state.texts[lang][field]) {
-            el.value = state.texts[lang][field] || "";
-          }
+        const titleEl = $(`title-${lang}`);
+        if (titleEl && document.activeElement !== titleEl && titleEl.value !== state.texts[lang].title) {
+          titleEl.value = state.texts[lang].title || "";
+        }
+        const bodyEl = $(`body-${lang}`);
+        if (bodyEl && document.activeElement !== bodyEl && bodyEl.innerHTML.trim() !== (state.texts[lang].body || "").trim()) {
+          bodyEl.innerHTML = state.texts[lang].body || "";
         }
       }
 
@@ -3179,24 +3337,24 @@
       // Simulator Preview Text
       const pl = state.previewLang;
       const t = state.texts[pl];
-      const pvTitle = t.title.trim();
-      const pvBody = t.body.trim();
+      const pvTitle = (t.title || "").trim();
+      const pvBodyClean = (t.body || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 
       document.querySelectorAll(".lang-toggle-btn").forEach((b) => {
         b.classList.toggle("active", b.dataset.prev === pl);
       });
 
       $("pvTitleBan").textContent = pvTitle;
-      $("pvBodyBan").textContent = pvBody;
+      $("pvBodyBan").textContent = pvBodyClean;
 
       // Verdict
       let vKind = "idle";
       let vText = "Bannerga 1 qator sarlavha va 2 qator matn sig‘adi";
-      if (pvTitle || pvBody) {
-        if (pvTitle.length > 60 || pvBody.length > 180) {
+      if (pvTitle || pvBodyClean) {
+        if (pvTitle.length > 60 || pvBodyClean.length > 180) {
           vKind = "crit";
           vText = "Matn uzun — bildirishnomada to‘liq sig‘masligi mumkin";
-        } else if (pvTitle.length > 35 || pvBody.length > 90) {
+        } else if (pvTitle.length > 35 || pvBodyClean.length > 90) {
           vKind = "warn";
           vText = "Matn biroz uzun — qisqartirilgan holda ko‘rinadi";
         } else {
@@ -3215,6 +3373,10 @@
           const inpEl = $(k) || $(`f-${k}`);
           if (errEl) errEl.classList.toggle("active", keys.has(k));
           if (inpEl && inpEl.classList) inpEl.classList.toggle("error", keys.has(k));
+          if (k.startsWith("body-")) {
+            const wrapEl = $(`wysiwyg-wrap-${k.replace("body-", "")}`);
+            if (wrapEl) wrapEl.classList.toggle("error", keys.has(k));
+          }
         }
       }
     }
@@ -3316,7 +3478,7 @@
 
     for (const lang of ["uz", "ru"]) {
       $(`title-${lang}`).value = state.texts[lang].title;
-      $(`body-${lang}`).value = state.texts[lang].body;
+      $(`body-${lang}`).innerHTML = state.texts[lang].body || "";
     }
 
     // Stepper Tab Clicks
@@ -3339,9 +3501,9 @@
         state.texts.ru.body = tpl.ru.body;
 
         $("title-uz").value = tpl.uz.title;
-        $("body-uz").value = tpl.uz.body;
+        $("body-uz").innerHTML = tpl.uz.body;
         $("title-ru").value = tpl.ru.title;
-        $("body-ru").value = tpl.ru.body;
+        $("body-ru").innerHTML = tpl.ru.body;
 
         saveDraft();
         render();
@@ -3349,23 +3511,67 @@
       });
     });
 
-    // Quick Formatting Tags Insertion
+    // WYSIWYG Toolbar Commands
+    document.querySelectorAll(".wysiwyg-toolbar .wysiwyg-btn").forEach((btn) => {
+      btn.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        const toolbar = btn.closest(".wysiwyg-toolbar");
+        const targetId = toolbar.dataset.target;
+        const editor = $(targetId);
+        if (!editor) return;
+
+        editor.focus();
+        const cmd = btn.dataset.cmd;
+        const val = btn.dataset.val || null;
+
+        if (cmd === "hiliteColor") {
+          document.execCommand("hiliteColor", false, val || "#fef08a");
+        } else {
+          document.execCommand(cmd, false, val);
+        }
+
+        const lang = editor.dataset.lang;
+        state.texts[lang].body = editor.innerHTML || "";
+        saveDraft();
+        render();
+        queueFieldTranslation("body", lang);
+      });
+    });
+
+    // Quick Formatting Tags Insertion into WYSIWYG Editor
     document.querySelectorAll(".format-tag-pill").forEach((btn) => {
       btn.addEventListener("click", () => {
         const text = btn.dataset.insert;
         const pl = state.previewLang || "uz";
-        const targetInput = $(`body-${pl}`);
-        if (targetInput) {
-          const start = targetInput.selectionStart || targetInput.value.length;
-          const end = targetInput.selectionEnd || targetInput.value.length;
-          const val = targetInput.value;
-          targetInput.value = val.substring(0, start) + text + " " + val.substring(end);
-          state.texts[pl].body = targetInput.value;
-          targetInput.focus();
-          targetInput.selectionStart = targetInput.selectionEnd = start + text.length + 1;
+        const editor = $(`body-${pl}`);
+        if (editor) {
+          editor.focus();
+          document.execCommand("insertHTML", false, `<b>${text}</b> `);
+          state.texts[pl].body = editor.innerHTML || "";
           saveDraft();
           render();
+          queueFieldTranslation("body", pl);
         }
+      });
+    });
+
+    // WYSIWYG Contenteditable Listeners
+    document.querySelectorAll(".wysiwyg-editor").forEach((el) => {
+      el.addEventListener("input", () => {
+        const lang = el.dataset.lang;
+        state.texts[lang].body = el.innerHTML || "";
+        saveDraft();
+        render();
+        queueFieldTranslation("body", lang);
+      });
+      el.addEventListener("focus", () => {
+        state.previewLang = el.dataset.lang;
+        render();
+      });
+      el.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData("text/plain");
+        document.execCommand("insertText", false, text);
       });
     });
 
@@ -3415,7 +3621,7 @@
       const pl = state.previewLang;
       const t = state.texts[pl];
       $("readerTitle").textContent = t.title.trim() || "Sarlavha kiritilmagan";
-      $("readerBody").textContent = t.body.trim() || "Xabarnoma matni kiritilmagan...";
+      $("readerBody").innerHTML = t.body.trim() || "Xabarnoma matni kiritilmagan...";
       $("readerAudience").textContent = audienceLine();
       $("readerTime").textContent = "Hozir";
       $("tabletReaderSheet").classList.add("open");
@@ -3446,8 +3652,10 @@
     // REAL-TIME BI-DIRECTIONAL AUTO-TRANSLATION (UZ <-> RU)
     // =========================================================================
     const transDebounceTimers = {
-      title: null,
-      body: null
+      "title-uz": null,
+      "title-ru": null,
+      "body-uz": null,
+      "body-ru": null
     };
 
     async function fetchTranslation(text, fromLang, toLang) {
@@ -3471,11 +3679,18 @@
       const targetLang = sourceLang === "uz" ? "ru" : "uz";
       const sourceEl = $(`${field}-${sourceLang}`);
       const targetEl = $(`${field}-${targetLang}`);
+      const targetWrap = $(`wysiwyg-wrap-${targetLang}`);
       const statusBadge = $("autoTransStatus");
       const statusText = $("autoTransStatusText");
 
       if (!sourceEl || !targetEl) return;
-      const sourceText = sourceEl.value.trim();
+      
+      let sourceText = "";
+      if (sourceEl.tagName === "INPUT") {
+        sourceText = (sourceEl.value || "").trim();
+      } else {
+        sourceText = (sourceEl.innerText || sourceEl.textContent || "").trim();
+      }
 
       if (!sourceText) {
         return;
@@ -3485,12 +3700,17 @@
         statusBadge.classList.add("busy");
         if (statusText) statusText.textContent = `${sourceLang.toUpperCase()} → ${targetLang.toUpperCase()} tarjima qilinmoqda...`;
       }
-      targetEl.classList.add("translating-glow");
+      if (targetWrap) targetWrap.classList.add("translating-glow");
+      else targetEl.classList.add("translating-glow");
 
       try {
         const translated = await fetchTranslation(sourceText, sourceLang, targetLang);
         if (translated && translated.trim()) {
-          targetEl.value = translated;
+          if (targetEl.tagName === "INPUT") {
+            targetEl.value = translated;
+          } else {
+            targetEl.innerHTML = translated;
+          }
           state.texts[targetLang][field] = translated;
           saveDraft();
           render();
@@ -3499,6 +3719,7 @@
         console.warn("Auto-translate error:", e);
       } finally {
         setTimeout(() => {
+          if (targetWrap) targetWrap.classList.remove("translating-glow");
           targetEl.classList.remove("translating-glow");
           if (statusBadge) {
             statusBadge.classList.remove("busy");
@@ -3537,8 +3758,8 @@
       toast("O‘zbekchaga tarjima qilindi!");
     });
 
-    // Form Field Listeners (With Bi-directional Auto-Translation)
-    document.querySelectorAll("[data-field]").forEach((el) => {
+    // Form Field Listeners (For Title Inputs)
+    document.querySelectorAll("input[data-field]").forEach((el) => {
       el.addEventListener("input", () => {
         const field = el.dataset.field;
         const lang = el.dataset.lang;
@@ -3546,7 +3767,6 @@
         saveDraft();
         render();
 
-        // Trigger debounced auto-translation to the opposite language
         queueFieldTranslation(field, lang);
       });
       el.addEventListener("focus", () => {
