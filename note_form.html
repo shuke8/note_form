@@ -1,0 +1,3086 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Yangi tizim xabarnomasi</title>
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <meta name="theme-color" content="#f6f4ef" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0e0c0a" media="(prefers-color-scheme: dark)" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..600&display=swap" rel="stylesheet" />
+  <!-- Golos Text'da U+02BB (ʻ — o'zbek okinasi) YO'Q, garchi unicode-range uni e'lon qilsa ham.
+       Bu link Inter'ni AYNAN shu ikki belgiga cheklaydi (text= parametri unicode-range'ni
+       U+2bb-2bc ga qisadi), shuning uchun u boshqa hech qanday harfga tegmaydi. 2 KB. -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&text=%CA%BB%CA%BC" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* AKSENT — faqat to'rt vazifa: fokus konturi, tanlangan holat, tanlanadigan
+         element hover'i, asosiy CTA. Boshqa hech qayerda ko'k YO'Q.
+         family.co'ning yorqin ranglari (ko'k/yashil/binafsha/pushti) o'sha saytda
+         faqat ILLYUSTRATSIYA ichida yashaydi — shuning uchun ularning birortasi
+         ham bu yerda interfeys xromiga ko'tarilmadi. */
+      --accent: #0160fe;
+      --accent-press: #014fd4;
+      --accent-text: #0154dd;
+      --accent-on: #ffffff;
+      /* Tanlov foni sof oq ustida emas, ILIQ qog'oz (#fbfaf9) ustida qorishtirilgan:
+         ko'kligicha qoladi, lekin atrofdagi iliq yuzalardan uzilib qolmaydi. */
+      --accent-soft: #ecf1f9;
+      /* --ring O'CHIRILDI: fokus endi yagona global kontur bilan ko'rsatiladi.
+         Ilgari har maydon ikkita halqa chizardi — 2px to'q ko'k kontur va 3px
+         shaffof ko'k soya, 1px ustma-ust — tugma va radio esa faqat bittasini.
+         Bitta ko'rsatkich = har turdagi boshqaruvda bir xil signal. */
+
+      /* NEYTRALLAR — hammasi family.co'dan O'LCHANGAN qiymatlar; sovuq kulrang yo'q.
+         Ikki mustaqil shkala:
+           siyoh:  #282624 (100%) → #474645 (85%) → #848281 (57.5% oq ustida)
+           qog'oz: #ffffff → #fbfaf9 → #f6f4ef → #f2efec
+         --canvas #fbfaf9 EMAS, #f6f4ef: oq karta 4% zamin ustida suzib qolmasin.
+         Oq/canvas = 1.099, oq/sunk = 1.145 — hozirgi sovuq zaminning qatlam
+         ajralishi bilan bir xil. family.co ham zich bo'limlarida shu tasmani ishlatadi.
+         --muted family'ning #848281'ini OLMAYDI: u yerda bu rang faqat ikonka
+         chizig'i (3:1 talab), bizda esa 12-14px matn — oq ustida atigi 3.82:1,
+         ya'ni AA'dan o'tmaydi. Shuning uchun o'sha siyohning quyuqroq bosqichi
+         olindi: 72% → #646361 (oq 6.00 · canvas 5.46 · sunk 5.24). */
+      --ink: #282624;
+      --ink-soft: #474645;
+      --muted: #646361;
+      /* Ikkinchi daraja matn — opacity EMAS, real qiymat: opacity glyphni ota-onaga
+         qorishtiradi va 11px matnni AA'dan chiqaradi (o'lchandi: 0.85 → 4.24:1). */
+      --muted-2: #6f6d6a;
+      /* Placeholder: ilgari color-mix(--ink 36%) edi — 2.14:1, AA'dan uzoq. */
+      --placeholder: #6f6d6a;
+      /* Tanlangan radio nuqtasi: semantik to'ldirish ustida OQ 2.10:1 berardi
+         (warn #f0a33a ustida). Zamin rangi har uchala to'ldirishda 4.94-5.04. */
+      --tick-ink: var(--canvas);
+      --canvas: #f6f4ef;
+      --paper: #ffffff;
+      --field: #ffffff;
+      --sunk: #f2efec;
+      /* Soch chizig'i ATAYIN alfa, family'ning qattiq #f2efec'i emas: bitta token
+         to'rt xil yuzada ishlaydi (paper, canvas, sunk va yarim shaffof panel) va
+         alfa har birida o'zini o'zi to'g'rilaydi — qattiq qiymat --sunk ustida
+         1.00:1 bo'lib butunlay yo'qolardi. Siyoh jigarrang (#4a3412): past alfada
+         faqat jigarrang iz iliq bo'lib chiqadi — 10% → #edebe7, R−B = 6, aynan
+         family'ning #f2efec'idagi iliqlik. Uch yuzada ham og'irligi bir xil:
+         --line 1.19:1, --line-2 1.35:1. */
+      --line: rgba(74, 52, 18, 0.1);
+      --line-2: rgba(74, 52, 18, 0.17);
+      /* KO'TARILISH QONUNI, 1-qism — CHEKKA:
+           konteyner chekkasi = --line (soch chizig'i, bezak)
+           boshqaruv chekkasi = --line-control (holat tashiydi, 3:1 shart)
+         --line-control family'ning ikonka kulrangi AYNAN: oq maydonda 3.82:1,
+         sunk ustida 3.34:1, canvas ustida 3.48:1. */
+      --line-control: #848281;
+
+      /* Semantik ranglar semantik bo'lib qoladi; faqat yumshoq fonlari endi
+         sovuq oq emas, iliq qog'oz ustida qorishtirilgan. */
+      --warn: #a55405;
+      --warn-soft: #fdf5ec;
+      --crit: #c8291d;
+      --crit-soft: #fef1ee;
+      --ok: #1c7449;
+      --ok-soft: #eef4ee;
+
+      /* KO'TARILISH QONUNI, 2-qism — SOYA.
+         family.co'da o'lchangan 38 ta soyali elementning 30 tasida AYNAN bitta
+         usul: ichkariga chizilgan 1px halqa, tushuvchi soya emas.
+           --card-shadow  KONTEYNER halqasi (.card, .stage). Shu sababli o'sha
+                          ikkalasidagi HAQIQIY border o'chiriladi, aks holda
+                          chiziq 1px ichida 1px bo'lib ikkilanadi.
+           --tab-raise    BOSHQARUV chipi halqasi (.tab, .mini-seg). --line-2
+                          EMAS: tanlangan chip holat ko'rsatkichi va 3:1 talab
+                          qiladi — --line-control track ustida 3.34:1, oq chip
+                          ustida 3.82:1 beradi; --line-2 esa atigi 1.35:1 bo'lib
+                          holatni ko'rinmas qoldirardi (avvalgi oq-oq 1.12:1).
+           --btn-raise    yo'q. family'ning CTA'si tekis: yaltiroq qirra ham,
+                          rangli soya ham yo'q. Yorug' mavzudagi oxirgi sovuq
+                          ko'k qiymat ham shu bilan ketdi.
+           --pop-shadow   yagona haqiqiy soya — faqat CHINDAN suzuvchi element
+                          uchun (pastki panel, test oynasi). family'da ham bu
+                          yagona istisno. Siyohi iliq qora: sovuq qora #f6f4ef
+                          ustida ko'kimtir dog' bo'lib ko'rinadi. */
+      --card-shadow: inset 0 0 0 1px var(--line);
+      --tab-raise: inset 0 0 0 1px var(--line-control);
+      --pop-shadow: 0 3px 16px rgba(41, 33, 22, 0.1), 0 18px 44px rgba(41, 33, 22, 0.1);
+      --btn-raise: none;
+
+      /* family.co'ning O'Z chevron geometriyasi (M1.5 3.5L5 7L8.5 3.5, 10x10 quti:
+         eni 70%, chuqurligi 35%, uchi 70% pastda) 16px niqob qutisiga ko'chirildi.
+         Ikki chekinish, ikkalasi ham ataylab: qalinlik 1.8 (family'ning 20% nisbati
+         bu o'lchamda 3.2px bo'lib, 14px matn yonida bolg'a bo'lib ko'rinardi —
+         1.8 esa 24-panjaradagi stroke 2 ning 18px'dagi og'irligiga teng), va butun
+         yo'l 0.5 birlik yuqoriga surildi, chunki dumaloq uchlar bilan xom geometriya
+         4.96..12.10 oralig'ini bo'yaydi, ya'ni 8-markazli qutida pastga siljigan. */
+      --chevron: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M2.4 5.1 8 10.7 13.6 5.1'/></svg>");
+      --ease: cubic-bezier(0.23, 1, 0.32, 1);
+      --r-lg: 14px;
+      --r-md: 10px;
+      --r-sm: 8px;
+
+      /* Sahifa panjarasi — pastki suzuvchi panel ham AYNAN shu qiymatlardan hisoblanadi,
+         shuning uchun u panjaradan hech qachon ajralib qolmaydi.
+         --rail-shift: viewport o'qi bilan asosiy ustun o'qi orasidagi farq. .page ning
+         max-width va padding'i ayirmada qisqaradi, shuning uchun bu qiymat panjara ikki
+         ustunli bo'lgan har qanday kenglikda bir xil: (340 + 24) / 2 = 182px. */
+      --page-max: 1180px;
+      --page-pad: 24px;
+      --rail-w: 340px;
+      --grid-gap: 24px;
+      --rail-shift: calc((var(--rail-w) + var(--grid-gap)) / 2);
+
+      /* Golos Text (Paratype) ikkala rolni ham oladi — sarlavha ham, interfeys ham.
+         Sababi: uning kirilli oilaning ASOSIY yozuvi, lotinga qo'shib qo'yilgani emas.
+         O'lchangan: lotin/kirill x-balandligi nisbati 1.0000, o'zak +1.9%, jumla bo'yicha
+         siyoh zichligi +0.6% — operator o'zbekcha va ruscha maydonni yonma-yon o'qiganda
+         bitta shrift ovozini ko'radi. Bu mahsulot uchun eng muhim xossa.
+         Inter stack'da faqat okina uchun turadi (yuqoridagi text= link'ga qara). */
+      --font: "Golos Text", "Inter", -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
+      /* IBM Plex Mono olib tashlandi (149 KB / 9 so'rov → 62 KB / 5 so'rov).
+         Metadata "mashina" signalini endi katta harf + tracking + rang beradi. */
+      --mono: var(--font);
+
+      /* Tracking: family.co DISTSIPLINASI (piksel qiymatlari emas) — manfiy, monoton,
+         o'lcham o'sgan sari qattiqroq. em'da, chunki responsive o'lchamda ham amal qilsin.
+         -0.014em dan narisiga o'tilmaydi: kirill lotinga qaraganda tezroq tiqiladi. */
+      --tr-10: 0.08em;
+      --tr-11: 0.075em;
+      --tr-12: -0.006em;
+      --tr-13: -0.011em;
+      --tr-14: -0.012em;
+      --tr-15: -0.013em;
+      --tr-16: -0.014em;
+      --tr-24: -0.02em;
+      --tr-26: -0.021em;
+      --tr-32: -0.024em;
+      --tr-40: -0.028em;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --accent-text: #6aa3ff;
+        /* .18 → .12: tungi yuzalar iliq va bir oz yorug'roq bo'lgani uchun eski .18
+           to'ldirish aksent chegarasini yutib yuborardi (2.92:1). .12 da chegara
+           o'z foniga nisbatan 3.11:1 — 3:1 dan yuqori. */
+        --accent-soft: rgba(1, 96, 254, 0.12);
+        --ink: #f7f5f1;
+        --ink-soft: #d8d2c8;
+        --muted: #9a938a;
+        --muted-2: #948d84;
+        --placeholder: #948d84;
+        --tick-ink: var(--canvas);
+        --canvas: #0e0c0a;
+        --paper: #171411;
+        --field: #25201b;
+        --sunk: #1e1a16;
+        --line: #2b2622;
+        --line-2: #3a342d;
+        --line-control: #736c63;
+        --warn: #f0a33a;
+        --warn-soft: rgba(240, 163, 58, 0.14);
+        --crit: #ff6f61;
+        --crit-soft: rgba(255, 111, 97, 0.14);
+        --ok: #4ec48b;
+        --ok-soft: rgba(78, 196, 139, 0.14);
+        /* Kunduzgidek: halqa — asosiy usul, tushuvchi soya faqat suzuvchi element uchun. */
+        --card-shadow: inset 0 0 0 1px var(--line);
+        --tab-raise: inset 0 0 0 1px var(--line-control);
+        --pop-shadow: 0 3px 16px rgba(0, 0, 0, 0.5), 0 18px 44px rgba(0, 0, 0, 0.55);
+        --btn-raise: none;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --accent-text: #6aa3ff;
+      --accent-soft: rgba(1, 96, 254, 0.12);
+      --ink: #f7f5f1;
+      --ink-soft: #d8d2c8;
+      --muted: #9a938a;
+      --muted-2: #948d84;
+      --placeholder: #948d84;
+      --tick-ink: var(--canvas);
+      --canvas: #0e0c0a;
+      --paper: #171411;
+      --field: #25201b;
+      --sunk: #1e1a16;
+      --line: #2b2622;
+      --line-2: #3a342d;
+      --line-control: #736c63;
+      --warn: #f0a33a;
+      --warn-soft: rgba(240, 163, 58, 0.14);
+      --crit: #ff6f61;
+      --crit-soft: rgba(255, 111, 97, 0.14);
+      --ok: #4ec48b;
+      --ok-soft: rgba(78, 196, 139, 0.14);
+      --card-shadow: inset 0 0 0 1px var(--line);
+      --tab-raise: inset 0 0 0 1px var(--line-control);
+      --pop-shadow: 0 3px 16px rgba(0, 0, 0, 0.5), 0 18px 44px rgba(0, 0, 0, 0.55);
+      --btn-raise: none;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+    body {
+      min-height: 100dvh;
+      font-family: var(--font);
+      background: var(--canvas);
+      color: var(--ink);
+      font-size: 15px;
+      letter-spacing: var(--tr-15);
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-optical-sizing: auto;
+      font-synthesis-weight: none;
+      padding-bottom: 120px;
+    }
+
+    button, input, textarea, select { font: inherit; color: inherit; }
+
+    .sr {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+
+    :is(a, button, [role="radio"], [role="tab"], input, select, textarea):focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* ---------- topbar ---------- */
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      background: color-mix(in srgb, var(--canvas) 82%, transparent);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-in {
+      max-width: 1180px; margin: 0 auto; padding: 11px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 9px; font-size: 13px; letter-spacing: var(--tr-13); color: var(--muted); min-width: 0; white-space: nowrap; }
+    .brand .org, .brand strong { overflow: hidden; text-overflow: ellipsis; }
+    .brand .org { flex: 0 1 auto; }
+    .brand strong { flex: 0 1 auto; }
+    .brand .logo {
+      width: 24px; height: 24px; border-radius: 8px; flex: none; display: grid; place-items: center;
+      background: var(--field); box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .brand .logo svg { width: 20px; height: 20px; }
+    .brand strong { color: var(--ink); font-weight: 560; }
+    .brand .sep { opacity: 0.45; }
+
+    .icon-btn {
+      width: 36px; height: 36px; border: 0; background: transparent; border-radius: 999px;
+      color: var(--muted); cursor: pointer; display: grid; place-items: center;
+      transition: background-color 150ms var(--ease), color 150ms var(--ease), transform 110ms var(--ease);
+    }
+    @media (hover: hover) { .icon-btn:hover { background: var(--sunk); color: var(--ink); } }
+    .icon-btn:active { transform: scale(0.94); }
+
+    /* ---------- page ---------- */
+    .page { max-width: var(--page-max); margin: 0 auto; padding: 0 var(--page-pad); }
+
+    .page-head { padding: 30px 0 22px; }
+    .page-head h1 { font-size: 32px; font-weight: 520; letter-spacing: var(--tr-32); line-height: 1.15; text-wrap: balance; }
+    .page-head p { margin-top: 8px; font-size: 14px; letter-spacing: var(--tr-14); color: var(--muted); max-width: 62ch; text-wrap: pretty; }
+
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) var(--rail-w); gap: var(--grid-gap); align-items: start; }
+    .col-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+    .col-side { position: sticky; top: 75px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+    /* ---------- card ---------- */
+    .card {
+      background: var(--paper); border-radius: var(--r-lg);
+      box-shadow: var(--card-shadow); overflow: hidden;
+    }
+    .card-head {
+      padding: 16px 20px 14px;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+    }
+    .card-head h2 { font-size: 16px; font-weight: 560; letter-spacing: var(--tr-16); line-height: 1.35; }
+    .card-head p { font-size: 13px; letter-spacing: var(--tr-13); line-height: 19px; color: var(--muted); margin-top: 3px; max-width: 56ch; }
+    .head-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; }
+    .todo-badge {
+      display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+      font-size: 10px; font-weight: 520; letter-spacing: var(--tr-10); text-transform: uppercase; line-height: 1.2;
+      color: var(--muted); background: var(--sunk); border: 1px solid var(--line);
+      border-radius: 999px; padding: 4px 9px;
+      animation: fadeUp 160ms var(--ease) both;
+    }
+    .todo-badge .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--line-control); flex: none; }
+    .card-head .req { color: var(--muted); font-weight: 500; }
+    .card-head .aside {
+      font-size: 10px; font-weight: 520; letter-spacing: var(--tr-10); text-transform: uppercase; line-height: 1.2;
+      color: var(--muted); white-space: nowrap; padding-top: 2px;
+    }
+    .card-body { padding: 2px 20px 20px; display: flex; flex-direction: column; gap: 16px; }
+    .card-body.tight { gap: 12px; }
+
+    /* ---------- fields ---------- */
+    .field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+    .lbl {
+      font-size: 13px; font-weight: 560; letter-spacing: var(--tr-13); line-height: 18px; color: var(--ink-soft);
+      display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+    }
+    .lbl .sub { font-weight: 400; color: var(--muted); font-size: 12px; letter-spacing: var(--tr-12); line-height: 16px; }
+
+    .control {
+      width: 100%; height: 40px; border: 1px solid var(--line-control); background: var(--field);
+      border-radius: var(--r-sm); padding: 0 12px; font-size: 15px; letter-spacing: var(--tr-15); outline: none;
+      transition: border-color 150ms var(--ease);
+    }
+    .control::placeholder { color: var(--placeholder); }
+    @media (hover: hover) { .control:hover:not(:disabled) { border-color: var(--muted); } }
+    .control:focus-visible { border-color: var(--accent); }
+    .control:disabled { opacity: 0.55; cursor: not-allowed; background: var(--sunk); }
+    .control.bad { border-color: var(--crit); }
+    select.control {
+      cursor: pointer; appearance: none; padding-right: 34px;
+    }
+    .select-wrap { position: relative; display: flex; min-width: 0; }
+    .select-wrap > .control { flex: 1; }
+    .select-wrap::after {
+      content: ""; position: absolute; right: 11px; top: 50%; width: 16px; height: 16px;
+      margin-top: -8px; pointer-events: none; background-color: var(--muted);
+      -webkit-mask: var(--chevron) center / 16px 16px no-repeat;
+      mask: var(--chevron) center / 16px 16px no-repeat;
+    }
+
+    .err { display: none; color: var(--crit); font-size: 13px; font-weight: 500; letter-spacing: var(--tr-13); line-height: 1.4; align-items: flex-start; gap: 6px; }
+    .err.on { display: flex; }
+    .err svg { width: 14px; height: 14px; flex: none; margin-top: 2px; }
+
+    .row { display: grid; gap: 12px; }
+    .row.c3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .row.c2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .row.c1 { grid-template-columns: minmax(0, 1fr); }
+
+    /* ---------- option cards ---------- */
+    .options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .opt {
+      display: flex; align-items: flex-start; gap: 10px; text-align: left; cursor: pointer;
+      border: 1px solid var(--line-control); background: var(--sunk); border-radius: var(--r-md); padding: 12px;
+      transition: border-color 150ms var(--ease), background-color 150ms var(--ease), transform 110ms var(--ease);
+    }
+    .opt:active { transform: scale(0.99); }
+    @media (hover: hover) {
+      .opt:hover:not([aria-checked="true"]) {
+        border-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 4%, var(--sunk));
+      }
+    }
+    .opt .tick {
+      width: 18px; height: 18px; flex: none; margin-top: 0; border-radius: 50%;
+      border: 1.5px solid var(--line-control); display: grid; place-items: center;
+      transition: border-color 150ms var(--ease), background-color 150ms var(--ease);
+    }
+    .opt .tick::after {
+      content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--tick-ink);
+      transform: scale(0); transition: transform 150ms var(--ease);
+    }
+    .opt .tx { min-width: 0; }
+    .opt .tx b { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 560; letter-spacing: var(--tr-14); line-height: 1.3; }
+    .opt .tx b svg { width: 18px; height: 18px; flex: none; color: var(--muted); transition: color 150ms var(--ease); }
+    .opt .tx span { display: block; font-size: 12px; letter-spacing: var(--tr-12); color: var(--muted); line-height: 17px; margin-top: 2px; }
+    .opt[aria-checked="true"] .tx span { color: var(--ink-soft); }
+    .opt[aria-checked="true"] { border-color: var(--accent); background: var(--accent-soft); }
+    .opt[aria-checked="true"] .tick { border-color: var(--accent); background: var(--accent); }
+    .opt[aria-checked="true"] .tick::after { transform: scale(1); }
+    .opt[aria-checked="true"] .tx b { color: var(--accent-text); }
+    .opt[aria-checked="true"] .tx b svg { color: var(--accent-text); }
+
+    .options.sev { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .opt[data-sev] { --c: var(--accent-text); --s: var(--accent-soft); --b: var(--accent); }
+    .opt[data-sev="warning"] { --c: var(--warn); --s: var(--warn-soft); --b: var(--warn); }
+    .opt[data-sev="critical"] { --c: var(--crit); --s: var(--crit-soft); --b: var(--crit); }
+    .opt[data-sev][aria-checked="true"] { border-color: var(--b); background: var(--s); }
+    .opt[data-sev][aria-checked="true"] .tick { border-color: var(--b); background: var(--b); }
+    .opt[data-sev][aria-checked="true"] .tx b,
+    .opt[data-sev][aria-checked="true"] .tx b svg { color: var(--c); }
+
+    /* ---------- language tabs ---------- */
+    .tabbar {
+      display: inline-flex; align-self: flex-start; gap: 3px; padding: 3px;
+      background: var(--sunk); border: 1px solid var(--line-control); border-radius: 999px;
+    }
+    .tab {
+      border: 0; background: transparent; cursor: pointer; border-radius: 999px;
+      padding: 6px 14px; min-height: 30px; font-size: 13px; font-weight: 560; line-height: 18px; letter-spacing: var(--tr-13); color: var(--muted);
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: background-color 150ms var(--ease), color 150ms var(--ease),
+                  box-shadow 150ms var(--ease);
+    }
+    @media (hover: hover) { .tab:hover { color: var(--ink); } }
+    .tab[aria-selected="true"] { background: var(--field); color: var(--ink); box-shadow: var(--tab-raise); }
+    .tab .st { width: 6px; height: 6px; border-radius: 50%; background: var(--line-control); transition: background-color 200ms var(--ease); }
+    .tab[data-filled="true"] .st { background: var(--ok); }
+    .tab[data-filled="miss"] .st { background: var(--crit); }
+
+    .pane { display: flex; flex-direction: column; gap: 14px; }
+    .pane-in { animation: fadeUp 180ms var(--ease) both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+
+    .body-input {
+      width: 100%; min-height: 108px; resize: none; overflow: hidden;
+      border: 1px solid var(--line-control); border-radius: var(--r-sm); background: var(--field);
+      padding: 11px 12px; font-size: 15px; letter-spacing: var(--tr-15); line-height: 1.55; outline: none;
+      transition: border-color 150ms var(--ease);
+    }
+    .body-input::placeholder { color: var(--placeholder); }
+    @media (hover: hover) { .body-input:hover:not(:disabled) { border-color: var(--muted); } }
+    .body-input:focus-visible { border-color: var(--accent); }
+    .body-input.bad { border-color: var(--crit); }
+    .lbl .sub.counter, .counter { font-size: 12px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+    /* Raqamlar qimirlamasin: hisoblagich har bosishda, soat har soniyada yangilanadi.
+       Buni ilgari monospace ushlab turardi — endi faqat shu qoida. O'chirilmasin. */
+    .dev-status, .pv .hd, .fact dd, .counter, .lbl .sub,
+    .actionbar .status span, .testpop .hint, .pill { font-variant-numeric: tabular-nums; }
+    .counter.near { color: var(--warn); }
+
+
+    .subgroup {
+      display: flex; flex-direction: column; gap: 14px; padding: 14px; border-radius: var(--r-md);
+      background: var(--sunk); border: 1px solid var(--line);
+      animation: fadeUp 180ms var(--ease) both;
+    }
+    .day-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+    .day {
+      border: 1px solid var(--line-control); background: var(--field); border-radius: 999px;
+      height: 34px; width: 54px; min-width: 0; padding: 0; font-size: 13px; font-weight: 500; letter-spacing: var(--tr-13); color: var(--ink-soft); cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: border-color 150ms var(--ease), color 150ms var(--ease), background-color 150ms var(--ease), transform 110ms var(--ease);
+    }
+    .day:active { transform: scale(0.96); }
+    @media (hover: hover) { .day:hover { border-color: var(--accent); color: var(--accent-text); } }
+    .day[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-text); font-weight: 560; }
+
+    .hintline { font-size: 13px; letter-spacing: var(--tr-13); line-height: 19px; color: var(--muted); display: flex; align-items: flex-start; gap: 7px; max-width: 66ch; }
+    .hintline svg { width: 15px; height: 15px; flex: none; color: var(--muted); margin-top: 1.5px; }
+
+    /* ---------- panel qobig'i ---------- */
+    .stage {
+      /* Rail'dagi ikkala panel ham .card bilan bir xil qatlam. Chekka —
+         --card-shadow halqasi (border YO'Q, aks holda chiziq ikkilanadi).
+         padding 16: karta 20 dan yengilroq, chunki bu panel ROMKA, mazmun esa
+         plastina — unga iloji boricha ko'proq kenglik qoladi. */
+      background: var(--paper);
+      border-radius: var(--r-lg);
+      box-shadow: var(--card-shadow);
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+
+      /* Qurilma ekrani — HAR IKKALA mavzuda ham bir xil qora. Ekran mavzu bilan
+         o'zgarmaydi: fuqaroning qurilmasi qaysi rejimda ekani noma'lum, yorug'
+         material esa qattiqroq holat — shuning uchun yagona kanonik ko'rinish
+         barcha o'lchangan nisbatlarni barqaror ushlaydi. */
+      --pv-plate: #1a1917;
+      --pv-plate-ring: transparent;
+      --pv-plate-cap: #8e8d90;   /* skelet chiziqlari — plastina ustida 3.30:1 (matn emas, 3:1 bar) */
+      --pv-plate-ink: #f5f3f0;   /* plastina ustida 15.86:1 */
+    }
+    /* Qorong'i mavzuda plastina panelga deyarli teng (1.04:1) — chegarani soya
+       emas, RING ushlaydi: --line-control tungi qog'oz ustida 3.54:1. */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .stage { --pv-plate-ring: var(--line-control); }
+    }
+    :root[data-theme="dark"] .stage { --pv-plate-ring: var(--line-control); }
+
+    .stage-top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; min-height: 28px;
+    }
+    .stage-cap {
+      font-size: 10px; font-weight: 520; letter-spacing: var(--tr-10);
+      text-transform: uppercase; line-height: 1.2; color: var(--muted);
+    }
+
+    /* Keng ekranda (rail yig'ilganda) plastinalar 393px'da 1:1 bo'lib qoladi —
+       izoh qatorlari ular bilan bir o'qda tursin, 900px'ga cho'zilmasin. */
+    .stage-body {
+      width: 100%; max-width: 393px; margin-inline: auto;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+
+    /* ---------- til almashtirgichi ---------- */
+    /* Eski tanlangan holat oq-oq ustida edi: 1.12:1, ya'ni KO'RINMAS. Endi u
+       .tab bilan bir xil retsept — --tab-raise halqasi (--line-control), track
+       ustida 3.34:1. Nuqta esa kompozitsiya tab'laridagi bilan bitta idioma:
+       qaysi til to'lgani almashtirmasdan ko'rinadi. */
+    .mini-seg {
+      display: inline-flex; gap: 2px; padding: 2px; border-radius: 999px;
+      background: var(--sunk); box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .mini-seg button {
+      border: 0; background: transparent; cursor: pointer; border-radius: 999px;
+      height: 24px; padding: 0 10px;
+      font-size: 11px; font-weight: 560; letter-spacing: var(--tr-11);
+      text-transform: uppercase; line-height: 1; color: var(--muted);
+      display: inline-flex; align-items: center; gap: 5px;
+      transition: background-color 150ms var(--ease), color 150ms var(--ease),
+                  box-shadow 150ms var(--ease);
+    }
+    .mini-seg button .st {
+      width: 5px; height: 5px; border-radius: 50%; flex: none;
+      background: var(--line-control); transition: background-color 200ms var(--ease);
+    }
+    .mini-seg button[data-filled="true"] .st { background: var(--ok); }
+    .mini-seg button[data-filled="miss"] .st { background: var(--crit); }
+    @media (hover: hover) { .mini-seg button:hover { color: var(--ink); } }
+    .mini-seg button[aria-pressed="true"] {
+      background: var(--field); color: var(--ink); box-shadow: var(--tab-raise);
+    }
+
+    /* ---------- muhimlik izohi (plastinadan TASHQARIDA) ---------- */
+    /* Haqiqiy iOS bildirishnomasida muhimlik nishoni YO'Q — uni ilgari maket
+       ICHIDA chizish operatorga "fuqaro buni ko'radi" deb yolg'on aytardi.
+       Endi u qobiqda va yoniga nima uchun ko'rinmasligi yozib qo'yilgan.
+       info holati KO'K EMAS: hech narsa tanlanmagan, aksent esa faqat fokus /
+       tanlangan holat / hover / CTA uchun. Neytral → sariq → qizil — haqiqiy
+       kuchayish shkalasi. */
+    .sev-cap { display: flex; align-items: flex-start; gap: 8px; }
+    .sev-cap > svg { width: 16px; height: 16px; flex: none; margin-top: 1px; color: var(--sv); }
+    .sev-cap b {
+      display: block; font-size: 12px; font-weight: 560;
+      letter-spacing: var(--tr-12); line-height: 1.35; color: var(--sv);
+    }
+    .sev-cap span span {
+      display: block; font-size: 12px; letter-spacing: var(--tr-12);
+      line-height: 1.35; color: var(--muted); text-wrap: pretty;
+    }
+    /* render() allaqachon documentElement.dataset.sev ni yozadi — o'zgarish shart emas. */
+    [data-sev="info"] .stage     { --sv: var(--ink-soft); }
+    [data-sev="warning"] .stage  { --sv: var(--warn); }
+    [data-sev="critical"] .stage { --sv: var(--crit); }
+
+    /* ---------- holat sarlavhasi ---------- */
+    .shot { display: flex; flex-direction: column; gap: 6px; }
+    .shot-cap {
+      display: flex; align-items: baseline; gap: 6px; min-width: 0;
+      font-size: 10px; font-weight: 520; letter-spacing: var(--tr-10);
+      text-transform: uppercase; line-height: 1.2; color: var(--muted);
+    }
+    .shot-cap em {
+      font-style: normal; text-transform: none; font-weight: 400; font-size: 11px;
+      letter-spacing: var(--tr-11); color: var(--muted-2);
+      min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    /* ---------- qurilma plastinasi ---------- */
+    /* .dev — masshtablanmagan quti: radius va halqa shu yerda, shuning uchun
+       ular 1px'ligicha aniq qoladi. Ichkarisi esa 393px'da joylashadi. */
+    .dev {
+      container-type: inline-size;
+      position: relative;
+      width: 100%; max-width: 393px; margin-inline: auto;
+      aspect-ratio: 393 / var(--dev-h);
+      overflow: hidden; border-radius: 24px;
+      background: var(--pv-plate);
+      box-shadow: inset 0 0 0 1px var(--pv-plate-ring);
+    }
+    /* Absolyut — aks holda bola oqimda qolib aspect-ratio'ni bosib ketadi. */
+    .dev-frame {
+      position: absolute; top: 0; left: 0;
+      width: 393px; height: calc(var(--dev-h) * 1px);
+      transform-origin: top left;
+      /* Zaxira: konteyner so'rovlarisiz brauzerda rail aynan 308px bo'ladi
+         (340 rail − 2×16 panel padding). */
+      --k: 0.7837;
+      transform: scale(var(--k));
+      /* Maket ichida qurilmaning O'Z shrifti ustun — bizning matn tizimimiz emas. */
+      font-family: -apple-system, "SF Pro Text", "Segoe UI", var(--font);
+    }
+    /* @supports SHARTI aynan shu bo'lishi kerak: `calc(100cqw / 393px)` ni
+       to'g'ridan-to'g'ri sinash false qaytaradi (cq birligi konteyner
+       kontekstidan tashqarida tekshirilmaydi) va hamma zaxiraga tushib qoladi. */
+    @supports (container-type: inline-size) {
+      .dev-frame { --k: calc(100cqw / 393px); }
+    }
+
+    .dev-status {
+      height: 34px; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 13px; font-weight: 600; letter-spacing: -0.01em;
+      color: var(--pv-plate-ink);
+    }
+    .dev-status .sig { display: flex; align-items: flex-end; gap: 3px; }
+    .dev-status .sig i { display: block; width: 3px; border-radius: 1px; background: var(--pv-plate-ink); }
+
+    /* ---------- bildirishnoma kartasi (haqiqiy qurilma o'lchamlari) ---------- */
+    .pv {
+      margin: 0 10px;                     /* iOS chekka bo'shlig'i */
+      background: #fff;                   /* shaffof emas: o'lchangan kontrast barqaror qolsin */
+      border-radius: 22px; padding: 12px 16px;
+      display: flex; gap: 12px; color: #1c1c1e;   /* 17.01:1 */
+    }
+    .pv .app {
+      width: 38px; height: 38px; border-radius: 9px; flex: none;
+      display: grid; place-items: center;
+      background: #fff; box-shadow: inset 0 0 0 1px rgba(28, 28, 30, 0.10);
+    }
+    .pv .app svg { width: 30px; height: 30px; }
+    .pv .tx { flex: 1; min-width: 0; }
+    .pv .hd {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+      font-size: 13px; line-height: 18px; font-weight: 400;
+      letter-spacing: -0.006em;
+      /* iOS'ning o'z #8a8a8e rangi oq ustida 3.44:1 — bizning panel uchun past.
+         #6d6d72 → 5.15:1. Sodiqlikdan arzimas chekinish, o'qilishi esa shart. */
+      color: #6d6d72;
+    }
+    .pv .hd b { font-weight: 400; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pv .hd span { flex: none; white-space: nowrap; }
+
+    .pv h3, .pv p {
+      display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
+      overflow-wrap: anywhere;
+      font-size: 15px; line-height: 20px; letter-spacing: -0.012em;
+    }
+    .pv h3 { font-weight: 600; }
+    .pv p  { font-weight: 400; }
+
+    /* Ikki holat — yagona farq qirqish chegarasida. */
+    .pv-ban h3 { -webkit-line-clamp: 1; }
+    .pv-ban p  { -webkit-line-clamp: 2; }
+    .pv-exp h3 { -webkit-line-clamp: 2; }
+    .pv-exp p  { -webkit-line-clamp: 4; }
+
+    /* ZAXIRA USTUNDA, klamplangan tugunda EMAS.
+       Sababi: previewLines() scrollHeight o'qiydi; h3/p da min-height bo'lsa
+       bir qatorli sarlavha ham 2 qator deb sanaladi va hukm yolg'on chiqadi.
+       18 (bosh qator) + qator × 20. */
+    .pv-ban .tx { min-height: 78px; }
+    .pv-exp .tx { min-height: 138px; }
+
+    /* ---------- bo'sh holat = byudjet chizg'ichi ---------- */
+    /* Soxta jumla emas: aynan qator o'rinlarida soch chiziqlar. Operator
+       birinchi harfni yozishdan oldin qancha joy borligini ko'radi. `:empty`
+       bo'lgani uchun to'lgan tugunga hech qachon tegmaydi — ya'ni qator
+       o'lchoviga aralashmaydi. */
+    .pv h3:empty, .pv p:empty { background-repeat: no-repeat; }
+    .pv-ban h3:empty {
+      min-height: 20px;
+      background-image: linear-gradient(#8e8d90, #8e8d90);
+      background-size: 64% 2px; background-position: 0 9px;
+    }
+    .pv-ban p:empty {
+      min-height: 40px;
+      background-image: linear-gradient(#8e8d90, #8e8d90), linear-gradient(#8e8d90, #8e8d90);
+      background-size: 100% 2px, 46% 2px;
+      background-position: 0 9px, 0 29px;
+    }
+    .pv-exp h3:empty {
+      min-height: 40px;
+      background-image: linear-gradient(#8e8d90, #8e8d90), linear-gradient(#8e8d90, #8e8d90);
+      background-size: 100% 2px, 58% 2px;
+      background-position: 0 9px, 0 29px;
+    }
+    .pv-exp p:empty {
+      min-height: 80px;
+      background-image:
+        linear-gradient(#8e8d90, #8e8d90), linear-gradient(#8e8d90, #8e8d90),
+        linear-gradient(#8e8d90, #8e8d90), linear-gradient(#8e8d90, #8e8d90);
+      background-size: 100% 2px, 100% 2px, 100% 2px, 38% 2px;
+      background-position: 0 9px, 0 29px, 0 49px, 0 69px;
+    }
+
+    /* ---------- hukm qatori (eski .more o'rniga) ---------- */
+    /* Bu MAKET haqidagi gap, fuqaro ko'radigan narsa emas — shuning uchun
+       plastinadan tashqarida. min-height ikki qatorga yetadi: matn o'zgaradi,
+       balandlik o'zgarmaydi. */
+    .pv-verdict {
+      display: flex; align-items: flex-start; gap: 8px; min-height: 34px;
+      font-size: 12px; letter-spacing: var(--tr-12); line-height: 1.4;
+      color: var(--muted); text-wrap: pretty;
+      transition: color 200ms var(--ease);
+    }
+    .pv-verdict .dot {
+      width: 6px; height: 6px; border-radius: 50%; flex: none; margin-top: 5px;
+      background: var(--line-control); transition: background-color 200ms var(--ease);
+    }
+    .pv-verdict[data-v="ok"]   { color: var(--ink-soft); }
+    .pv-verdict[data-v="ok"]   .dot { background: var(--ok); }
+    .pv-verdict[data-v="warn"] { color: var(--ink-soft); }
+    .pv-verdict[data-v="warn"] .dot { background: var(--warn); }
+    .pv-verdict[data-v="crit"] { color: var(--crit); }
+    .pv-verdict[data-v="crit"] .dot { background: var(--crit); }
+
+    /* Yagona harakat — TIL almashganda. Yozayotganda hech nima qimirlamaydi:
+       panelning butun ma'nosi barqarorlikda. (prefers-reduced-motion global
+       blok bilan allaqachon o'chiriladi.) */
+    @keyframes pvSwap { from { opacity: 0.35; } to { opacity: 1; } }
+    .stage-body.lang-swap .pv { animation: pvSwap 200ms var(--ease) both; }
+
+
+/* ════════════════════════════════════════════════════════════════════════
+
+    /* ---------- summary ---------- */
+    .facts { display: flex; flex-direction: column; }
+    .fact {
+      display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid var(--line); align-items: baseline;
+    }
+    .fact:first-child { padding-top: 0; }
+    .fact:last-child { border-bottom: 0; padding-bottom: 0; }
+    .fact dt { font-size: 11px; font-weight: 500; letter-spacing: var(--tr-11); text-transform: uppercase; line-height: 1.2; color: var(--muted); }
+    .fact dd { font-size: 13px; letter-spacing: var(--tr-13); line-height: 18px; color: var(--ink); overflow-wrap: anywhere; }
+
+    .alert {
+      border: 1px solid var(--crit); background: var(--crit-soft); border-radius: var(--r-md); padding: 13px;
+      animation: fadeUp 180ms var(--ease) both;
+    }
+    .alert :is(h3, h4) { font-size: 13px; font-weight: 600; letter-spacing: var(--tr-13); line-height: 1.3; color: var(--crit); display: flex; align-items: center; gap: 7px; }
+    .alert :is(h3, h4) svg { width: 14px; height: 14px; flex: none; }
+    .alert p { margin-top: 6px; font-size: 13px; letter-spacing: var(--tr-13); color: var(--ink-soft); line-height: 1.45; overflow-wrap: anywhere; }
+    .alert ul { list-style: none; margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+    .alert button {
+      border: 1px solid color-mix(in srgb, var(--crit) 40%, transparent); background: var(--field);
+      border-radius: 999px; height: 26px; padding: 0 10px; font-size: 12px; font-weight: 500; letter-spacing: var(--tr-12); color: var(--ink-soft);
+      cursor: pointer; display: inline-flex; align-items: center;
+      transition: color 150ms var(--ease), border-color 150ms var(--ease);
+    }
+    @media (hover: hover) { .alert button:hover { color: var(--ink); border-color: var(--crit); } }
+
+    /* ---------- action bar ---------- */
+    .actionbar {
+      /* Panel — asosiy ustunning davomi: viewport emas, o'sha ustun o'qi bo'yicha
+         markazlashadi va o'ngdagi sticky rail ustiga hech qachon chiqmaydi.
+         100% (100vw emas) — element fixed, foiz .page ni markazlashtirgan qutiga
+         nisbatan o'lchanadi; 100vw esa scrollbar kengligini ham qo'shib yuboradi. */
+      --col-main-w: calc(min(100%, var(--page-max)) - var(--page-pad) * 2 - var(--rail-w) - var(--grid-gap));
+      position: fixed; left: calc(50% - var(--rail-shift)); bottom: 22px; z-index: 25; transform: translateX(-50%);
+      width: min(640px, var(--col-main-w));
+      display: flex; align-items: center; gap: 14px;
+      padding: 9px 9px 9px 18px; border-radius: 999px;
+      background: color-mix(in srgb, var(--field) 92%, transparent);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--line); box-shadow: var(--pop-shadow);
+    }
+    .actionbar .status { flex: 1; min-width: 0; display: flex; align-items: center; gap: 9px; }
+    .actionbar .status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); flex: none; box-shadow: 0 0 0 3px var(--ok-soft); }
+    .actionbar[data-state="bad"] .status .dot { background: var(--crit); box-shadow: 0 0 0 3px var(--crit-soft); }
+    .actionbar .status .tx { min-width: 0; }
+    .actionbar .status b { display: block; font-size: 13px; font-weight: 560; letter-spacing: var(--tr-13); line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .actionbar .status span { display: block; font-size: 12px; letter-spacing: var(--tr-12); line-height: 1.3; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .btn {
+      border: 0; cursor: pointer; border-radius: 999px; height: 38px; padding: 0 16px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 14px; font-weight: 560; letter-spacing: var(--tr-14); white-space: nowrap;
+      transition: background-color 150ms var(--ease), color 150ms var(--ease), transform 110ms var(--ease), opacity 150ms var(--ease);
+    }
+    .btn:active:not(:disabled) { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+    .btn-quiet { background: transparent; color: var(--muted); }
+    .btn-quiet .q-icon { display: none; }
+    @media (hover: hover) { .btn-quiet:hover:not(:disabled) { background: var(--sunk); color: var(--ink); } }
+    .btn-primary { background: var(--accent); color: var(--accent-on); padding-right: 6px; box-shadow: var(--btn-raise); }
+    @media (hover: hover) { .btn-primary:hover:not(:disabled) { background: var(--accent-press); } }
+    .btn-primary .arrow {
+      width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(255, 255, 255, 0.2); transition: transform 150ms var(--ease);
+    }
+    @media (hover: hover) and (pointer: fine) { .btn-primary:hover:not(:disabled) .arrow { transform: translateX(2px); } }
+    .actionbar[aria-busy="true"] .btn-primary .arrow {
+      background: transparent;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: var(--accent-on);
+      animation: spin 720ms linear infinite;
+    }
+    .actionbar[aria-busy="true"] .btn-primary .arrow svg { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Ikkilamchi amal. Ko‘k akssent faqat asosiy CTA’da qoladi — test tugmasi neytral qatlam. */
+    .btn-test {
+      background: var(--sunk); color: var(--ink-soft);
+      border: 1px solid var(--line-control);
+      transition: background-color 150ms var(--ease), color 150ms var(--ease),
+                  border-color 150ms var(--ease), transform 110ms var(--ease), opacity 150ms var(--ease);
+    }
+    @media (hover: hover) {
+      .btn-test:hover:not(:disabled) {
+        background: var(--field); color: var(--ink);
+        border-color: var(--line-control);
+      }
+    }
+    .btn-test[aria-expanded="true"] { background: var(--field); color: var(--ink); border-color: var(--line-control); }
+    .btn-test[data-phase="ok"] {
+      background: var(--ok-soft); color: var(--ok);
+      border-color: color-mix(in srgb, var(--ok) 42%, transparent); opacity: 1;
+    }
+    .btn-test svg, .btn-solid svg { width: 15px; height: 15px; flex: none; }
+    .btn .load {
+      width: 13px; height: 13px; flex: none; border-radius: 50%;
+      border: 2px solid currentColor; border-top-color: transparent;
+      animation: spin 720ms linear infinite;
+    }
+    @media (prefers-reduced-motion: reduce) { .btn .load { animation: none; opacity: 0.5; } }
+
+    /* ---------- test yuborish oynasi ---------- */
+    .testpop {
+      position: absolute; right: 0; bottom: calc(100% + 10px); z-index: 2;
+      width: min(332px, calc(100vw - 32px)); padding: 14px;
+      background: var(--paper); border: 1px solid var(--line);
+      border-radius: var(--r-lg); box-shadow: var(--pop-shadow);
+      display: flex; flex-direction: column; gap: 10px; text-align: left;
+      animation: popIn 170ms var(--ease) both;
+    }
+    @keyframes popIn { from { opacity: 0; transform: translateY(6px) scale(0.985); } to { opacity: 1; transform: none; } }
+    .testpop-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .testpop-head b {
+      font-size: 11px; font-weight: 500; line-height: 1.2;
+      letter-spacing: var(--tr-11); text-transform: uppercase; color: var(--muted);
+    }
+    .testpop .x {
+      width: 26px; height: 26px; flex: none; border: 0; background: transparent; color: var(--muted);
+      border-radius: var(--r-sm); display: grid; place-items: center; cursor: pointer;
+      transition: background-color 150ms var(--ease), color 150ms var(--ease);
+    }
+    @media (hover: hover) { .testpop .x:hover { background: var(--sunk); color: var(--ink); } }
+    .testpop .x svg { width: 14px; height: 14px; }
+    .testpop .note { font-size: 13px; letter-spacing: var(--tr-13); color: var(--muted); line-height: 1.45; }
+    .testpop .hint {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.02em; line-height: 1.2; color: var(--muted);
+    }
+    .testpop-foot { display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 2px; }
+    .btn-sm { height: 34px; padding: 0 14px; font-size: 13px; letter-spacing: var(--tr-13); }
+    .btn-solid { background: var(--ink); color: var(--canvas); }
+    @media (hover: hover) { .btn-solid:hover:not(:disabled) { background: color-mix(in srgb, var(--ink) 86%, var(--canvas)); } }
+
+    /* ---------- done ---------- */
+    .done {
+      position: fixed; inset: 0; z-index: 50; background: var(--canvas);
+      display: none; place-items: center; padding: 28px; text-align: center;
+    }
+    .done.on { display: grid; animation: fadeUp 220ms var(--ease) both; }
+    .done .seal {
+      width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 18px; display: grid; place-items: center;
+      background: var(--ok-soft); color: var(--ok);
+    }
+    .done h2 { font-size: 26px; font-weight: 520; letter-spacing: var(--tr-26); line-height: 1.15; }
+    .done > div > p { color: var(--muted); font-size: 14px; letter-spacing: var(--tr-14); margin-top: 7px; max-width: 44ch; margin-inline: auto; }
+    .done .pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 20px 0 22px; }
+    .pill {
+      border: 1px solid var(--line); background: var(--field); border-radius: 999px;
+      padding: 6px 12px; font-size: 13px; font-weight: 500; letter-spacing: var(--tr-13); color: var(--ink-soft);
+    }
+
+    .toast {
+      position: fixed; left: calc(50% - var(--rail-shift)); bottom: 84px; z-index: 60;
+      transform: translate(-50%, 10px); opacity: 0; pointer-events: none;
+      background: var(--ink); color: var(--canvas); border-radius: 999px;
+      padding: 10px 18px; font-size: 13px; font-weight: 500; letter-spacing: var(--tr-13);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+      transition: transform 200ms var(--ease), opacity 200ms var(--ease);
+    }
+    .toast.on { transform: translate(-50%, 0); opacity: 1; }
+
+    /* ---------- touch ---------- */
+    /* Barmoq bilan ishlanadigan har qanday qurilma — kenglikka bog'liq emas.
+       Planshet va yotiq telefon 640px dan keng, lekin baribir barmoq bilan bosiladi. */
+    @media (pointer: coarse) {
+      .control, .body-input { font-size: 16px; height: auto; min-height: 44px; }
+      select.control, input.control { height: 44px; }
+      .day { height: 44px; width: 56px; min-width: 0; }
+      .icon-btn { width: 44px; height: 44px; }
+      .tab { min-height: 44px; padding: 0 16px; }
+      .mini-seg button { height: 44px; padding: 0 14px; }
+      .btn { height: 44px; }
+      .btn-sm { height: 44px; }
+      .testpop .x { width: 36px; height: 36px; }
+      .alert button { height: 36px; }
+    }
+
+    /* ---------- responsive ---------- */
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+      /* Rail bolalarini to'g'ridan-to'g'ri grid'ga chiqaramiz — shunda xato banneri
+         o'zi tasvirlayotgan maydonlarning USTIDA tura oladi, sahifa oxirida emas. */
+      .col-side { display: contents; }
+      #alert, #sendError { order: -1; }
+      /* Bitta ustun — o'ng rail yo'q, panel yana viewport o'qiga qaytadi. */
+      .actionbar { left: 50%; width: min(640px, calc(100% - 32px)); }
+      .toast { left: 50%; }
+    }
+
+    @media (max-width: 480px) {
+      .card-head { flex-wrap: wrap; }
+      .head-meta { order: -1; width: 100%; flex-direction: row; align-items: center; justify-content: flex-start; gap: 8px; }
+      .card-head .aside { padding-top: 0; }
+    }
+
+    @media (max-width: 640px) {
+      .topbar-in { padding: 10px 14px; }
+      :root { --page-pad: 14px; }
+      .page-head { padding: 22px 0 16px; }
+      .page-head h1 { font-size: 24px; letter-spacing: var(--tr-24); line-height: 1.18; }
+      .options, .options.sev { grid-template-columns: minmax(0, 1fr); }
+      .row.c3, .row.c2 { grid-template-columns: minmax(0, 1fr); }
+      .card-body { padding: 2px 16px 16px; }
+      .card-head { padding: 16px 16px 12px; }
+      body { padding-bottom: calc(190px + env(safe-area-inset-bottom)); }
+      /* Panel ikki qatorga bo‘linadi: tepada holat + Tozalash, pastda yuborish amallari.
+         Tozalash qoralamani o‘chiradi — qaytarib bo‘lmaydi, shuning uchun mobilda ham
+         yo‘qolmasligi kerak; holat qatorining o‘ng chekkasi bo‘sh, tugma o‘sha yerga sig‘adi. */
+      .actionbar {
+        left: 0; right: 0; bottom: 0; width: auto; transform: none; border-radius: 0;
+        border-left: 0; border-right: 0; border-bottom: 0;
+        padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+        display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 9px 10px;
+        transition: transform 220ms var(--ease);
+      }
+      /* Uch amal 320px ga bir qatorda sig'maydi — CTA o'z qatorini oladi (mobilda
+         to'liq kenglikdagi asosiy tugma baribir to'g'ri yechim), tepasida esa
+         Tozalash ikonkasi bilan Test yonma-yon turadi. */
+      .actionbar { grid-template-columns: auto minmax(0, 1fr); }
+      .actionbar .status { grid-column: 1 / -1; grid-row: 1; }
+      /* Tozalash ikonkaga siqiladi — holat qatori to'liq kenglikni oladi va matn kesilmaydi.
+         Tasdiq bosqichida tugma matnga yoyiladi, chunki bu qaytarib bo'lmaydigan amal. */
+      .actionbar > .btn-quiet {
+        grid-column: 1; grid-row: 2; width: 44px; padding: 0;
+        border: 1px solid var(--line); border-radius: 999px;
+      }
+      .actionbar > .btn-quiet .q-icon { display: block; }
+      .actionbar > .btn-quiet:not([data-armed="true"]) #resetLabel {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+      }
+      .actionbar > .btn-quiet[data-armed="true"] { width: auto; padding: 0 14px; color: var(--crit); border-color: var(--crit); }
+      .actionbar > .btn-quiet[data-armed="true"] .q-icon { display: none; }
+      .actionbar .btn-test { grid-column: 2; grid-row: 2; }
+      .actionbar .btn-primary { grid-column: 1 / -1; grid-row: 3; }
+      .testpop { left: 10px; right: 10px; width: auto; bottom: calc(100% + 8px); }
+      /* Klaviatura ochilganda panel ham, oyna ham IME ustida qoladi. */
+      body[data-testpop="on"] .actionbar { transform: translateY(calc(-1 * var(--kb, 0px))); }
+      .toast { bottom: 92px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- quyosh: disk + sakkiz nur — yorug' mavzu -->
+    <symbol id="i-sun" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M12 3v1.8M12 19.2V21M3 12h1.8M19.2 12H21M5.6 5.6l1.3 1.3M17.1 17.1l1.3 1.3M18.4 5.6l-1.3 1.3M6.9 17.1l-1.3 1.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- oy: kamayuvchi o'roq — qorong'i mavzu (tishlash radiusi 6; 6.364 dan yuqorisi o'roqni yo'q qiladi) -->
+    <symbol id="i-moon" viewBox="0 0 24 24">
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- strelka: asosiy CTA, 26px doira ichida 14px bo'lib turadi -->
+    <symbol id="i-arrow" viewBox="0 0 24 24">
+    <path d="M4 12h16M13 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- belgi: tasdiq — 11-15px nishon va 56px muvaffaqiyat muhri -->
+    <symbol id="i-check" viewBox="0 0 24 24">
+    <path d="M4.8 12.4 9.7 17.3 19.2 6.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- ma'lumot: doira ichida kichik i — muhimlik "Ma'lumot" (nuqta ⌀2 · tanaffus 2.0 · tayoq 3.6) -->
+    <symbol id="i-info" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M12 8.2h.01M12 12.2v3.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- ogohlantirish: uchburchak ichida undov — muhimlik "Ogohlantirish" -->
+    <symbol id="i-warn" viewBox="0 0 24 24">
+    <path d="M13.79 4.93 20.13 17.5a2 2 0 0 1-1.78 2.9H5.65a2 2 0 0 1-1.78-2.9L10.21 4.93a2 2 0 0 1 3.58 0Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M12 8.8v3.6M12 16.4h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- kritik: sakkizburchak ichida undov — muhimlik "Kritik" (16px dan past ishlatilmasin) -->
+    <symbol id="i-crit" viewBox="0 0 24 24">
+    <path d="M7.65 3.3h8.7l4.35 4.35v8.7l-4.35 4.35h-8.7L3.3 16.35v-8.7Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M12 8.2v3.6M12 15.8h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- globus: sfera + ekvator + yassilangan yopiq meridian — qamrov "Respublika" -->
+    <symbol id="i-globe" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M3 12h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M12 3a13.5 13.5 0 0 0 0 18 13.5 13.5 0 0 0 0-18Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- xarita: uch qavat buklangan xarita — qamrov "Viloyat" -->
+    <symbol id="i-map" viewBox="0 0 24 24">
+    <path d="M9 3.6 15 6.4 20.6 3.6v14L15 20.4 9 17.6 3.4 20.4v-14Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M9 3.6v14M15 6.4v14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- nishon: bo'sh markazli joy nishoni — qamrov "Tuman" (15px dan past yopilib qoladi) -->
+    <symbol id="i-pin" viewBox="0 0 24 24">
+    <path d="M6.7 13.19a6.4 6.4 0 1 1 10.6 0L12 21Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="12" cy="9.6" r="2.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- uy: eshigi bilan — qamrov "Mahalla" -->
+    <symbol id="i-home" viewBox="0 0 24 24">
+    <path d="M3.4 9.8 12 3.2l8.6 6.6v9.2a1.8 1.8 0 0 1-1.8 1.8H5.2a1.8 1.8 0 0 1-1.8-1.8Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M9.4 20.8v-6.2h5.2v6.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- chaqmoq: yuborish "Hoziroq" (12px'da yulduzchaga o'xshaydi — 15px dan past ishlatilmasin) -->
+    <symbol id="i-bolt" viewBox="0 0 24 24">
+    <path d="M13.5 3 4.8 13.2h6.1L10.5 21l8.7-10.2h-6.1Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- taqvim: bir kuni belgilangan oy varag'i — yuborish "Rejali" -->
+    <symbol id="i-calendar" viewBox="0 0 24 24">
+    <rect x="3.4" y="5.2" width="17.2" height="15.4" rx="3.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M3.4 10.2h17.2M8.4 3.4v3.4M15.6 3.4v3.4M12 15.4h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- takror: yopiq halqa, ikki uchida strelka — yuborish "Takroriy" -->
+    <symbol id="i-repeat" viewBox="0 0 24 24">
+    <path d="M16.4 3.1 20 6.7l-3.6 3.6M3.9 11.2v-1a3.5 3.5 0 0 1 3.5-3.5H20M7.6 20.9 4 17.3l3.6-3.6M20.1 12.8v1a3.5 3.5 0 0 1-3.5 3.5H4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- soat: siferblat + ikki strelka -->
+    <symbol id="i-clock" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M12 6.8V12l3.6 2.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- savat: qopqoq + ikki qovurg'a — qoralamani o'chirish -->
+    <symbol id="i-trash" viewBox="0 0 24 24">
+    <path d="M3.6 6.4h16.8M9.6 6.4V5.1a1.7 1.7 0 0 1 1.7-1.7h1.4a1.7 1.7 0 0 1 1.7 1.7v1.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M5.8 6.4 6.7 19a2 2 0 0 0 2 1.9h6.6a2 2 0 0 0 2-1.9l.9-12.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M10.2 10.6v6M13.8 10.6v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- x: yopish -->
+    <symbol id="i-x" viewBox="0 0 24 24">
+    <path d="M6.2 6.2 17.8 17.8M17.8 6.2 6.2 17.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- qog'oz samolyot: yuborish — e'lon qilingan, ammo hozircha ishlatilmaydi -->
+    <symbol id="i-paper-plane" viewBox="0 0 24 24">
+    <path d="M20.8 3.2 3.2 9.4l7.8 3.6 3.6 7.8Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M20.8 3.2 11 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-logo" viewBox="0 0 70 70" fill="none">
+<g clip-path="url(#om-clip0_28_2)">
+<path d="M61.1093 12.5874C61.1198 12.6006 61.1302 12.6138 61.1381 12.6244L61.1302 12.6111L61.1512 12.6349C61.1407 12.6217 61.1302 12.6085 61.1224 12.5979L60.4911 11.7759C59.776 11.0226 58.8252 10.0102 58.0761 9.29123C55.7946 7.31147 55.5013 7.05508 53.5184 5.70704C51.8656 4.69205 51.567 4.50968 49.6758 3.58984L49.9902 3.82773C52.1511 5.04625 57.2169 7.89562 61.1093 12.5874Z" fill="url(#om-paint0_linear_28_2)"/>
+<path d="M63.8832 16.3244C63.3095 15.4838 62.5552 14.3525 61.9448 13.5411L61.8925 13.475L61.751 13.2979L62.0837 13.7631C62.6337 14.5217 63.3724 15.5341 63.8832 16.3244Z" fill="url(#om-paint1_linear_28_2)"/>
+<path d="M64.6716 20.2918C65.5151 22.5543 66.885 24.9729 67.1836 24.4416C67.5424 23.8019 65.6775 19.023 64.4018 17.7464C64.0744 17.4583 64.0273 17.7331 64.0456 18.0133C64.077 18.4653 64.318 19.3376 64.6716 20.2918Z" fill="url(#om-paint2_linear_28_2)"/>
+<path d="M67.5058 36.1667C67.5032 36.1878 67.5006 36.209 67.498 36.2301L67.5111 36.201L67.5137 36.2433C67.5163 36.2222 67.5189 36.201 67.5216 36.1799C68.4383 34.2609 69.1639 32.7464 68.8443 29.7754L68.7448 29.149L68.2497 26.7172C68.2 26.8837 68.1423 27.0714 67.3932 27.3304C65.984 25.0679 64.9598 23.5401 61.7852 20.7832L61.4656 21.407C67.1365 30.23 67.4927 35.2495 67.5058 36.1667Z" fill="url(#om-paint3_linear_28_2)"/>
+<path d="M69.2188 35.5961C69.2057 36.2305 69.1638 37.4834 69.0302 38.7601C69.1035 37.6499 69.2136 36.1671 69.2293 35.0543L69.2188 34.0684C69.2214 34.2878 69.2345 34.7979 69.2188 35.5961Z" fill="url(#om-paint4_linear_28_2)"/>
+<path d="M65.3421 51.0089C65.3316 51.0274 65.3238 51.0432 65.3133 51.0617L65.3238 51.0485L65.3107 51.0776C65.3211 51.0591 65.329 51.0432 65.3395 51.0247L65.8241 50.1287C66.2379 49.1639 66.8037 47.882 67.1678 46.8987C67.5895 45.5612 68.116 43.7665 68.4486 42.4052C68.8468 39.7383 68.8651 38.9691 68.1998 36.1514L67.8986 36.8202C68.0479 39.7065 68.3255 45.0775 65.3421 51.0089Z" fill="url(#om-paint5_linear_28_2)"/>
+<path d="M63.4746 54.2973L64.8052 52.0981L64.9677 51.8047L64.6821 52.2964C64.3207 52.8964 63.8597 53.7131 63.4746 54.2973Z" fill="url(#om-paint6_linear_28_2)"/>
+<path d="M63.8832 44.7334C63.0843 47.0225 63.0974 49.3432 64.2473 48.7855C65.7429 48.0612 67.5241 43.0867 66.3951 41.8312C65.6748 41.2418 64.5302 42.8779 63.8832 44.7334Z" fill="url(#om-paint7_linear_28_2)"/>
+<path d="M56.6983 58.1398C56.6852 58.1531 56.6747 58.1636 56.6616 58.1769L56.6852 58.1636L56.6721 58.1874C56.6852 58.1742 56.6957 58.1636 56.7088 58.1504C59.2181 56.6544 62.6573 54.6085 64.9021 51.6111L65.3474 50.6464C64.6716 50.8869 64.2499 51.0191 62.1072 51.4023C61.7903 49.6102 61.5388 48.1961 59.5953 45.4102L58.8016 46.063C59.4669 53.5856 57.5522 57.0165 56.6983 58.1398Z" fill="url(#om-paint8_linear_28_2)"/>
+<path d="M25.8084 68.866C25.8215 68.8686 25.832 68.8713 25.8425 68.8739L25.8163 68.866L25.8268 68.8686C25.8163 68.866 25.8032 68.8633 25.7901 68.8607L24.3076 68.4404L25.0698 68.6677L25.5308 68.7973L25.8084 68.866Z" fill="url(#om-paint9_linear_28_2)"/>
+<path d="M34.481 68.6152C32.5244 69.5403 30.9685 69.8337 26.9164 69.1253L26.5654 69.0619C28.2889 69.4346 29.4624 69.6698 31.2383 69.7755C31.4242 69.831 31.6783 69.8733 31.8722 69.8971C32.1419 69.9156 32.5008 69.9421 32.7706 69.9553L33.3573 69.9817C33.2971 69.9632 33.2159 69.9368 33.153 69.9183C33.174 69.6064 33.3364 69.4478 34.481 68.6152Z" fill="url(#om-paint10_linear_28_2)"/>
+<path d="M34.4811 68.6152C35.2931 69.35 35.2931 69.35 35.4371 69.7755C35.3481 69.8945 35.1438 69.9738 34.9997 70.0002C35.2355 69.9949 35.5524 69.9896 35.7881 69.9817L36.5687 69.9447C36.7914 69.9209 37.09 69.8839 37.3074 69.8363C38.7139 69.7491 39.8769 69.6487 42.0484 69.1755L41.7314 69.2337C38.4206 69.7412 36.4927 69.7808 34.4811 68.6152Z" fill="url(#om-paint11_linear_28_2)"/>
+<path d="M42.677 69.0251C42.6665 69.0277 42.6534 69.0304 42.6429 69.033L42.6508 69.0304L42.6272 69.0356C42.6377 69.033 42.6482 69.0304 42.6613 69.0277L42.952 68.9484L44.2041 68.6074L42.677 69.0251Z" fill="url(#om-paint12_linear_28_2)"/>
+<path d="M59.323 58.4198C56.7246 61.0657 56.7377 61.2798 56.7455 61.3802C57.183 61.7238 61.3163 57.5951 61.8297 56.3026C61.8454 56.2471 61.8454 56.2471 61.8323 56.2022C61.7589 56.1784 61.5808 56.1202 59.323 58.4198Z" fill="url(#om-paint13_linear_28_2)"/>
+<path d="M46.7187 66.7732C46.703 66.7785 46.6846 66.7838 46.6689 66.789L46.6925 66.7838L46.6663 66.7943C46.682 66.789 46.7003 66.7838 46.7161 66.7785C49.2123 66.1124 51.7924 65.4251 54.2362 63.7996L55.6664 62.7476C55.4385 62.8533 55.3547 62.893 54.3515 63.0436C55.4306 61.8357 56.3605 60.7942 56.9367 58.751L56.1614 59.1925C55.0194 60.7044 51.9836 64.7247 46.7187 66.7732Z" fill="url(#om-paint14_linear_28_2)"/>
+<path d="M47.9628 67.0291C46.9884 67.3912 46.1607 67.6634 45.6683 67.8273C44.8824 68.0864 44.5865 68.1841 44.4686 68.2661C44.4791 68.2767 44.4922 68.2872 44.5 68.2978C45.5923 68.2687 48.4186 67.2167 50.5481 66.0432C50.5821 66.0247 50.6162 66.0035 50.6502 65.9824C50.5638 65.9982 50.5638 65.9982 50.0583 66.207C49.4899 66.437 48.7984 66.7198 47.9628 67.0291Z" fill="url(#om-paint15_linear_28_2)"/>
+<path d="M34.4811 68.6151C37.6557 69.0486 39.9162 69.3155 42.3051 69.0829L43.1092 68.9032C43.0044 68.8503 42.8185 68.7922 41.831 68.7049C43.4471 68.29 44.6363 67.9516 46.3939 67.0635L45.595 67.2433C41.6005 68.549 39.0492 69.0565 34.4811 68.6151Z" fill="url(#om-paint16_linear_28_2)"/>
+<path d="M47.7323 64.0346C44.851 65.8188 45.1418 65.9218 45.2544 65.9615C45.4613 66.0355 47.1901 65.6972 49.5004 64.4179C50.6843 63.7623 51.8814 62.7579 51.7059 62.3932C51.698 62.3773 51.6823 62.3614 51.6718 62.3482C51.4649 62.1949 50.6765 62.2108 47.7323 64.0346Z" fill="url(#om-paint17_linear_28_2)"/>
+<path d="M34.4811 68.6146C38.693 68.2446 41.3071 67.9221 45.6735 66.9891L46.5301 66.627C45.4247 66.7115 44.1727 66.8067 42.3391 67.0155C43.303 66.2966 43.916 65.7732 44.2827 64.5811L43.4262 64.9459C40.9692 67.0102 39.0964 68.0305 34.4811 68.6146Z" fill="url(#om-paint18_linear_28_2)"/>
+<path d="M49.0551 3.32734C49.0682 3.33526 49.0813 3.3432 49.097 3.35113L49.0892 3.34584L49.118 3.35906L49.0735 3.33527C48.7775 3.15817 48.382 2.91764 48.0703 2.77491L47.198 2.41543C45.2833 1.70705 45.2099 1.67798 44.0155 1.33172L42.863 1.02246C44.4818 1.48502 46.7003 2.11939 49.0551 3.32734Z" fill="url(#om-paint19_linear_28_2)"/>
+<path d="M37.4304 1.39033C37.433 1.39562 37.4356 1.4009 37.4382 1.40619L37.4487 1.39826L37.4697 1.40619C37.467 1.4009 37.4644 1.39562 37.4618 1.39033C38.6667 0.568292 38.7401 0.491637 38.7689 0.277537C38.7453 0.269608 38.7139 0.256392 38.6903 0.248462L37.8861 0.161236C37.4959 0.126874 36.9746 0.0845829 36.5843 0.0581508L36.2229 0.044934L35.5654 0.0132168C35.3401 0.00793042 35.0363 0 34.811 0C34.4181 0 33.8943 0.00528722 33.504 0.0132168C35.1568 0.203528 37.4199 1.37976 37.4304 1.39033Z" fill="url(#om-paint20_linear_28_2)"/>
+<path d="M41.3333 1.18982C43.2323 2.33168 45.0894 2.70966 45.0082 2.26296C44.9244 1.8004 42.8682 0.970429 41.0059 0.647958C40.6968 0.597737 40.6627 0.613597 40.6235 0.6321C40.6235 0.671748 40.6182 0.758974 41.3333 1.18982Z" fill="url(#om-paint21_linear_28_2)"/>
+<path d="M48.5077 8.10168C48.5129 8.11226 48.5181 8.12283 48.5234 8.1334L48.5339 8.12019L48.5653 8.14134C48.56 8.13077 48.5548 8.12019 48.5496 8.10961C49.4768 6.72722 50.6319 5.00914 49.2751 3.57916L48.4107 3.14832C47.7742 3.2329 46.9046 3.34656 45.5295 3.56594C43.4026 2.84435 41.7209 2.27342 38.6039 1.52539L38.3106 1.76328C44.7777 5.062 48.4919 8.08318 48.5077 8.10168Z" fill="url(#om-paint22_linear_28_2)"/>
+<path d="M29.2476 1.01518C28.8181 1.39581 29.0931 1.73414 29.8763 1.78436C31.3719 1.88216 33.1138 0.901527 32.6947 0.407248C32.5192 0.198434 31.9927 0.22751 31.7674 0.238083C30.738 0.309449 29.6772 0.63456 29.2476 1.01518Z" fill="url(#om-paint23_linear_28_2)"/>
+<path d="M28.3623 7.21061C28.3596 7.22118 28.357 7.23175 28.3544 7.24232L28.3858 7.22383L28.4042 7.23968C28.4068 7.22911 28.4094 7.21853 28.412 7.20796C31.5343 5.0326 31.6312 4.97181 36.7704 1.68895L36.2439 1.41406C34.2296 1.78939 32.582 2.11451 29.7348 2.85989C27.8646 2.53213 27.0133 2.38147 24.8654 2.14623L24.0639 2.50835C24.3259 3.33831 24.5171 3.93567 28.3623 7.21061Z" fill="url(#om-paint24_linear_28_2)"/>
+<path d="M24.1739 2.2153C24.1634 2.22059 24.153 2.22852 24.1451 2.2338L24.1687 2.22323L24.1713 2.22852C24.1818 2.22323 24.1923 2.2153 24.2001 2.21002C26.6178 1.23732 28.3649 0.534228 31.2514 0.15625C30.8506 0.201184 30.3163 0.259338 29.9155 0.312202C27.8567 0.629387 27.2831 0.750973 25.1745 1.30605C25.0069 1.38535 24.7554 1.44877 24.6192 1.573C24.4463 1.7316 24.318 2.03028 24.1739 2.2153Z" fill="url(#om-paint25_linear_28_2)"/>
+<path d="M18.5791 3.9335C18.3643 4.05244 18.3171 4.0921 18.2936 4.1106C18.3538 4.1291 18.5686 4.03923 19.7971 3.43922C21.0491 2.82864 21.9449 2.40044 22.9324 2.02246C22.4662 2.19956 21.8454 2.42952 21.3844 2.61719C20.5671 2.98459 19.4775 3.47887 18.676 3.88328C18.6445 3.8965 18.6079 3.91764 18.5791 3.9335Z" fill="url(#om-paint26_linear_28_2)"/>
+<path d="M11.423 10.4828C11.4151 10.4933 11.4046 10.5066 11.3968 10.5171L11.4256 10.4933L11.423 10.5066C11.4308 10.496 11.4413 10.4828 11.4492 10.4722C13.7463 8.46864 17.2196 5.43953 22.9481 2.7276L23.0319 2.50293C20.7059 3.35933 18.9929 4.02277 16.439 5.42103C16.384 5.39988 16.3081 5.37081 16.253 5.34702C16.2452 5.32852 16.2347 5.30208 16.2295 5.28358C16.2347 5.27829 16.2399 5.27301 16.2452 5.27036L15.7816 5.5664C15.1529 6.00782 14.3016 6.57611 13.6887 7.04131C13.2015 7.46951 12.5336 8.04309 12.1773 8.58495C11.7949 9.16381 11.6849 9.85368 11.423 10.4828Z" fill="url(#om-paint27_linear_28_2)"/>
+<path d="M53.5158 8.00397C55.276 10.1423 57.602 11.4797 57.7356 10.7026C57.8875 9.80928 54.9879 7.00749 53.1727 6.29382C52.4628 6.05065 52.5414 6.46827 52.7353 6.86211C52.8846 7.16872 53.1622 7.57578 53.5158 8.00397Z" fill="url(#om-paint28_linear_28_2)"/>
+<path d="M60.9155 20.2494C60.9181 20.2653 60.9234 20.2811 60.926 20.297L60.9365 20.2785L60.9626 20.3102L60.9469 20.26C61.9475 18.267 63.0791 16.007 61.6175 13.3004L60.9076 12.4704C60.5121 12.6132 60.5121 12.6132 58.27 13.0387C55.7659 11.4105 54.0345 10.3242 50.184 8.54004L49.8933 8.99996C58.4036 15.9489 60.8972 20.2124 60.9155 20.2494Z" fill="url(#om-paint29_linear_28_2)"/>
+<path d="M35.9636 5.73095C36.3068 7.74772 40.1153 8.64641 41.1866 6.96533C41.9305 5.79968 40.5422 3.96794 38.2634 3.80142C36.6316 3.75384 35.7986 4.76618 35.9636 5.73095Z" fill="url(#om-paint30_linear_28_2)"/>
+<path d="M39.725 16.7179C39.725 16.7337 39.7276 16.7496 39.7276 16.7654L39.7512 16.7443L39.7852 16.7681C39.7852 16.7522 39.7826 16.7364 39.7826 16.7205C43.8033 12.9751 46.2288 10.7178 47.9183 8.67193L47.0853 8.02435C44.5891 8.55299 42.5644 8.99441 39.2404 9.85874C36.1758 8.86753 34.1013 8.20937 30.2351 7.25781L29.4676 7.83404C39.3504 16.0597 39.7224 16.7126 39.725 16.7179Z" fill="url(#om-paint31_linear_28_2)"/>
+<path d="M48.0257 15.4921C48.7225 18.3838 52.3948 20.1072 53.639 18.1248C54.6605 16.4992 53.0025 13.248 50.2731 12.6983C48.4055 12.4339 47.6538 13.9432 48.0257 15.4921Z" fill="url(#om-paint32_linear_28_2)"/>
+<path d="M51.8447 30.5929C51.8447 30.6141 51.842 30.6352 51.842 30.6564L51.8656 30.6247L51.8918 30.6669C51.8944 30.6458 51.8944 30.6247 51.8944 30.6035C53.8354 28.6502 57.877 24.5823 60.2161 20.9717L59.5036 19.9831C57.5286 20.4113 55.2891 20.895 51.8106 21.7779C48.6255 20.0703 46.4357 18.9285 41.7969 17.0518L41.053 17.7945C49.3877 26.0942 51.8394 30.5639 51.8447 30.5929Z" fill="url(#om-paint33_linear_28_2)"/>
+<path d="M23.8753 15.14C23.7548 17.8255 27.3433 18.8246 29.6038 16.7391C31.6495 14.8492 30.7746 11.8756 28.116 11.688C27.9746 11.6774 27.7833 11.6827 27.6393 11.6853C25.3997 11.873 23.9434 13.6254 23.8753 15.14Z" fill="url(#om-paint34_linear_28_2)"/>
+<path d="M26.8089 29.4847C26.8089 29.5059 26.8089 29.527 26.8116 29.5482L26.8456 29.5085L26.8718 29.5429C26.8718 29.5217 26.8718 29.5006 26.8692 29.4794C30.0831 25.8635 32.4039 23.2494 38.3629 17.6696L37.5378 16.8555C33.8838 18.0291 31.1675 18.9304 26.8901 20.667C23.058 19.5833 21.8558 19.2555 16.9916 18.1797L16.1534 19.1049C18.0787 21.0926 18.0787 21.0926 20.9207 23.8045C21.9029 24.7428 26.8011 29.4662 26.8089 29.4847Z" fill="url(#om-paint35_linear_28_2)"/>
+<path d="M17.4213 7.47239C16.6512 8.66183 17.1934 9.39401 18.6052 9.07153C21.1905 8.4821 23.3514 5.64065 22.2147 4.93756C21.903 4.7446 21.4577 4.81597 21.2455 4.85034C19.7237 5.17016 18.0761 6.46004 17.4213 7.47239Z" fill="url(#om-paint36_linear_28_2)"/>
+<path d="M15.5668 18.2248C15.5642 18.2406 15.5615 18.2565 15.5589 18.2724L15.5851 18.2459L15.6087 18.2644C15.6113 18.2486 15.6139 18.2327 15.6166 18.2169C17.864 15.912 20.9417 12.7533 27.532 7.9559L26.9898 7.45898C23.1446 8.78851 20.7479 9.68985 17.5261 11.2124C13.1622 10.3824 13.1622 10.3824 12.3974 10.2212L11.5749 10.9745C11.753 12.4705 11.9521 14.1675 15.5668 18.2248Z" fill="url(#om-paint37_linear_28_2)"/>
+<path d="M6.83124 13.9561C7.07746 13.6363 9.36938 10.8292 11.106 9.20898C8.74597 11.5561 8.60453 11.6962 7.22675 13.4381L6.79718 14.0011C6.80766 13.9879 6.82076 13.9694 6.83124 13.9561Z" fill="url(#om-paint38_linear_28_2)"/>
+<path d="M1.88334 23.9476C1.8781 23.9634 1.87286 23.9819 1.87024 23.9978L1.88334 23.9661V23.9819C1.88857 23.9661 1.89381 23.9476 1.89643 23.9317C3.22706 20.8973 5.05012 16.7448 10.3071 11.506L10.4067 11.0566C8.27192 12.7879 6.85485 14.0065 5.21514 16.351L5.23609 16.2743L4.10716 18.2039C3.59376 19.24 2.91274 20.6224 2.45697 21.685C2.24219 22.3537 2.0405 23.2656 1.88334 23.9476Z" fill="url(#om-paint39_linear_28_2)"/>
+<path d="M5.5321 19.5469C4.98465 21.3258 5.49281 22.3355 6.61912 21.7064C8.66745 20.5619 10.5796 15.701 9.1468 15.2834C8.93201 15.22 8.70675 15.3046 8.57316 15.3548C7.31326 15.931 6.01406 17.9795 5.5321 19.5469Z" fill="url(#om-paint40_linear_28_2)"/>
+<path d="M5.75735 33.5528C5.75996 33.574 5.76258 33.5951 5.76258 33.6163L5.7783 33.5713L5.79663 33.6004C5.79401 33.5793 5.7914 33.5581 5.7914 33.537C7.16917 30.0162 8.88484 25.6364 14.2047 19.4831L13.6861 18.8223C10.6477 20.7333 8.60719 22.084 5.91189 24.7087C4.11763 24.2435 3.06728 23.9606 2.326 23.6065L1.89905 24.6611C2.01954 26.2153 2.2448 29.1096 5.57661 33.3176C5.629 33.389 5.72329 33.4709 5.75735 33.5528Z" fill="url(#om-paint41_linear_28_2)"/>
+<path d="M1.32801 25.4092L1.42492 24.7881C1.27038 25.2718 1.03464 25.9088 0.911535 26.4004L0.356235 29.0357L0 31.7609C0.0995351 31.0287 0.180737 30.0428 0.33004 29.3212C0.581497 28.137 1.05822 26.5907 1.32801 25.4092Z" fill="url(#om-paint42_linear_28_2)"/>
+<path d="M59.4984 28.9619C59.6215 32.2368 61.9318 34.5153 63.3593 32.7708C64.7424 31.0818 64.0535 26.62 61.7956 25.6632C60.2606 25.1663 59.4225 26.9504 59.4984 28.9619Z" fill="url(#om-paint43_linear_28_2)"/>
+<path d="M58.9248 44.89C58.917 44.9085 58.9091 44.9296 58.9039 44.9481L58.9275 44.927L58.9379 44.9587L58.9563 44.8979C63.0844 41.4802 65.6408 39.0934 67.3329 36.2652L67.1548 35.1313C65.2034 35.5912 63.2363 35.9612 61.277 36.3788C59.158 34.2564 57.6675 32.8237 53.8721 30.2598L53.1151 31.0501C58.9039 40.6133 58.9301 44.853 58.9248 44.89Z" fill="url(#om-paint44_linear_28_2)"/>
+<path d="M36.3618 25.9646C36.6158 29.3664 40.6208 30.9048 42.6639 28.3831C44.4608 26.1655 43.2925 22.2932 39.9398 22.0077C37.5431 21.9575 36.2151 24.0219 36.3618 25.9646Z" fill="url(#om-paint45_linear_28_2)"/>
+<path d="M39.3006 41.6176C39.298 41.6387 39.298 41.6572 39.2954 41.6784L39.319 41.6519L39.3478 41.681C39.3504 41.6599 39.3504 41.6414 39.353 41.6202C43.083 37.9039 46.9517 34.3355 50.7157 30.6509L50.0295 29.6227C46.5012 30.635 43.8819 31.4016 39.7957 32.7919C36.3486 31.3064 33.9912 30.3126 29.1559 28.6738L28.3361 29.6359C37.3885 38.636 39.2954 41.6044 39.3006 41.6176Z" fill="url(#om-paint46_linear_28_2)"/>
+<path d="M47.6484 40.0547C47.3472 43.1526 49.8854 44.9288 52.0306 43.1182C54.2597 41.2363 54.202 37.0653 51.2972 36.4388C49.2855 36.1719 47.837 38.1067 47.6484 40.0547Z" fill="url(#om-paint47_linear_28_2)"/>
+<path d="M46.1529 54.3866C46.1476 54.3998 46.1398 54.4157 46.1345 54.4289L46.1581 54.4104L46.1686 54.4342C46.1738 54.421 46.1817 54.405 46.1869 54.3918C50.0059 51.4684 53.8956 48.6429 57.6727 45.664L57.492 44.6674C54.6395 45.2965 52.51 45.7802 49.0132 46.7318C46.6662 45.0586 44.9689 43.9037 41.184 41.9688L40.3798 42.7988C46.1843 51.1434 46.1555 54.3575 46.1529 54.3866Z" fill="url(#om-paint48_linear_28_2)"/>
+<path d="M24.0953 39.7119C24.7344 42.9075 28.4565 43.9384 30.1277 41.3798C31.6809 39.0035 30.3084 35.2978 27.1102 35.3612C24.8261 35.5674 23.7076 37.7771 24.0953 39.7119Z" fill="url(#om-paint49_linear_28_2)"/>
+<path d="M29.2948 53.6413C29.2974 53.6571 29.3 53.6703 29.3026 53.6862L29.3209 53.6624L29.3419 53.6835C29.3393 53.6677 29.3367 53.6545 29.334 53.6386C30.8244 51.1725 32.5139 48.3786 37.9464 42.6878L37.2576 41.7891C33.8734 43.1081 31.5683 44.0358 28.0715 45.8015C24.779 44.731 23.4169 44.2869 18.3354 43.0076L17.9032 43.983C21.1748 46.6183 28.8364 52.7928 29.2948 53.6413Z" fill="url(#om-paint50_linear_28_2)"/>
+<path d="M11.9154 28.261C12.1381 31.2822 15.0298 32.239 16.9917 29.9395C19.1789 27.3729 18.0342 23.231 15.2158 23.5138C15.1477 23.5218 15.056 23.5376 14.9853 23.5482C12.9108 24.0055 11.7766 26.35 11.9154 28.261Z" fill="url(#om-paint51_linear_28_2)"/>
+<path d="M16.921 43.0125C16.9262 43.0337 16.9315 43.0522 16.9367 43.0733L16.9498 43.0442L16.9839 43.0654C16.9786 43.0442 16.9734 43.0257 16.9681 43.0046C18.3538 40.1949 20.0799 36.7005 25.9865 29.7806L25.1326 28.9189C20.9024 30.9569 18.3512 32.2837 15.2865 34.3164C12.5441 33.6529 9.79636 33.008 7.05391 32.3393L6.6322 33.4415C8.49717 35.5349 10.4276 37.6997 16.6224 42.7693C16.7141 42.8407 16.8581 42.9147 16.921 43.0125Z" fill="url(#om-paint52_linear_28_2)"/>
+<path d="M0.0681099 34.5595C0.117877 36.3675 0.447911 37.467 0.832954 37.1181C1.69734 36.3357 1.8807 29.4951 1.04251 29.3312C0.95083 29.3127 0.887966 29.3815 0.822483 29.4555C0.356239 30.1136 0.0104843 32.4502 0.0681099 34.5595Z" fill="url(#om-paint53_linear_28_2)"/>
+<path d="M4.2512 48.3151C4.25906 48.3336 4.26953 48.3521 4.27739 48.3706L4.26953 48.3415L4.28786 48.3573C4.28001 48.3388 4.26953 48.3203 4.26167 48.3018C3.71161 45.204 2.95724 40.959 5.09724 34.092L4.59171 33.3809C3.1825 35.4374 2.0719 37.0603 1.39611 40.1211C0.639123 39.8304 0.222643 39.6718 0.123108 39.3493L0.544827 41.9634C0.772709 42.7749 1.07393 43.8798 1.49826 44.6066C2.27621 45.9441 3.38681 47.0357 4.2512 48.3151Z" fill="url(#om-paint54_linear_28_2)"/>
+<path d="M6.20524 44.0093C7.19011 46.4067 9.08128 47.2789 9.81732 45.6745C10.8519 43.4198 8.91364 38.5405 6.74482 39.2832C5.50325 39.8753 5.46396 42.204 6.20524 44.0093Z" fill="url(#om-paint55_linear_28_2)"/>
+<path d="M15.1189 56.3795C15.1293 56.3927 15.1398 56.4059 15.1503 56.4191L15.1477 56.3927L15.1739 56.4085C15.1634 56.3953 15.1529 56.3821 15.1424 56.3689C14.6055 53.8367 13.8721 50.3662 16.143 44.3238L15.2865 43.5996C13.4032 45.2886 11.9154 46.6234 10.4407 49.1952C5.69707 48.2014 5.69707 48.2014 4.82483 48.0058L5.03699 48.9944C6.80243 50.5908 9.00006 52.5785 14.8307 56.1971C14.9172 56.2552 15.0429 56.3107 15.1189 56.3795Z" fill="url(#om-paint56_linear_28_2)"/>
+<path d="M4.45808 52.4309C3.82944 51.3208 2.27355 47.9692 1.6842 46.2432L2.43595 48.2679C3.0122 49.5393 3.81111 51.2204 4.47118 52.4494C4.46594 52.4442 4.4607 52.4362 4.45808 52.4309Z" fill="url(#om-paint57_linear_28_2)"/>
+<path d="M11.6272 61.0427C11.6403 61.0533 11.6534 61.0638 11.6665 61.0744L11.643 61.0506L11.6587 61.0612C11.6456 61.0506 11.6325 61.04 11.6194 61.0295C9.50818 58.8647 6.31519 55.5898 4.52356 49.669L3.99707 49.0928C4.24329 50.9509 4.43712 52.4179 6.07945 54.9897L6.04278 54.9501C6.72381 55.862 7.63534 57.0805 8.36352 57.9528L9.81464 59.5334C10.3411 60.0118 11.0746 60.6039 11.6272 61.0427Z" fill="url(#om-paint58_linear_28_2)"/>
+<path d="M52.3659 53.6728C51.3549 55.5099 51.3077 57.2835 52.8557 56.8949C55.5275 56.2235 58.0421 51.8807 56.3054 50.9371C56.2688 50.916 56.2164 50.8975 56.1771 50.879C54.9617 50.4983 53.2853 51.9997 52.3659 53.6728Z" fill="url(#om-paint59_linear_28_2)"/>
+<path d="M44.1727 64.3437C44.1596 64.3516 44.1465 64.3622 44.1334 64.3702L44.1596 64.3596L44.1465 64.3754L44.1832 64.349C48.8954 62.2556 52.4839 60.6327 55.7948 58.8326L56.24 58.0688C53.8067 58.4414 52.4682 58.6476 50.2286 59.097C49.6341 57.6511 49.1469 56.6414 47.3867 54.8203L46.5616 55.4414C46.9885 60.667 45.4981 63.1675 44.1727 64.3437Z" fill="url(#om-paint60_linear_28_2)"/>
+<path d="M35.8012 51.5269C35.8562 54.0115 37.9281 55.5604 39.7878 53.7101C41.713 51.7938 41.4642 48.2202 38.7951 47.9691C37.1004 47.9427 35.7566 49.5365 35.8012 51.5269Z" fill="url(#om-paint61_linear_28_2)"/>
+<path d="M36.3827 63.0489C36.3801 63.0594 36.3775 63.07 36.3749 63.0806L36.388 63.0647L36.3958 63.0806C36.3985 63.07 36.4011 63.0594 36.4037 63.0489C37.8679 61.3942 39.5259 59.5176 45.003 55.188L44.8249 54.4003C42.1584 55.2435 40.3432 55.8382 37.5903 56.9906C35.5734 55.8435 34.1196 55.0558 30.9083 53.7686L30.4683 54.5298C36.1287 60.6039 36.3749 62.8163 36.3827 63.0489Z" fill="url(#om-paint62_linear_28_2)"/>
+<path d="M40.4086 61.9228C40.3955 61.9492 39.023 64.5528 40.5605 64.0664C42.5643 63.4347 45.1418 60.1888 43.7509 59.5095C43.688 59.4804 43.599 59.4567 43.5309 59.4408C42.5643 59.3219 41.252 60.3659 40.4086 61.9228Z" fill="url(#om-paint63_linear_28_2)"/>
+<path d="M34.4811 68.6152C36.4482 67.7218 36.4482 67.7218 43.0123 64.8011L43.4628 64.2936C41.6319 64.7377 40.3929 65.0549 38.6118 65.6866C38.4546 64.9967 38.321 64.402 37.09 63.2363L36.642 63.7438C36.9223 66.0381 36.6787 67.2857 34.4811 68.6152Z" fill="url(#om-paint64_linear_28_2)"/>
+<path d="M29.7845 61.7689C30.366 62.9055 32.1 64.7716 32.6737 63.0746C33.2001 61.5178 32.3227 58.8455 30.497 58.8614C29.3602 58.9697 29.0328 60.3019 29.7845 61.7689Z" fill="url(#om-paint65_linear_28_2)"/>
+<path d="M34.4811 68.6149C33.8655 67.333 33.9074 66.3656 35.7488 63.7065L35.5576 63.1699C34.2479 63.9576 33.3993 64.5021 32.6501 65.4246C31.3562 64.7823 30.5704 64.4122 28.1632 63.6457L28.3675 64.1823C31.516 66.1488 33.0457 67.1638 34.4811 68.6149Z" fill="url(#om-paint66_linear_28_2)"/>
+<path d="M18.304 53.1708C19.6948 55.4889 22.3456 56.5251 22.8878 54.3841C23.4431 52.1849 21.2979 48.8756 18.9536 49.1954C17.5024 49.5232 17.2064 51.3444 18.304 53.1708Z" fill="url(#om-paint67_linear_28_2)"/>
+<path d="M27.5031 63.6012C27.5136 63.6118 27.5215 63.6223 27.5319 63.6303L27.5267 63.6144L27.5503 63.6276C27.5398 63.6171 27.5319 63.6065 27.5215 63.5986C27.0631 61.9016 26.4318 59.5782 28.9438 54.6222L28.2287 53.9297C25.8136 55.4813 24.5118 56.4196 23.1707 57.8866C21.0333 57.3289 19.4905 56.9245 16.1744 56.2108L16.3735 57.0011C18.7021 58.4047 19.061 58.6214 22.0156 60.3527C27.0945 63.3263 27.4769 63.58 27.5031 63.6012Z" fill="url(#om-paint68_linear_28_2)"/>
+<path d="M9.81989 57.6797C11.237 59.0991 12.6907 59.8577 12.6986 59.1837C12.7117 58.0815 8.55213 53.0567 7.68513 53.892C7.342 54.4259 8.33997 56.1969 9.81989 57.6797Z" fill="url(#om-paint69_linear_28_2)"/>
+<path d="M22.474 65.7049C22.4897 65.7128 22.5054 65.7181 22.5238 65.726L22.5002 65.7128L22.5264 65.7208C22.5107 65.7128 22.495 65.7075 22.4766 65.6996C20.3576 64.3066 17.1541 62.2026 15.3756 57.4184L14.5321 56.9004C14.3357 58.2933 14.1812 59.3929 14.9958 61.2987C12.125 60.8493 12.125 60.8493 11.5932 60.7489L12.3109 61.4361C13.5132 62.1233 14.6474 62.7736 16.7848 63.6723C18.6445 64.4547 20.5881 64.9992 22.474 65.7049Z" fill="url(#om-paint70_linear_28_2)"/>
+<path d="M21.7143 63.7063C23.2205 64.6473 25.3186 65.4535 25.2086 64.9301C25.0619 64.2217 20.8185 60.5715 19.5141 60.9732C18.9509 61.2587 19.7708 62.4904 21.7143 63.7063Z" fill="url(#om-paint71_linear_28_2)"/>
+<path d="M34.4811 68.6145C31.1598 67.7687 29.397 66.9466 27.7206 64.3087L26.9714 63.8779C26.8693 64.6814 26.7828 65.3766 27.6315 66.3916C26.0887 66.0955 25.0357 65.8973 22.8853 65.6012L23.6318 66.0321C26.4188 66.825 29.3027 67.6497 34.4811 68.6145Z" fill="url(#om-paint72_linear_28_2)"/>
+<path d="M20.63 66.6613C21.903 67.1423 23.2467 67.4674 23.4458 67.3485C23.3358 67.1212 17.1279 64.4621 16.8031 64.5044C16.7952 64.515 16.7848 64.5308 16.7769 64.544C16.7821 64.5546 16.7874 64.5678 16.7926 64.5784C17.0886 64.9537 18.6917 65.9291 20.63 66.6613Z" fill="url(#om-paint73_linear_28_2)"/>
+<path d="M26.2458 68.5441C28.907 68.7344 30.641 68.7846 34.4784 68.6155C30.3005 68.597 27.7178 68.256 23.4405 66.2762L22.5604 66.0225C23.6867 66.8366 24.5039 67.3785 26.3872 68.0393C25.2635 68.0393 24.8706 68.0419 24.0481 68.0974C24.7685 68.2745 25.5019 68.4252 26.2458 68.5441Z" fill="url(#om-paint74_linear_28_2)"/>
+</g>
+<defs>
+<linearGradient id="om-paint0_linear_28_2" x1="41.8934" y1="-14.6246" x2="81.8705" y2="51.4021" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint1_linear_28_2" x1="44.4099" y1="-16.1488" x2="84.3869" y2="49.8782" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint2_linear_28_2" x1="43.742" y1="-15.7444" x2="83.7192" y2="50.2826" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint3_linear_28_2" x1="40.8441" y1="-13.99" x2="80.8211" y2="52.0369" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint4_linear_28_2" x1="39.6003" y1="-13.2371" x2="79.5766" y2="52.7908" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint5_linear_28_2" x1="34.7121" y1="-10.2768" x2="74.6892" y2="55.75" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint6_linear_28_2" x1="28.724" y1="-6.65123" x2="68.7013" y2="59.3758" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint7_linear_28_2" x1="32.6961" y1="-9.05643" x2="72.6732" y2="56.9702" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint8_linear_28_2" x1="25.7627" y1="-4.85855" x2="65.7397" y2="61.1682" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint9_linear_28_2" x1="-6.88287" y1="14.9056" x2="33.0955" y2="80.9337" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint10_linear_28_2" x1="-2.95695" y1="12.5303" x2="37.0203" y2="78.5571" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint11_linear_28_2" x1="2.59894" y1="9.1662" x2="42.5764" y2="75.1933" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint12_linear_28_2" x1="6.52698" y1="6.78528" x2="46.5054" y2="72.8147" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint13_linear_28_2" x1="22.5867" y1="-2.93576" x2="62.5638" y2="63.091" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint14_linear_28_2" x1="15.3407" y1="1.45194" x2="55.3179" y2="67.4789" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint15_linear_28_2" x1="10.3194" y1="4.49076" x2="50.2971" y2="70.5184" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint16_linear_28_2" x1="4.76948" y1="7.85188" x2="44.7467" y2="73.8788" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint17_linear_28_2" x1="12.2702" y1="3.31084" x2="52.2474" y2="69.338" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint18_linear_28_2" x1="4.9155" y1="7.76352" x2="44.8925" y2="73.7904" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint19_linear_28_2" x1="37.5543" y1="-11.9983" x2="77.5312" y2="54.0283" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint20_linear_28_2" x1="31.2009" y1="-8.15115" x2="71.1781" y2="57.8758" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint21_linear_28_2" x1="35.5449" y1="-10.7809" x2="75.5222" y2="55.2463" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint22_linear_28_2" x1="35.7575" y1="-10.9097" x2="75.7346" y2="55.1173" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint23_linear_28_2" x1="26.9965" y1="-5.6054" x2="66.9738" y2="60.422" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint24_linear_28_2" x1="26.0934" y1="-5.05878" x2="66.0705" y2="60.9682" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint25_linear_28_2" x1="24.5386" y1="-4.1171" x2="64.5159" y2="61.91" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint26_linear_28_2" x1="18.5117" y1="-0.46786" x2="58.4891" y2="65.5595" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint27_linear_28_2" x1="14.5065" y1="1.9566" x2="54.4834" y2="67.9832" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint28_linear_28_2" x1="41.5365" y1="-14.4086" x2="81.5133" y2="51.618" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint29_linear_28_2" x1="40.817" y1="-13.9735" x2="80.7941" y2="52.0535" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint30_linear_28_2" x1="30.557" y1="-7.76075" x2="70.5339" y2="58.2659" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint31_linear_28_2" x1="29.5354" y1="-7.14319" x2="69.5125" y2="58.8837" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint32_linear_28_2" x1="35.2201" y1="-10.5843" x2="75.1971" y2="55.4425" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint33_linear_28_2" x1="33.456" y1="-9.51609" x2="73.4331" y2="56.5109" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint34_linear_28_2" x1="18.3054" y1="-0.343777" x2="58.2826" y2="65.6832" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint35_linear_28_2" x1="16.6983" y1="0.629429" x2="56.6754" y2="66.6562" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint36_linear_28_2" x1="16.2018" y1="0.930349" x2="56.1788" y2="66.9569" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint37_linear_28_2" x1="14.5912" y1="1.90535" x2="54.5682" y2="67.9321" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint38_linear_28_2" x1="6.20453" y1="6.98329" x2="46.182" y2="73.0107" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint39_linear_28_2" x1="1.54654" y1="9.80376" x2="41.5236" y2="75.8305" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint40_linear_28_2" x1="2.08101" y1="9.48036" x2="42.058" y2="75.5072" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint41_linear_28_2" x1="0.332861" y1="10.5384" x2="40.3099" y2="76.5653" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint42_linear_28_2" x1="-7.14081" y1="15.0635" x2="32.8363" y2="81.0904" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint43_linear_28_2" x1="37.2321" y1="-11.8025" x2="77.2094" y2="54.2245" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint44_linear_28_2" x1="33.5354" y1="-9.56416" x2="73.5125" y2="56.4627" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint45_linear_28_2" x1="22.7695" y1="-3.04572" x2="62.7465" y2="62.9811" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint46_linear_28_2" x1="20.5776" y1="-1.71875" x2="60.5547" y2="64.3081" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint47_linear_28_2" x1="24.3665" y1="-4.01333" x2="64.3431" y2="62.013" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint48_linear_28_2" x1="21.1308" y1="-2.05408" x2="61.1079" y2="63.9727" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint49_linear_28_2" x1="7.76709" y1="6.03756" x2="47.7442" y2="72.0646" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint50_linear_28_2" x1="6.28263" y1="6.93605" x2="46.2596" y2="72.9628" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#0060FE"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint51_linear_28_2" x1="3.77117" y1="8.4565" x2="43.7483" y2="74.4835" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint52_linear_28_2" x1="2.86823" y1="9.00287" x2="42.8454" y2="75.0298" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint53_linear_28_2" x1="-9.21754" y1="16.3205" x2="30.7594" y2="82.3472" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint54_linear_28_2" x1="-10.0834" y1="16.8451" x2="29.8936" y2="82.8718" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint55_linear_28_2" x1="-8.20792" y1="15.7095" x2="31.7691" y2="81.7362" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint56_linear_28_2" x1="-7.91865" y1="15.5344" x2="32.0584" y2="81.5612" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint57_linear_28_2" x1="-14.6154" y1="19.5893" x2="25.3615" y2="85.616" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint58_linear_28_2" x1="-14.1565" y1="19.3118" x2="25.8205" y2="85.3386" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint59_linear_28_2" x1="20.9927" y1="-1.97037" x2="60.9697" y2="64.0565" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint60_linear_28_2" x1="14.8316" y1="1.76006" x2="54.8088" y2="67.787" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint61_linear_28_2" x1="10.58" y1="4.33428" x2="50.5569" y2="70.3609" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint62_linear_28_2" x1="8.56488" y1="5.55471" x2="48.5419" y2="71.5816" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint63_linear_28_2" x1="8.50912" y1="5.58857" x2="48.4861" y2="71.6152" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint64_linear_28_2" x1="4.29786" y1="8.13801" x2="44.2749" y2="74.1646" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint65_linear_28_2" x1="0.888858" y1="10.2018" x2="40.8658" y2="76.2286" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint66_linear_28_2" x1="0.358845" y1="10.5227" x2="40.3358" y2="76.5494" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint67_linear_28_2" x1="-3.21507" y1="12.6866" x2="36.7618" y2="78.7132" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint68_linear_28_2" x1="-3.0426" y1="12.5824" x2="36.9346" y2="78.6094" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint69_linear_28_2" x1="-12.6538" y1="18.401" x2="27.3233" y2="84.4278" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint70_linear_28_2" x1="-10.4057" y1="17.0404" x2="29.5713" y2="83.0672" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint71_linear_28_2" x1="-6.54619" y1="14.7031" x2="33.4311" y2="80.7303" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint72_linear_28_2" x1="-3.55303" y1="12.8908" x2="36.424" y2="78.9176" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint73_linear_28_2" x1="-9.34858" y1="16.3998" x2="30.6285" y2="82.4268" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<linearGradient id="om-paint74_linear_28_2" x1="-3.76453" y1="13.0196" x2="36.2124" y2="79.0465" gradientUnits="userSpaceOnUse">
+<stop stop-color="#18FFD9"/>
+<stop offset="0.494" stop-color="#1792FF"/>
+<stop offset="1" stop-color="#7C2DFB"/>
+</linearGradient>
+<clipPath id="om-clip0_28_2">
+<rect width="70" height="70" fill="white"/>
+</clipPath>
+</defs>
+</symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="topbar-in">
+      <nav class="brand" aria-label="Navigatsiya">
+        <span class="logo" aria-hidden="true"><svg><use href="#i-logo"/></svg></span>
+        <span class="org">online-mahalla</span>
+        <span class="sep" aria-hidden="true">/</span>
+        <strong>Yangi xabarnoma</strong>
+      </nav>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Mavzuni almashtirish">
+        <svg width="18" height="18"><use href="#i-sun" id="themeIcon"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <h1>Yangi tizim xabarnomasi</h1>
+      <p>Xabar tanlangan hududdagi foydalanuvchilarning ilovasida bildirishnoma bo‘lib chiqadi va belgilangan vaqtda o‘zi yopiladi.</p>
+    </div>
+
+    <form id="form" novalidate>
+      <div class="layout">
+        <div class="col-main">
+
+          <section class="card">
+            <div class="card-head">
+              <div>
+                <h2>Kim bu xabarni oladi?&nbsp;<span class="req">*</span></h2>
+                <p>Avval qamrovni tanlang, keyin aniq hududni ko‘rsating</p>
+              </div>
+              <div class="head-meta">
+                <span class="todo-badge" id="badge-audience" hidden><span class="dot"></span><span id="badge-audience-tx"></span></span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="options" role="radiogroup" aria-label="Qamrov darajasi">
+                <button type="button" class="opt" data-level="1" role="radio" aria-checked="false">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span class="tx"><b><svg><use href="#i-globe"/></svg> Respublika</b><span>Platformadagi barcha foydalanuvchilar</span></span>
+                </button>
+                <button type="button" class="opt" data-level="2" role="radio" aria-checked="false">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span class="tx"><b><svg><use href="#i-map"/></svg> Viloyat</b><span>Faqat tanlangan viloyat foydalanuvchilari</span></span>
+                </button>
+                <button type="button" class="opt" data-level="3" role="radio" aria-checked="false">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span class="tx"><b><svg><use href="#i-pin"/></svg> Tuman</b><span>Faqat tanlangan tuman foydalanuvchilari</span></span>
+                </button>
+                <button type="button" class="opt" data-level="4" role="radio" aria-checked="true">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span class="tx"><b><svg><use href="#i-home"/></svg> Mahalla</b><span>Faqat tanlangan mahalla foydalanuvchilari</span></span>
+                </button>
+              </div>
+
+              <div class="row c3" id="geoGrid">
+                <div class="field" id="regionField">
+                  <label class="lbl" for="region">Viloyat</label>
+                  <span class="select-wrap"><select class="control" id="region" aria-describedby="err-region"><option value="">Tanlang</option></select></span>
+                  <p class="err" id="err-region"><svg><use href="#i-warn"/></svg> Viloyatni tanlang</p>
+                </div>
+                <div class="field" id="districtField">
+                  <label class="lbl" for="district">Tuman</label>
+                  <span class="select-wrap"><select class="control" id="district" aria-describedby="err-district"><option value="">Tanlang</option></select></span>
+                  <p class="err" id="err-district"><svg><use href="#i-warn"/></svg> Tumanni tanlang</p>
+                </div>
+                <div class="field" id="mahallaField">
+                  <label class="lbl" for="mahalla">Mahalla</label>
+                  <span class="select-wrap"><select class="control" id="mahalla" aria-describedby="err-mahalla"><option value="">Tanlang</option></select></span>
+                  <p class="err" id="err-mahalla"><svg><use href="#i-warn"/></svg> Mahallani tanlang</p>
+                </div>
+              </div>
+
+              <div class="field" style="max-width:230px">
+                <label class="lbl" for="orgType">Tashkilot turi <span class="sub">kod</span></label>
+                <input class="control" type="number" id="orgType" min="1" step="1" value="100" inputmode="numeric" list="orgTypes" aria-describedby="err-orgType" />
+                <datalist id="orgTypes"><option value="100"></option><option value="200"></option><option value="300"></option></datalist>
+                <p class="err" id="err-orgType"><svg><use href="#i-warn"/></svg> Kod musbat butun son bo‘lishi kerak</p>
+              </div>
+
+              <p class="hintline" id="scopeLine"><svg><use href="#i-info"/></svg> <span></span></p>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <div>
+                <h2>Nima yoziladi?&nbsp;<span class="req">*</span></h2>
+                <p>Foydalanuvchi o‘z tilida ko‘radi — ikkala til ham to‘ldirilishi shart</p>
+              </div>
+              <div class="head-meta">
+                <span class="aside" id="langState"></span>
+                
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="tabbar" id="langTabs" role="tablist" aria-label="Til">
+                <button type="button" class="tab" role="tab" id="tab-uz" data-lang="uz" aria-selected="true" aria-controls="pane-uz">
+                  <span class="st" aria-hidden="true"></span> O‘zbekcha
+                </button>
+                <button type="button" class="tab" role="tab" id="tab-ru" data-lang="ru" aria-selected="false" aria-controls="pane-ru">
+                  <span class="st" aria-hidden="true"></span> Ruscha
+                </button>
+              </div>
+
+              <div class="pane pane-in" id="pane-uz" role="tabpanel" aria-labelledby="tab-uz">
+                <div class="field">
+                  <label class="lbl" for="title-uz">Sarlavha <span class="sub counter" id="tcount-uz">0 / 120</span></label>
+                  <input class="control" id="title-uz" data-field="title" data-lang="uz" maxlength="120" autocomplete="off" placeholder="Masalan, Profilaktika ishlari" aria-describedby="err-title-uz" />
+                  <p class="err" id="err-title-uz"><svg><use href="#i-warn"/></svg> Sarlavhani yozing</p>
+                </div>
+                <div class="field">
+                  <label class="lbl" for="body-uz">Matn <span class="sub counter" id="count-uz">0 / 600</span></label>
+                  <textarea class="body-input" id="body-uz" data-field="body" data-lang="uz" maxlength="600" placeholder="Nima bo‘layotgani, qachongacha davom etishi va foydalanuvchi nima qilishi kerakligi" aria-describedby="err-body-uz"></textarea>
+                  <p class="err" id="err-body-uz"><svg><use href="#i-warn"/></svg> Matnni yozing</p>
+                </div>
+              </div>
+
+              <div class="pane" id="pane-ru" role="tabpanel" aria-labelledby="tab-ru" hidden>
+                <div class="field">
+                  <label class="lbl" for="title-ru">Sarlavha <span class="sub counter" id="tcount-ru">0 / 120</span></label>
+                  <input class="control" id="title-ru" data-field="title" data-lang="ru" maxlength="120" autocomplete="off" placeholder="Например, Профилактические работы" aria-describedby="err-title-ru" />
+                  <p class="err" id="err-title-ru"><svg><use href="#i-warn"/></svg> Заголовок нужен</p>
+                </div>
+                <div class="field">
+                  <label class="lbl" for="body-ru">Matn <span class="sub counter" id="count-ru">0 / 600</span></label>
+                  <textarea class="body-input" id="body-ru" data-field="body" data-lang="ru" maxlength="600" placeholder="Что происходит, до какого времени и что делать пользователю" aria-describedby="err-body-ru"></textarea>
+                  <p class="err" id="err-body-ru"><svg><use href="#i-warn"/></svg> Текст нужен</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <div>
+                <h2>Qanchalik muhim?</h2>
+                <p>Bildirishnoma rangi va ohangini belgilaydi</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="options sev" role="radiogroup" aria-label="Muhimlik darajasi">
+                <button type="button" class="opt" data-sev="info" role="radio" aria-checked="false">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span class="tx"><b><svg><use href="#i-info"/></svg> Ma‘lumot</b><span>Oddiy xabar</span></span>
+                </button>
+                <button type="button" class="opt" data-sev="warning" role="radio" aria-checked="true">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span class="tx"><b><svg><use href="#i-warn"/></svg> Ogohlantirish</b><span>Diqqat talab qiladi</span></span>
+                </button>
+                <button type="button" class="opt" data-sev="critical" role="radio" aria-checked="false">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span class="tx"><b><svg><use href="#i-crit"/></svg> Kritik</b><span>Zudlik bilan</span></span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <div>
+                <h2>Qachon yuboriladi?&nbsp;<span class="req">*</span></h2>
+                <p>Bir marta yoki takrorlanadigan jadval bo‘yicha</p>
+              </div>
+              <div class="head-meta">
+                <span class="aside">Toshkent · UTC+5</span>
+                <span class="todo-badge" id="badge-send" hidden><span class="dot"></span><span id="badge-send-tx"></span></span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="options sev" role="radiogroup" aria-label="Yuborish turi">
+                <button type="button" class="opt" data-send="now" role="radio" aria-checked="true">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span class="tx"><b><svg><use href="#i-bolt"/></svg> Hoziroq</b><span>Tasdiqlangach darhol ketadi</span></span>
+                </button>
+                <button type="button" class="opt" data-send="scheduled" role="radio" aria-checked="false">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span class="tx"><b><svg><use href="#i-calendar"/></svg> Rejali</b><span>Tanlangan vaqtda bir marta</span></span>
+                </button>
+                <button type="button" class="opt" data-send="recurring" role="radio" aria-checked="false">
+                  <span class="tick" aria-hidden="true"></span>
+                  <span class="tx"><b><svg><use href="#i-repeat"/></svg> Takroriy</b><span>Jadval bo‘yicha qayta-qayta</span></span>
+                </button>
+              </div>
+
+              <div class="subgroup" id="scheduledBox" hidden>
+                <div class="field" style="max-width:280px">
+                  <label class="lbl" for="sendAt">Yuborish sanasi va vaqti</label>
+                  <input class="control" type="datetime-local" id="sendAt" aria-describedby="err-sendAt" />
+                  <p class="err" id="err-sendAt"><svg><use href="#i-warn"/></svg> Kelajakdagi sana va vaqtni tanlang</p>
+                </div>
+              </div>
+
+              <div class="subgroup" id="recurringBox" hidden>
+                <div class="row c2">
+                  <div class="field">
+                    <label class="lbl" for="freq">Takrorlanish</label>
+                    <span class="select-wrap"><select class="control" id="freq">
+                      <option value="daily">Har kuni</option>
+                      <option value="weekly">Har hafta</option>
+                      <option value="monthly">Har oy</option>
+                    </select></span>
+                  </div>
+                  <div class="field">
+                    <label class="lbl" for="sendTime">Soat</label>
+                    <input class="control" type="time" id="sendTime" value="09:00" aria-describedby="err-sendTime" />
+                    <p class="err" id="err-sendTime"><svg><use href="#i-warn"/></svg> Soatni ko‘rsating</p>
+                  </div>
+                </div>
+
+                <div class="field" id="weekdaysField" hidden>
+                  <span class="lbl">Hafta kunlari</span>
+                  <div class="day-grid" id="weekdays" role="group" aria-label="Hafta kunlari">
+                    <button type="button" class="day" data-wd="1" aria-pressed="false">Du</button>
+                    <button type="button" class="day" data-wd="2" aria-pressed="false">Se</button>
+                    <button type="button" class="day" data-wd="3" aria-pressed="false">Cho</button>
+                    <button type="button" class="day" data-wd="4" aria-pressed="false">Pay</button>
+                    <button type="button" class="day" data-wd="5" aria-pressed="false">Ju</button>
+                    <button type="button" class="day" data-wd="6" aria-pressed="false">Sha</button>
+                    <button type="button" class="day" data-wd="0" aria-pressed="false">Yak</button>
+                  </div>
+                  <p class="err" id="err-weekdays"><svg><use href="#i-warn"/></svg> Kamida bitta kunni tanlang</p>
+                </div>
+
+                <div class="field" id="monthDayField" hidden style="max-width:280px">
+                  <label class="lbl" for="monthDay">Oyning kuni</label>
+                  <span class="select-wrap"><select class="control" id="monthDay"></select></span>
+                  <p class="hintline"><svg><use href="#i-info"/></svg> <span>Oy qisqa bo‘lsa (fevral, 30 kunlik oylar) — o‘sha oyning oxirgi kunida yuboriladi</span></p>
+                </div>
+
+                <div class="row c2">
+                  <div class="field">
+                    <label class="lbl" for="endMode">Qachon to‘xtaydi</label>
+                    <span class="select-wrap"><select class="control" id="endMode">
+                      <option value="never">To‘xtatilmaguncha</option>
+                      <option value="count">Ma‘lum martadan keyin</option>
+                      <option value="date">Belgilangan sanagacha</option>
+                    </select></span>
+                  </div>
+                  <div class="field" id="endCountField" hidden>
+                    <label class="lbl" for="endCount">Necha marta</label>
+                    <input class="control" type="number" id="endCount" min="1" max="365" value="10" inputmode="numeric" aria-describedby="err-endCount" />
+                    <p class="err" id="err-endCount"><svg><use href="#i-warn"/></svg> 1 dan 365 gacha son kiriting</p>
+                  </div>
+                  <div class="field" id="endDateField" hidden>
+                    <label class="lbl" for="endDate">Qaysi sanagacha</label>
+                    <input class="control" type="date" id="endDate" aria-describedby="err-endDate" />
+                    <p class="err" id="err-endDate"><svg><use href="#i-warn"/></svg> Kelajakdagi sanani tanlang</p>
+                  </div>
+                </div>
+              </div>
+
+              <p class="hintline" id="sendLine"><svg><use href="#i-clock"/></svg> <span></span></p>
+            </div>
+          </section>
+
+        </div>
+
+        <aside class="col-side">
+          <div class="stage">
+            <div class="stage-top">
+              <span class="stage-cap">Foydalanuvchi ko‘radi</span>
+              <div class="mini-seg" role="group" aria-label="Ko‘rinish tili">
+                <button type="button" data-prev="uz" aria-pressed="true" aria-label="O‘zbekcha ko‘rinish">
+                  <span class="st" aria-hidden="true"></span>uz
+                </button>
+                <button type="button" data-prev="ru" aria-pressed="false" aria-label="Ruscha ko‘rinish">
+                  <span class="st" aria-hidden="true"></span>ru
+                </button>
+              </div>
+            </div>
+
+            <div class="stage-body" id="stageBody">
+              <!-- Muhimlik maketdan TASHQARIDA: haqiqiy bildirishnomada u ko‘rinmaydi.
+                   Izoh matni ATAYLAB umumiy — muhimlik yetkazishni qanday o‘zgartirishi
+                   (ovoz, tebranish) backend'da tekshirilmagan, tekshirilmagan narsani
+                   qaytarib bo‘lmaydigan asbob da'vo qilmaydi. -->
+              <p class="sev-cap">
+                <svg id="prevIcon" aria-hidden="true" viewBox="0 0 24 24"><use href="#i-warn"/></svg>
+                <span><b id="prevKind">Ogohlantirish</b><span>Bildirishnomaning o‘zida ko‘rinmaydi — faqat yetkazish tartibini belgilaydi</span></span>
+              </p>
+
+              <div class="shot">
+                <p class="shot-cap">Banner <em>· ekran ustida chiqadi</em></p>
+                <div class="dev" style="--dev-h:150" aria-hidden="true">
+                  <div class="dev-frame">
+                    <div class="dev-status">
+                      <span id="phoneTime">00:00</span>
+                      <span class="sig">
+                        <i style="height:4px"></i><i style="height:6px"></i>
+                        <i style="height:8px"></i><i style="height:10px"></i>
+                      </span>
+                    </div>
+                    <article class="pv pv-ban" style="margin-top:4px">
+                      <span class="app"><svg><use href="#i-logo"/></svg></span>
+                      <div class="tx">
+                        <div class="hd"><b>online-mahalla</b><span id="pvWhenBan">hozir</span></div>
+                        <h3 id="pvTitleBan"></h3>
+                        <p id="pvBodyBan"></p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </div>
+
+              <div class="shot">
+                <p class="shot-cap">Ochilganda <em>· bildirishnomalar ro‘yxati</em></p>
+                <div class="dev" style="--dev-h:210" aria-hidden="true">
+                  <div class="dev-frame">
+                    <article class="pv pv-exp" style="margin-top:24px">
+                      <span class="app"><svg><use href="#i-logo"/></svg></span>
+                      <div class="tx">
+                        <div class="hd"><b>online-mahalla</b><span id="prevWhen">hozir</span></div>
+                        <h3 id="prevTitle"></h3>
+                        <p id="prevBody"></p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </div>
+
+              <p class="pv-verdict" id="prevVerdict" data-v="idle" role="status" aria-live="polite">
+                <span class="dot" aria-hidden="true"></span><span id="prevVerdictText"></span>
+              </p>
+            </div>
+          </div>
+
+          <section class="card">
+            <div class="card-head"><div><h2>Xulosa</h2></div></div>
+            <div class="card-body">
+              <dl class="facts">
+                <div class="fact"><dt>Kimga</dt><dd id="factWho"></dd></div>
+                <div class="fact"><dt>Muhimlik</dt><dd id="factSev"></dd></div>
+                <div class="fact"><dt>Yuborish</dt><dd id="factSend"></dd></div>
+                <div class="fact"><dt>Tillar</dt><dd id="factLang"></dd></div>
+              </dl>
+            </div>
+          </section>
+
+          <div class="alert" id="alert" role="alert" hidden>
+            <h3><svg><use href="#i-warn"/></svg> <span id="alertTitle"></span></h3>
+            <ul id="alertList"></ul>
+          </div>
+
+          <div class="alert" id="sendError" hidden>
+            <h3><svg aria-hidden="true"><use href="#i-warn"/></svg> <span>Yuborilmadi</span></h3>
+            <p id="sendErrorText"></p>
+            <ul><li><button type="button" id="retryBtn">Qayta urinish</button></li></ul>
+          </div>
+        </aside>
+      </div>
+
+
+      <div class="actionbar" id="actionbar" data-state="ok">
+        <div class="status">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="tx">
+            <b id="barTitle">Yuborishga tayyor</b>
+            <span id="barSub"></span>
+          </span>
+        </div>
+        <button class="btn btn-quiet" type="button" id="resetBtn">
+          <svg class="q-icon" aria-hidden="true" width="17" height="17"><use href="#i-trash"/></svg>
+          <span id="resetLabel">Tozalash</span>
+        </button>
+        <button class="btn btn-test" type="button" id="testBtn" aria-expanded="false" aria-controls="testPop">
+          <span id="testBtnIcon" hidden aria-hidden="true"></span>
+          <span id="testBtnLabel">Test yuborish</span>
+        </button>
+        <button class="btn btn-primary" type="submit">
+          <span>Navbatga qo‘yish</span>
+          <span class="arrow" aria-hidden="true"><svg width="14" height="14"><use href="#i-arrow"/></svg></span>
+        </button>
+
+        <div class="testpop" id="testPop" role="dialog" aria-labelledby="testPopTitle" hidden>
+          <div class="testpop-head">
+            <b id="testPopTitle">Test yuborish</b>
+            <button class="x" type="button" id="testClose" aria-label="Test oynasini yopish">
+              <svg aria-hidden="true"><use href="#i-x"/></svg>
+            </button>
+          </div>
+          <p class="note">Xabar faqat shu raqamga boradi — tanlangan qamrov ham, jadval ham o‘zgarmaydi.</p>
+          <div class="field">
+            <label class="lbl" for="testPhone">Telefon raqam <span class="sub">o‘z qurilmangiz</span></label>
+            <input class="control" id="testPhone" type="tel" inputmode="tel" autocomplete="tel"
+                   placeholder="+998 90 123 45 67" aria-describedby="testHint" />
+            <span class="hint" id="testHint">+998 XX XXX XX XX</span>
+            <p class="err" id="testErr"><svg aria-hidden="true"><use href="#i-warn"/></svg><span id="testErrText"></span></p>
+          </div>
+          <div class="testpop-foot">
+            <button class="btn btn-quiet btn-sm" type="button" id="testCancel">Bekor qilish</button>
+            <button class="btn btn-solid btn-sm" type="button" id="testSend">
+              <span id="testSendIcon" hidden aria-hidden="true"></span>
+              <span id="testSendLabel">Yuborish</span>
+            </button>
+          </div>
+          <span class="sr" id="testLive" role="status"></span>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <section class="done" id="done" role="dialog" aria-modal="true" aria-labelledby="doneTitle" aria-live="polite">
+    <div>
+      <div class="seal" aria-hidden="true"><svg width="26" height="26"><use href="#i-check"/></svg></div>
+      <h2 id="doneTitle">Xabarnoma navbatga qo‘yildi</h2>
+      <p>Tanlangan qamrovdagi foydalanuvchilarga yetkaziladi.</p>
+      <div class="pills" id="donePills"></div>
+      <button class="btn btn-primary" type="button" id="againBtn">
+        <span>Yangi xabarnoma</span>
+        <span class="arrow" aria-hidden="true"><svg width="14" height="14"><use href="#i-arrow"/></svg></span>
+      </button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    "use strict";
+
+    /* Hudud ma'lumotnomasi. Ishlab chiqarishda _region / _district / _mahalla jadvallaridan
+       keladi — id sxemasi saqlanadi: district = region*100 + n, mahalla = district*1000 + n. */
+    const REGIONS = [
+      [1, "Qoraqalpog‘iston Respublikasi", ["Amudaryo", "Beruniy", "Chimboy", "Ellikqal‘a", "Kegeyli", "Mo‘ynoq", "Nukus tumani", "Qanliko‘l", "Qo‘ng‘irot", "Qorao‘zak", "Shumanay", "Taxtako‘pir", "To‘rtko‘l", "Xo‘jayli", "Nukus shahri"]],
+      [2, "Andijon viloyati", ["Andijon tumani", "Asaka", "Baliqchi", "Bo‘z", "Buloqboshi", "Izboskan", "Jalaquduq", "Xo‘jaobod", "Qo‘rg‘ontepa", "Marhamat", "Oltinko‘l", "Paxtaobod", "Shahrixon", "Ulug‘nor", "Andijon shahri", "Xonobod shahri"]],
+      [3, "Buxoro viloyati", ["Buxoro tumani", "G‘ijduvon", "Jondor", "Kogon", "Olot", "Peshku", "Qorako‘l", "Qorovulbozor", "Romitan", "Shofirkon", "Vobkent", "Buxoro shahri"]],
+      [4, "Farg‘ona viloyati", ["Bag‘dod", "Beshariq", "Buvayda", "Dang‘ara", "Farg‘ona tumani", "Furqat", "Oltiariq", "Qo‘shtepa", "Quva", "Rishton", "So‘x", "Toshloq", "Uchko‘prik", "O‘zbekiston", "Yozyovon", "Farg‘ona shahri", "Marg‘ilon shahri", "Qo‘qon shahri", "Quvasoy shahri"]],
+      [5, "Jizzax viloyati", ["Arnasoy", "Baxmal", "Do‘stlik", "Forish", "G‘allaorol", "Sharof Rashidov", "Mirzacho‘l", "Paxtakor", "Yangiobod", "Zafarobod", "Zomin", "Jizzax shahri"]],
+      [6, "Xorazm viloyati", ["Bog‘ot", "Gurlan", "Xonqa", "Hazorasp", "Xiva tumani", "Qo‘shko‘pir", "Shovot", "Urganch tumani", "Yangiariq", "Yangibozor", "Tuproqqal‘a", "Urganch shahri", "Xiva shahri"]],
+      [7, "Namangan viloyati", ["Chortoq", "Chust", "Kosonsoy", "Mingbuloq", "Namangan tumani", "Norin", "Pop", "To‘raqo‘rg‘on", "Uychi", "Uchqo‘rg‘on", "Yangiqo‘rg‘on", "Namangan shahri"]],
+      [8, "Navoiy viloyati", ["Karmana", "Konimex", "Xatirchi", "Navbahor", "Nurota", "Qiziltepa", "Tomdi", "Uchquduq", "Navoiy shahri", "Zarafshon shahri"]],
+      [9, "Qashqadaryo viloyati", ["Chiroqchi", "Dehqonobod", "G‘uzor", "Kasbi", "Kitob", "Koson", "Mirishkor", "Muborak", "Nishon", "Qamashi", "Qarshi tumani", "Shahrisabz tumani", "Yakkabog‘", "Ko‘kdala", "Qarshi shahri", "Shahrisabz shahri"]],
+      [10, "Samarqand viloyati", ["Bulung‘ur", "Ishtixon", "Jomboy", "Kattaqo‘rg‘on tumani", "Qo‘shrabot", "Narpay", "Nurobod", "Oqdaryo", "Pastdarg‘om", "Paxtachi", "Payariq", "Samarqand tumani", "Toyloq", "Urgut", "Kattaqo‘rg‘on shahri", "Samarqand shahri"]],
+      [11, "Sirdaryo viloyati", ["Boyovut", "Guliston tumani", "Mirzaobod", "Oqoltin", "Sardoba", "Sayxunobod", "Sirdaryo tumani", "Xovos", "Guliston shahri", "Shirin shahri", "Yangiyer shahri"]],
+      [12, "Surxondaryo viloyati", ["Angor", "Bandixon", "Boysun", "Denov", "Jarqo‘rg‘on", "Muzrabot", "Oltinsoy", "Qiziriq", "Qumqo‘rg‘on", "Sariosiyo", "Sherobod", "Sho‘rchi", "Termiz tumani", "Uzun", "Termiz shahri"]],
+      [13, "Toshkent viloyati", ["Bekobod tumani", "Bo‘ka", "Bo‘stonliq", "Chinoz", "Qibray", "Ohangaron tumani", "Oqqo‘rg‘on", "Parkent", "Piskent", "Quyichirchiq", "O‘rtachirchiq", "Yangiyo‘l tumani", "Yuqorichirchiq", "Zangiota", "Angren shahri", "Bekobod shahri", "Chirchiq shahri", "Nurafshon shahri", "Olmaliq shahri", "Ohangaron shahri", "Yangiyo‘l shahri"]],
+      [14, "Toshkent shahri", ["Bektemir", "Chilonzor", "Mirobod", "Mirzo Ulug‘bek", "Olmazor", "Sergeli", "Shayxontohur", "Uchtepa", "Yakkasaroy", "Yashnobod", "Yunusobod"]]
+    ];
+
+    const MAHALLA_PER_DISTRICT = 14;
+    const LEVELS = { 1: "Respublika", 2: "Viloyat", 3: "Tuman", 4: "Mahalla" };
+    const SEV_ICON = { info: "#i-info", warning: "#i-warn", critical: "#i-crit" };
+    const SEV_NAME = { info: "Ma‘lumot", warning: "Ogohlantirish", critical: "Kritik" };
+    const LANG_NAME = { uz: "o‘zbekcha", ru: "ruscha" };
+    const WEEKDAYS = ["Yakshanba", "Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba"];
+    const MONTHS = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"];
+    const FIELD_NAME = {
+      "title-uz": "O‘zbekcha sarlavha", "body-uz": "O‘zbekcha matn",
+      "title-ru": "Ruscha sarlavha", "body-ru": "Ruscha matn",
+      region: "Viloyat", district: "Tuman", mahalla: "Mahalla",
+      orgType: "Tashkilot turi",
+      sendAt: "Yuborish vaqti", sendTime: "Yuborish soati", weekdays: "Hafta kunlari",
+      endCount: "Takrorlar soni", endDate: "Tugash sanasi"
+    };
+    const CONTROL_OF = {};
+    /* Har karta qaysi maydonlarga bog'liq — sarlavhadagi "Tayyor" nishoni shundan chiqadi. */
+    const SECTIONS = {
+      audience: ["region", "district", "mahalla", "orgType"],
+      text: ["title-uz", "body-uz", "title-ru", "body-ru"],
+      send: ["sendAt", "sendTime", "weekdays", "endCount", "endDate"]
+    };
+    const WD_SHORT = { 1: "Du", 2: "Se", 3: "Cho", 4: "Pay", 5: "Ju", 6: "Sha", 0: "Yak" };
+    const WD_ORDER = [1, 2, 3, 4, 5, 6, 0];
+    const FREQ_NAME = { daily: "Har kuni", weekly: "Har hafta", monthly: "Har oy" };
+    const TZ_OFFSET_MS = 5 * 3600000; // Toshkent UTC+5
+    const DRAFT_KEY = "announce.draft.v5";
+    const EVENT_TYPE = "system.announcement";
+    /* Backend manzili. Bo‘sh bo‘lsa forma payloadni yig‘adi, lekin hech qayerga yubormaydi. */
+    const API_ENDPOINT = "";
+    const SEND_TIMEOUT_MS = 15000;
+    const TITLE_MAX = 120;
+    const BODY_MAX = 600;
+
+    const $ = (id) => document.getElementById(id);
+
+    const state = {
+      lang: "uz",
+      level: 4,
+      severity: "warning",
+      orgType: 100,
+      region: "",
+      district: "",
+      mahalla: "",
+      /* Yuborish jadvali: bir marta darhol, rejali yoki takroriy. */
+      send: {
+        mode: "now",
+        at: "",
+        freq: "daily",
+        time: "09:00",
+        weekdays: [1],
+        monthDay: "1",
+        endMode: "never",
+        endCount: 10,
+        endDate: ""
+      },
+      texts: { uz: { title: "", body: "" }, ru: { title: "", body: "" } },
+      touched: false,
+      submitting: false,
+      previewLang: "uz"
+    };
+
+    let draftNote = "Qoralama avtomatik saqlanadi";
+
+    /* ---------- vaqt ---------- */
+    const pad = (n) => String(n).padStart(2, "0");
+
+    function tashkentParts(ms) {
+      const d = new Date(ms + TZ_OFFSET_MS);
+      return {
+        y: d.getUTCFullYear(), mo: d.getUTCMonth() + 1, d: d.getUTCDate(),
+        h: d.getUTCHours(), mi: d.getUTCMinutes(), wd: d.getUTCDay()
+      };
+    }
+
+    function toInputValue(ms) {
+      const p = tashkentParts(ms);
+      return `${p.y}-${pad(p.mo)}-${pad(p.d)}T${pad(p.h)}:${pad(p.mi)}`;
+    }
+
+    /* Kiritilgan vaqt Toshkent devor-soati deb o‘qiladi, UTC instant qaytadi. */
+    function fromInputValue(v) {
+      if (!v || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v)) return null;
+      const [date, time] = v.split("T");
+      const [y, mo, d] = date.split("-").map(Number);
+      const [h, mi] = time.split(":").map(Number);
+      return Date.UTC(y, mo - 1, d, h, mi, 0, 0) - TZ_OFFSET_MS;
+    }
+
+    const isoZ = (ms) => new Date(ms).toISOString().replace(/\.\d{3}Z$/, "Z");
+
+    function humanTime(ms) {
+      const p = tashkentParts(ms);
+      return `${p.d}-${MONTHS[p.mo - 1]}, ${pad(p.h)}:${pad(p.mi)}`;
+    }
+
+    function humanDate(v) {
+      const ms = fromInputValue(`${v}T12:00`);
+      if (ms === null) return "";
+      const p = tashkentParts(ms);
+      return `${p.d}-${MONTHS[p.mo - 1]} ${p.y}`;
+    }
+
+    /* ---------- yuborish jadvali ---------- */
+    const sortedWeekdays = () => WD_ORDER.filter((d) => state.send.weekdays.includes(d));
+
+    /* Keyingi yuborish payti (UTC ms). Takroriyda kunlarni oldinga yurib topamiz —
+       oy qisqa bo‘lsa tanlangan kun o‘sha oyning oxirgi kuniga tushadi. */
+    function nextRun() {
+      const s = state.send;
+      if (s.mode === "now") return Date.now();
+      if (s.mode === "scheduled") return fromInputValue(s.at);
+
+      const [h, mi] = String(s.time || "").split(":").map(Number);
+      if (!Number.isFinite(h) || !Number.isFinite(mi)) return null;
+      if (s.freq === "weekly" && !s.weekdays.length) return null;
+
+      const now = Date.now();
+      for (let i = 0; i < 400; i++) {
+        const p = tashkentParts(now + i * 86400000);
+        const cand = Date.UTC(p.y, p.mo - 1, p.d, h, mi, 0, 0) - TZ_OFFSET_MS;
+        if (cand <= now) continue;
+        if (s.freq === "daily") return cand;
+        if (s.freq === "weekly") { if (s.weekdays.includes(p.wd)) return cand; continue; }
+        const lastDay = new Date(Date.UTC(p.y, p.mo, 0)).getUTCDate();
+        const target = s.monthDay === "last" ? lastDay : Math.min(Number(s.monthDay) || 1, lastDay);
+        if (p.d === target) return cand;
+      }
+      return null;
+    }
+
+    function endsLine() {
+      const s = state.send;
+      if (s.endMode === "count") return `${s.endCount} martadan keyin to‘xtaydi`;
+      if (s.endMode === "date") return `${humanDate(s.endDate) || "sana tanlanmagan"} gacha`;
+      return "to‘xtatilmaguncha davom etadi";
+    }
+
+    function sendSummary() {
+      const s = state.send;
+      if (s.mode === "now") return "Tasdiqlangach darhol yuboriladi";
+      if (s.mode === "scheduled") {
+        const ms = fromInputValue(s.at);
+        return ms === null ? "Yuborish vaqti tanlanmagan" : `${humanTime(ms)} da bir marta`;
+      }
+      const time = s.time || "—";
+      let base;
+      if (s.freq === "daily") base = `Har kuni soat ${time} da`;
+      else if (s.freq === "weekly") {
+        const days = sortedWeekdays().map((d) => WD_SHORT[d]).join(", ");
+        base = days ? `Har hafta ${days} kunlari soat ${time} da` : "Hafta kunlari tanlanmagan";
+      } else {
+        const day = s.monthDay === "last" ? "oxirgi kuni" : `${s.monthDay}-kuni`;
+        base = `Har oyning ${day} soat ${time} da`;
+      }
+      return `${base} · ${endsLine()}`;
+    }
+
+    function sendShort() {
+      const s = state.send;
+      if (s.mode === "now") return "hozir";
+      if (s.mode === "scheduled") {
+        const ms = fromInputValue(s.at);
+        if (ms === null) return "vaqt tanlanmagan";
+        const p = tashkentParts(ms);
+        return `${p.d}-${MONTHS[p.mo - 1].slice(0, 3)} ${pad(p.h)}:${pad(p.mi)}`;
+      }
+      if (s.freq === "daily") return "har kuni";
+      if (s.freq === "weekly") return "har hafta";
+      return "har oy";
+    }
+
+    /* ---------- ma'lumotnoma ---------- */
+    const regionById = new Map(REGIONS.map((r) => [r[0], { id: r[0], name: r[1], districts: r[2] }]));
+
+    function districtsOf(regionId) {
+      const r = regionById.get(Number(regionId));
+      if (!r) return [];
+      return r.districts.map((name, i) => ({ id: r.id * 100 + i + 1, name }));
+    }
+
+    function mahallasOf(districtId) {
+      const id = Number(districtId);
+      if (!id) return [];
+      return Array.from({ length: MAHALLA_PER_DISTRICT }, (_, i) => ({ id: id * 1000 + i + 1, name: `${i + 1}-mahalla` }));
+    }
+
+    function nameOf(kind) {
+      if (kind === "region") return regionById.get(Number(state.region))?.name || "";
+      if (kind === "district") return districtsOf(state.region).find((d) => d.id === Number(state.district))?.name || "";
+      if (kind === "mahalla") return mahallasOf(state.district).find((m) => m.id === Number(state.mahalla))?.name || "";
+      return "";
+    }
+
+    /* Xabarni kim oladi — bitta manbadan chiqadigan inson o‘qiy oladigan qator. */
+    function audienceLine() {
+      if (state.level === 1) return "Platformadagi barcha foydalanuvchilar";
+      const parts = [];
+      if (state.level >= 2) parts.push(nameOf("region") || "viloyat tanlanmagan");
+      if (state.level >= 3) parts.push(nameOf("district") || "tuman tanlanmagan");
+      if (state.level >= 4) parts.push(nameOf("mahalla") || "mahalla tanlanmagan");
+      return `${parts.join(" › ")} foydalanuvchilari`;
+    }
+
+    function fillSelect(el, items, value, placeholder) {
+      el.innerHTML = "";
+      const first = document.createElement("option");
+      first.value = "";
+      first.textContent = placeholder;
+      el.appendChild(first);
+      for (const it of items) {
+        const o = document.createElement("option");
+        o.value = String(it.id);
+        o.textContent = it.name;
+        el.appendChild(o);
+      }
+      el.value = items.some((i) => String(i.id) === String(value)) ? String(value) : "";
+    }
+
+    /* ---------- payload ---------- */
+    function audienceObject() {
+      const a = { org_type: Number(state.orgType) || 0, level: state.level };
+      if (state.level >= 2) a.region_id = Number(state.region) || null;
+      if (state.level >= 3) a.district_id = Number(state.district) || null;
+      if (state.level >= 4) a.mahalla_id = Number(state.mahalla) || null;
+      return a;
+    }
+
+    function scheduleObject() {
+      const s = state.send;
+      if (s.mode === "now") return { mode: "immediate" };
+      if (s.mode === "scheduled") return { mode: "scheduled", send_at: isoZ(fromInputValue(s.at)) };
+
+      const o = { mode: "recurring", freq: s.freq, time: s.time, timezone: "Asia/Tashkent" };
+      if (s.freq === "weekly") o.weekdays = sortedWeekdays();
+      if (s.freq === "monthly") o.day_of_month = s.monthDay === "last" ? "last" : Number(s.monthDay);
+      if (s.endMode === "count") o.ends = { type: "count", count: Number(s.endCount) };
+      else if (s.endMode === "date") o.ends = { type: "date", until: isoZ(fromInputValue(`${s.endDate}T23:59`)) };
+      else o.ends = { type: "never" };
+      return o;
+    }
+
+    /* Formadan chiqadigan yagona natija — backendga shu payload ketadi. */
+    function payloadObject() {
+      const out = {
+        audience: audienceObject(),
+        severity: state.severity,
+        schedule: scheduleObject(),
+        texts: {
+          uz: { title: state.texts.uz.title, body: state.texts.uz.body },
+          ru: { title: state.texts.ru.title, body: state.texts.ru.body }
+        }
+      };
+      return out;
+    }
+
+    /* ---------- validatsiya ---------- */
+    function problems() {
+      const list = [];
+      for (const lang of ["uz", "ru"]) {
+        if (!state.texts[lang].title.trim()) list.push({ key: `title-${lang}`, lang });
+        if (!state.texts[lang].body.trim()) list.push({ key: `body-${lang}`, lang });
+      }
+      if (state.level >= 2 && !state.region) list.push({ key: "region" });
+      if (state.level >= 3 && !state.district) list.push({ key: "district" });
+      if (state.level >= 4 && !state.mahalla) list.push({ key: "mahalla" });
+      if (!Number.isInteger(Number(state.orgType)) || Number(state.orgType) <= 0) list.push({ key: "orgType" });
+
+      const s = state.send;
+      if (s.mode === "scheduled") {
+        const at = fromInputValue(s.at);
+        if (at === null || at <= Date.now()) list.push({ key: "sendAt" });
+      }
+      if (s.mode === "recurring") {
+        if (!/^\d{2}:\d{2}$/.test(s.time || "")) list.push({ key: "sendTime" });
+        if (s.freq === "weekly" && !s.weekdays.length) list.push({ key: "weekdays" });
+        if (s.endMode === "count") {
+          const n = Number(s.endCount);
+          if (!Number.isInteger(n) || n < 1 || n > 365) list.push({ key: "endCount" });
+        }
+        if (s.endMode === "date") {
+          const until = fromInputValue(`${s.endDate}T23:59`);
+          if (until === null || until <= Date.now()) list.push({ key: "endDate" });
+        }
+      }
+      return list;
+    }
+
+    const langComplete = (lang) => Boolean(state.texts[lang].title.trim() && state.texts[lang].body.trim());
+
+    function paintErrors(show, keys) {
+      for (const key of Object.keys(FIELD_NAME)) {
+        const bad = show && keys.has(key);
+        const err = $(`err-${key}`);
+        const control = $(CONTROL_OF[key] || key);
+        if (err) err.classList.toggle("on", bad);
+        if (control) {
+          control.classList.toggle("bad", bad);
+          control.setAttribute("aria-invalid", bad ? "true" : "false");
+        }
+      }
+    }
+
+    function focusProblem(p) {
+      if (p.lang && p.lang !== state.lang) setLang(p.lang);
+      const host = $(CONTROL_OF[p.key] || p.key);
+      if (!host) return;
+      const el = host.matches("input, select, textarea, button") ? host : host.querySelector("button, input, select");
+      if (!el) return;
+      el.focus({ preventScroll: true });
+      el.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+
+    /* ---------- telefon soati ---------- */
+    /* role="radio" shartnomasi: guruh bitta Tab to'xtash joyi bo'ladi (roving tabindex),
+       tanlov esa o'q tugmalari bilan aylanma harakatlanadi. Brauzer buni <button> uchun
+       o'zi qilmaydi — qo'lda ulanadi. */
+    function setRadioState(nodes, isChecked) {
+      nodes.forEach((b) => {
+        const on = isChecked(b);
+        b.setAttribute("aria-checked", String(on));
+        b.tabIndex = on ? 0 : -1;
+      });
+      if (![...nodes].some(isChecked) && nodes[0]) nodes[0].tabIndex = 0;
+    }
+
+    document.querySelectorAll('[role="radiogroup"]').forEach((group) => {
+      group.addEventListener("keydown", (e) => {
+        const keys = ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"];
+        if (!keys.includes(e.key)) return;
+        const items = [...group.querySelectorAll('[role="radio"]:not([disabled])')];
+        if (items.length < 2) return;
+        const from = items.indexOf(document.activeElement);
+        if (from < 0) return;
+        e.preventDefault();
+        let to;
+        if (e.key === "Home") to = 0;
+        else if (e.key === "End") to = items.length - 1;
+        else {
+          const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : -1;
+          to = (from + step + items.length) % items.length;
+        }
+        items[to].focus();
+        items[to].click();
+      });
+    });
+
+    function paintClock() {
+      const p = tashkentParts(Date.now());
+      $("phoneTime").textContent = `${pad(p.h)}:${pad(p.mi)}`;
+    }
+
+    /* ---------- render ---------- */
+    function render() {
+      const bad = problems();
+      const keys = new Set(bad.map((p) => p.key));
+      document.documentElement.dataset.sev = state.severity;
+
+      setRadioState(document.querySelectorAll(".opt[data-sev]"), (b) => b.dataset.sev === state.severity);
+      setRadioState(document.querySelectorAll(".opt[data-level]"), (b) => Number(b.dataset.level) === state.level);
+
+      $("geoGrid").hidden = state.level < 2;
+      $("geoGrid").className = "row " + (state.level === 2 ? "c1" : state.level === 3 ? "c2" : "c3");
+      $("regionField").hidden = state.level < 2;
+      $("districtField").hidden = state.level < 3;
+      $("mahallaField").hidden = state.level < 4;
+
+      document.querySelectorAll("#langTabs .tab").forEach((t) => {
+        const lang = t.dataset.lang;
+        const on = lang === state.lang;
+        t.setAttribute("aria-selected", String(on));
+        t.tabIndex = on ? 0 : -1;
+        t.dataset.filled = langComplete(lang) ? "true" : state.touched ? "miss" : "empty";
+      });
+      $("pane-uz").hidden = state.lang !== "uz";
+      $("pane-ru").hidden = state.lang !== "ru";
+
+      const doneLangs = ["uz", "ru"].filter(langComplete).length;
+      $("langState").textContent = `${doneLangs} / 2 til tayyor`;
+
+      /* Bo'lim tayyor bo'lsa hech nima ko'rsatmaymiz — operator buni allaqachon biladi.
+         Qimmatli ma'lumot — nima QOLGANI, shuning uchun nishon faqat shu holatda chiqadi. */
+      for (const name of ["audience", "send"]) {
+        const left = SECTIONS[name].filter((f) => keys.has(f)).length;
+        $(`badge-${name}`).hidden = left === 0;
+        if (left) $(`badge-${name}-tx`).textContent = `${left} ta maydon qoldi`;
+      }
+
+      for (const lang of ["uz", "ru"]) {
+        $(`tcount-${lang}`).textContent = `${state.texts[lang].title.length} / ${TITLE_MAX}`;
+        const len = state.texts[lang].body.length;
+        const el = $(`count-${lang}`);
+        el.textContent = `${len} / ${BODY_MAX}`;
+        el.classList.toggle("near", len > BODY_MAX - 60);
+      }
+
+      // yuborish turi
+      const sm = state.send.mode;
+      setRadioState(document.querySelectorAll(".opt[data-send]"), (b) => b.dataset.send === sm);
+      $("scheduledBox").hidden = sm !== "scheduled";
+      $("recurringBox").hidden = sm !== "recurring";
+      $("weekdaysField").hidden = !(sm === "recurring" && state.send.freq === "weekly");
+      $("monthDayField").hidden = !(sm === "recurring" && state.send.freq === "monthly");
+      $("endCountField").hidden = state.send.endMode !== "count";
+      $("endDateField").hidden = state.send.endMode !== "date";
+      document.querySelectorAll("#weekdays .day").forEach((d) => {
+        d.setAttribute("aria-pressed", String(state.send.weekdays.includes(Number(d.dataset.wd))));
+      });
+
+
+      $("scopeLine").querySelector("span").textContent = state.level === 1
+        ? "Xabarni platformadagi barcha foydalanuvchilar oladi"
+        : `${audienceLine()} — shu hududdagi barcha foydalanuvchilar oladi`;
+
+      // Foydalanuvchi ko‘radi — kompozitsiya tilidan mustaqil
+      const pl = state.previewLang;
+      const t = state.texts[pl];
+      const pvTitle = t.title.trim();
+      const pvBody = t.body.trim();
+      const pvWhen = sendShort();
+
+      document.querySelectorAll(".mini-seg button").forEach((b) => {
+        const l = b.dataset.prev;
+        b.setAttribute("aria-pressed", String(l === pl));
+        b.dataset.filled = langComplete(l) ? "true" : state.touched ? "miss" : "empty";
+      });
+
+      $("prevIcon").innerHTML = `<use href="${SEV_ICON[state.severity]}"/>`;
+      $("prevKind").textContent = SEV_NAME[state.severity];
+
+      /* Bir xil matn ikkala plastinaga; farq faqat klamp chegarasida.
+         Bo‘sh qator ATAYLAB bo‘sh qoldiriladi — soxta jumla emas, :empty skeleti. */
+      $("pvTitleBan").textContent = pvTitle;
+      $("pvBodyBan").textContent = pvBody;
+      $("prevTitle").textContent = pvTitle;
+      $("prevBody").textContent = pvBody;
+      $("pvWhenBan").textContent = pvWhen;
+      $("prevWhen").textContent = pvWhen;
+
+      paintVerdict(pvTitle, pvBody);
+      $("sendLine").querySelector("span").textContent = sendSummary();
+
+      // xulosa
+      $("factWho").textContent = audienceLine();
+      $("factSev").textContent = SEV_NAME[state.severity];
+      $("factSend").textContent = sendSummary();
+      $("factLang").textContent = ["uz", "ru"].map((l) => `${LANG_NAME[l]}: ${langComplete(l) ? "tayyor" : "bo‘sh"}`).join(" · ");
+
+      // to‘ldirilmagan maydonlar
+      const alert = $("alert");
+      alert.hidden = !(state.touched && bad.length);
+      if (!alert.hidden) {
+        $("alertTitle").textContent = `${bad.length} ta maydon to‘ldirilmagan`;
+        const list = $("alertList");
+        list.innerHTML = "";
+        for (const p of bad) {
+          const li = document.createElement("li");
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.textContent = FIELD_NAME[p.key];
+          btn.addEventListener("click", () => focusProblem(p));
+          li.appendChild(btn);
+          list.appendChild(li);
+        }
+      }
+
+      // pastdagi panel
+      if (bad.length) $("sendError").hidden = true;
+      const barBad = state.touched && bad.length;
+      $("actionbar").dataset.state = barBad ? "bad" : "ok";
+      $("barTitle").textContent = barBad ? `${bad.length} ta maydon to‘ldirilmagan` : "Yuborishga tayyor";
+      $("barSub").textContent = draftNote;
+
+      paintErrors(state.touched, keys);
+    }
+
+    /* ---------- qoralama ---------- */
+    let saveTimer = null;
+    function saveDraft() {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        try {
+          const { touched, submitting, previewLang, ...keep } = state;
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(keep));
+          const p = tashkentParts(Date.now());
+          draftNote = `Qoralama saqlandi · ${pad(p.h)}:${pad(p.mi)}`;
+        } catch (e) {
+          draftNote = "Qoralama saqlanmadi — brauzer xotirasi yopiq";
+        }
+        $("barSub").textContent = draftNote;
+      }, 400);
+    }
+
+    function loadDraft() {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return false;
+        const d = JSON.parse(raw);
+        Object.assign(state, {
+          lang: d.lang === "ru" ? "ru" : "uz",
+          level: [1, 2, 3, 4].includes(Number(d.level)) ? Number(d.level) : 4,
+          severity: SEV_NAME[d.severity] ? d.severity : "warning",
+          orgType: d.orgType ?? 100,
+          region: d.region ?? "",
+          district: d.district ?? "",
+          mahalla: d.mahalla ?? "",
+          send: {
+            mode: ["now", "scheduled", "recurring"].includes(d.send?.mode) ? d.send.mode : "now",
+            at: d.send?.at || "",
+            freq: FREQ_NAME[d.send?.freq] ? d.send.freq : "daily",
+            time: /^\d{2}:\d{2}$/.test(d.send?.time || "") ? d.send.time : "09:00",
+            weekdays: Array.isArray(d.send?.weekdays) ? d.send.weekdays.filter((x) => WD_ORDER.includes(x)) : [1],
+            monthDay: d.send?.monthDay ?? "1",
+            endMode: ["never", "count", "date"].includes(d.send?.endMode) ? d.send.endMode : "never",
+            endCount: d.send?.endCount ?? 10,
+            endDate: d.send?.endDate || ""
+          },
+          texts: {
+            uz: { title: d.texts?.uz?.title || "", body: d.texts?.uz?.body || "" },
+            ru: { title: d.texts?.ru?.title || "", body: d.texts?.ru?.body || "" }
+          }
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    /* ---------- yordamchi ---------- */
+    function toast(msg) {
+      const el = $("toast");
+      el.textContent = msg;
+      el.classList.add("on");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.classList.remove("on"), 2600);
+    }
+
+    /* Klamplangan -webkit-box elementda scrollHeight clientHeight'ga teng bo‘lib qolishi mumkin,
+       shuning uchun klampni vaqtincha ochib to‘liq balandlikni o‘lchaymiz (rAF ishlatilmaydi —
+       fon tabda u chaqirilmaydi, natija eskirib qoladi). */
+    /* Qurilma o‘lchamida bir qator = 20px (.pv h3/p line-height).
+       O‘lchov FAQAT banner tugunlaridan olinadi: ularda min-height yo‘q
+       (zaxira .tx da), shuning uchun scrollHeight rost qiymat qaytaradi. */
+    const PV_LINE = 20;
+    function previewLines(el) {
+      if (!el.clientWidth || !el.textContent) return 0;
+      const keep = el.style.webkitLineClamp;
+      el.style.webkitLineClamp = "unset";
+      const full = el.scrollHeight;
+      el.style.webkitLineClamp = keep;
+      return Math.round(full / PV_LINE);
+    }
+
+    let lastVerdict = "";
+    function paintVerdict(title, body) {
+      const lt = previewLines($("pvTitleBan"));
+      const lb = previewLines($("pvBodyBan"));
+      let kind = "idle";
+      let text = "Bannerga 1 qator sarlavha va 2 qator matn sig‘adi";
+      if (title || body) {
+        if (lt > 2 || lb > 4) {
+          kind = "crit";
+          text = "Ochilganda ham kesiladi — matnni qisqartiring";
+        } else if (lt > 1 || lb > 2) {
+          kind = "warn";
+          text = "Banner qisqartiradi — ochilganda to‘liq o‘qiladi";
+        } else {
+          kind = "ok";
+          text = "Ikkala holatda ham to‘liq ko‘rinadi";
+        }
+      }
+      $("prevVerdict").dataset.v = kind;
+      /* Faqat O‘ZGARGANDA yoziladi — aria-live har bosishda takrorlamasin. */
+      if (text !== lastVerdict) {
+        $("prevVerdictText").textContent = text;
+        lastVerdict = text;
+      }
+    }
+
+    /* Kenglik 0 bo‘lsa (yashirin panel) o‘lchov yolg‘on chiqadi — tegmaymiz,
+       ResizeObserver kenglik paydo bo‘lishi bilan qayta chaqiradi. */
+    function autoGrow(el) {
+      if (!el.clientWidth) return;
+      el.style.height = "auto";
+      el.style.height = Math.max(108, el.scrollHeight) + "px";
+    }
+
+    if (typeof ResizeObserver === "function") {
+      const seen = new WeakMap();
+      const ro = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const el = entry.target;
+          const w = el.clientWidth;
+          if (w && seen.get(el) !== w) { seen.set(el, w); autoGrow(el); }
+        }
+      });
+      requestAnimationFrame(() => document.querySelectorAll(".body-input").forEach((el) => ro.observe(el)));
+    }
+
+    function setLang(lang) {
+      state.lang = lang;
+      state.previewLang = lang;
+      const pane = $(`pane-${lang}`);
+      pane.classList.remove("pane-in");
+      void pane.offsetWidth;
+      pane.classList.add("pane-in");
+      saveDraft();
+      render();
+    }
+
+    /* ---------- boshlang‘ich holat ---------- */
+    const hadDraft = loadDraft();
+    if (!state.send.at) {
+      const p = tashkentParts(Date.now() + 3600000);
+      state.send.at = `${p.y}-${pad(p.mo)}-${pad(p.d)}T${pad(p.h)}:00`;
+    }
+    if (!hadDraft) {
+      state.region = "6";
+      state.district = "606";
+      state.mahalla = "606008";
+    }
+
+    fillSelect($("region"), REGIONS.map((r) => ({ id: r[0], name: r[1] })), state.region, "Viloyatni tanlang");
+    fillSelect($("district"), districtsOf(state.region), state.district, "Tumanni tanlang");
+    fillSelect($("mahalla"), mahallasOf(state.district), state.mahalla, "Mahallani tanlang");
+    state.region = $("region").value;
+    state.district = $("district").value;
+    state.mahalla = $("mahalla").value;
+
+    const monthDaySelect = $("monthDay");
+    for (let i = 1; i <= 31; i++) {
+      const o = document.createElement("option");
+      o.value = String(i);
+      o.textContent = `${i}-kun`;
+      monthDaySelect.appendChild(o);
+    }
+    const lastOpt = document.createElement("option");
+    lastOpt.value = "last";
+    lastOpt.textContent = "Oyning oxirgi kuni";
+    monthDaySelect.appendChild(lastOpt);
+    monthDaySelect.value = state.send.monthDay;
+
+    const nowInput = toInputValue(Date.now());
+    $("sendAt").value = state.send.at;
+    $("sendAt").min = nowInput;
+    $("sendTime").value = state.send.time;
+    $("endCount").value = state.send.endCount;
+    $("endDate").value = state.send.endDate;
+    $("endDate").min = nowInput.slice(0, 10);
+    $("endMode").value = state.send.endMode;
+    $("freq").value = state.send.freq;
+    $("orgType").value = state.orgType;
+    for (const lang of ["uz", "ru"]) {
+      $(`title-${lang}`).value = state.texts[lang].title;
+      $(`body-${lang}`).value = state.texts[lang].body;
+      autoGrow($(`body-${lang}`));
+    }
+    if (hadDraft) draftNote = "Qoralama tiklandi";
+
+    /* ---------- hodisalar ---------- */
+    document.querySelectorAll("#langTabs .tab").forEach((tab) => {
+      tab.addEventListener("click", () => setLang(tab.dataset.lang));
+      tab.addEventListener("keydown", (e) => {
+        if (e.isComposing || e.keyCode === 229) return;
+        if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+        e.preventDefault();
+        setLang(state.lang === "uz" ? "ru" : "uz");
+        $(`tab-${state.lang}`).focus();
+      });
+    });
+
+    document.querySelectorAll("[data-field]").forEach((el) => {
+      el.addEventListener("input", () => {
+        state.texts[el.dataset.lang][el.dataset.field] = el.value;
+        if (el.tagName === "TEXTAREA") autoGrow(el);
+        saveDraft();
+        render();
+      });
+    });
+
+    document.querySelectorAll(".opt[data-sev]").forEach((b) => {
+      b.addEventListener("click", () => { state.severity = b.dataset.sev; saveDraft(); render(); });
+    });
+
+    document.querySelectorAll(".opt[data-level]").forEach((b) => {
+      b.addEventListener("click", () => { state.level = Number(b.dataset.level); saveDraft(); render(); });
+    });
+
+    $("region").addEventListener("change", (e) => {
+      state.region = e.target.value;
+      state.district = "";
+      state.mahalla = "";
+      fillSelect($("district"), districtsOf(state.region), "", "Tumanni tanlang");
+      fillSelect($("mahalla"), [], "", "Avval tumanni tanlang");
+      saveDraft();
+      render();
+    });
+
+    $("district").addEventListener("change", (e) => {
+      state.district = e.target.value;
+      state.mahalla = "";
+      fillSelect($("mahalla"), mahallasOf(state.district), "", "Mahallani tanlang");
+      saveDraft();
+      render();
+    });
+
+    $("mahalla").addEventListener("change", (e) => { state.mahalla = e.target.value; saveDraft(); render(); });
+    $("orgType").addEventListener("input", (e) => { state.orgType = e.target.value; saveDraft(); render(); });
+
+    /* --- yuborish turi --- */
+    document.querySelectorAll(".opt[data-send]").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.send.mode = b.dataset.send;
+        saveDraft();
+        render();
+      });
+    });
+
+    $("sendAt").addEventListener("input", (e) => { state.send.at = e.target.value; saveDraft(); render(); });
+    $("sendTime").addEventListener("input", (e) => { state.send.time = e.target.value; saveDraft(); render(); });
+    $("freq").addEventListener("change", (e) => { state.send.freq = e.target.value; saveDraft(); render(); });
+    $("monthDay").addEventListener("change", (e) => { state.send.monthDay = e.target.value; saveDraft(); render(); });
+    $("endMode").addEventListener("change", (e) => { state.send.endMode = e.target.value; saveDraft(); render(); });
+    $("endCount").addEventListener("input", (e) => { state.send.endCount = e.target.value; saveDraft(); render(); });
+    $("endDate").addEventListener("input", (e) => { state.send.endDate = e.target.value; saveDraft(); render(); });
+
+    document.querySelectorAll(".mini-seg button").forEach((b) => {
+      b.addEventListener("click", () => {
+        if (state.previewLang === b.dataset.prev) return;
+        state.previewLang = b.dataset.prev;
+        const sb = $("stageBody");
+        sb.classList.remove("lang-swap");
+        void sb.offsetWidth;
+        sb.classList.add("lang-swap");
+        render();
+      });
+    });
+
+    document.querySelectorAll("#weekdays .day").forEach((d) => {
+      d.addEventListener("click", () => {
+        const wd = Number(d.dataset.wd);
+        const i = state.send.weekdays.indexOf(wd);
+        if (i >= 0) state.send.weekdays.splice(i, 1);
+        else state.send.weekdays.push(wd);
+        saveDraft();
+        render();
+      });
+    });
+
+    let resetArmed = false;
+    $("resetBtn").addEventListener("click", () => {
+      const btn = $("resetBtn");
+      if (!resetArmed) {
+        resetArmed = true;
+        $("resetLabel").textContent = "Tasdiqlang";
+        btn.dataset.armed = "true";
+        toast("Yana bosing — barcha maydon tozalanadi");
+        clearTimeout(btn._t);
+        btn._t = setTimeout(() => {
+          resetArmed = false;
+          $("resetLabel").textContent = "Tozalash";
+          delete btn.dataset.armed;
+        }, 3200);
+        return;
+      }
+      localStorage.removeItem(DRAFT_KEY);
+      location.reload();
+    });
+
+    $("themeBtn").addEventListener("click", () => {
+      const root = document.documentElement;
+      const dark = root.dataset.theme
+        ? root.dataset.theme === "dark"
+        : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      root.dataset.theme = dark ? "light" : "dark";
+      $("themeIcon").setAttribute("href", dark ? "#i-sun" : "#i-moon");
+      paintThemeColor();
+      try { localStorage.setItem("announce.theme", root.dataset.theme); } catch (e) {}
+    });
+
+    /* Brauzer paneli (status bar) sahifa foni bilan bir xil bo'lsin. Media'li <meta theme-color>
+       faqat tizim rejimiga qaraydi — qo'lda tanlangan temada uni o'zimiz yozamiz. */
+    function paintThemeColor() {
+      const canvas = getComputedStyle(document.documentElement).getPropertyValue("--canvas").trim();
+      if (!canvas) return;
+      let tag = document.querySelector('meta[name="theme-color"]:not([media])');
+      if (!tag) {
+        tag = document.createElement("meta");
+        tag.name = "theme-color";
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute("content", canvas);
+    }
+
+    try {
+      const savedTheme = localStorage.getItem("announce.theme");
+      if (savedTheme === "dark" || savedTheme === "light") {
+        document.documentElement.dataset.theme = savedTheme;
+        $("themeIcon").setAttribute("href", savedTheme === "dark" ? "#i-moon" : "#i-sun");
+        paintThemeColor();
+      }
+    } catch (e) {}
+
+    let lastPayload = null;
+
+    function setSubmitting(on) {
+      state.submitting = on;
+      document.querySelectorAll('button[type="submit"], #resetBtn, #testBtn').forEach((b) => { b.disabled = on; });
+      $("actionbar").setAttribute("aria-busy", String(on));
+      if (on) $("barTitle").textContent = "Yuborilmoqda…";
+      else render();
+    }
+
+    /* Serverga POST. Javob kelmasa foydalanuvchi osilib qolmasin — 15 soniyada uziladi. */
+    async function sendToServer(body) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), SEND_TIMEOUT_MS);
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+          signal: ctrl.signal
+        });
+        if (!res.ok) {
+          let detail = "";
+          try { detail = (await res.json())?.message || ""; } catch (err) { detail = ""; }
+          throw new Error(detail || `Server ${res.status} kodi bilan javob qaytardi`);
+        }
+        return await res.json().catch(() => ({}));
+      } catch (err) {
+        if (err.name === "AbortError") throw new Error("Server 15 soniyada javob bermadi — aloqani tekshiring");
+        if (err instanceof TypeError) throw new Error("Serverga ulanib bo‘lmadi — internet aloqasini tekshiring");
+        throw err;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function showDone() {
+      $("donePills").innerHTML = [
+        SEV_NAME[state.severity],
+        audienceLine(),
+        sendSummary(),
+        "o‘zbekcha + ruscha"
+      ].map((p) => `<span class="pill">${escapeHtml(p)}</span>`).join("");
+      $("done").classList.add("on");
+      setBehindInert(true);
+      $("againBtn").focus({ preventScroll: true });
+    }
+
+    /* Tasdiq ekrani ochiq turganda orqadagi forma Tab bilan ochilib qolmasin. */
+    function setBehindInert(on) {
+      document.querySelectorAll("body > *:not(#done):not(.toast)").forEach((el) => {
+        if (on) el.setAttribute("inert", "");
+        else el.removeAttribute("inert");
+      });
+    }
+
+    function showSendError(message) {
+      $("sendErrorText").textContent = message;
+      $("sendError").hidden = false;
+      $("sendError").scrollIntoView({ block: "nearest", behavior: "smooth" });
+      toast("Yuborilmadi — qayta urinib ko‘ring");
+    }
+
+    async function submitForm() {
+      if (state.submitting || testPhase === "pending") return;
+      closeTestPop(false);
+      state.touched = true;
+      const bad = problems();
+      render();
+      if (bad.length) {
+        focusProblem(bad[0]);
+        toast(`${bad.length} ta maydon to‘ldirilmagan`);
+        return;
+      }
+
+      $("sendError").hidden = true;
+      lastPayload = { type: EVENT_TYPE, payload: payloadObject() };
+
+      if (!API_ENDPOINT) {
+        showDone();
+        return;
+      }
+
+      setSubmitting(true);
+      try {
+        await sendToServer(lastPayload);
+        showDone();
+      } catch (err) {
+        showSendError(err.message);
+      } finally {
+        setSubmitting(false);
+      }
+    }
+
+    $("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      submitForm();
+    });
+
+    $("retryBtn").addEventListener("click", () => submitForm());
+
+    /* ---------- test yuborish ----------
+       Sahifada sessiya/operator ma'lumoti yo‘q, shuning uchun test manzili qo‘lda kiritiladi
+       va brauzerda eslab qolinadi — keyingi safar oyna to‘ldirilgan holda ochiladi.
+       Backend operatorni sessiyadan o‘zi aniqlaydigan bo‘lsa, testTarget() ni o‘zgartirish
+       kifoya: qolgan oqim (holatlar, xato matnlari) shundayligicha qoladi. */
+    const TEST_TARGET_KEY = "announce.test_target.v1";
+    const TEST_OK_MS = 3600;
+    const TEXT_KEYS = new Set(["title-uz", "body-uz", "title-ru", "body-ru"]);
+
+    let testPhase = "idle";
+    let testOkTimer = null;
+    let lastTestPayload = null;
+
+    /* +998 XX XXX XX XX. Faqat 9 xonali lokal yozuv ham qabul qilinadi. */
+    function normalizePhone(raw) {
+      let d = String(raw).replace(/\D+/g, "");
+      if (d.length === 9) d = `998${d}`;
+      return d.length === 12 && d.startsWith("998") ? `+${d}` : null;
+    }
+    function prettyPhone(e164) {
+      const d = e164.slice(1);
+      return `+${d.slice(0, 3)} ${d.slice(3, 5)} ${d.slice(5, 8)} ${d.slice(8, 10)} ${d.slice(10)}`;
+    }
+    const testTarget = () => normalizePhone($("testPhone").value);
+
+    function readSavedTarget() {
+      try { return localStorage.getItem(TEST_TARGET_KEY) || ""; } catch (e) { return ""; }
+    }
+    function saveTarget(e164) {
+      try { localStorage.setItem(TEST_TARGET_KEY, e164); } catch (e) {}
+    }
+
+    function setTestError(msg) {
+      $("testErrText").textContent = msg || "";
+      $("testErr").classList.toggle("on", Boolean(msg));
+      $("testPhone").classList.toggle("bad", Boolean(msg));
+      $("testPhone").setAttribute("aria-invalid", String(Boolean(msg)));
+      if (msg) $("testLive").textContent = msg;
+    }
+
+    function paintTestBtn(el, iconEl, labelEl, phase, labels) {
+      if (phase === "pending") {
+        iconEl.hidden = false;
+        iconEl.className = "load";
+        iconEl.innerHTML = "";
+      } else if (phase === "ok") {
+        iconEl.hidden = false;
+        iconEl.className = "";
+        iconEl.innerHTML = '<svg aria-hidden="true"><use href="#i-check"/></svg>';
+      } else {
+        iconEl.hidden = true;
+        iconEl.className = "";
+        iconEl.innerHTML = "";
+      }
+      labelEl.textContent = labels[phase];
+      if (phase === "idle") delete el.dataset.phase;
+      else el.dataset.phase = phase;
+    }
+
+    function setTestPhase(phase) {
+      testPhase = phase;
+      clearTimeout(testOkTimer);
+      paintTestBtn($("testBtn"), $("testBtnIcon"), $("testBtnLabel"), phase, {
+        idle: "Test yuborish", pending: "Yuborilmoqda…", ok: "Test yuborildi"
+      });
+      paintTestBtn($("testSend"), $("testSendIcon"), $("testSendLabel"), phase, {
+        idle: "Yuborish", pending: "Yuborilmoqda…", ok: "Yuborildi"
+      });
+      const busy = phase === "pending";
+      $("testSend").disabled = busy;
+      $("testCancel").disabled = busy;
+      $("testClose").disabled = busy;
+      $("testPhone").disabled = busy;
+      $("testPop").setAttribute("aria-busy", String(busy));
+      /* Test ketayotganda real tarqatma boshlanib qolmasin. */
+      document.querySelectorAll('button[type="submit"], #resetBtn').forEach((b) => {
+        b.disabled = busy || state.submitting;
+      });
+      if (phase === "ok") testOkTimer = setTimeout(() => setTestPhase("idle"), TEST_OK_MS);
+    }
+
+    /* Mobilda klaviatura ochilganda panel ham, oyna ham IME ustida qoladi. */
+    const viewport = window.visualViewport;
+    function syncKeyboardInset() {
+      if (!viewport) return;
+      const inset = Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop);
+      document.documentElement.style.setProperty("--kb", `${inset}px`);
+    }
+    if (viewport) {
+      viewport.addEventListener("resize", syncKeyboardInset);
+      viewport.addEventListener("scroll", syncKeyboardInset);
+    }
+
+    function openTestPop() {
+      if (testPhase === "pending" || state.submitting) return;
+      /* Test aynan matnni tekshiradi — qamrov va jadval bu yerda talab qilinmaydi. */
+      const missing = problems().filter((p) => TEXT_KEYS.has(p.key));
+      if (missing.length) {
+        state.touched = true;
+        render();
+        focusProblem(missing[0]);
+        toast("Avval xabar matnini to‘ldiring — test shu matnni yuboradi");
+        return;
+      }
+      const saved = readSavedTarget();
+      $("testPhone").value = saved ? prettyPhone(saved) : "";
+      setTestError("");
+      setTestPhase("idle");
+      $("testPop").hidden = false;
+      $("testBtn").setAttribute("aria-expanded", "true");
+      document.body.dataset.testpop = "on";
+      syncKeyboardInset();
+      $("testPhone").focus({ preventScroll: true });
+      $("testPhone").select();
+    }
+
+    function closeTestPop(focusBack = true) {
+      if ($("testPop").hidden) return;
+      $("testPop").hidden = true;
+      $("testBtn").setAttribute("aria-expanded", "false");
+      delete document.body.dataset.testpop;
+      if (focusBack) $("testBtn").focus({ preventScroll: true });
+    }
+
+    async function sendTest() {
+      if (testPhase === "pending") return;
+      const target = testTarget();
+      if (!target) {
+        setTestError("Raqam to‘liq emas — +998 va 9 xonali mobil raqam kerak");
+        $("testPhone").focus({ preventScroll: true });
+        return;
+      }
+      if (!API_ENDPOINT) {
+        setTestError("Backend manzili sozlanmagan — test yuborib bo‘lmaydi");
+        return;
+      }
+      setTestError("");
+      /* Asosiy yuborish bilan bir xil payload; farqi — test bayrog‘i va manzil. */
+      lastTestPayload = { type: EVENT_TYPE, payload: { ...payloadObject(), test: true, test_target: target } };
+      setTestPhase("pending");
+      $("testLive").textContent = "Test yuborilmoqda";
+      try {
+        await sendToServer(lastTestPayload);
+        saveTarget(target);
+        closeTestPop();
+        setTestPhase("ok");
+        toast(`Test ${prettyPhone(target)} raqamiga yuborildi`);
+        $("testLive").textContent = `Test ${prettyPhone(target)} raqamiga yuborildi`;
+      } catch (err) {
+        setTestPhase("idle");
+        setTestError(err.message);
+        $("testPhone").focus({ preventScroll: true });
+      }
+    }
+
+    $("testBtn").addEventListener("click", () => {
+      if ($("testPop").hidden) openTestPop();
+      else closeTestPop();
+    });
+    $("testClose").addEventListener("click", () => closeTestPop());
+    $("testCancel").addEventListener("click", () => closeTestPop());
+    $("testSend").addEventListener("click", () => sendTest());
+    $("testPhone").addEventListener("input", () => {
+      if ($("testErr").classList.contains("on")) setTestError("");
+    });
+    $("testPhone").addEventListener("blur", () => {
+      const t = testTarget();
+      if (t) $("testPhone").value = prettyPhone(t);
+    });
+    $("testPhone").addEventListener("keydown", (e) => {
+      if (e.isComposing || e.keyCode === 229) return;
+      if (e.key === "Enter") { e.preventDefault(); sendTest(); }
+    });
+    document.addEventListener("pointerdown", (e) => {
+      if ($("testPop").hidden || testPhase === "pending") return;
+      if (e.target.closest("#testPop, #testBtn")) return;
+      closeTestPop(false);
+    });
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    $("againBtn").addEventListener("click", () => {
+      $("done").classList.remove("on");
+      setBehindInert(false);
+      state.touched = false;
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      $(`title-${state.lang}`).focus({ preventScroll: true });
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.isComposing || e.keyCode === 229) return;
+      if (e.key === "Escape" && !$("testPop").hidden) {
+        e.preventDefault();
+        closeTestPop();
+        return;
+      }
+      if (e.key === "Escape" && $("done").classList.contains("on")) {
+        e.preventDefault();
+        $("againBtn").click();
+        return;
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        /* Test oynasi ochiq bo‘lsa tezkor tugma testni yuboradi — tasodifan real
+           tarqatma ketib qolmasin. */
+        if (!$("testPop").hidden) { sendTest(); return; }
+        $("form").requestSubmit();
+      }
+    });
+
+    setInterval(() => {
+      paintClock();
+      $("sendLine").querySelector("span").textContent = sendSummary();
+    }, 30000);
+
+    paintClock();
+    render();
+  </script>
+</body>
+</html>
