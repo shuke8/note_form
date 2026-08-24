@@ -782,23 +782,85 @@
       background: var(--primary-soft);
       transform: translateY(-1px);
     }
-
-    /* Bilingual Composer Grid */
-    .bilingual-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
+    /* Bilingual Composer — Tab-Based Full-Width Layout */
+    .bilingual-tabs-bar {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--border-base);
+      margin-bottom: 0;
     }
-    @media (max-width: 780px) { .bilingual-grid { grid-template-columns: 1fr; } }
+    .bilingual-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font-sans);
+      color: var(--text-dim);
+      cursor: pointer;
+      position: relative;
+      transition: color 180ms var(--ease), background 180ms var(--ease);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .bilingual-tab-btn::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: transparent;
+      transition: background 180ms var(--ease);
+    }
+    .bilingual-tab-btn:hover {
+      color: var(--text-body);
+      background: var(--bg-hover);
+    }
+    .bilingual-tab-btn.active {
+      color: var(--primary);
+      background: var(--primary-soft);
+    }
+    .bilingual-tab-btn.active::after {
+      background: var(--primary);
+    }
+    .bilingual-tab-btn .tab-lang-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .bilingual-tab-btn[data-tab="uz"] .tab-lang-dot { background: #0ea5e9; }
+    .bilingual-tab-btn[data-tab="ru"] .tab-lang-dot { background: #f59e0b; }
+    .bilingual-tab-btn .tab-status-icon {
+      font-size: 11px;
+      margin-left: 2px;
+    }
+
+    .bilingual-pane {
+      display: none;
+      animation: fadeSlideIn 220ms var(--ease) both;
+    }
+    .bilingual-pane.active {
+      display: block;
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .bilingual-card {
       border: 1.5px solid var(--border-base);
-      border-radius: var(--radius-md);
-      padding: 18px;
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      border-top: none;
+      padding: 20px;
       background: var(--bg-sunk);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
       position: relative;
     }
     .bilingual-lang-badge {
@@ -951,23 +1013,39 @@
     }
 
     .wysiwyg-editor {
-      min-height: 110px;
-      max-height: 260px;
+      min-height: 180px;
+      max-height: 420px;
       overflow-y: auto;
-      padding: 10px 12px;
+      padding: 14px 16px;
       font-family: var(--font-sans);
-      font-size: 13.5px;
-      line-height: 1.5;
+      font-size: 14px;
+      line-height: 1.65;
       color: var(--text-main);
       outline: none;
       word-break: break-word;
       white-space: pre-wrap;
+    }
+    .wysiwyg-editor::-webkit-scrollbar {
+      width: 6px;
+    }
+    .wysiwyg-editor::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .wysiwyg-editor::-webkit-scrollbar-thumb {
+      background: var(--border-control);
+      border-radius: 3px;
+    }
+    .wysiwyg-editor::-webkit-scrollbar-thumb:hover {
+      background: var(--text-dim);
     }
     .wysiwyg-editor:empty::before {
       content: attr(data-placeholder);
       color: var(--text-dim);
       font-style: normal;
       pointer-events: none;
+    }
+    .wysiwyg-editor:focus {
+      background: #fafbfd;
     }
     .wysiwyg-editor b, .wysiwyg-editor strong {
       font-weight: 700;
@@ -980,16 +1058,16 @@
       text-decoration: underline;
     }
     .wysiwyg-editor ul, .wysiwyg-editor ol {
-      padding-left: 20px;
-      margin: 4px 0;
+      padding-left: 22px;
+      margin: 6px 0;
     }
     .wysiwyg-editor li {
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
     .wysiwyg-editor mark {
       background: #fef08a;
       color: #854d0e;
-      padding: 1px 4px;
+      padding: 1px 5px;
       border-radius: 3px;
       font-weight: 600;
     }
@@ -2372,108 +2450,124 @@
                 </div>
               </div>
 
-              <div class="bilingual-grid">
+              <div>
+                <!-- Language Tabs -->
+                <div class="bilingual-tabs-bar" id="bilingualTabsBar">
+                  <button type="button" class="bilingual-tab-btn active" data-tab="uz">
+                    <span class="tab-lang-dot"></span>
+                    O'zbekcha
+                    <span class="tab-status-icon" id="tabStatusUz"></span>
+                  </button>
+                  <button type="button" class="bilingual-tab-btn" data-tab="ru">
+                    <span class="tab-lang-dot"></span>
+                    Русский
+                    <span class="tab-status-icon" id="tabStatusRu"></span>
+                  </button>
+                </div>
 
-                <!-- O'zbekcha -->
-                <div class="bilingual-card">
-                  <div style="display:flex; justify-content:space-between; align-items:center">
-                    <div style="display:flex; align-items:center; gap:6px">
-                      <span class="bilingual-lang-badge" data-lang="uz">UZ · O‘zbekcha</span>
-                      <button type="button" class="trans-trigger-btn" id="btnTranslateToRu" title="O‘zbekcha matnni ruschaga o‘girish">
-                        <svg width="11" height="11"><use href="#i-sparkles"/></svg>
-                        <span>RUga o‘girish</span>
-                      </button>
-                    </div>
-                    <span class="sub" id="tcount-uz" style="font-size:11.5px; font-weight:700">0 / 120</span>
-                  </div>
-                  <div>
-                    <label class="form-label" for="title-uz" style="margin-bottom:4px">Sarlavha</label>
-                    <input type="text" class="devin-input" id="title-uz" data-field="title" data-lang="uz" maxlength="120" placeholder="Masalan, Profilaktika ishlari" />
-                    <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-uz"></div></div>
-                    <div class="field-error" id="err-title-uz"><svg><use href="#i-warn"/></svg> O‘zbekcha sarlavhani yozing</div>
-                  </div>
-                  <div>
-                    <label class="form-label" for="body-uz" style="margin-bottom:4px">Xabarnoma matni (WYSIWYG)</label>
-                    <div class="wysiwyg-wrapper" id="wysiwyg-wrap-uz">
-                      <div class="wysiwyg-toolbar" data-target="body-uz">
-                        <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Qalin (Ctrl+B)"><b>B</b></button>
-                        <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Kursiv (Ctrl+I)"><i>I</i></button>
-                        <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Tagiga chizish (Ctrl+U)"><u>U</u></button>
-                        <span class="wysiwyg-sep"></span>
-                        <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Belgili ro‘yxat">
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                        </button>
-                        <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Raqamli ro‘yxat">
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
-                        </button>
-                        <span class="wysiwyg-sep"></span>
-                        <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#fef08a" title="Ajratib ko‘rsatish">
-                          <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:10px">HL</span>
-                        </button>
-                        <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Formatni tozalash">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                <!-- UZ Pane -->
+                <div class="bilingual-pane active" id="bilingualPaneUz" data-pane="uz">
+                  <div class="bilingual-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center">
+                      <div style="display:flex; align-items:center; gap:6px">
+                        <span class="bilingual-lang-badge" data-lang="uz">UZ · O'zbekcha</span>
+                        <button type="button" class="trans-trigger-btn" id="btnTranslateToRu" title="O'zbekcha matnni ruschaga o'girish">
+                          <svg width="11" height="11"><use href="#i-sparkles"/></svg>
+                          <span>RUga o'girish</span>
                         </button>
                       </div>
-                      <div class="wysiwyg-editor" id="body-uz" contenteditable="true" data-field="body" data-lang="uz" data-placeholder="Xabarnoma matnini yozing..." role="textbox" aria-multiline="true"></div>
+                      <span class="sub" id="tcount-uz" style="font-size:11.5px; font-weight:700">0 / 120</span>
                     </div>
-                    <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-uz"></div></div>
-                    <div style="display:flex; justify-content:space-between; margin-top:4px">
-                      <div class="field-error" id="err-body-uz"><svg><use href="#i-warn"/></svg> O‘zbekcha matnni yozing</div>
-                      <span class="sub" id="count-uz" style="font-size:11.5px; margin-left:auto; font-weight:700">0 / 600</span>
+                    <div>
+                      <label class="form-label" for="title-uz" style="margin-bottom:4px">Sarlavha</label>
+                      <input type="text" class="devin-input" id="title-uz" data-field="title" data-lang="uz" maxlength="120" placeholder="Masalan, Profilaktika ishlari" />
+                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-uz"></div></div>
+                      <div class="field-error" id="err-title-uz"><svg><use href="#i-warn"/></svg> O'zbekcha sarlavhani yozing</div>
+                    </div>
+                    <div>
+                      <label class="form-label" for="body-uz" style="margin-bottom:4px">Xabarnoma matni</label>
+                      <div class="wysiwyg-wrapper" id="wysiwyg-wrap-uz">
+                        <div class="wysiwyg-toolbar" data-target="body-uz">
+                          <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Qalin (Ctrl+B)"><b>B</b></button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Kursiv (Ctrl+I)"><i>I</i></button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Tagiga chizish (Ctrl+U)"><u>U</u></button>
+                          <span class="wysiwyg-sep"></span>
+                          <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Belgili ro'yxat">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                          </button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Raqamli ro'yxat">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+                          </button>
+                          <span class="wysiwyg-sep"></span>
+                          <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#fef08a" title="Ajratib ko'rsatish">
+                            <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:10px">HL</span>
+                          </button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Formatni tozalash">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                          </button>
+                        </div>
+                        <div class="wysiwyg-editor" id="body-uz" contenteditable="true" data-field="body" data-lang="uz" data-placeholder="Xabarnoma matnini yozing... Uzun matnlar uchun pastga scroll qilasiz." role="textbox" aria-multiline="true"></div>
+                      </div>
+                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-uz"></div></div>
+                      <div style="display:flex; justify-content:space-between; margin-top:4px">
+                        <div class="field-error" id="err-body-uz"><svg><use href="#i-warn"/></svg> O'zbekcha matnni yozing</div>
+                        <span class="sub" id="count-uz" style="font-size:11.5px; margin-left:auto; font-weight:700">0 / 600</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <!-- Ruscha -->
-                <div class="bilingual-card">
-                  <div style="display:flex; justify-content:space-between; align-items:center">
-                    <div style="display:flex; align-items:center; gap:6px">
-                      <span class="bilingual-lang-badge" data-lang="ru">RU · Русский</span>
-                      <button type="button" class="trans-trigger-btn" id="btnTranslateToUz" title="Ruscha matnni o‘zbekchaga o‘girish">
-                        <svg width="11" height="11"><use href="#i-sparkles"/></svg>
-                        <span>UZga o‘girish</span>
-                      </button>
-                    </div>
-                    <span class="sub" id="tcount-ru" style="font-size:11.5px; font-weight:700">0 / 120</span>
-                  </div>
-                  <div>
-                    <label class="form-label" for="title-ru" style="margin-bottom:4px">Заголовок</label>
-                    <input type="text" class="devin-input" id="title-ru" data-field="title" data-lang="ru" maxlength="120" placeholder="Например, Профилактические работы" />
-                    <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-ru"></div></div>
-                    <div class="field-error" id="err-title-ru"><svg><use href="#i-warn"/></svg> Ruscha sarlavhani yozing</div>
-                  </div>
-                  <div>
-                    <label class="form-label" for="body-ru" style="margin-bottom:4px">Текст уведомления (WYSIWYG)</label>
-                    <div class="wysiwyg-wrapper" id="wysiwyg-wrap-ru">
-                      <div class="wysiwyg-toolbar" data-target="body-ru">
-                        <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Жирный (Ctrl+B)"><b>B</b></button>
-                        <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Курсив (Ctrl+I)"><i>I</i></button>
-                        <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Подчеркнутый (Ctrl+U)"><u>U</u></button>
-                        <span class="wysiwyg-sep"></span>
-                        <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Маркированный список">
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                        </button>
-                        <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Нумерованный список">
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
-                        </button>
-                        <span class="wysiwyg-sep"></span>
-                        <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#fef08a" title="Выделить">
-                          <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:10px">HL</span>
-                        </button>
-                        <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Очистить форматирование">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                <!-- RU Pane -->
+                <div class="bilingual-pane" id="bilingualPaneRu" data-pane="ru">
+                  <div class="bilingual-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center">
+                      <div style="display:flex; align-items:center; gap:6px">
+                        <span class="bilingual-lang-badge" data-lang="ru">RU · Русский</span>
+                        <button type="button" class="trans-trigger-btn" id="btnTranslateToUz" title="Ruscha matnni o'zbekchaga o'girish">
+                          <svg width="11" height="11"><use href="#i-sparkles"/></svg>
+                          <span>UZga o'girish</span>
                         </button>
                       </div>
-                      <div class="wysiwyg-editor" id="body-ru" contenteditable="true" data-field="body" data-lang="ru" data-placeholder="Текст уведомления..." role="textbox" aria-multiline="true"></div>
+                      <span class="sub" id="tcount-ru" style="font-size:11.5px; font-weight:700">0 / 120</span>
                     </div>
-                    <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-ru"></div></div>
-                    <div style="display:flex; justify-content:space-between; margin-top:4px">
-                      <div class="field-error" id="err-body-ru"><svg><use href="#i-warn"/></svg> Ruscha matnni yozing</div>
-                      <span class="sub" id="count-ru" style="font-size:11.5px; margin-left:auto; font-weight:700">0 / 600</span>
+                    <div>
+                      <label class="form-label" for="title-ru" style="margin-bottom:4px">Заголовок</label>
+                      <input type="text" class="devin-input" id="title-ru" data-field="title" data-lang="ru" maxlength="120" placeholder="Например, Профилактические работы" />
+                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-ru"></div></div>
+                      <div class="field-error" id="err-title-ru"><svg><use href="#i-warn"/></svg> Ruscha sarlavhani yozing</div>
+                    </div>
+                    <div>
+                      <label class="form-label" for="body-ru" style="margin-bottom:4px">Текст уведомления</label>
+                      <div class="wysiwyg-wrapper" id="wysiwyg-wrap-ru">
+                        <div class="wysiwyg-toolbar" data-target="body-ru">
+                          <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Жирный (Ctrl+B)"><b>B</b></button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Курсив (Ctrl+I)"><i>I</i></button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Подчеркнутый (Ctrl+U)"><u>U</u></button>
+                          <span class="wysiwyg-sep"></span>
+                          <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Маркированный список">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                          </button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Нумерованный список">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+                          </button>
+                          <span class="wysiwyg-sep"></span>
+                          <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#fef08a" title="Выделить">
+                            <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:10px">HL</span>
+                          </button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Очистить форматирование">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                          </button>
+                        </div>
+                        <div class="wysiwyg-editor" id="body-ru" contenteditable="true" data-field="body" data-lang="ru" data-placeholder="Текст уведомления... Для длинных текстов прокручивайте вниз." role="textbox" aria-multiline="true"></div>
+                      </div>
+                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-ru"></div></div>
+                      <div style="display:flex; justify-content:space-between; margin-top:4px">
+                        <div class="field-error" id="err-body-ru"><svg><use href="#i-warn"/></svg> Ruscha matnni yozing</div>
+                        <span class="sub" id="count-ru" style="font-size:11.5px; margin-left:auto; font-weight:700">0 / 600</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-
               </div>
 
               <!-- Formatting & Structuring Quick Tag Pills -->
@@ -3334,6 +3428,12 @@
         : missingLangs.length === 2 ? "Ikkala til kerak"
         : `${LANG_NAME[missingLangs[0]]} qoldi`;
 
+      // Bilingual Tab Status Icons
+      const tabStatusUz = $("tabStatusUz");
+      const tabStatusRu = $("tabStatusRu");
+      if (tabStatusUz) tabStatusUz.textContent = langComplete("uz") ? "✓" : "";
+      if (tabStatusRu) tabStatusRu.textContent = langComplete("ru") ? "✓" : "";
+
       // Simulator Preview Text
       const pl = state.previewLang;
       const t = state.texts[pl];
@@ -3488,6 +3588,20 @@
 
     $("btnNextStep").addEventListener("click", () => setStep(state.currentStep + 1));
     $("btnPrevStep").addEventListener("click", () => setStep(state.currentStep - 1));
+
+    // Bilingual Language Tab Switching
+    document.querySelectorAll(".bilingual-tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const lang = btn.dataset.tab;
+        document.querySelectorAll(".bilingual-tab-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        document.querySelectorAll(".bilingual-pane").forEach((p) => p.classList.remove("active"));
+        const pane = lang === "uz" ? $("bilingualPaneUz") : $("bilingualPaneRu");
+        if (pane) pane.classList.add("active");
+        state.previewLang = lang;
+        render();
+      });
+    });
 
     // Template Pill Clicks
     document.querySelectorAll(".template-pill").forEach((btn) => {
