@@ -2360,20 +2360,21 @@
 
                   <div id="monthDayField" hidden>
                     <label class="form-label" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
-                      <span>Oyning takrorlanish kuni</span>
+                      <span>Oyning takrorlanish sanalari (Bir nechta tanlash mumkin)</span>
                       <span id="selectedMonthDayBadge" style="font-size:11.5px; font-weight:700; color:var(--primary); background:var(--primary-soft); padding:2px 8px; border-radius:var(--radius-pill)">1-sana</span>
                     </label>
 
                     <!-- Smart Presets -->
                     <div class="month-presets-grid" id="monthPresets">
-                      <button type="button" class="month-preset-chip" data-mday="1">🗓 1-sana (Boshida)</button>
-                      <button type="button" class="month-preset-chip" data-mday="15">🗓 15-sana (O‘rtasida)</button>
-                      <button type="button" class="month-preset-chip" data-mday="25">🗓 25-sana (Hisobot)</button>
-                      <button type="button" class="month-preset-chip" data-mday="last">🗓 Oxirgi kuni</button>
+                      <button type="button" class="month-preset-chip" data-preset="1">🗓 1-sana</button>
+                      <button type="button" class="month-preset-chip" data-preset="1,15">🗓 1 va 15-sanalar</button>
+                      <button type="button" class="month-preset-chip" data-preset="1,10,20">🗓 1, 10, 20-sanalar</button>
+                      <button type="button" class="month-preset-chip" data-preset="last">🗓 Oxirgi kuni</button>
                     </div>
 
                     <!-- 1..31 Days Matrix -->
                     <div class="month-days-matrix" id="monthDaysMatrix"></div>
+                    <div class="field-error" id="err-monthDays"><svg><use href="#i-warn"/></svg> Kamida bitta sanani tanlang</div>
                   </div>
                 </div>
               </div>
@@ -2770,7 +2771,7 @@
         freq: "daily",
         time: "09:00",
         weekdays: [1],
-        monthDay: "1"
+        monthDays: ["1"]
       },
       texts: { uz: { title: "", body: "" }, ru: { title: "", body: "" } },
       touched: false,
@@ -2805,6 +2806,17 @@
       return `${nameOf("mahalla") || "Mahalla"}, ${nameOf("district")}`;
     }
 
+    function formatMonthDays(days) {
+      if (!days || days.length === 0) return "Sana tanlanmagan";
+      const hasLast = days.includes("last");
+      const numDays = days.filter((d) => d !== "last").map(Number).sort((a, b) => a - b);
+      if (numDays.length === 0 && hasLast) return "Oyning oxirgi kuni";
+      if (numDays.length === 1 && !hasLast) return `${numDays[0]}-sana`;
+      if (numDays.length === 2 && !hasLast) return `${numDays[0]} va ${numDays[1]}-sanalar`;
+      if (!hasLast) return `${numDays.join(", ")}-sanalar`;
+      return `${numDays.join(", ")}-sanalar va Oy oxiri`;
+    }
+
     function fillSelect(el, items, value, placeholder) {
       el.innerHTML = "";
       const first = document.createElement("option");
@@ -2834,6 +2846,7 @@
       } else if (step === 3) {
         if (state.send.mode === "scheduled" && !state.send.at) list.push("sendAt");
         if (state.send.mode === "recurring" && state.send.freq === "weekly" && state.send.weekdays.length === 0) list.push("weekdays");
+        if (state.send.mode === "recurring" && state.send.freq === "monthly" && (!state.send.monthDays || state.send.monthDays.length === 0)) list.push("monthDays");
       }
       return list;
     }
@@ -3021,15 +3034,21 @@
       });
 
       // Month day active states & badge
-      const curMDay = state.send.monthDay || "1";
+      const curMDays = state.send.monthDays || ["1"];
+      const sortedJoined = [...curMDays].sort().join(",");
       document.querySelectorAll("#monthPresets .month-preset-chip").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.mday === curMDay);
+        const pVal = btn.dataset.preset.split(",").sort().join(",");
+        btn.classList.toggle("active", pVal === sortedJoined);
       });
       document.querySelectorAll("#monthDaysMatrix .month-day-cell").forEach((cell) => {
-        cell.classList.toggle("active", cell.dataset.mday === curMDay);
+        cell.classList.toggle("active", curMDays.includes(cell.dataset.mday));
       });
       if ($("selectedMonthDayBadge")) {
-        $("selectedMonthDayBadge").textContent = curMDay === "last" ? "Oyning oxirgi kuni" : `${curMDay}-sana`;
+        $("selectedMonthDayBadge").textContent = formatMonthDays(curMDays);
+      }
+      if ($("err-monthDays")) {
+        const hasErr = state.touched && state.send.mode === "recurring" && state.send.freq === "monthly" && curMDays.length === 0;
+        $("err-monthDays").classList.toggle("active", hasErr);
       }
 
       // Review labels
@@ -3039,7 +3058,7 @@
       } else if (state.send.mode === "recurring") {
         if (state.send.freq === "daily") scheduleText = `Har kuni ${state.send.time}`;
         else if (state.send.freq === "weekly") scheduleText = `Haftalik (${state.send.weekdays.length} kun) ${state.send.time}`;
-        else if (state.send.freq === "monthly") scheduleText = `Har oyning ${curMDay === "last" ? "oxirgi kuni" : curMDay + "-kuni"} ${state.send.time}`;
+        else if (state.send.freq === "monthly") scheduleText = `Har oyning ${formatMonthDays(curMDays)} ${state.send.time}`;
       }
       $("revSchedule").textContent = scheduleText;
       const soundOn = $("soundToggle").checked;
@@ -3117,6 +3136,15 @@
         const raw = localStorage.getItem(DRAFT_KEY);
         if (!raw) return false;
         const d = JSON.parse(raw);
+        if (d.send) {
+          if (d.send.monthDay && !d.send.monthDays) {
+            d.send.monthDays = [String(d.send.monthDay)];
+            delete d.send.monthDay;
+          }
+          if (!Array.isArray(d.send.monthDays) || d.send.monthDays.length === 0) {
+            d.send.monthDays = ["1"];
+          }
+        }
         Object.assign(state, d);
         return true;
       } catch (e) { return false; }
@@ -3143,7 +3171,13 @@
         cell.textContent = String(i);
         cell.title = `Har oyning ${i}-kuni`;
         cell.addEventListener("click", () => {
-          state.send.monthDay = String(i);
+          const val = String(i);
+          const idx = state.send.monthDays.indexOf(val);
+          if (idx >= 0) {
+            state.send.monthDays.splice(idx, 1);
+          } else {
+            state.send.monthDays.push(val);
+          }
           saveDraft();
           render();
         });
@@ -3156,7 +3190,13 @@
       lastCell.textContent = "Oy oxiri";
       lastCell.title = "Har oyning oxirgi kuni";
       lastCell.addEventListener("click", () => {
-        state.send.monthDay = "last";
+        const val = "last";
+        const idx = state.send.monthDays.indexOf(val);
+        if (idx >= 0) {
+          state.send.monthDays.splice(idx, 1);
+        } else {
+          state.send.monthDays.push(val);
+        }
         saveDraft();
         render();
       });
@@ -3165,7 +3205,12 @@
 
     document.querySelectorAll("#monthPresets .month-preset-chip").forEach((btn) => {
       btn.addEventListener("click", () => {
-        state.send.monthDay = btn.dataset.mday;
+        const preset = btn.dataset.preset;
+        if (preset === "last") {
+          state.send.monthDays = ["last"];
+        } else {
+          state.send.monthDays = preset.split(",");
+        }
         saveDraft();
         render();
       });
