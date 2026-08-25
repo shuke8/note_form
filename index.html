@@ -2634,9 +2634,6 @@
         }
       });
 
-      // Chap panel holati
-      paintRailStatus();
-
       /* Pastdagi holat qatori: to'ldirilmagan maydonlar soni DOIM ko'rinadi
          (tinch rangda), qizil faqat yuborishga urinilgandan keyin. */
       const problems = allProblems();
@@ -3451,80 +3448,6 @@
       });
     });
 
-    /* ---------- Bo'limlarga o'tish va holat ---------- */
-    const RAIL_SECTIONS = {
-      blockText: ["title-uz", "body-uz", "title-ru", "body-ru"],
-      blockSchedule: ["sendAt", "weekdays", "monthDays"],
-      blockAudience: ["region", "district", "mahalla"]
-    };
-
-    /* Joriy bo'lim id'si — panel matni shunga qarab yoziladi.
-       `var`: render() bu qatordan oldinroq chaqirilsa ham TDZ xatosi chiqmasin. */
-    var activeSection = "blockText";
-
-    document.querySelectorAll(".rail-link").forEach((link) => {
-      link.addEventListener("click", () => {
-        const target = $(link.dataset.goto);
-        if (!target) return;
-        activeSection = link.dataset.goto;
-        paintRailStatus();
-        target.scrollIntoView({ block: "start", behavior: "smooth" });
-      });
-    });
-
-    /* Qaysi bo'lim ekranda — o'shani belgilaymiz. */
-    function markActiveSection() {
-      /* Bosqich paneli C variantda olib tashlandi — kuzatishning hojati yo'q. */
-      if (!document.querySelector(".rail-link")) return;
-      const scroller = document.querySelector(".workspace-container");
-      const ids = Object.keys(RAIL_SECTIONS);
-      const top = scroller.getBoundingClientRect().top + 140;
-      let active = ids[0];
-      for (const id of ids) {
-        const el = $(id);
-        if (el && el.getBoundingClientRect().top <= top) active = id;
-      }
-      /* Oxirgi bo'lim scroll chegarasiga sig'maydi — pastga yetganda uni belgilaymiz. */
-      if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 4) {
-        active = ids[ids.length - 1];
-      }
-      if (active === activeSection) return;
-      activeSection = active;
-      paintRailStatus();
-    }
-
-    /* Har bosqich uchun: tugallanganmi, nechta maydon qoldi, hozir shu yerdamizmi. */
-    function paintRailStatus() {
-      const bad = new Set(allProblems());
-      let doneCount = 0;
-      document.querySelectorAll(".rail-link").forEach((l) => {
-        const id = l.dataset.goto;
-        const missing = (RAIL_SECTIONS[id] || []).filter((f) => bad.has(f)).length;
-        const done = missing === 0;
-        const isCurrent = id === activeSection;
-        if (done) doneCount += 1;
-
-        l.dataset.done = String(done);
-        l.dataset.touched = String(Boolean(state.touched));
-        l.classList.toggle("active", isCurrent);
-        if (isCurrent) l.setAttribute("aria-current", "step");
-        else l.removeAttribute("aria-current");
-
-        const stateEl = l.querySelector(".rail-state");
-        if (stateEl) {
-          stateEl.textContent = isCurrent
-            ? (done ? "Shu yerdasiz" : `Shu yerdasiz \u00b7 ${missing} maydon`)
-            : (done ? "To\u2018ldirilgan" : `${missing} maydon qoldi`);
-        }
-        l.title = `${l.querySelector(".rail-title").textContent} \u2014 ${done ? "to\u2018ldirilgan" : `${missing} ta maydon qoldi`}`;
-      });
-
-      const fill = $("railTrackFill");
-      const total = Object.keys(RAIL_SECTIONS).length;
-      if (fill) fill.style.width = `${Math.round((doneCount / total) * 100)}%`;
-    }
-
-    document.querySelector(".workspace-container").addEventListener("scroll", markActiveSection, { passive: true });
 
     /* Telefon ekranidagi soat — real vaqt (Toshkent) */
     const WD = ["Yakshanba", "Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba"];
@@ -3544,7 +3467,6 @@
     buildSlotInputs();
     renderFiles();
     render();
-    markActiveSection();
   </script>
 </body>
 </html>
