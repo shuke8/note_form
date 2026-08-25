@@ -137,13 +137,14 @@
     svg { display: block; }
 
     .skip-link {
-      position: absolute; left: 12px; top: -60px; z-index: 300;
+      position: absolute; left: 12px; top: 12px; z-index: 300;
+      transform: translateY(-80px);
       padding: 10px 16px; border-radius: var(--r-md);
       background: var(--accent); color: var(--on-accent);
       font-size: 13px; font-weight: 550; text-decoration: none;
-      transition: top 160ms var(--ease);
+      transition: transform 160ms var(--ease);
     }
-    .skip-link:focus { top: 12px; }
+    .skip-link:focus { transform: none; }
 
     .visually-hidden {
       position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -193,70 +194,6 @@
     }
     .nav-breadcrumbs svg { width: 13px; height: 13px; color: var(--text-dim); flex: none; }
     .nav-breadcrumbs .crumb-active { color: var(--text-main); font-weight: 550; }
-
-    /* Bosqich paneli — sahifa qayerga scroll qilinsa ham tepada qoladi.
-       Har bosqichda uch xabar bor: nechanchi, tugallanganmi, hozir shu yerdamizmi. */
-    .section-nav {
-      position: sticky; top: 0; z-index: 21;
-      margin: 0 -40px 26px; padding: 9px 40px 0;
-      background: color-mix(in srgb, var(--bg-app) 95%, transparent);
-      backdrop-filter: blur(14px) saturate(150%); -webkit-backdrop-filter: blur(14px) saturate(150%);
-      border-bottom: 1px solid var(--line);
-    }
-    .rail-steps { display: flex; align-items: stretch; gap: 4px; }
-
-    /* Umumiy progress — panel ostidagi ingichka chiziq */
-    .rail-track { height: 2px; margin: 9px -40px 0; background: var(--line); }
-    .rail-track-fill {
-      display: block; height: 100%; width: 0; background: var(--accent);
-      transition: width 320ms var(--ease);
-    }
-
-    .rail-link {
-      flex: 1 1 0; min-width: 0;
-      display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: left;
-      border: 1px solid transparent; background: transparent; border-radius: var(--r-md);
-      padding: 6px 12px 6px 9px; color: var(--text-muted);
-      transition: background 140ms var(--ease), color 140ms var(--ease), border-color 140ms var(--ease);
-    }
-    .rail-link:hover { background: var(--bg-hover); color: var(--text-main); }
-    .rail-link.active { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent-text); }
-
-    /* Belgi: to'ldirilmagan bo'lsa raqam, to'ldirilgan bo'lsa yashil belgi */
-    .rail-mark {
-      position: relative; width: 22px; height: 22px; flex: none; border-radius: var(--r-sm);
-      display: grid; place-items: center;
-      background: var(--bg-raise); color: var(--text-dim);
-      font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
-      transition: background 140ms var(--ease), color 140ms var(--ease), box-shadow 140ms var(--ease);
-    }
-    .rail-mark .n { transition: opacity 140ms var(--ease); }
-    .rail-mark .tick { position: absolute; width: 13px; height: 13px; opacity: 0; transition: opacity 160ms var(--ease); }
-    .rail-link.active .rail-mark { background: var(--accent); color: #fff; box-shadow: 0 0 0 3px var(--ring); }
-    .rail-link[data-done="true"] .rail-mark { background: var(--ok-soft); color: var(--ok); }
-    .rail-link[data-done="true"] .rail-mark .n { opacity: 0; }
-    .rail-link[data-done="true"] .rail-mark .tick { opacity: 1; }
-    .rail-link.active[data-done="true"] .rail-mark { box-shadow: 0 0 0 3px var(--ring); }
-
-    .rail-body { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-    .rail-title {
-      font-size: 12.5px; font-weight: 500; color: inherit;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .rail-link.active .rail-title { font-weight: 600; }
-    .rail-state {
-      font-size: 10.5px; line-height: 1.35; color: var(--text-dim);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .rail-link.active .rail-state { color: var(--accent-text); }
-    .rail-link[data-done="true"] .rail-state { color: var(--ok); }
-    .rail-link[data-done="false"][data-touched="true"] .rail-state { color: var(--crit); }
-
-    /* Holat matni hech qachon yashirilmaydi: joy yetmasa bosqichlar siqilmay,
-       panelning o'zi gorizontal suriladi. */
-    .rail-steps { overflow-x: auto; scrollbar-width: none; }
-    .rail-steps::-webkit-scrollbar { display: none; }
-    .rail-link { min-width: 148px; }
 
     .rail-card {
       display: flex; align-items: center; gap: 8px; padding: 6px 11px;
@@ -402,7 +339,12 @@
       opacity: 0; transition: opacity 180ms var(--ease);
     }
     .char-bar-track.is-visible { opacity: 1; }
-    .char-bar-fill { height: 100%; width: 0; background: var(--accent); transition: width 200ms var(--ease), background 200ms var(--ease); }
+    /* scaleX — layout emas, kompozitorda ishlaydi */
+    .char-bar-fill {
+      height: 100%; width: 100%; background: var(--accent);
+      transform: scaleX(0); transform-origin: left center;
+      transition: transform 200ms var(--ease), background 200ms var(--ease);
+    }
     .char-bar-fill.warn { background: var(--warn); }
     .char-bar-fill.crit { background: var(--crit); }
 
@@ -415,7 +357,7 @@
       transition: background 140ms var(--ease), transform 110ms var(--ease);
     }
     .btn-devin-primary:hover { background: var(--accent-press); }
-    .btn-devin-primary:active { transform: scale(0.985); }
+    .btn-devin-primary:active { transform: scale(0.98); }
     .btn-devin-primary svg { width: 14px; height: 14px; }
 
     .btn-devin-secondary {
@@ -464,7 +406,7 @@
       transition: border-color 140ms var(--ease), background 140ms var(--ease), transform 110ms var(--ease);
     }
     .scope-card-btn:hover { border-color: var(--line-3); }
-    .scope-card-btn:active { transform: scale(0.99); }
+    .scope-card-btn:active { transform: scale(0.98); }
     .scope-card-btn.active { border-color: var(--accent); background: var(--accent-soft); }
 
     .scope-card-top { display: flex; align-items: center; gap: 9px; }
@@ -483,10 +425,11 @@
     }
     .scope-radio-indicator::after {
       content: ""; width: 5px; height: 5px; border-radius: 50%; background: #fff;
-      transform: scale(0); transition: transform 140ms var(--ease);
+      opacity: 0; transform: scale(0.6);
+      transition: transform 140ms var(--ease), opacity 140ms var(--ease);
     }
     .scope-card-btn.active .scope-radio-indicator { border-color: var(--accent); background: var(--accent); }
-    .scope-card-btn.active .scope-radio-indicator::after { transform: scale(1); }
+    .scope-card-btn.active .scope-radio-indicator::after { opacity: 1; transform: scale(1); }
 
     .scope-card-title { font-size: 13.5px; font-weight: 600; color: var(--text-main); letter-spacing: -0.01em; }
     .scope-card-btn.active .scope-card-title { color: var(--accent-text); }
@@ -951,8 +894,17 @@
     }
     .toast-pill.show { transform: translate(-50%, 0); opacity: 1; }
 
+    /* Kamaytirilgan harakat = KAMROQ harakat, nol emas.
+       Joy o'zgarishi o'chadi; rang/shaffoflik javobi qoladi — u holatni tushuntiradi. */
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-property: opacity, background-color, border-color, color, box-shadow, fill !important;
+        transition-duration: 120ms !important;
+      }
+      .toast-pill { transform: translate(-50%, 0); }
+      .char-bar-fill { transition-property: opacity, background-color !important; }
     }
     /* =====================================================================
        SSENARIY-BIRINCHI KOMPOZITOR (C variant)
@@ -967,7 +919,7 @@
       transition: border-color 140ms var(--ease), background-color 140ms var(--ease), transform 140ms var(--ease);
     }
     .sc-card:hover { border-color: var(--line-3); }
-    .sc-card:active { transform: scale(0.99); }
+    .sc-card:active { transform: scale(0.98); }
     .sc-card:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
     .sc-card.active { border-color: var(--accent); background: var(--accent-soft); }
     .sc-top { display: flex; align-items: center; justify-content: space-between; min-height: 19px; }
@@ -1044,11 +996,13 @@
     .hero-side .hero-meta { text-align: right; white-space: nowrap; }
     .btn-ghost-sm {
       display: inline-flex; align-items: center; height: 32px; padding: 0 12px; cursor: pointer;
+      transition: transform 110ms var(--ease);
       border: 1px solid var(--line-2); border-radius: var(--r-md); background: var(--bg-panel);
       color: var(--text-body); font-family: inherit; font-size: 12.5px; font-weight: 500;
       transition: border-color 120ms var(--ease), background-color 120ms var(--ease);
     }
     .btn-ghost-sm:hover { border-color: var(--line-3); background: var(--bg-hover); }
+    .btn-ghost-sm:active { transform: scale(0.97); }
     .btn-ghost-sm:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 
     .manual-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
@@ -1060,8 +1014,9 @@
       display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 11px; cursor: pointer;
       border: 1px solid transparent; border-radius: var(--r-md); background: transparent;
       color: var(--text-muted); font-family: inherit; font-size: 12px; font-weight: 500;
-      transition: border-color 120ms var(--ease), background-color 120ms var(--ease), color 120ms var(--ease);
+      transition: border-color 120ms var(--ease), background-color 120ms var(--ease), color 120ms var(--ease), transform 110ms var(--ease);
     }
+    .cchip:active { transform: scale(0.96); }
     .cchip > svg { width: 14px; height: 14px; flex: none; }
     .cchip .cchev { width: 11px; height: 11px; color: var(--text-dim); }
     .cchip.is-set { border-color: var(--line-2); background: var(--bg-panel); color: var(--text-body); }
@@ -1072,8 +1027,18 @@
     .cchip.is-bad { border-color: var(--crit); background: var(--crit-soft); color: var(--crit); }
     .cchip.is-bad > svg { color: var(--crit); }
     .cchip:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
-    .cpanel { animation: panelIn 180ms var(--ease) both; }
-    @keyframes panelIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+    /* Panel o'zini ochgan chip ustidan "o'sadi" — qayerdan kelgani ko'rinadi */
+    .cpanel {
+      transform-origin: var(--panel-origin, 50%) top;
+      animation: panelIn 180ms var(--ease) both;
+    }
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* Ssenariy almashganda: ramka qotadi, faqat ichki kontent almashadi */
+    @keyframes swapIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
     @media (prefers-reduced-motion: reduce) {
       .cpanel { animation: none; }
@@ -2274,6 +2239,17 @@
       }, 700);
     }
 
+    /* Oxirgi chizilgan ssenariy — almashuvni bir marta animatsiya qilish uchun */
+    let paintedScenario = null;
+
+    /* Elementni qayta "kirish" animatsiyasi bilan chizadi (keyframe restart). */
+    function replayEnter(el, keyframes, delay) {
+      if (!el) return;
+      el.style.animation = "none";
+      void el.offsetWidth;
+      el.style.animation = `${keyframes} var(--ease) ${delay || 0}ms both`;
+    }
+
     function renderScenario() {
       const sc = SCENARIOS[state.tpl.key] || null;
       const manual = state.compose === "manual";
@@ -2304,6 +2280,18 @@
           if (document.activeElement !== el && el.value !== val) el.value = val;
         });
       }
+
+      /* Ssenariy ALMASHGANDA (har bosishda emas): karta ramkasi joyida qoladi,
+         faqat bo'shliqlar va yig'ilgan matn almashadi — 40ms stagger bilan. */
+      if (sc && !manual && state.tpl.key !== paintedScenario) {
+        paintedScenario = state.tpl.key;
+        const rows = document.querySelectorAll("#slotEditor .gen-row");
+        replayEnter($("slotGrid"), "swapIn 200ms", 0);
+        rows.forEach((row, i) => replayEnter(row, "swapIn 200ms", 40 + i * 40));
+        /* Telefon bildirishnomasi — tanlovning natijasi, qayta e'lon qiladi */
+        replayEnter(document.querySelector(".notif-bubble"), "pushIn 260ms", 120);
+      }
+      if (!sc || manual) paintedScenario = null;
 
       const scFact = $("pvScenario");
       if (scFact) scFact.textContent = sc ? sc.name : (manual ? "Qo‘lda yozilgan" : "Tanlanmagan");
@@ -2449,7 +2437,17 @@
         const on = Boolean(id) && chip.dataset.panel === id;
         chip.setAttribute("aria-expanded", String(on));
         const panel = $(chip.dataset.panel);
-        if (panel) panel.hidden = !on;
+        if (!panel) return;
+        if (on) {
+          /* Panel chip turgan nuqtadan ochilsin — origin o'sha yerga qo'yiladi */
+          panel.hidden = false;
+          const chipBox = chip.getBoundingClientRect();
+          const panelBox = panel.getBoundingClientRect();
+          const x = Math.round(chipBox.left + chipBox.width / 2 - panelBox.left);
+          panel.style.setProperty("--panel-origin", `${x}px`);
+        } else {
+          panel.hidden = true;
+        }
       });
     }
 
@@ -2481,7 +2479,7 @@
     function updateProgressBar(fillEl, current, max) {
       if (!fillEl) return;
       const pct = Math.min(100, Math.round((current / max) * 100));
-      fillEl.style.width = `${pct}%`;
+      fillEl.style.transform = `scaleX(${pct / 100})`;
       const warn = pct >= 75 && pct < 95;
       const crit = pct >= 95;
       fillEl.classList.toggle("warn", warn);
