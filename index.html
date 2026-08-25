@@ -3522,7 +3522,10 @@
       const statusBadge = $("autoTransStatus");
       const statusText = $("autoTransStatusText");
 
-      if (!sourceEl || !targetEl) return;
+      /* Uchta natija, uchtasi ham ANIQ: "skipped" (tarjima qilinadigan narsa
+         yo'q), true (nishon maydon HAQIQATAN yozildi), false (bajarilmadi).
+         Ilgari bo'sh maydon `undefined` qaytarib mag'lubiyatdek ko'rinardi. */
+      if (!sourceEl || !targetEl) return "skipped";
       
       let sourceText = "";
       if (sourceEl.tagName === "INPUT") {
@@ -3532,7 +3535,7 @@
       }
 
       if (!sourceText) {
-        return;
+        return "skipped";
       }
 
       if (statusBadge) {
@@ -3544,17 +3547,22 @@
 
       try {
         const translated = await fetchTranslation(sourceText, sourceLang, targetLang);
-        if (translated && translated.trim()) {
-          if (targetEl.tagName === "INPUT") {
-            targetEl.value = translated;
-          } else {
-            targetEl.textContent = translated;
-          }
-          state.texts[targetLang][field] = translated;
-          markStale("main", false);
-          saveDraft();
-          render();
+        /* So'rov o'tdi, lekin tanasi bo'sh — nishon maydon O'ZGARMADI.
+           Ilgari bu ham `true` qaytarardi: "tarjima qilindi" deb yozilar,
+           ruscha maydon esa eski holicha qolardi. */
+        if (!translated || !translated.trim()) {
+          markStale("main", true, "Avto-tarjima");
+          return false;
         }
+        if (targetEl.tagName === "INPUT") {
+          targetEl.value = translated;
+        } else {
+          targetEl.textContent = translated;
+        }
+        state.texts[targetLang][field] = translated;
+        markStale("main", false);
+        saveDraft();
+        render();
         return true;
       } catch (e) {
         /* Ilgari bu yerda faqat console.warn bor edi: ruscha matn eski
@@ -3584,6 +3592,17 @@
       }, 550);
     }
 
+    /* Da'vo NATIJAGA bog'liq. Ikkala tugma ham shu yerdan hukm oladi —
+       ilgari uz->ru tekshirar, ru->uz esa natijaga QARAMASDAN "tarjima
+       qilindi!" derdi: tarmoq yiqilsa ham operator bajarildi deb o'ylardi. */
+    function translationVerdict(results, dirTitle, dirAdj) {
+      const failed = results.some((r) => r === false);
+      const wrote = results.some((r) => r === true);
+      if (failed) return `Tarjima bajarilmadi — ${dirAdj} matn eski holicha. Qo\u2018lda to\u2018g\u2018rilang.`;
+      if (!wrote) return "Tarjima qilinadigan matn yo\u2018q — avval manba tilini to\u2018ldiring";
+      return `${dirTitle} tarjima qilindi`;
+    }
+
     // Manual quick-translate buttons
     $("btnTranslateToRu")?.addEventListener("click", async () => {
       toast("O‘zbekchadan ruschaga tarjima qilinmoqda...");
@@ -3591,19 +3610,16 @@
         triggerFieldTranslation("title", "uz"),
         triggerFieldTranslation("body", "uz")
       ]);
-      /* Da'vo NATIJAGA bog'liq: yiqilganda "tarjima qilindi" deyish yolg'on. */
-      toast(done.every(Boolean)
-        ? "Ruschaga tarjima qilindi"
-        : "Tarjima bajarilmadi — ruscha matn eski holicha. Qo‘lda to‘g‘rilang.");
+      toast(translationVerdict(done, "Ruschaga", "ruscha"));
     });
 
     $("btnTranslateToUz")?.addEventListener("click", async () => {
       toast("Ruschadan o‘zbekchaga tarjima qilinmoqda...");
-      await Promise.all([
+      const done = await Promise.all([
         triggerFieldTranslation("title", "ru"),
         triggerFieldTranslation("body", "ru")
       ]);
-      toast("O‘zbekchaga tarjima qilindi!");
+      toast(translationVerdict(done, "O‘zbekchaga", "o‘zbekcha"));
     });
 
     // Form Field Listeners (For Title Inputs)
