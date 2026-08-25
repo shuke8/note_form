@@ -61,6 +61,18 @@
 
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 20px 50px -12px rgba(0, 0, 0, 0.7);
 
+
+      /* Kegl shkalasi — 14 ta ad-hoc qiymat o'rniga 8 ta nomlangan qadam.
+         Nom ROLga qarab: micro = mono metadata, base = matn va boshqaruv. */
+      --fs-micro: 10px;    /* mono katta harfli yorliq, badge */
+      --fs-tiny: 11.5px;   /* ikkilamchi meta, chip, izoh */
+      --fs-sm: 12.5px;     /* maydon yorlig'i, kichik UI matni */
+      --fs-base: 13.5px;   /* asosiy matn, input, tugma */
+      --fs-lg: 15.5px;     /* karta sarlavhasi */
+      --fs-xl: 18px;       /* tasdiq oynasi sarlavhasi */
+      --fs-2xl: 23px;      /* sahifa sarlavhasi */
+      --fs-clock: 74px;    /* telefon simulyatsiyasidagi soat */
+
       --font-ui: "Golos Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       --font-mono: "Roboto Mono", ui-monospace, "SF Mono", monospace;
       --ease: cubic-bezier(0.23, 1, 0.32, 1);
@@ -110,7 +122,7 @@
 
     body {
       font-family: var(--font-ui);
-      font-size: 13.5px;
+      font-size: var(--fs-base);
       line-height: 1.5;
       color: var(--text-body);
       background: var(--bg-app);
@@ -127,7 +139,7 @@
       transform: translateY(-80px);
       padding: 10px 16px; border-radius: var(--r-md);
       background: var(--accent); color: var(--on-accent);
-      font-size: 13px; font-weight: 550; text-decoration: none;
+      font-size: var(--fs-base); font-weight: 550; text-decoration: none;
       transition: transform 160ms var(--ease);
     }
     .skip-link:focus { transform: none; }
@@ -170,7 +182,12 @@
     ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--line-3); background-clip: content-box; }
+    @media (hover: hover) {
+      ::-webkit-scrollbar-thumb:hover {   background: var(--line-3); background-clip: content-box; }
+    }
+
+    /* Hover holatlari @media (hover: hover) ichida: touch'da tap'dan keyin
+       hover stili yopishib qolmasin (better-accessibility). */
 
     /* ---------------- SHELL ---------------- */
     .app-root {
@@ -195,14 +212,16 @@
       padding: 7px 8px; border-radius: var(--r-md);
       transition: background 140ms var(--ease);
     }
-    .brand-logo-btn:hover { background: var(--bg-hover); }
+    @media (hover: hover) {
+      .brand-logo-btn:hover {   background: var(--bg-hover); }
+    }
     .brand-logo-btn img { width: 25px; height: 25px; flex: none; }
 
     .brand-platform-badge { display: none; }
 
     .nav-breadcrumbs {
       display: flex; align-items: center; gap: 8px; min-width: 0;
-      font-size: 12.5px; color: var(--text-muted);
+      font-size: var(--fs-sm); color: var(--text-muted);
     }
     .nav-breadcrumbs svg { width: 13px; height: 13px; color: var(--text-dim); flex: none; }
     .nav-breadcrumbs .crumb-active { color: var(--text-main); font-weight: 550; }
@@ -210,12 +229,12 @@
     .rail-card {
       display: flex; align-items: center; gap: 8px; padding: 6px 11px;
       border: 1px solid var(--line); border-radius: var(--r-pill); background: var(--bg-panel);
-      font-size: 12px; color: var(--text-muted); white-space: nowrap;
+      font-size: var(--fs-tiny); color: var(--text-muted); white-space: nowrap;
     }
     .rail-card svg { width: 14px; height: 14px; color: var(--accent); flex: none; }
     .status-live-chip {
       display: flex; align-items: center; gap: 8px; padding: 8px 10px;
-      font-size: 11.5px; color: var(--text-dim);
+      font-size: var(--fs-tiny); color: var(--text-dim);
     }
     .status-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); flex: none; }
 
@@ -224,7 +243,9 @@
       color: var(--text-muted); cursor: pointer; display: grid; place-items: center;
       transition: background 140ms var(--ease), color 140ms var(--ease);
     }
-    .icon-btn-quiet:hover { background: var(--bg-hover); color: var(--text-main); }
+    @media (hover: hover) {
+      .icon-btn-quiet:hover {   background: var(--bg-hover); color: var(--text-main); }
+    }
     .icon-btn-quiet svg { width: 16px; height: 16px; }
 
     /* ---------------- CENTER ---------------- */
@@ -236,7 +257,7 @@
     .composer-pane { max-width: 800px; width: 100%; margin: 0 auto; padding: 26px 40px 120px; }
 
     /* Matn uzunligi bo'yicha jonli baho (bildirishnomada sig'adimi) */
-    .verdict-line { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+    .verdict-line { display: flex; align-items: center; gap: 8px; font-size: var(--fs-tiny); color: var(--text-muted); }
     .verdict-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; background: var(--line-3); }
     .verdict-line[data-v="ok"] .verdict-dot { background: var(--ok); }
     .verdict-line[data-v="warn"] .verdict-dot { background: var(--warn); }
@@ -249,8 +270,8 @@
       margin-bottom: 18px;
     }
     .hero-copy { min-width: 0; }
-    .page-title { font-size: 23px; font-weight: 620; letter-spacing: -0.028em; color: var(--text-main); text-wrap: balance; }
-    .page-desc { margin-top: 6px; font-size: 13px; color: var(--text-muted); max-width: 62ch; text-wrap: pretty; }
+    .page-title { font-size: var(--fs-2xl); font-weight: 620; letter-spacing: -0.028em; color: var(--text-main); text-wrap: balance; }
+    .page-desc { margin-top: 6px; font-size: var(--fs-base); color: var(--text-muted); max-width: 62ch; text-wrap: pretty; }
     /* Matn o'ralishi (make-interfaces-feel-better): sarlavhada qatorlar teng
        taqsimlansin, qisqa matnda oxirgi qatorda yolg'iz so'z qolmasin. */
     .form-card-title h2, .sc-name, .slot-head b, .scope-card-title,
@@ -260,7 +281,7 @@
 
     .page-legend {
       display: flex; align-items: center; gap: 8px; margin-top: 10px;
-      font-size: 12px; color: var(--text-dim);
+      font-size: var(--fs-tiny); color: var(--text-dim);
     }
     .page-legend b { color: var(--accent-text); font-weight: 600; }
     .legend-swatch {
@@ -268,10 +289,10 @@
     }
     .hero-meta { flex: none; display: flex; align-items: center; gap: 10px; }
     .hero-meta-label {
-      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.1em;
       text-transform: uppercase; color: var(--text-dim);
     }
-    .hero-meta b { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-muted); }
+    .hero-meta b { font-family: var(--font-mono); font-size: var(--fs-tiny); font-weight: 500; color: var(--text-muted); }
 
     /* ---------------- SECTION (karta emas) ---------------- */
     .form-block { display: block; scroll-margin-top: 84px; }
@@ -284,45 +305,47 @@
     }
     .form-card-title > h2, .form-card-title > span:first-child {
       display: flex; align-items: center;
-      font-size: 15.5px; font-weight: 600; letter-spacing: -0.015em; color: var(--text-main);
+      font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.015em; color: var(--text-main);
     }
     .form-card-title .sub {
-      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.06em;
       color: var(--text-dim); white-space: nowrap;
     }
     .block-num {
       display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 10px;
       border-radius: var(--r-sm); background: var(--bg-raise); color: var(--text-dim);
-      font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
+      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600;
     }
 
     /* ---------------- CONTROLS ---------------- */
     .form-group { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
-    .form-label { font-size: 12.5px; font-weight: 550; color: var(--text-body); }
+    .form-label { font-size: var(--fs-sm); font-weight: 550; color: var(--text-body); }
     .req-mark { color: var(--accent-text); font-weight: 600; margin-left: 2px; }
-    .opt-mark { color: var(--text-dim); font-weight: 400; font-size: 11.5px; margin-left: 4px; }
+    .opt-mark { color: var(--text-dim); font-weight: 400; font-size: var(--fs-tiny); margin-left: 4px; }
     .label-row {
       display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 7px;
     }
     .label-row .form-label { margin: 0; }
     .label-count {
-      font-family: var(--font-mono); font-size: 10.5px; color: var(--text-dim);
+      font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--text-dim);
       font-variant-numeric: tabular-nums;
     }
     .label-count.warn { color: var(--warn); }
     .label-count.crit { color: var(--crit); }
-    .form-label .sub { color: var(--text-dim); font-size: 11.5px; }
+    .form-label .sub { color: var(--text-dim); font-size: var(--fs-tiny); }
 
     .devin-input, .devin-select {
       width: 100%; height: 40px; padding: 0 13px;
       background: var(--bg-field); color: var(--text-main);
       border: 1px solid var(--field-line); border-radius: var(--r-md);
       box-shadow: var(--field-inset);
-      font-size: 13.5px; outline: none;
+      font-size: var(--fs-base); outline: none;
       transition: border-color 140ms var(--ease), box-shadow 140ms var(--ease), background 140ms var(--ease);
     }
     .devin-input::placeholder { color: var(--text-dim); }
-    .devin-input:hover, .devin-select:hover { border-color: var(--line-3); }
+    @media (hover: hover) {
+      .devin-input:hover, .devin-select:hover {   border-color: var(--line-3); }
+    }
     .devin-input:focus, .devin-select:focus {
       border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring);
     }
@@ -338,7 +361,7 @@
 
     .field-hint {
       display: flex; align-items: center; gap: 6px; margin-top: 6px;
-      font-size: 11.5px; color: var(--text-dim);
+      font-size: var(--fs-tiny); color: var(--text-dim);
     }
     .field-hint svg { width: 12px; height: 12px; flex: none; }
 
@@ -349,7 +372,7 @@
       width: 14px; height: 14px; color: var(--text-dim); pointer-events: none;
     }
 
-    .field-error { display: none; align-items: center; gap: 6px; font-size: 12px; color: var(--crit); }
+    .field-error { display: none; align-items: center; gap: 6px; font-size: var(--fs-tiny); color: var(--crit); }
     .field-error.active, .field-error.show { display: flex; }
     .field-error svg { width: 13px; height: 13px; flex: none; }
 
@@ -371,22 +394,26 @@
     .btn-devin-primary {
       height: 36px; padding: 0 14px 0 16px; border: 0; border-radius: var(--r-md); cursor: pointer;
       background: var(--accent); color: var(--on-accent);
-      font-size: 13px; font-weight: 550;
+      font-size: var(--fs-base); font-weight: 550;
       display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
       transition: background 140ms var(--ease), transform 110ms var(--ease);
     }
-    .btn-devin-primary:hover { background: var(--accent-press); }
+    @media (hover: hover) {
+      .btn-devin-primary:hover {   background: var(--accent-press); }
+    }
     .btn-devin-primary:active { transform: scale(0.96); }
     .btn-devin-primary svg { width: 14px; height: 14px; }
 
     .btn-devin-secondary {
       height: 36px; padding: 0 16px 0 14px; cursor: pointer; border-radius: var(--r-md);
       background: transparent; color: var(--text-body); border: 1px solid var(--line-2);
-      font-size: 13px; font-weight: 500;
+      font-size: var(--fs-base); font-weight: 500;
       display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
       transition: background 140ms var(--ease), border-color 140ms var(--ease), color 140ms var(--ease);
     }
-    .btn-devin-secondary:hover { background: var(--bg-hover); color: var(--text-main); border-color: var(--line-3); }
+    @media (hover: hover) {
+      .btn-devin-secondary:hover {   background: var(--bg-hover); color: var(--text-main); border-color: var(--line-3); }
+    }
     .btn-devin-secondary svg { width: 14px; height: 14px; }
     .btn-devin-secondary.secondary { border-color: transparent; }
 
@@ -398,7 +425,7 @@
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-top: 1px solid var(--line);
     }
-    .foot-status { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--text-muted); }
+    .foot-status { display: flex; align-items: center; gap: 9px; font-size: var(--fs-sm); color: var(--text-muted); }
     .foot-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); flex: none; }
     .foot-status.is-pending { color: var(--text-muted); }
     .foot-status.is-pending .foot-dot { background: var(--text-dim); }
@@ -410,9 +437,9 @@
       display: flex; align-items: center; justify-content: space-between; gap: 16px;
       padding: 11px 14px; border-radius: var(--r-md);
       background: var(--accent-soft); border: 1px solid var(--accent-line);
-      font-size: 13px; color: var(--accent-text);
+      font-size: var(--fs-base); color: var(--accent-text);
     }
-    .scope-summary-chip-bar b { font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; white-space: nowrap; }
+    .scope-summary-chip-bar b { font-family: var(--font-mono); font-size: var(--fs-tiny); font-weight: 500; white-space: nowrap; }
     #scopeSummaryText { font-weight: 550; }
     .scope-path { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }
     .scope-path .sep { opacity: .5; }
@@ -424,7 +451,9 @@
       display: flex; flex-direction: column; gap: 10px; overflow: hidden;
       transition: border-color 140ms var(--ease), background 140ms var(--ease), transform 110ms var(--ease);
     }
-    .scope-card-btn:hover { border-color: var(--line-3); }
+    @media (hover: hover) {
+      .scope-card-btn:hover {   border-color: var(--line-3); }
+    }
     .scope-card-btn:active { transform: scale(0.96); }
     .scope-card-btn.active { border-color: var(--accent); background: var(--accent-soft); }
 
@@ -450,9 +479,9 @@
     .scope-card-btn.active .scope-radio-indicator { border-color: var(--accent); background: var(--accent); }
     .scope-card-btn.active .scope-radio-indicator::after { opacity: 1; transform: scale(1); }
 
-    .scope-card-title { font-size: 13.5px; font-weight: 600; color: var(--text-main); letter-spacing: -0.01em; }
+    .scope-card-title { font-size: var(--fs-base); font-weight: 600; color: var(--text-main); letter-spacing: -0.01em; }
     .scope-card-btn.active .scope-card-title { color: var(--accent-text); }
-    .scope-card-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.35; margin-top: 2px; }
+    .scope-card-desc { font-size: var(--fs-tiny); color: var(--text-muted); line-height: 1.35; margin-top: 2px; }
 
     /* Qamrov ko'lamini ko'rsatuvchi chiziq — darajalar orasidagi farq ko'z bilan ko'rinadi */
     .scope-reach { display: flex; flex-direction: column; gap: 5px; margin-top: auto; }
@@ -462,7 +491,7 @@
       transition: background 140ms var(--ease);
     }
     .scope-card-btn.active .scope-reach-fill { background: var(--accent); }
-    .scope-card-badge { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+    .scope-card-badge { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--text-dim); font-variant-numeric: tabular-nums; }
     .scope-card-btn.active .scope-card-badge { color: var(--accent-text); }
 
     /* Kaskad: viloyat → tuman → mahalla, bog'langan yo'l ko'rinishida */
@@ -483,7 +512,7 @@
     .geo-step-num {
       width: 17px; height: 17px; flex: none; border-radius: 5px; display: grid; place-items: center;
       background: var(--bg-raise); color: var(--text-dim);
-      font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600;
       transition: background 140ms var(--ease), color 140ms var(--ease);
     }
     .geo-step.is-set .geo-step-num { background: var(--ok-soft); color: var(--ok); }
@@ -496,11 +525,13 @@
       cursor: pointer; text-align: left; padding: 12px 13px;
       background: var(--bg-panel); border: 1px solid var(--line-2); border-radius: var(--r-md);
       display: flex; align-items: center; gap: 9px;
-      font-size: 13px; font-weight: 500; color: var(--text-body);
+      font-size: var(--fs-base); font-weight: 500; color: var(--text-body);
       transition: border-color 140ms var(--ease), background 140ms var(--ease), color 140ms var(--ease);
     }
     .sev-btn svg { width: 15px; height: 15px; flex: none; color: var(--text-dim); transition: color 140ms var(--ease); }
-    .sev-btn:hover { border-color: var(--line-3); }
+    @media (hover: hover) {
+      .sev-btn:hover {   border-color: var(--line-3); }
+    }
     .sev-btn.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-text); }
     .sev-btn.active svg { color: var(--accent); }
 
@@ -508,7 +539,7 @@
     .templates-bar { border: 0; padding: 0; background: transparent; }
     .templates-head {
       display: flex; align-items: center; gap: 7px; margin-bottom: 9px;
-      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.1em;
       text-transform: uppercase; color: var(--text-dim);
     }
     .templates-head svg { width: 12px; height: 12px; }
@@ -517,13 +548,15 @@
     .template-pill, .format-tag-pill, .preset-pill, .month-preset-chip {
       cursor: pointer; border: 1px solid var(--line-2); border-radius: var(--r-md);
       background: var(--bg-panel); color: var(--text-body);
-      font-size: 12px; font-weight: 500; text-align: left;
+      font-size: var(--fs-tiny); font-weight: 500; text-align: left;
       padding: 8px 11px; min-height: 34px;
       display: inline-flex; align-items: center; gap: 6px;
       transition: border-color 140ms var(--ease), color 140ms var(--ease), background 140ms var(--ease);
     }
-    .template-pill:hover, .format-tag-pill:hover, .preset-pill:hover, .month-preset-chip:hover {
-      border-color: var(--accent-line); color: var(--accent-text);
+    @media (hover: hover) {
+      .template-pill:hover, .format-tag-pill:hover, .preset-pill:hover, .month-preset-chip:hover {
+        border-color: var(--accent-line); color: var(--accent-text);
+    }
     }
     .template-pill.active, .preset-pill.active, .month-preset-chip.active {
       border-color: var(--accent); background: var(--accent-soft); color: var(--accent-text);
@@ -531,7 +564,7 @@
 
     .formatting-chip-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
     .formatting-chip-row > span:first-child {
-      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.1em;
       text-transform: uppercase; color: var(--text-dim); margin-right: 4px;
     }
 
@@ -542,20 +575,24 @@
     .day-chip {
       flex: 1; cursor: pointer; height: 36px; border-radius: var(--r-md);
       border: 1px solid var(--line-2); background: var(--bg-panel); color: var(--text-body);
-      font-size: 12.5px; font-weight: 500;
+      font-size: var(--fs-sm); font-weight: 500;
       transition: border-color 140ms var(--ease), background 140ms var(--ease), color 140ms var(--ease);
     }
-    .day-chip:hover { border-color: var(--line-3); }
+    @media (hover: hover) {
+      .day-chip:hover {   border-color: var(--line-3); }
+    }
     .day-chip.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-text); }
 
     .month-days-matrix { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 5px; }
     .month-day-cell {
       cursor: pointer; height: 30px; border-radius: var(--r-sm);
       border: 1px solid var(--line-2); background: var(--bg-panel); color: var(--text-body);
-      font-family: var(--font-mono); font-size: 11.5px;
+      font-family: var(--font-mono); font-size: var(--fs-tiny);
       transition: border-color 140ms var(--ease), background 140ms var(--ease), color 140ms var(--ease);
     }
-    .month-day-cell:hover { border-color: var(--line-3); }
+    @media (hover: hover) {
+      .month-day-cell:hover {   border-color: var(--line-3); }
+    }
     .month-day-cell.active { border-color: var(--accent); background: var(--accent); color: #fff; }
 
     /* ---------------- BILINGUAL ---------------- */
@@ -568,27 +605,29 @@
       display: flex; align-items: center; gap: 10px;
       transition: border-color 140ms var(--ease), background 140ms var(--ease), color 140ms var(--ease);
     }
-    .bilingual-tab-btn:hover { border-color: var(--line-3); }
+    @media (hover: hover) {
+      .bilingual-tab-btn:hover {   border-color: var(--line-3); }
+    }
     .bilingual-tab-btn.active { border-color: var(--accent); background: var(--accent-soft); }
 
     .tab-lang-dot {
       width: 26px; height: 26px; flex: none; border-radius: var(--r-sm);
       display: grid; place-items: center;
       background: var(--bg-raise); color: var(--text-dim);
-      font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: .04em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: .04em;
       transition: background 140ms var(--ease), color 140ms var(--ease);
     }
     .bilingual-tab-btn.active .tab-lang-dot { background: var(--accent); color: #fff; }
 
     .tab-lang-copy { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
-    .tab-lang-copy b { font-size: 13px; font-weight: 600; color: var(--text-main); }
+    .tab-lang-copy b { font-size: var(--fs-base); font-weight: 600; color: var(--text-main); }
     .bilingual-tab-btn.active .tab-lang-copy b { color: var(--accent-text); }
-    .tab-lang-copy span { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+    .tab-lang-copy span { font-size: var(--fs-tiny); color: var(--text-dim); font-variant-numeric: tabular-nums; }
 
     .tab-status-icon {
       margin-left: auto; flex: none; width: 18px; height: 18px; border-radius: 50%;
       display: grid; place-items: center;
-      font-size: 10px; font-weight: 700; line-height: 1;
+      font-size: var(--fs-micro); font-weight: 700; line-height: 1;
       background: var(--bg-raise); color: var(--text-dim);
       transition: background 140ms var(--ease), color 140ms var(--ease);
     }
@@ -602,7 +641,7 @@
       background: var(--bg-panel); border: 1px solid var(--line);
     }
     .lang-actions-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
-    .lang-actions .hint { font-size: 11.5px; color: var(--text-dim); }
+    .lang-actions .hint { font-size: var(--fs-tiny); color: var(--text-dim); }
 
     .bilingual-pane { display: none; margin-top: 16px; }
     .bilingual-pane.active { display: block; animation: paneIn 180ms var(--ease) both; }
@@ -612,7 +651,7 @@
 
     .auto-trans-status {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 11.5px; color: var(--text-dim);
+      font-size: var(--fs-tiny); color: var(--text-dim);
     }
     .auto-trans-status svg { width: 12px; height: 12px; color: var(--accent); }
     .auto-trans-status.busy { color: var(--accent-text); }
@@ -620,11 +659,13 @@
     .trans-trigger-btn {
       cursor: pointer; border: 1px solid var(--line-2); background: transparent;
       border-radius: var(--r-sm); padding: 4px 9px; min-height: 26px;
-      font-size: 11.5px; font-weight: 500; color: var(--text-muted);
+      font-size: var(--fs-tiny); font-weight: 500; color: var(--text-muted);
       display: inline-flex; align-items: center; gap: 5px;
       transition: border-color 140ms var(--ease), color 140ms var(--ease);
     }
-    .trans-trigger-btn:hover { border-color: var(--accent-line); color: var(--accent-text); }
+    @media (hover: hover) {
+      .trans-trigger-btn:hover {   border-color: var(--accent-line); color: var(--accent-text); }
+    }
     .trans-trigger-btn svg { width: 11px; height: 11px; }
 
     /* ---------------- WYSIWYG ---------------- */
@@ -644,17 +685,19 @@
     .wysiwyg-btn {
       min-width: 28px; height: 28px; padding: 0 7px; cursor: pointer;
       border: 0; background: transparent; border-radius: var(--r-sm);
-      color: var(--text-muted); font-size: 12.5px; font-weight: 600;
+      color: var(--text-muted); font-size: var(--fs-sm); font-weight: 600;
       display: inline-flex; align-items: center; justify-content: center;
       transition: background 140ms var(--ease), color 140ms var(--ease);
     }
-    .wysiwyg-btn:hover { background: var(--bg-hover); color: var(--text-main); }
+    @media (hover: hover) {
+      .wysiwyg-btn:hover {   background: var(--bg-hover); color: var(--text-main); }
+    }
     .wysiwyg-btn.active { background: var(--accent-soft); color: var(--accent-text); }
     .wysiwyg-sep { width: 1px; height: 16px; background: var(--line); margin: 0 4px; }
 
     .wysiwyg-editor {
       min-height: 156px; max-height: 280px; overflow-y: auto;
-      padding: 13px 14px; outline: none; font-size: 14px; line-height: 1.6; color: var(--text-main);
+      padding: 13px 14px; outline: none; font-size: var(--fs-base); line-height: 1.6; color: var(--text-main);
     }
     .wysiwyg-editor:empty::before { content: attr(data-placeholder); color: var(--text-dim); }
     .wysiwyg-editor ul, .wysiwyg-editor ol { padding-left: 20px; margin: 5px 0; }
@@ -669,7 +712,9 @@
       background: transparent; color: var(--text-body);
       transition: border-color 140ms var(--ease), background 140ms var(--ease);
     }
-    .dropzone:hover { border-color: var(--accent-line); background: var(--bg-hover); }
+    @media (hover: hover) {
+      .dropzone:hover {   border-color: var(--accent-line); background: var(--bg-hover); }
+    }
     .dropzone.is-over { border-style: solid; border-color: var(--accent); background: var(--accent-soft); }
     .dropzone-icon {
       width: 32px; height: 32px; flex: none; border-radius: var(--r-md);
@@ -677,8 +722,8 @@
     }
     .dropzone-icon svg { width: 15px; height: 15px; }
     .dropzone-text { display: flex; flex-direction: column; line-height: 1.4; }
-    .dropzone-text b { font-size: 13px; font-weight: 550; color: var(--text-main); }
-    .dropzone-text span { font-size: 11.5px; color: var(--text-dim); }
+    .dropzone-text b { font-size: var(--fs-base); font-weight: 550; color: var(--text-main); }
+    .dropzone-text span { font-size: var(--fs-tiny); color: var(--text-dim); }
 
     .attach-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
     .attach-item {
@@ -689,17 +734,19 @@
     .attach-kind {
       width: 28px; height: 28px; flex: none; border-radius: var(--r-sm);
       display: grid; place-items: center; background: var(--bg-raise); color: var(--text-muted);
-      font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600;
     }
     .attach-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35; }
-    .attach-meta b { font-size: 12.5px; font-weight: 550; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .attach-meta span { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-dim); }
+    .attach-meta b { font-size: var(--fs-sm); font-weight: 550; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .attach-meta span { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--text-dim); }
     .attach-remove {
       width: 28px; height: 28px; flex: none; cursor: pointer; border: 0; background: transparent;
       border-radius: var(--r-sm); color: var(--text-dim); display: grid; place-items: center;
       transition: background 140ms var(--ease), color 140ms var(--ease);
     }
-    .attach-remove:hover { background: var(--crit-soft); color: var(--crit); }
+    @media (hover: hover) {
+      .attach-remove:hover {   background: var(--crit-soft); color: var(--crit); }
+    }
     .attach-remove svg { width: 13px; height: 13px; }
 
     /* ---------------- PREVIEW PANEL ---------------- */
@@ -712,18 +759,20 @@
 
     .pv-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .pv-title {
-      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.12em;
       text-transform: uppercase; color: var(--text-dim);
     }
     .pv-langs { display: flex; gap: 2px; padding: 2px; border-radius: var(--r-md); background: var(--bg-raise); }
     .lang-toggle-btn {
       cursor: pointer; border: 0; background: transparent; border-radius: var(--r-sm);
       padding: 5px 11px; min-height: 26px;
-      font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 500; letter-spacing: 0.08em;
       color: var(--text-muted);
       transition: background 140ms var(--ease), color 140ms var(--ease);
     }
-    .lang-toggle-btn:hover { color: var(--text-main); }
+    @media (hover: hover) {
+      .lang-toggle-btn:hover {   color: var(--text-main); }
+    }
     .lang-toggle-btn.active { background: var(--bg-field); color: var(--text-main); box-shadow: 0 1px 2px rgba(0,0,0,.15); }
 
     /* Telefon: titan korpus, yon tugmalar, shisha nuri */
@@ -771,7 +820,7 @@
 
     .pv-status {
       position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between;
-      padding: 15px 24px 0; color: #fff; font-size: 12.5px; font-weight: 600;
+      padding: 15px 24px 0; color: #fff; font-size: var(--fs-sm); font-weight: 600;
       font-variant-numeric: tabular-nums;
     }
     .pv-island {
@@ -791,11 +840,11 @@
     .pv-clock { position: relative; z-index: 2; text-align: center; margin-top: 10px; color: #fff; }
     /* iOS tartibi: sana soat USTIDA */
     .pv-clock span {
-      display: block; font-size: 13.5px; font-weight: 550; letter-spacing: -0.01em;
+      display: block; font-size: var(--fs-base); font-weight: 550; letter-spacing: -0.01em;
       color: rgba(255,255,255,.92); text-shadow: 0 1px 8px rgba(0,0,0,.45);
     }
     .pv-clock b {
-      display: block; margin-top: 2px; font-size: 74px; font-weight: 300; line-height: 1;
+      display: block; margin-top: 2px; font-size: var(--fs-clock); font-weight: 300; line-height: 1;
       letter-spacing: -0.045em; font-variant-numeric: tabular-nums;
       text-shadow: 0 2px 18px rgba(0,0,0,.5);
     }
@@ -818,22 +867,22 @@
     .notif-body { min-width: 0; flex: 1; }
     .notif-meta-row {
       display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
-      font-size: 10px; color: #4c5664;
+      font-size: var(--fs-micro); color: #4c5664;
     }
     .notif-app-name { font-weight: 600; letter-spacing: .02em; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .notif-time { flex: none; font-family: var(--font-mono); font-size: 9.5px; }
+    .notif-time { flex: none; font-family: var(--font-mono); font-size: var(--fs-micro); }
     .notif-title {
-      margin-top: 3px; font-size: 13.5px; font-weight: 650; line-height: 1.3; color: #0a0e15;
+      margin-top: 3px; font-size: var(--fs-base); font-weight: 650; line-height: 1.3; color: #0a0e15;
       display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
     }
     .notif-title.is-empty, .notif-text.is-empty { color: #8b95a3; font-style: italic; font-weight: 500; }
     .notif-text {
-      margin-top: 2px; font-size: 12.5px; line-height: 1.42; color: #2b3542;
+      margin-top: 2px; font-size: var(--fs-sm); line-height: 1.42; color: #2b3542;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
     .notif-attach {
       display: inline-flex; align-items: center; gap: 5px; margin-top: 7px;
-      font-size: 10.5px; font-weight: 550; color: #4a5563;
+      font-size: var(--fs-micro); font-weight: 550; color: #4a5563;
       padding: 3px 8px; border-radius: 999px; background: rgba(10, 14, 21, 0.06);
     }
     .notif-attach svg { width: 11px; height: 11px; }
@@ -857,10 +906,10 @@
     .pv-facts { display: flex; flex-direction: column; gap: 1px; }
     .pv-fact {
       display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
-      padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 12.5px;
+      padding: 9px 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm);
     }
     .pv-fact:last-child { border-bottom: 0; }
-    .pv-fact dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-dim); flex: none; }
+    .pv-fact dt { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .07em; text-transform: uppercase; color: var(--text-dim); flex: none; }
     .pv-fact dd { color: var(--text-main); text-align: right; overflow-wrap: anywhere; }
 
     /* ---------------- MODALS ---------------- */
@@ -887,8 +936,8 @@
       display: grid; place-items: center; background: var(--ok-soft); color: var(--ok);
     }
     .receipt-check-circle svg { width: 24px; height: 24px; }
-    .receipt-title { font-size: 18px; font-weight: 620; color: var(--text-main); letter-spacing: -0.02em; }
-    .receipt-sub { font-size: 13px; color: var(--text-muted); }
+    .receipt-title { font-size: var(--fs-xl); font-weight: 620; color: var(--text-main); letter-spacing: -0.02em; }
+    .receipt-sub { font-size: var(--fs-base); color: var(--text-muted); }
 
     .receipt-details-dossier {
       border: 1px solid var(--line); border-radius: var(--r-md);
@@ -896,11 +945,11 @@
     }
     .receipt-row {
       display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-      padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 12.5px;
+      padding: 10px 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm);
     }
     .receipt-row:last-child { border-bottom: 0; }
     .receipt-row > span:first-child {
-      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.06em;
       text-transform: uppercase; color: var(--text-dim); flex: none;
     }
     .receipt-row b { font-weight: 550; color: var(--text-main); text-align: right; }
@@ -912,7 +961,7 @@
       padding: 11px 18px; border-radius: var(--r-pill);
       background: var(--bg-raise); color: var(--text-main);
       border: 1px solid var(--line-2);
-      font-size: 13px; font-weight: 500; box-shadow: var(--shadow);
+      font-size: var(--fs-base); font-weight: 500; box-shadow: var(--shadow);
       transition: transform 200ms var(--ease), opacity 200ms var(--ease);
     }
     .toast-pill.show { transform: translate(-50%, 0); opacity: 1; }
@@ -941,7 +990,9 @@
       background: var(--bg-panel); color: var(--text-body); font-family: inherit;
       transition: border-color 140ms var(--ease), background-color 140ms var(--ease), transform 140ms var(--ease);
     }
-    .sc-card:hover { border-color: var(--line-3); }
+    @media (hover: hover) {
+      .sc-card:hover {   border-color: var(--line-3); }
+    }
     .sc-card:active { transform: scale(0.96); }
     .sc-card:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
     .sc-card.active { border-color: var(--accent); background: var(--accent-soft); }
@@ -954,18 +1005,18 @@
     }
     .sc-tick svg { width: 10px; height: 10px; }
     .sc-card.active .sc-tick { display: inline-flex; }
-    .sc-name { font-size: 13px; font-weight: 550; color: var(--text-main); line-height: 1.35; }
+    .sc-name { font-size: var(--fs-base); font-weight: 550; color: var(--text-main); line-height: 1.35; }
     .sc-card.active .sc-name { font-weight: 600; }
-    .sc-meta { font-size: 11px; color: var(--text-dim); }
+    .sc-meta { font-size: var(--fs-tiny); color: var(--text-dim); }
     .sc-card.active .sc-meta { color: var(--accent-text); }
 
     .slot-editor { display: flex; flex-direction: column; gap: 14px; }
     .slot-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .slot-head b { font-size: 13.5px; font-weight: 600; color: var(--text-main); }
+    .slot-head b { font-size: var(--fs-base); font-weight: 600; color: var(--text-main); }
     .slot-ok {
       display: inline-flex; align-items: center; height: 20px; padding: 0 8px;
       border-radius: var(--r-pill); background: var(--ok-soft); color: var(--ok);
-      font-size: 11px; font-weight: 550;
+      font-size: var(--fs-tiny); font-weight: 550;
     }
     .slot-ok[data-ok="false"] { background: var(--warn-soft); color: var(--warn); }
     .slot-grid { display: grid; gap: 12px; }
@@ -974,7 +1025,7 @@
     .slot-lang { position: relative; display: block; }
     .slot-lang .slot-tag {
       position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
-      font-family: var(--font-mono); font-size: 9.5px; font-weight: 600; letter-spacing: .04em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: .04em;
       color: var(--text-dim); background: var(--bg-raise); border: 1px solid var(--line);
       border-radius: var(--r-sm); padding: 2px 4px; pointer-events: none;
     }
@@ -983,7 +1034,7 @@
     .slot-dirty {
       display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
       padding: 9px 12px; border: 1px solid var(--warn); border-radius: var(--r-md);
-      background: var(--warn-soft); color: var(--warn); font-size: 12px;
+      background: var(--warn-soft); color: var(--warn); font-size: var(--fs-tiny);
     }
     .slot-dirty svg { width: 15px; height: 15px; flex: none; }
 
@@ -993,26 +1044,28 @@
       padding: 11px 13px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg-raise);
     }
     .gen-badge {
-      flex: none; font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: .04em;
+      flex: none; font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: .04em;
       color: var(--text-body); background: var(--bg-field); border: 1px solid var(--line-2);
       border-radius: var(--r-sm); padding: 2px 5px; margin-top: 1px;
     }
-    .gen-text { font-size: 13.5px; line-height: 1.55; color: var(--text-main); max-width: 68ch; }
+    .gen-text { font-size: var(--fs-base); line-height: 1.55; color: var(--text-main); max-width: 68ch; }
     .gen-text .gen-title { display: block; font-weight: 600; margin-bottom: 2px; }
     .gen-text b.slot-val { font-weight: 550; color: var(--accent-text); }
 
     .empty-hint {
       display: flex; align-items: flex-start; gap: 10px;
       padding: 18px 16px; border: 1px dashed var(--line-2); border-radius: var(--r-lg);
-      background: var(--bg-raise); color: var(--text-muted); font-size: 12.5px; line-height: 1.5;
+      background: var(--bg-raise); color: var(--text-muted); font-size: var(--fs-sm); line-height: 1.5;
     }
     .empty-hint > svg { width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--accent); }
 
     .link-btn {
       border: 0; background: none; padding: 0; cursor: pointer; font-family: inherit;
-      font-size: 12.5px; font-weight: 550; color: var(--accent-text); text-underline-offset: 3px;
+      font-size: var(--fs-sm); font-weight: 550; color: var(--accent-text); text-underline-offset: 3px;
     }
-    .link-btn:hover { text-decoration: underline; }
+    @media (hover: hover) {
+      .link-btn:hover {   text-decoration: underline; }
+    }
     .link-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; border-radius: var(--r-sm); }
 
     .hero-side { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex: none; }
@@ -1021,10 +1074,12 @@
       display: inline-flex; align-items: center; height: 32px; padding: 0 12px; cursor: pointer;
       transition: transform 110ms var(--ease);
       border: 1px solid var(--line-2); border-radius: var(--r-md); background: var(--bg-panel);
-      color: var(--text-body); font-family: inherit; font-size: 12.5px; font-weight: 500;
+      color: var(--text-body); font-family: inherit; font-size: var(--fs-sm); font-weight: 500;
       transition: border-color 120ms var(--ease), background-color 120ms var(--ease);
     }
-    .btn-ghost-sm:hover { border-color: var(--line-3); background: var(--bg-hover); }
+    @media (hover: hover) {
+      .btn-ghost-sm:hover {   border-color: var(--line-3); background: var(--bg-hover); }
+    }
     .btn-ghost-sm:active { transform: scale(0.96); }
     .btn-ghost-sm:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 
@@ -1036,7 +1091,7 @@
     .cchip {
       display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 11px; cursor: pointer;
       border: 1px solid transparent; border-radius: var(--r-md); background: transparent;
-      color: var(--text-muted); font-family: inherit; font-size: 12px; font-weight: 500;
+      color: var(--text-muted); font-family: inherit; font-size: var(--fs-tiny); font-weight: 500;
       transition: border-color 120ms var(--ease), background-color 120ms var(--ease), color 120ms var(--ease), transform 110ms var(--ease);
     }
     .cchip:active { transform: scale(0.96); }
@@ -1044,7 +1099,9 @@
     .cchip .cchev { width: 11px; height: 11px; color: var(--text-dim); }
     .cchip.is-set { border-color: var(--line-2); background: var(--bg-panel); color: var(--text-body); }
     .cchip.is-set > svg:first-of-type { color: var(--accent); }
-    .cchip:hover { border-color: var(--line-3); background: var(--bg-hover); }
+    @media (hover: hover) {
+      .cchip:hover {   border-color: var(--line-3); background: var(--bg-hover); }
+    }
     .cchip[aria-expanded="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent-text); }
     .cchip[aria-expanded="true"] > svg { color: var(--accent-text); }
     .cchip.is-bad { border-color: var(--crit); background: var(--crit-soft); color: var(--crit); }
@@ -1210,8 +1267,8 @@
         <a href="#" class="brand-logo-btn">
           <img src="assets/logo.svg" alt="" />
           <div style="display:flex; flex-direction:column; line-height:1.25; min-width:0">
-            <span style="font-size:13.5px; font-weight:600; letter-spacing:-0.015em; color:var(--text-main)">onlayn mahalla</span>
-            <span style="font-size:10.5px; color:var(--text-dim)">Davlat platformasi</span>
+            <span style="font-size:var(--fs-base); font-weight:600; letter-spacing:-0.015em; color:var(--text-main)">onlayn mahalla</span>
+            <span style="font-size:var(--fs-micro); color:var(--text-dim)">Davlat platformasi</span>
           </div>
         </a>
 
@@ -1424,7 +1481,7 @@
                           </button>
                           <span class="wysiwyg-sep"></span>
                           <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#fef08a" title="Ajratib ko'rsatish" aria-label="Ajratib ko'rsatish">
-                            <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:10px">HL</span>
+                            <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:var(--fs-micro)">HL</span>
                           </button>
                           <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Formatni tozalash" aria-label="Formatni tozalash">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
@@ -1478,7 +1535,7 @@
                           </button>
                           <span class="wysiwyg-sep"></span>
                           <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#fef08a" title="Выделить" aria-label="Выделить">
-                            <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:10px">HL</span>
+                            <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:var(--fs-micro)">HL</span>
                           </button>
                           <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Очистить форматирование" aria-label="Очистить форматирование">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
@@ -1500,7 +1557,7 @@
 
               <!-- Formatting & Structuring Quick Tag Pills -->
               <div class="formatting-chip-row" id="tagRow" hidden>
-                <span style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase">Tezkor teglar:</span>
+                <span style="font-size:var(--fs-tiny); font-weight:700; color:var(--text-muted); text-transform:uppercase">Tezkor teglar:</span>
                 <button type="button" class="format-tag-pill" data-insert="[DIQQAT!]">Diqqat</button>
                 <button type="button" class="format-tag-pill" data-insert="[Manzil: ]">Manzil</button>
                 <button type="button" class="format-tag-pill" data-insert="[Vaqti: ]">Vaqt</button>
@@ -1751,7 +1808,7 @@
                   <div id="monthDayField" hidden>
                     <label class="form-label" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
                       <span>Oyning takrorlanish sanalari (Bir nechta tanlash mumkin)</span>
-                      <span id="selectedMonthDayBadge" style="font-size:11.5px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:2px 8px; border-radius:var(--r-pill)">1-sana</span>
+                      <span id="selectedMonthDayBadge" style="font-size:var(--fs-tiny); font-weight:700; color:var(--accent); background:var(--accent-soft); padding:2px 8px; border-radius:var(--r-pill)">1-sana</span>
                     </label>
 
                     <!-- Smart Presets -->
@@ -1913,10 +1970,10 @@
   <div class="modal-backdrop" id="testModal" role="dialog" aria-modal="true" aria-labelledby="testModalTitle">
     <div class="devin-modal">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px">
-        <h2 id="testModalTitle" style="font-size:15.5px; font-weight:600; letter-spacing:-0.015em; color:var(--text-main)">Test xabarnoma yuborish</h2>
+        <h2 id="testModalTitle" style="font-size:var(--fs-lg); font-weight:600; letter-spacing:-0.015em; color:var(--text-main)">Test xabarnoma yuborish</h2>
         <button type="button" class="icon-btn-quiet" id="testClose" aria-label="Yopish"><svg><use href="#i-x"/></svg></button>
       </div>
-      <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px">
+      <p style="font-size:var(--fs-base); color:var(--text-muted); margin-bottom:16px">
         Xabar faqat ko‘rsatilgan telefon raqamdagi ilovaga boradi.
       </p>
       <div class="form-group" style="margin-bottom:18px">
