@@ -1181,6 +1181,44 @@
       .month-days-matrix { grid-template-columns: repeat(7, minmax(0, 1fr)); }
     }
 
+    /* Yuborish holati: tugmalar bloklanadi, spinner ko'rinadi */
+    .btn-devin-primary[aria-busy="true"], .btn-devin-secondary[aria-busy="true"] { pointer-events: none; opacity: .7; }
+    .send-spinner {
+      width: 14px; height: 14px; flex: none; border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, .35); border-top-color: currentColor;
+      animation: sendSpin 700ms linear infinite;
+    }
+    @keyframes sendSpin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .send-spinner { animation-duration: 2s; } }
+
+    /* Yuborish xatosi — formadan chiqmasdan, sabab va qayta urinish bilan */
+    .send-error {
+      display: none; align-items: flex-start; gap: 10px;
+      margin: 14px 0 0; padding: 11px 13px;
+      border: 1px solid var(--crit); border-radius: var(--r-md);
+      background: var(--crit-soft); color: var(--crit); font-size: var(--fs-sm);
+    }
+    .send-error.active { display: flex; }
+    .send-error svg { width: 15px; height: 15px; flex: none; margin-top: 1px; }
+    .send-error b { display: block; font-weight: 600; margin-bottom: 2px; }
+
+    /* Demo rejimi: backend ulanmagan bo'lsa payload shu yerda ko'rinadi */
+    .payload-view { margin-top: 14px; text-align: left; }
+    .payload-view summary {
+      cursor: pointer; font-size: var(--fs-sm); font-weight: 550; color: var(--text-body);
+      list-style: none; display: flex; align-items: center; gap: 7px; padding: 7px 0;
+    }
+    .payload-view summary::-webkit-details-marker { display: none; }
+    .payload-view summary::before { content: "▸"; color: var(--text-dim); }
+    .payload-view[open] summary::before { content: "▾"; }
+    .payload-view pre {
+      max-height: 200px; overflow: auto; margin: 6px 0 8px;
+      padding: 11px 12px; border: 1px solid var(--line); border-radius: var(--r-md);
+      background: var(--bg-raise); color: var(--text-body);
+      font-family: var(--font-mono); font-size: var(--fs-micro); line-height: 1.55;
+      white-space: pre; tab-size: 2;
+    }
+
   </style>
 </head>
 <body>
@@ -1865,6 +1903,16 @@
           </div>
 
           <!-- YAKUNIY AMALLAR -->
+          <div class="send-error" id="sendError" role="alert">
+            <svg><use href="#i-warn"/></svg>
+            <span>
+              <b id="sendErrorTitle">Yuborilmadi</b>
+              <span id="sendErrorText"></span>
+            </span>
+            <span style="flex:1"></span>
+            <button type="button" class="link-btn" id="sendRetry" style="color:var(--crit)">Qayta urinish</button>
+          </div>
+
           <div class="stepper-foot">
             <div class="foot-status" id="footStatus">
               <span class="foot-dot" id="footDot"></span>
@@ -2013,14 +2061,20 @@
           <b id="receiptAudience">~2,400 aholi</b>
         </div>
         <div class="receipt-row">
-          <span>Muhimlik:</span>
-          <b id="receiptSeverity">Ogohlantirish (Muhim)</b>
+          <span>Ilovalar:</span>
+          <b id="receiptSeverity">Ilovasiz</b>
         </div>
         <div class="receipt-row">
           <span>Yuborish vaqti:</span>
           <b id="receiptSchedule">Hoziroq (Darhol)</b>
         </div>
       </div>
+
+      <details class="payload-view" id="payloadView" hidden>
+        <summary>Backendga yuboriladigan ma‘lumot (JSON)</summary>
+        <pre id="payloadJson"></pre>
+        <button type="button" class="link-btn" id="copyPayload">Nusxa olish</button>
+      </details>
 
       <div style="display:flex; gap:10px">
         <button type="button" class="btn-devin-secondary" id="againBtn" style="flex:1; justify-content:center">
@@ -2467,6 +2521,7 @@
       files: [],
       blurred: new Set(),
       touched: false,
+      submitting: false,
       previewLang: "uz"
     };
 
@@ -3516,6 +3571,139 @@
       }
     }
 
+
+    /* =====================================================================
+       BACKEND ULANISHI
+       API_ENDPOINT bo'sh bo'lsa — DEMO rejimi: payload yig'iladi va tasdiq
+       oynasida ko'rsatiladi, hech qayerga yuborilmaydi. Manzil yozilsa —
+       real POST, 15 s timeout, xato bo'lsa formada sabab + qayta urinish.
+       ===================================================================== */
+    const API_ENDPOINT = "";
+    const SEND_TIMEOUT_MS = 15000;
+    let lastPayload = null;
+
+    const plainText = (html) => String(html || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+
+    function buildPayload() {
+      const audience = { level: state.level };
+      if (state.level >= 2) audience.region_id = Number(state.region) || null;
+      if (state.level >= 3) audience.district_id = Number(state.district) || null;
+      if (state.level >= 4) audience.mahalla_id = Number(state.mahalla) || null;
+
+      let schedule;
+      if (state.send.mode === "now") {
+        schedule = { mode: "immediate" };
+      } else if (state.send.mode === "scheduled") {
+        schedule = { mode: "scheduled", send_at: state.send.at };
+      } else {
+        schedule = { mode: "recurring", freq: state.send.freq, time: state.send.time, timezone: "Asia/Tashkent" };
+        if (state.send.freq === "weekly") schedule.weekdays = [...state.send.weekdays].sort((a, b) => a - b);
+        if (state.send.freq === "monthly") schedule.days_of_month = [...(state.send.monthDays || [])];
+      }
+
+      const texts = {};
+      for (const lang of ["uz", "ru"]) {
+        const raw = state.texts[lang].body || "";
+        texts[lang] = { title: (state.texts[lang].title || "").trim(), body: plainText(raw) };
+        /* Operator qalin/tagi chizilgan qilgan bo'lsa, asl belgilash ham ketsin —
+           push matni sof matn, lekin backend saqlab qo'yishi mumkin. */
+        if (/<[^>]+>/.test(raw)) texts[lang].body_html = raw;
+      }
+
+      return {
+        type: "system.announcement",
+        payload: {
+          audience,
+          schedule,
+          texts,
+          attachments: state.files.map((f) => ({ name: f.name, size: f.size, mime: f.type })),
+          source: state.compose === "scenario" && state.tpl.key
+            ? { kind: "scenario", scenario: state.tpl.key, slots: { ...state.tpl.v } }
+            : { kind: "manual" }
+        }
+      };
+    }
+
+    function setSending(on) {
+      for (const id of ["submitBtn", "testBtn"]) {
+        const b = $(id);
+        b.setAttribute("aria-busy", String(on));
+        b.disabled = on;
+      }
+      const label = $("submitBtn").querySelector("span");
+      const icon = $("submitBtn").querySelector("svg");
+      if (on) {
+        label.textContent = "Yuborilmoqda…";
+        icon.outerHTML = '<span class="send-spinner" aria-hidden="true"></span>';
+      } else {
+        label.textContent = "Navbatga qo\u2018yish";
+        const sp = $("submitBtn").querySelector(".send-spinner");
+        if (sp) sp.outerHTML = '<svg width="16" height="16"><use href="#i-check"/></svg>';
+      }
+    }
+
+    /* Xato matni inson tilida: nima bo'ldi va endi nima qilish kerak. */
+    function describeSendError(err, status) {
+      if (status && status >= 500) return "Serverda xatolik yuz berdi (kod " + status + "). Bir necha daqiqadan keyin qayta urinib ko\u2018ring.";
+      if (status === 401 || status === 403) return "Ruxsat yetarli emas (kod " + status + "). Tizimga qaytadan kiring.";
+      if (status) return "So\u2018rov qabul qilinmadi (kod " + status + "). Ma\u2018lumotlarni tekshirib, qayta yuboring.";
+      if (err && err.name === "AbortError") return "Server " + (SEND_TIMEOUT_MS / 1000) + " soniya ichida javob bermadi. Aloqa sekin bo\u2018lishi mumkin — qayta urinib ko\u2018ring.";
+      return "Serverga ulanib bo\u2018lmadi. Internet aloqasini tekshiring va qayta urinib ko\u2018ring.";
+    }
+
+    function showSendError(err, status) {
+      $("sendErrorText").textContent = describeSendError(err, status);
+      $("sendError").classList.add("active");
+      $("sendError").scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+
+    function showReceipt(data) {
+      $("receiptReestr").textContent = `XM-2026/08-${Math.floor(1000 + Math.random() * 9000)}`;
+      $("receiptScope").textContent = audienceLine();
+      $("receiptAudience").textContent = $("scopeAudienceBadge").textContent;
+      $("receiptSeverity").textContent = state.files.length ? `${state.files.length} ta ilova` : "Ilovasiz";
+      $("receiptSchedule").textContent = state.scheduleText || "Hoziroq";
+
+      /* Backend ulanmagan bo'lsa — kontrakt ko'rinib tursin. */
+      const view = $("payloadView");
+      view.hidden = Boolean(API_ENDPOINT);
+      if (!API_ENDPOINT) {
+        view.open = false;
+        $("payloadJson").textContent = JSON.stringify(data, null, 2);
+      }
+      $("doneModal").classList.add("open");
+      setModalOpen($("doneModal"), true);
+    }
+
+    async function sendAnnouncement() {
+      if (state.submitting) return;
+      $("sendError").classList.remove("active");
+      lastPayload = buildPayload();
+
+      if (!API_ENDPOINT) { showReceipt(lastPayload); return; }
+
+      state.submitting = true;
+      setSending(true);
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), SEND_TIMEOUT_MS);
+      try {
+        const res = await fetch(API_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(lastPayload),
+          signal: ctrl.signal
+        });
+        if (!res.ok) { showSendError(null, res.status); return; }
+        showReceipt(lastPayload);
+      } catch (err) {
+        showSendError(err, null);
+      } finally {
+        clearTimeout(timer);
+        state.submitting = false;
+        setSending(false);
+      }
+    }
+
     $("submitBtn").addEventListener("click", () => {
       state.touched = true;
       const bad = allProblems();
@@ -3526,14 +3714,21 @@
         return;
       }
 
-      $("receiptReestr").textContent = `XM-2026/08-${Math.floor(1000 + Math.random() * 9000)}`;
-      $("receiptScope").textContent = audienceLine();
-      $("receiptAudience").textContent = $("scopeAudienceBadge").textContent;
-      $("receiptSeverity").textContent = state.files.length ? `${state.files.length} ta ilova` : "Ilovasiz";
-      $("receiptSchedule").textContent = state.send.mode === "now" ? "Hoziroq (Darhol)" : state.send.at || "Reja bo‘yicha";
+      sendAnnouncement();
+    });
 
-      $("doneModal").classList.add("open");
-      setModalOpen($("doneModal"), true);
+    $("sendRetry").addEventListener("click", () => {
+      $("sendError").classList.remove("active");
+      sendAnnouncement();
+    });
+
+    $("copyPayload").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText($("payloadJson").textContent);
+        toast("JSON nusxalandi");
+      } catch (e) {
+        toast("Nusxalab bo\u2018lmadi \u2014 matnni qo\u2018lda belgilang");
+      }
     });
 
     $("againBtn").addEventListener("click", () => {
