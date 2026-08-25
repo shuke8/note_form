@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="uz" class="no-js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Xabarnoma kompozitori — Onlayn Mahalla</title>
+<meta name="description" content="Qamrovni tanlang, matnni ikkala tilda yozing va telefonda qanday ko‘rinishini shu yerda ko‘ring." />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="assets/system.css" />
+<link rel="stylesheet" href="assets/components.css" />
+<link rel="stylesheet" href="assets/composer.css" />
+</head>
+<body>
+
+<a class="skip" href="#step-1">Formaga o‘tish</a>
+
+<header class="nav" id="nav">
+  <div class="shell nav-inner">
+    <a class="brand" href="./landing.html" aria-label="Onlayn Mahalla — bosh sahifa">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <g fill="currentColor">
+          <rect x="10" y="10" width="4" height="4"/>
+          <rect x="5" y="10" width="4" height="4" opacity=".62"/><rect x="15" y="10" width="4" height="4" opacity=".62"/>
+          <rect x="10" y="5" width="4" height="4" opacity=".62"/><rect x="10" y="15" width="4" height="4" opacity=".62"/>
+          <rect x="5" y="5" width="4" height="4" opacity=".26"/><rect x="15" y="5" width="4" height="4" opacity=".26"/>
+          <rect x="5" y="15" width="4" height="4" opacity=".26"/><rect x="15" y="15" width="4" height="4" opacity=".26"/>
+        </g>
+      </svg>
+      <span class="brand-text">
+        <span class="brand-name">Onlayn Mahalla</span>
+        <span class="brand-sub">Kompozitor</span>
+      </span>
+    </a>
+
+    <nav class="nav-links" id="navLinks" data-open="false" aria-label="Bo‘limlar">
+      <a class="nav-link" href="#step-1">Qamrov</a>
+      <a class="nav-link" href="#step-2">Matn</a>
+      <a class="nav-link" href="#step-3">Vaqt</a>
+      <a class="nav-link" href="#step-5">Yakun</a>
+    </nav>
+
+    <span class="nav-spacer"></span>
+
+    <span class="chip chip-mono nav-desktop-only" title="Operator profili">8-mahalla “Do‘stlik”</span>
+    <button class="icon-btn nav-toggle" type="button" id="navToggle"
+            aria-expanded="false" aria-controls="navLinks" aria-label="Menyuni ochish">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false">
+        <path d="M3 6h14M3 10h14M3 14h14"/>
+      </svg>
+    </button>
+    <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Qorong‘i mavzuga o‘tish" title="Qorong‘i mavzuga o‘tish">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+        <circle cx="10" cy="10" r="3.6"/><path d="M10 1.6v2M10 16.4v2M18.4 10h-2M3.6 10h-2M15.9 4.1l-1.4 1.4M5.5 14.5l-1.4 1.4M15.9 15.9l-1.4-1.4M5.5 5.5 4.1 4.1"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main class="shell doc">
+
+  <!-- ========================= SAHIFA BOSHI ========================= -->
+  <section class="doc-head">
+    <div class="rule-head">
+      <p class="eyebrow">Yangi xabarnoma</p>
+      <span class="chip chip-mono" style="margin-inline-start:auto">Qoralama</span>
+    </div>
+    <h1 class="d2" style="margin-top:26px">Xabaringizni tayyorlang</h1>
+    <p class="lead" style="margin-top:12px;max-width:56ch">
+      To‘rt bosqich: kim oladi, nima yoziladi, qachon ketadi, nima ilova qilinadi.
+      Har bosqichda tanlaganingiz pastdagi yakunda darhol ko‘rinadi.
+    </p>
+    <div class="doc-meta">
+      <span class="chip chip-mono">Reestr raqami — serverdan keladi</span>
+      <span class="chip chip-mono">Operator: Sh. Ro‘ziboyev</span>
+    </div>
+  </section>
+
+  <!-- ============================ 01 QAMROV ============================ -->
+  <section class="step-sec" id="step-1" aria-labelledby="h-step-1">
+    <div class="step-head">
+      <span class="step-index">01</span>
+      <h2 class="d3" id="h-step-1">Kim oladi?</h2>
+      <span class="step-aside">Xabar kimlarga ko‘rinadi</span>
+    </div>
+
+    <div class="step-body">
+      <div class="scope-summary">
+        <p class="scope-path" id="scopePath">
+          <span>Qamrov tanlanmagan</span>
+        </p>
+        <p class="scope-reach" id="scopeReach">— aholi</p>
+      </div>
+
+      <div class="pick-grid" role="radiogroup" aria-labelledby="h-step-1" id="scopeGroup">
+        <button type="button" class="pick" role="radio" aria-checked="false" data-scope="republic" data-reach="3.2M" data-fill="100">
+          <span class="pick-top">
+            <span class="pick-name">Respublika</span>
+            <span class="pick-mark" aria-hidden="true"></span>
+          </span>
+          <span class="pick-desc">Butun mamlakat, 14 hudud</span>
+          <span class="pick-foot">
+            <span class="reach-bar" aria-hidden="true"><span class="reach-fill" style="width:100%"></span></span>
+            <span class="pick-reach">~3.2M aholi</span>
+          </span>
+        </button>
+        <button type="button" class="pick" role="radio" aria-checked="false" data-scope="region" data-reach="350K" data-fill="62">
+          <span class="pick-top">
+            <span class="pick-name">Viloyat</span>
+            <span class="pick-mark" aria-hidden="true"></span>
+          </span>
+          <span class="pick-desc">Bitta viloyat yoki Toshkent shahri</span>
+          <span class="pick-foot">
+            <span class="reach-bar" aria-hidden="true"><span class="reach-fill" style="width:62%"></span></span>
+            <span class="pick-reach">~350K aholi</span>
+          </span>
+        </button>
+        <button type="button" class="pick" role="radio" aria-checked="false" data-scope="district" data-reach="28K" data-fill="30">
+          <span class="pick-top">
+            <span class="pick-name">Tuman</span>
+            <span class="pick-mark" aria-hidden="true"></span>
+          </span>
+          <span class="pick-desc">Bitta tuman yoki shahar</span>
+          <span class="pick-foot">
+            <span class="reach-bar" aria-hidden="true"><span class="reach-fill" style="width:30%"></span></span>
+            <span class="pick-reach">~28K aholi</span>
+          </span>
+        </button>
+        <button type="button" class="pick" role="radio" aria-checked="false" data-scope="mahalla" data-reach="2.4K" data-fill="12">
+          <span class="pick-top">
+            <span class="pick-name">Mahalla</span>
+            <span class="pick-mark" aria-hidden="true"></span>
+          </span>
+          <span class="pick-desc">Bitta aniq mahalla (MFY)</span>
+          <span class="pick-foot">
+            <span class="reach-bar" aria-hidden="true"><span class="reach-fill" style="width:12%"></span></span>
+            <span class="pick-reach">~2.4K aholi</span>
+          </span>
+        </button>
+      </div>
+
+      <p class="field-error" id="scopeError" role="alert" hidden>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.6M8 11h.01"/></svg>
+        Qamrov darajasini tanlang — xabar kimga ketishini tizim taxmin qilmaydi.
+      </p>
+
+      <div class="cascade" id="cascade" hidden>
+        <div class="field">
+          <label class="label" for="fRegion">Viloyat <span class="req" aria-hidden="true">*</span></label>
+          <select class="select" id="fRegion" required aria-describedby="errRegion"></select>
+          <p class="field-error" id="errRegion" role="alert" hidden></p>
+        </div>
+        <div class="field" id="wrapDistrict" hidden>
+          <label class="label" for="fDistrict">Tuman / shahar <span class="req" aria-hidden="true">*</span></label>
+          <select class="select" id="fDistrict" required aria-describedby="errDistrict" disabled></select>
+          <p class="field-error" id="errDistrict" role="alert" hidden></p>
+        </div>
+        <div class="field" id="wrapMahalla" hidden>
+          <label class="label" for="fMahalla">Mahalla (MFY) <span class="req" aria-hidden="true">*</span></label>
+          <select class="select" id="fMahalla" required aria-describedby="errMahalla" disabled></select>
+          <p class="field-error" id="errMahalla" role="alert" hidden></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= 02 MATN ============================= -->
+  <section class="step-sec" id="step-2" aria-labelledby="h-step-2">
+    <div class="step-head">
+      <span class="step-index">02</span>
+      <h2 class="d3" id="h-step-2">Nima yoziladi?</h2>
+      <span class="step-aside">Ikkala til majburiy</span>
+    </div>
+
+    <div class="step-body">
+      <div class="tpl-grid" role="group" aria-label="Tayyor ssenariylar">
+        <button type="button" class="tpl" aria-pressed="false" data-tpl="water">
+          <span class="tpl-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 3.5s5.5 5.2 5.5 9a5.5 5.5 0 0 1-11 0c0-3.8 5.5-9 5.5-9Z"/></svg></span>
+          <span class="tpl-name">Suv ta’minoti</span>
+          <span class="tpl-note">Vaqtincha to‘xtatish e’loni</span>
+        </button>
+        <button type="button" class="tpl" aria-pressed="false" data-tpl="power">
+          <span class="tpl-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M13 2 4.5 13H11l-1 9 8.5-11H12l1-9Z"/></svg></span>
+          <span class="tpl-name">Elektr tarmog‘i</span>
+          <span class="tpl-note">Ta’mirlash ishlari haqida</span>
+        </button>
+        <button type="button" class="tpl" aria-pressed="false" data-tpl="meeting">
+          <span class="tpl-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4M15.5 4.7a3.5 3.5 0 0 1 0 6.6"/></svg></span>
+          <span class="tpl-name">Umumiy yig‘in</span>
+          <span class="tpl-note">Sana va joyni e’lon qilish</span>
+        </button>
+      </div>
+
+      <!-- Jonli ko‘rinish: bo‘lim ekranda turganda navbar ostiga yopishadi -->
+      <div class="preview-dock">
+        <div class="media preview-strip" role="group" aria-labelledby="previewLabel">
+          <div class="preview-card">
+            <div class="notif">
+              <span class="notif-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>
+                </svg>
+              </span>
+              <div class="notif-body">
+                <div class="notif-top">
+                  <span class="notif-src">Onlayn Mahalla</span>
+                  <span class="notif-time" id="pvTime">09:00</span>
+                </div>
+                <p class="notif-title" id="pvTitle" data-placeholder="Sarlavha kiritilmagan"></p>
+                <p class="notif-text" id="pvText" data-placeholder="Xabar matni shu yerda ko‘rinadi"></p>
+              </div>
+            </div>
+            <div class="notif-foot">
+              <span class="toggle-group" role="group" aria-label="Ko‘rinish tili">
+                <button type="button" class="toggle-btn" id="pvUz" aria-pressed="true">UZ</button>
+                <button type="button" class="toggle-btn" id="pvRu" aria-pressed="false">RU</button>
+              </span>
+              <span class="chip" id="pvFit" style="margin-inline-start:auto"><span class="dot"></span><span id="pvFitText">Matn kiritilmagan</span></span>
+            </div>
+          </div>
+
+          <div class="preview-side">
+            <p class="eyebrow" id="previewLabel">Foydalanuvchi ko‘radi</p>
+            <div class="preview-facts">
+              <p class="preview-fact"><span>QAMROV</span><b id="sideScope">—</b></p>
+              <p class="preview-fact"><span>AHOLI</span><b id="sideReach">—</b></p>
+              <p class="preview-fact"><span>YUBORISH</span><b id="sideWhen">Hoziroq</b></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lang-grid">
+        <div class="lang-col">
+          <div class="lang-head">
+            <span class="lang-tag"><span class="chip chip-mono">UZ</span><span class="label">O‘zbekcha</span></span>
+            <span class="chip chip-mono" id="uzState">To‘liq emas</span>
+          </div>
+          <div class="field">
+            <div class="label-row">
+              <label class="label" for="uzTitle">Sarlavha <span class="req" aria-hidden="true">*</span></label>
+              <span class="char-count" id="uzTitleCount">0/60</span>
+            </div>
+            <input class="input" id="uzTitle" type="text" maxlength="90" required
+                   placeholder="Masalan: Suv ta’minoti vaqtincha to‘xtatiladi"
+                   aria-describedby="uzTitleHint errUzTitle" />
+            <p class="hint" id="uzTitleHint">Push bildirishnomasida bir qator ko‘rinadi.</p>
+            <p class="field-error" id="errUzTitle" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <div class="label-row">
+              <label class="label" for="uzBody">Matn <span class="req" aria-hidden="true">*</span></label>
+              <span class="char-count" id="uzBodyCount">0/180</span>
+            </div>
+            <textarea class="textarea" id="uzBody" maxlength="400" required
+                      placeholder="Sana, vaqt va sabab. Qisqa yozing — ikki qator ko‘rinadi."
+                      aria-describedby="errUzBody"></textarea>
+            <p class="field-error" id="errUzBody" role="alert" hidden></p>
+          </div>
+        </div>
+
+        <div class="lang-col">
+          <div class="lang-head">
+            <span class="lang-tag"><span class="chip chip-mono">RU</span><span class="label">Ruscha</span></span>
+            <span class="chip chip-mono" id="ruState">To‘liq emas</span>
+          </div>
+          <div class="field">
+            <div class="label-row">
+              <label class="label" for="ruTitle">Заголовок <span class="req" aria-hidden="true">*</span></label>
+              <span class="char-count" id="ruTitleCount">0/60</span>
+            </div>
+            <input class="input" id="ruTitle" type="text" maxlength="90" required lang="ru"
+                   placeholder="Например: Водоснабжение будет временно отключено"
+                   aria-describedby="errRuTitle" />
+            <p class="hint">В push-уведомлении видна одна строка.</p>
+            <p class="field-error" id="errRuTitle" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <div class="label-row">
+              <label class="label" for="ruBody">Текст <span class="req" aria-hidden="true">*</span></label>
+              <span class="char-count" id="ruBodyCount">0/180</span>
+            </div>
+            <textarea class="textarea" id="ruBody" maxlength="400" required lang="ru"
+                      placeholder="Дата, время и причина. Пишите коротко — видны две строки."
+                      aria-describedby="errRuBody"></textarea>
+            <p class="field-error" id="errRuBody" role="alert" hidden></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= 03 VAQT ============================= -->
+  <section class="step-sec" id="step-3" aria-labelledby="h-step-3">
+    <div class="step-head">
+      <span class="step-index">03</span>
+      <h2 class="d3" id="h-step-3">Qachon ketadi?</h2>
+      <span class="step-aside">Toshkent vaqti · UTC+5</span>
+    </div>
+
+    <div class="step-body">
+      <div class="segment" role="radiogroup" aria-labelledby="h-step-3" id="whenGroup">
+        <button type="button" class="seg-btn" role="radio" aria-checked="true" data-when="now">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8.7 1.5 3 9h4l-.7 5.5L13 7H8.7l.7-5.5Z"/></svg>
+          Hoziroq
+        </button>
+        <button type="button" class="seg-btn" role="radio" aria-checked="false" data-when="later">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="3" width="12" height="11" rx="2"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3"/></svg>
+          Belgilangan vaqtda
+        </button>
+        <button type="button" class="seg-btn" role="radio" aria-checked="false" data-when="repeat">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.5 8a5.5 5.5 0 0 1 9.4-3.9M13.5 8a5.5 5.5 0 0 1-9.4 3.9M11.5 1.6v2.6H8.9M4.5 14.4v-2.6h2.6"/></svg>
+          Takroriy
+        </button>
+      </div>
+
+      <div class="when-grid" id="whenLater" hidden>
+        <div class="field">
+          <label class="label" for="fDate">Sana <span class="req" aria-hidden="true">*</span></label>
+          <input class="input" id="fDate" type="date" aria-describedby="errDate" />
+          <p class="field-error" id="errDate" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label class="label" for="fTime">Vaqt <span class="req" aria-hidden="true">*</span></label>
+          <input class="input" id="fTime" type="time" value="09:00" aria-describedby="errTime" />
+          <p class="field-error" id="errTime" role="alert" hidden></p>
+        </div>
+      </div>
+
+      <div id="whenRepeat" hidden>
+        <div class="field">
+          <span class="label" id="dayLabel">Qaysi kunlari <span class="req" aria-hidden="true">*</span></span>
+          <div class="day-row segment" role="group" aria-labelledby="dayLabel" id="dayRow">
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="1">Du</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="2">Se</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="3">Ch</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="4">Pa</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="5">Ju</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="6">Sh</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="0">Ya</button>
+          </div>
+          <p class="field-error" id="errDays" role="alert" hidden></p>
+        </div>
+        <div class="field" style="max-width:260px;margin-top:16px">
+          <label class="label" for="fRepeatTime">Vaqt <span class="req" aria-hidden="true">*</span></label>
+          <input class="input" id="fRepeatTime" type="time" value="09:00" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ 04 ILOVA ============================ -->
+  <section class="step-sec" id="step-4" aria-labelledby="h-step-4">
+    <div class="step-head">
+      <span class="step-index">04</span>
+      <h2 class="d3" id="h-step-4">Ilova qo‘shish</h2>
+      <span class="step-aside">Ixtiyoriy</span>
+    </div>
+
+    <div class="step-body">
+      <div class="drop" id="drop">
+        <span class="empty-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M10 14V4M6.5 7.5 10 4l3.5 3.5M3.5 14v1.5A1.5 1.5 0 0 0 5 17h10a1.5 1.5 0 0 0 1.5-1.5V14"/></svg>
+        </span>
+        <p class="empty-title">Fayl tanlang yoki shu yerga tortib tashlang</p>
+        <p class="hint">PDF, JPG yoki PNG · bittasi 10 MB gacha · 5 tagacha</p>
+        <label class="btn btn-ghost btn-sm" for="fFiles" style="margin-top:6px">
+          Fayl tanlash
+          <input class="sr-only" id="fFiles" type="file" multiple accept=".pdf,.jpg,.jpeg,.png" />
+        </label>
+      </div>
+      <div class="file-list" id="fileList" hidden></div>
+      <p class="field-error" id="errFiles" role="alert" hidden></p>
+    </div>
+  </section>
+
+  <!-- ============================= 05 YAKUN ============================= -->
+  <section class="step-sec" id="step-5" aria-labelledby="h-step-5">
+    <div class="step-head">
+      <span class="step-index">05</span>
+      <h2 class="d3" id="h-step-5">Yakuniy ko‘rinish</h2>
+      <span class="step-aside">Yuborishdan oldin tekshiring</span>
+    </div>
+
+    <div class="step-body">
+      <div class="recap">
+        <div class="recap-row"><span class="recap-key">Qamrov</span><span class="recap-val" id="rcScope" data-empty="true">tanlanmagan</span></div>
+        <div class="recap-row"><span class="recap-key">Aholi</span><span class="recap-val" id="rcReach" data-empty="true">—</span></div>
+        <div class="recap-row"><span class="recap-key">Sarlavha (UZ)</span><span class="recap-val" id="rcUz" data-empty="true">yozilmagan</span></div>
+        <div class="recap-row"><span class="recap-key">Sarlavha (RU)</span><span class="recap-val" id="rcRu" data-empty="true">yozilmagan</span></div>
+        <div class="recap-row"><span class="recap-key">Yuborish</span><span class="recap-val" id="rcWhen">hoziroq</span></div>
+        <div class="recap-row"><span class="recap-key">Ilova</span><span class="recap-val" id="rcFiles" data-empty="true">yo‘q</span></div>
+      </div>
+
+      <div id="resultSlot" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <div class="actions">
+    <p class="actions-status" id="status" role="status">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="statusText">Qamrov va matn to‘ldirilishi kerak</span>
+    </p>
+    <div class="actions-buttons">
+      <button type="button" class="btn btn-ghost" id="resetBtn">Tozalash</button>
+      <button type="button" class="btn btn-flame" id="submitBtn">
+        <span id="submitLabel">Navbatga qo‘yish</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<script src="assets/motion.js" defer></script>
+<script src="assets/composer-data.js" defer></script>
+<script src="assets/composer.js" defer></script>
+</body>
+</html>

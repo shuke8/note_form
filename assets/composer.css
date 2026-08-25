@@ -1,0 +1,194 @@
+/* =============================================================================
+   KOMPOZITOR — sahifaga xos qatlam.
+   Tuzilma: bitta ustun, bo'limlar mono yorliq va hairline bilan ajraladi.
+   Jonli ko'rinish — bo'lim ichida YOPISHIB turadigan media tasma.
+   ========================================================================== */
+
+.doc { padding-bottom: 40px; }
+
+/* Sahifa boshi */
+.doc-head { padding-top: 56px; padding-bottom: 8px; }
+.doc-head .d2 { max-width: 20ch; }
+.doc-meta { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-top: 22px; }
+
+/* Bosqich bo'limi */
+.step-sec { padding-top: 56px; scroll-margin-top: 88px; }
+.step-sec + .step-sec { border-top: 1px solid var(--hairline); margin-top: 56px; }
+.step-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.step-index {
+  font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+  color: var(--ink-2); flex: none;
+}
+.step-sec .d3 { flex: 1 1 auto; min-width: 0; }
+.step-aside { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+              text-transform: uppercase; color: var(--ink-2); flex: none; }
+.step-body { margin-top: 28px; display: flex; flex-direction: column; gap: 22px; }
+
+/* --- 01 QAMROV ------------------------------------------------------------ */
+.scope-summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 18px; border-radius: var(--r-5);
+  background: var(--paper-raise); border: 1px solid var(--hairline);
+}
+.scope-path { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0;
+              font-size: var(--t-body); color: var(--ink); letter-spacing: var(--ls-body); }
+.scope-path .sep { color: var(--ink-2); }
+.scope-reach { font-family: var(--mono); font-size: var(--t-sm); letter-spacing: var(--ls-mono);
+               color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.pick-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.pick-reach { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+              color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.pick[aria-checked="true"] .pick-reach { color: var(--ink); }
+/* `span` lar inline bo‘lgani uchun `height` qator balandligiga bo‘ysunadi —
+   blokka aylantirilmasa 3px lik chiziq 14px lik plita bo‘lib chiqadi. */
+.pick-foot { display: block; }
+.reach-bar { display: block; height: 3px; border-radius: 2px; background: var(--hairline-2);
+             overflow: hidden; margin-bottom: 8px; }
+.reach-fill { display: block; height: 100%; background: var(--ink-2); border-radius: 2px;
+              transition: width var(--d-pane) var(--ease-out); }
+.pick-name, .pick-desc, .pick-reach { display: block; }
+.pick[aria-checked="true"] .reach-fill { background-image: var(--flame); }
+
+.cascade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;
+           padding: 20px; border: 1px solid var(--hairline); border-radius: var(--r-6); }
+
+/* --- 02 MATN -------------------------------------------------------------- */
+
+/* Jonli ko'rinish — bo'lim ichida navbar ostiga YOPISHADI.
+   Eski dizayndagi ikki panelli ish maydoni emas: sahifa bitta ustun bo'lib
+   qoladi, tasma faqat shu bo'lim ekranda turganda ilashadi. */
+.preview-dock { position: sticky; top: 76px; z-index: 20; }
+.preview-strip { padding: 18px; display: flex; align-items: center; gap: 18px; }
+.preview-card { width: min(420px, 100%); border-radius: var(--r-dock); background: var(--paper);
+                box-shadow: var(--lift-2); overflow: hidden; }
+.preview-side { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.preview-side .eyebrow { color: rgba(255, 255, 255, 0.74); }
+.preview-facts { display: flex; flex-direction: column; gap: 4px; }
+.preview-fact { display: flex; gap: 10px; font-family: var(--mono); font-size: var(--t-mono-sm);
+                letter-spacing: var(--ls-mono); color: rgba(255, 255, 255, 0.62); }
+.preview-fact b { color: #fff; font-weight: 500; }
+
+
+/* Yopishqoq ko‘rinish tasmasi maydonni yopib qo‘ymasin: Tab bilan
+   yurganda brauzer elementni eng kam siljish bilan ko‘rsatadi va u
+   tasma ostida qolib ketardi. */
+.step-sec .input, .step-sec .select, .step-sec .textarea,
+.step-sec .seg-btn, .step-sec .pick, .step-sec .tpl { scroll-margin-top: 110px; }
+/* Bir xil aniqlikdagi qoidalarda oxirgisi yutadi — shuning uchun
+   matn ustuni qoidasi yuqoridagidan KEYIN turishi shart. */
+.lang-col .input, .lang-col .textarea { scroll-margin-top: 300px; }
+
+.lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.lang-col { display: flex; flex-direction: column; gap: 16px; padding: 20px;
+            border: 1px solid var(--hairline); border-radius: var(--r-6); }
+.lang-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.lang-tag { display: inline-flex; align-items: center; gap: 8px; }
+.label-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+
+.tpl-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.tpl { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; text-align: left;
+       padding: 16px; border: 1px solid var(--hairline); border-radius: var(--r-5);
+       background: var(--paper); box-shadow: var(--lift-1);
+       transition: border-color var(--d-hover) var(--ease-out), box-shadow var(--d-hover) var(--ease-out),
+                   transform var(--d-tap) var(--ease-out); }
+@media (hover: hover) { .tpl:hover { border-color: var(--ink-2); box-shadow: var(--lift-2); } }
+.tpl:active { transform: scale(0.98); }
+.tpl[aria-pressed="true"] { border-color: var(--ink); box-shadow: var(--lift-2), inset 0 0 0 1px var(--ink); }
+.tpl-ico { width: 30px; height: 30px; border-radius: var(--r-pill); background: var(--paper-raise);
+           display: grid; place-items: center; color: var(--ink); }
+.tpl-ico svg { width: 16px; height: 16px; }
+.tpl-name { margin-top: 4px; font-size: var(--t-ui); font-weight: 500; color: var(--ink); }
+.tpl-note { font-size: var(--t-sm); color: var(--ink-2); }
+
+/* --- 03 VAQT -------------------------------------------------------------- */
+.when-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; max-width: 560px; }
+.day-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.day-chip { min-width: 52px; justify-content: center; }
+
+/* --- 04 ILOVA ------------------------------------------------------------- */
+.drop {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 32px 20px; text-align: center;
+  border: 1px dashed var(--hairline-2); border-radius: var(--r-6);
+  background: var(--paper); color: var(--ink-2);
+  transition: border-color var(--d-hover) var(--ease-out), background var(--d-hover) var(--ease-out);
+}
+.drop[data-over="true"] { border-color: var(--ink); background: var(--paper-raise); }
+.file-list { display: flex; flex-direction: column; gap: 8px; }
+.file-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+            border: 1px solid var(--hairline); border-radius: var(--r-5); background: var(--paper); }
+.file-ico { width: 32px; height: 32px; flex: none; border-radius: var(--r-3); background: var(--paper-raise);
+            display: grid; place-items: center; color: var(--ink-2); }
+.file-name { flex: 1 1 auto; min-width: 0; font-size: var(--t-ui); color: var(--ink);
+             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-size { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+             color: var(--ink-2); flex: none; }
+
+/* --- YAKUN + AMAL QATORI -------------------------------------------------- */
+.recap { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.recap-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+             padding: 12px 0; border-bottom: 1px solid var(--hairline); }
+.recap-key { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+             text-transform: uppercase; color: var(--ink-2); flex: none; }
+.recap-val { font-size: var(--t-ui); color: var(--ink); text-align: end; }
+.recap-val[data-empty="true"] { color: var(--ink-2); }
+
+.actions {
+  position: sticky; bottom: 0; z-index: 30;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  margin-top: 48px; padding: 14px 0 calc(14px + env(safe-area-inset-bottom, 0px));
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-top: 1px solid var(--hairline);
+}
+.actions-status { display: flex; align-items: center; gap: 10px; font-size: var(--t-ui); color: var(--ink-2); }
+.actions-status[data-tone="ok"]   { color: var(--ok); }
+.actions-status[data-tone="crit"] { color: var(--crit); }
+.actions-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* --- NATIJA (DEMO) --------------------------------------------------------
+   Ish bajarilmagan bo'lsa ekran bajarilgan DEMASIN: bu panel boshqa
+   sarlavha, ogohlantirish ikonkasi va ko'rinadigan banner bilan keladi,
+   reestr raqami YO'Q — uni faqat server beradi.
+   ------------------------------------------------------------------------ */
+.result { display: flex; flex-direction: column; gap: 18px; padding: 24px;
+          border: 1px solid var(--warn); border-radius: var(--r-6); background: var(--warn-soft); }
+.result-head { display: flex; gap: 12px; align-items: flex-start; }
+.result-head svg { width: 22px; height: 22px; flex: none; color: var(--warn); margin-top: 2px; }
+.result-title { font-family: var(--display); font-size: var(--t-lead); font-weight: 500;
+                letter-spacing: var(--ls-lead); color: var(--warn); }
+.result-body { font-size: var(--t-ui); line-height: 1.6; color: var(--ink-2); }
+.result-payload { padding: 16px; border-radius: var(--r-5); background: var(--paper);
+                  border: 1px solid var(--hairline); overflow-x: auto; }
+.result-payload pre { font-family: var(--mono); font-size: var(--t-sm); line-height: 1.6;
+                      color: var(--ink); white-space: pre; }
+
+/* --- RESPONSIV ------------------------------------------------------------ */
+@media (max-width: 1080px) {
+  .pick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tpl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 880px) {
+  .lang-grid { grid-template-columns: 1fr; }
+  .cascade { grid-template-columns: 1fr; }
+  .recap { grid-template-columns: 1fr; }
+  /* Tor ekranda yopishqoq tasma ekranning yarmini yeydi — u oddiy blokka
+     aylanadi va matn maydonlari ustida qoladi. */
+  .preview-dock { position: static; }
+  .preview-strip { flex-direction: column; align-items: stretch; }
+  .preview-side { order: 2; }
+  .preview-card { width: 100%; }
+}
+@media (max-width: 620px) {
+  .pick-grid { grid-template-columns: 1fr; }
+  .tpl-grid { grid-template-columns: 1fr; }
+  .when-grid { grid-template-columns: 1fr; }
+  .actions { flex-direction: column; align-items: stretch; }
+  .actions-buttons { width: 100%; }
+  .actions-buttons .btn { flex: 1 1 auto; }
+  .step-head { gap: 8px; }
+  .step-aside { width: 100%; }
+}
