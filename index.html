@@ -6,11 +6,11 @@
   <title>Onlayn Mahalla · Tizim xabarnomasi</title>
   <meta name="color-scheme" content="light dark" />
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#f6f9fc" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#0b111e" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet" />
   <style>
     /* ============================================================
        ONLAYN MAHALLA — WORKSPACE SHELL (Linear/Linktree referensi)
@@ -20,60 +20,71 @@
     :root {
       color-scheme: dark;
 
-      --accent: #2f6fe8;
-      --accent-press: #2461d4;
-      --accent-text: #7fb0ff;
-      --accent-soft: rgba(76, 141, 255, 0.14);
-      --accent-line: rgba(76, 141, 255, 0.35);
-      --ring: rgba(76, 141, 255, 0.28);
-      --on-accent: #ffffff;
+      /* Ink = tanlov va birlamchi amal rangi (Geist: qora/oq teskarilash).
+         Ko'k FAQAT fokus va matn belgilashda — "indicator light" roli. */
+      --accent: #ededed;                      /* gray-1000 */
+      --accent-press: #cccccc;
+      --accent-text: #ededed;
+      --accent-soft: #1a1a1a;                 /* gray-100 */
+      --accent-line: rgba(255, 255, 255, 0.24);
+      --ring: #0071f6;                        /* blue-700 */
+      --ring-soft: rgba(0, 113, 246, 0.32);
+      --crit-ring: rgba(255, 94, 99, 0.30);
+      --on-accent: #0a0a0a;
 
-      --text-main: #e9ebef;
-      --text-body: #b4bac4;
-      --text-muted: #949cab;
+      --text-main: #ededed;                   /* gray-1000 */
+      --text-body: #a1a1a1;                   /* gray-900 */
+      --text-muted: #8f8f8f;                  /* gray-700 */
 
-      --bg-app: #0b0c0f;
-      --bg-rail: #0e1014;
-      --bg-panel: #121419;
-      --bg-field: #171a20;
-      --field-line: rgba(255, 255, 255, 0.16);
-      --field-inset: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-      --bg-raise: #1c2029;
-      --bg-hover: rgba(255, 255, 255, 0.045);
+      --bg-app: #000000;                      /* background-200 */
+      --bg-rail: #0a0a0a;
+      --bg-panel: #0a0a0a;                    /* background-100 */
+      --bg-field: #0a0a0a;
+      /* Chegara boshqaruvni ANIQLAYDI (WCAG 1.4.11, 3:1) — Geist'ning
+         gray-alpha-400'i 1.9:1 beradi, shuning uchun bosqich ko'tarildi. */
+      --field-line: #616161;
+      --field-inset: none;
+      --bg-raise: #1a1a1a;                    /* gray-100 */
+      --bg-hover: rgba(255, 255, 255, 0.07);  /* gray-alpha-100 */
 
-      --line: rgba(255, 255, 255, 0.07);
-      --line-2: rgba(255, 255, 255, 0.12);
-      --line-3: rgba(255, 255, 255, 0.2);
+      --line: rgba(255, 255, 255, 0.09);      /* gray-alpha-200 */
+      --line-2: rgba(255, 255, 255, 0.14);    /* gray-alpha-400 */
+      --line-3: rgba(255, 255, 255, 0.24);    /* gray-alpha-500 */
 
-      --ok: #3fcf8e;
-      --ok-soft: rgba(63, 207, 142, 0.14);
-      --warn: #e5a13a;
-      --warn-soft: rgba(229, 161, 58, 0.14);
-      --crit: #ff6f61;
-      --crit-soft: rgba(255, 111, 97, 0.14);
+      --ok: #00ca52;                          /* green-900 */
+      --ok-soft: #00250a;                     /* green-100 */
+      --warn: #ff9900;                        /* amber-900 */
+      --warn-soft: #291800;                   /* amber-100 */
+      --crit: #ff5e63;                        /* red-900 */
+      --crit-soft: #330a11;                   /* red-100 */
 
-      --r-sm: 6px;
-      --r-md: 8px;
-      --r-lg: 12px;
-      --r-xl: 16px;
-      --r-pill: 999px;
+      --r-sm: 4px;
+      --r-md: 6px;
+      --r-lg: 8px;
+      --r-xl: 12px;
+      --r-pill: 9999px;
 
-      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 20px 50px -12px rgba(0, 0, 0, 0.7);
+      /* Chuqurlik soyadan emas, 1px halqadan (Geist shadow-modal). */
+      --shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.145),
+        0 1px 1px rgba(0, 0, 0, 0.5),
+        0 8px 16px -4px rgba(0, 0, 0, 0.5),
+        0 24px 32px -8px rgba(0, 0, 0, 0.6);
 
 
       /* Kegl shkalasi — 14 ta ad-hoc qiymat o'rniga 8 ta nomlangan qadam.
          Nom ROLga qarab: micro = mono metadata, base = matn va boshqaruv. */
       --fs-micro: 11px;    /* mono katta harfli yorliq, badge */
-      --fs-tiny: 11.5px;   /* ikkilamchi meta, chip, izoh */
-      --fs-sm: 12.5px;     /* maydon yorlig'i, kichik UI matni */
-      --fs-base: 13.5px;   /* asosiy matn, input, tugma */
-      --fs-lg: 15.5px;     /* karta sarlavhasi */
-      --fs-xl: 18px;       /* tasdiq oynasi sarlavhasi */
-      --fs-2xl: 23px;      /* sahifa sarlavhasi */
+      --fs-tiny: 12px;     /* ikkilamchi meta, chip, izoh */
+      --fs-sm: 13px;       /* maydon yorlig'i, kichik UI matni */
+      --fs-base: 14px;     /* asosiy matn, input, tugma (Geist UI bazasi) */
+      --fs-lg: 16px;       /* karta sarlavhasi */
+      --fs-xl: 20px;       /* tasdiq oynasi sarlavhasi */
+      --fs-2xl: 28px;      /* sahifa sarlavhasi */
       --fs-clock: 74px;    /* telefon simulyatsiyasidagi soat */
 
-      --font-ui: "Golos Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --font-mono: "Roboto Mono", ui-monospace, "SF Mono", monospace;
+      --font-ui: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "Geist Mono", ui-monospace, "SF Mono", monospace;
       /* Davomiylik shkalasi — 7 ta qo'lda yozilgan qiymat o'rniga 5 qadam.
          Barchasi 300ms dan past (interface-craft): UI kutib turmaydi. */
       --dur-1: 110ms;  /* bosish javobi */
@@ -88,38 +99,45 @@
     [data-theme="light"] {
       color-scheme: light;
 
-      --accent: #0f62d6;
-      --accent-press: #0b52b5;
-      --accent-text: #0b52b5;
-      --accent-soft: #e9f0fd;
-      --accent-line: rgba(15, 98, 214, 0.3);
-      --ring: rgba(15, 98, 214, 0.2);
+      --accent: #171717;                      /* gray-1000 */
+      --accent-press: #383838;
+      --accent-text: #171717;
+      --accent-soft: #f2f2f2;                 /* gray-100 */
+      --accent-line: rgba(0, 0, 0, 0.22);
+      --ring: #0070f7;                        /* blue-700 */
+      --ring-soft: rgba(0, 112, 247, 0.24);
+      --crit-ring: rgba(214, 0, 32, 0.22);
+      --on-accent: #ffffff;
 
-      --text-main: #14171c;
-      --text-body: #414852;
-      --text-muted: #5b6472;
+      --text-main: #171717;                   /* gray-1000 */
+      --text-body: #4d4d4d;                   /* gray-900 */
+      --text-muted: #666666;
 
-      --bg-app: #f4f5f6;
-      --bg-rail: #eff0f2;
-      --bg-panel: #fbfbfc;
+      --bg-app: #ffffff;                      /* background-100 — yozuv yuzasi */
+      --bg-rail: #fafafa;                     /* background-200 — atrof-panel */
+      --bg-panel: #ffffff;
       --bg-field: #ffffff;
-      --field-line: rgba(20, 23, 28, 0.22);
-      --field-inset: inset 0 1px 2px rgba(20, 23, 28, 0.05);
-      --bg-raise: #f4f5f7;
-      --bg-hover: rgba(20, 23, 28, 0.05);
+      --field-line: #8f8f8f;                  /* gray-700 — 3:1 (WCAG 1.4.11) */
+      --field-inset: none;
+      --bg-raise: #f2f2f2;                    /* gray-100 */
+      --bg-hover: rgba(0, 0, 0, 0.05);
 
-      --line: rgba(20, 23, 28, 0.1);
-      --line-2: rgba(20, 23, 28, 0.16);
-      --line-3: rgba(20, 23, 28, 0.3);
+      --line: rgba(0, 0, 0, 0.08);
+      --line-2: rgba(0, 0, 0, 0.12);
+      --line-3: rgba(0, 0, 0, 0.22);
 
-      --ok: #0f7d4f;
-      --ok-soft: #e6f5ee;
-      --warn: #96590a;
-      --warn-soft: #fbf1e2;
-      --crit: #b3251b;
-      --crit-soft: #fbeae9;
+      --ok: #107d32;                          /* green-900 */
+      --ok-soft: #ecfdec;                     /* green-100 */
+      --warn: #a64f00;                        /* amber-900 */
+      --warn-soft: #fff6e1;                   /* amber-100 */
+      --crit: #d60020;                        /* red-900 */
+      --crit-soft: #ffeef0;                   /* red-100 */
 
-      --shadow: 0 1px 2px rgba(20, 23, 28, 0.06), 0 20px 44px -14px rgba(20, 23, 28, 0.2);
+      --shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        0 1px 1px rgba(0, 0, 0, 0.02),
+        0 8px 16px -4px rgba(0, 0, 0, 0.04),
+        0 24px 32px -8px rgba(0, 0, 0, 0.06);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -144,7 +162,7 @@
       transform: translateY(-80px);
       padding: 10px 16px; border-radius: var(--r-md);
       background: var(--accent); color: var(--on-accent);
-      font-size: var(--fs-base); font-weight: 550; text-decoration: none;
+      font-size: var(--fs-base); font-weight: 500; letter-spacing: -0.01em; text-decoration: none;
       transition: transform var(--dur-3) var(--ease);
     }
     .skip-link:focus { transform: none; }
@@ -180,9 +198,9 @@
       overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
     }
     :where(a, button, select, input, [contenteditable], [role="radio"], [role="tab"]):focus-visible {
-      outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px;
+      outline: 2px solid var(--ring); outline-offset: 2px; border-radius: var(--r-sm);
     }
-    ::selection { background: var(--accent-soft); color: var(--accent-text); }
+    ::selection { background: var(--ring-soft); color: var(--text-main); }
 
     ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -229,6 +247,8 @@
       font-size: var(--fs-sm); color: var(--text-muted);
     }
     .nav-breadcrumbs svg { width: 13px; height: 13px; color: var(--text-muted); flex: none; }
+    /* Ajratkich matn emas — chiziq, shuning uchun ochroq va kattaroq */
+    .nav-breadcrumbs .crumb-sep { width: 20px; height: 20px; color: var(--line-3); margin: 0 -3px; }
     .nav-breadcrumbs .crumb-active { color: var(--text-main); font-weight: 550; }
 
     .rail-card {
@@ -275,7 +295,7 @@
       margin-bottom: 18px;
     }
     .hero-copy { min-width: 0; }
-    .page-title { font-size: var(--fs-2xl); font-weight: 620; letter-spacing: -0.028em; color: var(--text-main); text-wrap: balance; }
+    .page-title { font-size: var(--fs-2xl); font-weight: 600; letter-spacing: -0.04em; color: var(--text-main); text-wrap: balance; }
     .page-desc { margin-top: 6px; font-size: var(--fs-base); color: var(--text-muted); max-width: 62ch; text-wrap: pretty; }
     /* Matn o'ralishi (make-interfaces-feel-better): sarlavhada qatorlar teng
        taqsimlansin, qisqa matnda oxirgi qatorda yolg'iz so'z qolmasin. */
@@ -290,7 +310,7 @@
     }
     .page-legend b { color: var(--accent-text); font-weight: 600; }
     .legend-swatch {
-      width: 3px; height: 15px; border-radius: 2px; background: var(--accent-line); flex: none;
+      width: 3px; height: 15px; border-radius: 2px; background: var(--accent); flex: none;
     }
     .hero-meta { flex: none; display: flex; align-items: center; gap: 10px; }
     .hero-meta-label {
@@ -310,7 +330,7 @@
     }
     .form-card-title > h2, .form-card-title > span:first-child {
       display: flex; align-items: center;
-      font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.015em; color: var(--text-main);
+      font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.021em; color: var(--text-main);
     }
     .form-card-title .sub {
       font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.06em;
@@ -352,14 +372,18 @@
       .devin-input:hover, .devin-select:hover {   border-color: var(--line-3); }
     }
     .devin-input:focus, .devin-select:focus {
-      border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring);
+      border-color: var(--ring); box-shadow: 0 0 0 3px var(--ring-soft);
     }
     .devin-input.error, .devin-select.error { border-color: var(--crit); }
+    .devin-input.error:focus, .devin-select.error:focus {
+      border-color: var(--crit); box-shadow: 0 0 0 3px var(--crit-ring);
+    }
+    .wysiwyg-wrapper.error:focus-within { border-color: var(--crit); box-shadow: 0 0 0 3px var(--crit-ring); }
 
     /* To'ldirilishi kerak, lekin hali bo'sh — tinch, qizil emas: chapda urg'u chizig'i */
     .devin-input[data-empty="true"], .devin-select[data-empty="true"],
     .wysiwyg-wrapper[data-empty="true"] {
-      border-left: 3px solid var(--accent-line);
+      border-left: 3px solid var(--accent);
       padding-inline-start: 11px;
     }
     .wysiwyg-wrapper[data-empty="true"] { padding-inline-start: 0; border-inline-start-width: 3px; }
@@ -411,8 +435,8 @@
 
     .btn-devin-secondary {
       height: 36px; padding: 0 16px 0 14px; cursor: pointer; border-radius: var(--r-md);
-      background: transparent; color: var(--text-body); border: 1px solid var(--line-2);
-      font-size: var(--fs-base); font-weight: 500;
+      background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--line-2);
+      font-size: var(--fs-base); font-weight: 500; letter-spacing: -0.01em;
       display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
       transition: background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
     }
@@ -469,7 +493,7 @@
       transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
     }
     .scope-icon-wrap svg { width: 15px; height: 15px; }
-    .scope-card-btn.active .scope-icon-wrap { background: var(--accent); color: #fff; }
+    .scope-card-btn.active .scope-icon-wrap { background: var(--accent); color: var(--on-accent); }
 
     .scope-radio-indicator {
       width: 16px; height: 16px; margin-inline-start: auto; flex: none;
@@ -477,7 +501,7 @@
       transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
     }
     .scope-radio-indicator::after {
-      content: ""; width: 5px; height: 5px; border-radius: 50%; background: #fff;
+      content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--on-accent);
       opacity: 0; transform: scale(0.6);
       transition: transform var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
     }
@@ -598,7 +622,7 @@
     @media (hover: hover) {
       .month-day-cell:hover {   border-color: var(--line-3); }
     }
-    .month-day-cell.active { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .month-day-cell.active { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
 
     /* ---------------- BILINGUAL ---------------- */
     /* Til tanlovi: ikkita teng kartochka, ichida holat va to'ldirilganlik */
@@ -622,7 +646,7 @@
       font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: .04em;
       transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
     }
-    .bilingual-tab-btn.active .tab-lang-dot { background: var(--accent); color: #fff; }
+    .bilingual-tab-btn.active .tab-lang-dot { background: var(--accent); color: var(--on-accent); }
 
     .tab-lang-copy { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
     .tab-lang-copy b { font-size: var(--fs-base); font-weight: 600; color: var(--text-main); }
@@ -679,9 +703,9 @@
       background: var(--bg-field); overflow: hidden; box-shadow: var(--field-inset);
       transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
     }
-    .wysiwyg-wrapper:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+    .wysiwyg-wrapper:focus-within { border-color: var(--ring); box-shadow: 0 0 0 3px var(--ring-soft); }
     .wysiwyg-wrapper.error { border-color: var(--crit); }
-    .wysiwyg-wrapper.translating-glow { border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+    .wysiwyg-wrapper.translating-glow { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-line); }
 
     .wysiwyg-toolbar {
       display: flex; align-items: center; gap: 2px; padding: 6px 8px;
@@ -757,7 +781,10 @@
     /* ---------------- PREVIEW PANEL ---------------- */
     .preview-pane {
       grid-column: 2; grid-row: 2; min-height: 0; overflow-y: auto;
-      background: var(--bg-rail); border-left: 1px solid var(--line);
+      background-color: var(--bg-rail);
+      background-image: radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0);
+      background-size: 22px 22px;
+      border-left: 1px solid var(--line);
       padding: 24px 26px 30px;
       display: flex; flex-direction: column; gap: 18px;
     }
@@ -785,7 +812,7 @@
     .phone-shell {
       position: relative; width: 100%; max-width: 318px;
       border-radius: 52px; padding: 3px;
-      background: linear-gradient(145deg, #6f7681 0%, #2c3138 22%, #171a1f 55%, #40464f 88%, #1b1e23 100%);
+      background: linear-gradient(145deg, #7d7d7d 0%, #2e2e2e 22%, #171717 55%, #454545 88%, #1a1a1a 100%);
       box-shadow:
         0 1px 2px rgba(0, 0, 0, 0.5),
         0 26px 50px -16px rgba(0, 0, 0, 0.5),
@@ -797,7 +824,7 @@
       border-radius: 50%; background: rgba(0, 0, 0, 0.35); filter: blur(14px); z-index: -1;
     }
     /* Yon tugmalar */
-    .phone-btn { position: absolute; width: 3px; border-radius: 3px; background: linear-gradient(180deg, #5b626c, #2a2e34); }
+    .phone-btn { position: absolute; width: 3px; border-radius: 3px; background: linear-gradient(180deg, #666666, #2e2e2e); }
     .phone-btn.mute { left: -3px; top: 108px; height: 28px; }
     .phone-btn.vol-up { left: -3px; top: 152px; height: 50px; }
     .phone-btn.vol-dn { left: -3px; top: 212px; height: 50px; }
@@ -807,10 +834,10 @@
       position: relative; overflow: hidden; border-radius: 49px; aspect-ratio: 9 / 19.5;
       display: flex; flex-direction: column;
       background:
-        radial-gradient(70% 44% at 26% 6%, rgba(140, 178, 255, 0.32), transparent 62%),
-        radial-gradient(64% 40% at 84% 30%, rgba(232, 148, 196, 0.16), transparent 58%),
-        radial-gradient(120% 70% at 50% 108%, rgba(10, 14, 24, 0.9), transparent 60%),
-        linear-gradient(168deg, #1c2438 0%, #121828 46%, #070a11 100%);
+        radial-gradient(70% 44% at 26% 6%, rgba(255, 255, 255, 0.20), transparent 62%),
+        radial-gradient(64% 40% at 84% 30%, rgba(255, 255, 255, 0.07), transparent 58%),
+        radial-gradient(120% 70% at 50% 108%, rgba(0, 0, 0, 0.92), transparent 60%),
+        linear-gradient(168deg, #2e2e2e 0%, #1a1a1a 46%, #000000 100%);
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07), inset 0 0 40px rgba(0, 0, 0, 0.5);
     }
     /* Grain + shisha nuri */
@@ -836,7 +863,7 @@
     }
     .pv-lens {
       width: 9px; height: 9px; border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #2b3a52 0%, #101722 55%, #05070b 100%);
+      background: radial-gradient(circle at 35% 30%, #3a3a3a 0%, #171717 55%, #000000 100%);
       box-shadow: 0 0 0 .5px rgba(255, 255, 255, 0.12);
     }
     .pv-status-icons { display: flex; align-items: center; gap: 5px; }
@@ -880,7 +907,7 @@
       margin-top: 3px; font-size: var(--fs-base); font-weight: 650; line-height: 1.3; color: #0a0e15;
       display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
     }
-    .notif-title.is-empty, .notif-text.is-empty { color: #8b95a3; font-style: italic; font-weight: 500; }
+    .notif-title.is-empty, .notif-text.is-empty { color: #8b95a3; font-weight: 400; }
     .notif-text {
       margin-top: 2px; font-size: var(--fs-sm); line-height: 1.42; color: #2b3542;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
@@ -941,12 +968,12 @@
       display: grid; place-items: center; background: var(--ok-soft); color: var(--ok);
     }
     .receipt-check-circle svg { width: 24px; height: 24px; }
-    .receipt-title { font-size: var(--fs-xl); font-weight: 620; color: var(--text-main); letter-spacing: -0.02em; }
+    .receipt-title { font-size: var(--fs-xl); font-weight: 600; color: var(--text-main); letter-spacing: -0.032em; }
     .receipt-sub { font-size: var(--fs-base); color: var(--text-muted); }
 
     .receipt-details-dossier {
       border: 1px solid var(--line); border-radius: var(--r-md);
-      background: var(--bg-app); padding: 2px 13px; text-align: left;
+      background: var(--bg-raise); padding: 2px 13px; text-align: left;
     }
     .receipt-row {
       display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
@@ -1005,7 +1032,7 @@
     .sc-ico svg { width: 19px; height: 19px; color: var(--text-muted); display: block; }
     .sc-card.active .sc-ico svg { color: var(--accent); }
     .sc-tick {
-      width: 16px; height: 16px; border-radius: var(--r-pill); background: var(--accent); color: #fff;
+      width: 16px; height: 16px; border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent);
       display: none; align-items: center; justify-content: center;
     }
     .sc-tick svg { width: 10px; height: 10px; }
@@ -1186,11 +1213,32 @@
       .month-days-matrix { grid-template-columns: repeat(7, minmax(0, 1fr)); }
     }
 
+    /* =====================================================================
+       BARMOQ BILAN ISHLASH — @media (pointer: coarse), max-width EMAS:
+       planshet va yotiq telefon ham shu qoidalarga tushsin.
+       ===================================================================== */
+    @media (pointer: coarse) {
+      /* iOS 16px dan kichik input'ga fokuslanganda sahifani ZUMLAYDI.
+         Kegl shkalasi 14px — shuning uchun faqat matn kiritish maydonlari ko'tariladi. */
+      .devin-input, .devin-select, .wysiwyg-editor { font-size: 16px; }
+      .devin-input, .devin-select { height: 44px; }
+      /* Tegish maydoni >= 44px */
+      .btn-devin-primary, .btn-devin-secondary { height: 44px; }
+      .icon-btn-quiet, .attach-remove, .wysiwyg-btn { min-width: 44px; min-height: 44px; }
+      /* 7 ta 44px tugma 320px ga sig'maydi -> ikkinchi qatorga tushsin,
+         aks holda oxirgi tugma overflow:hidden ostida qolib bosilmaydi */
+      .wysiwyg-toolbar { flex-wrap: wrap; }
+      .cchip, .btn-ghost-sm, .lang-toggle-btn, .trans-trigger-btn { min-height: 44px; }
+      .day-chip { height: 44px; }
+      .month-day-cell { height: 40px; }
+      .template-pill, .format-tag-pill, .preset-pill, .month-preset-chip { min-height: 44px; }
+    }
+
     /* Yuborish holati: tugmalar bloklanadi, spinner ko'rinadi */
     .btn-devin-primary[aria-busy="true"], .btn-devin-secondary[aria-busy="true"] { pointer-events: none; opacity: .7; }
     .send-spinner {
       width: 14px; height: 14px; flex: none; border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, .35); border-top-color: currentColor;
+      border: 2px solid color-mix(in srgb, currentColor 28%, transparent); border-top-color: currentColor;
       animation: sendSpin 700ms linear infinite;
     }
     @keyframes sendSpin { to { transform: rotate(360deg); } }
@@ -1259,6 +1307,9 @@
     </symbol>
     <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="currentColor">
       <path fill-rule="evenodd" d="M15.53 4.47a.75.75 0 0 1 0 1.06L9.06 12l6.47 6.47a.75.75 0 1 1-1.06 1.06l-7-7a.75.75 0 0 1 0-1.06l7-7a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/>
+    </symbol>
+    <symbol id="i-crumb-slash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+      <path d="M16.88 3.549 7.12 20.451"/>
     </symbol>
     <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="currentColor">
       <path fill-rule="evenodd" d="M8.47 4.47a.75.75 0 0 1 1.06 0l7 7a.75.75 0 0 1 0 1.06l-7 7a.75.75 0 0 1-1.06-1.06L14.94 12 8.47 5.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
@@ -1337,9 +1388,9 @@
         </a>
 
         <div class="nav-breadcrumbs">
-          <svg><use href="#i-chevron-right"/></svg>
+          <svg class="crumb-sep"><use href="#i-crumb-slash"/></svg>
           <span>Tizim xabarnomalari</span>
-          <svg><use href="#i-chevron-right"/></svg>
+          <svg class="crumb-sep"><use href="#i-crumb-slash"/></svg>
           <span class="crumb-active" id="crumbScopeLabel">Mahalla xabarnomasi</span>
         </div>
       </div>
@@ -1481,7 +1532,7 @@
                 <div class="manual-head">
                   <p class="page-legend">
                     <span class="legend-swatch" aria-hidden="true"></span>
-                    Chapida ko‘k chiziq turgan va <b>*</b> bilan belgilangan maydonlar to‘ldirilishi shart
+                    Chapida chiziq turgan va <b>*</b> bilan belgilangan maydonlar to‘ldirilishi shart
                   </p>
                   <button type="button" class="link-btn" id="backToScBtn" hidden>Ssenariyga qaytish</button>
                 </div>
@@ -1544,8 +1595,8 @@
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
                           </button>
                           <span class="wysiwyg-sep"></span>
-                          <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#fef08a" title="Ajratib ko'rsatish" aria-label="Ajratib ko'rsatish">
-                            <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:var(--fs-micro)">HL</span>
+                          <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#ffdd84" title="Ajratib ko'rsatish" aria-label="Ajratib ko'rsatish">
+                            <span style="background:#ffdd84; color:#541c00; padding:0 3px; border-radius:2px; font-weight:800; font-size:var(--fs-micro)">HL</span>
                           </button>
                           <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Formatni tozalash" aria-label="Formatni tozalash">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
@@ -1598,8 +1649,8 @@
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
                           </button>
                           <span class="wysiwyg-sep"></span>
-                          <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#fef08a" title="Выделить" aria-label="Выделить">
-                            <span style="background:#fef08a; color:#854d0e; padding:0 3px; border-radius:2px; font-weight:800; font-size:var(--fs-micro)">HL</span>
+                          <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#ffdd84" title="Выделить" aria-label="Выделить">
+                            <span style="background:#ffdd84; color:#541c00; padding:0 3px; border-radius:2px; font-weight:800; font-size:var(--fs-micro)">HL</span>
                           </button>
                           <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Очистить форматирование" aria-label="Очистить форматирование">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
@@ -3351,7 +3402,7 @@
         const val = btn.dataset.val || null;
 
         if (cmd === "hiliteColor") {
-          document.execCommand("hiliteColor", false, val || "#fef08a");
+          document.execCommand("hiliteColor", false, val || "#ffdd84");
         } else {
           document.execCommand(cmd, false, val);
         }
