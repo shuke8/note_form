@@ -109,7 +109,6 @@
     [hidden] { display: none !important; }
 
     body {
-      min-width: 1280px;
       font-family: var(--font-ui);
       font-size: 13.5px;
       line-height: 1.5;
@@ -998,7 +997,7 @@
       color: var(--text-body); background: var(--bg-field); border: 1px solid var(--line-2);
       border-radius: var(--r-sm); padding: 2px 5px; margin-top: 1px;
     }
-    .gen-text { font-size: 13.5px; line-height: 1.55; color: var(--text-main); }
+    .gen-text { font-size: 13.5px; line-height: 1.55; color: var(--text-main); max-width: 68ch; }
     .gen-text .gen-title { display: block; font-weight: 600; margin-bottom: 2px; }
     .gen-text b.slot-val { font-weight: 550; color: var(--accent-text); }
 
@@ -1085,6 +1084,46 @@
       .manual-head { flex-direction: column; gap: 8px; }
     }
 
+    /* =====================================================================
+       REFLOW (WCAG 1.4.10) — 1280px dan pastda va 200% zoom da gorizontal
+       scroll bo'lmasin. Desktop (>=1080px) ko'rinishi O'ZGARMAYDI: quyidagi
+       qoidalar faqat tor ekranda yonadi.
+       ===================================================================== */
+    @media (max-width: 1080px) {
+      .app-root {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto auto;
+        height: auto; min-height: 100vh;
+      }
+      .top-navbar { flex-wrap: wrap; height: auto; min-height: 56px; padding: 8px 16px; gap: 10px 14px; }
+      .nav-breadcrumbs { display: none; }
+      .workspace-container { grid-column: 1; grid-row: 2; overflow-y: visible; }
+      .preview-pane {
+        grid-column: 1; grid-row: 3; overflow-y: visible;
+        border-left: 0; border-top: 1px solid var(--line);
+      }
+      .phone-stage { display: flex; justify-content: center; }
+      .composer-pane { padding: 22px 20px 100px; }
+      .stepper-foot { margin: 28px -20px 0; padding: 14px 20px; }
+      .scope-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .geo-cascade { grid-template-columns: 1fr !important; gap: 12px; }
+      .geo-arrow { display: none; }
+      .bilingual-tabs-bar { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .top-navbar-right .rail-card, .top-navbar-right .status-live-chip { display: none; }
+      .composer-pane { padding: 18px 14px 96px; }
+      .stepper-foot { margin: 24px -14px 0; padding: 12px 14px; flex-wrap: wrap; gap: 10px; }
+      .stepper-foot > div { flex: 1 1 100%; }
+      /* Jadval rejimi gridi markupda inline yozilgan -> !important shart */
+      .scope-card-grid { grid-template-columns: 1fr !important; }
+      .hero-heading-box { flex-direction: column; align-items: flex-start; gap: 12px; }
+      /* Amal tugmalari 310px ga sig'masdi — o'ralsin va kengayasin */
+      .stepper-foot > div:last-child { display: flex; flex-wrap: wrap; gap: 8px; }
+      .stepper-foot > div:last-child > button { flex: 1 1 140px; justify-content: center; }
+      .month-days-matrix { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    }
+
   </style>
 </head>
 <body>
@@ -1169,7 +1208,7 @@
     <header class="top-navbar">
       <div class="top-navbar-left">
         <a href="#" class="brand-logo-btn">
-          <img src="assets/logo.svg" alt="logo" />
+          <img src="assets/logo.svg" alt="" />
           <div style="display:flex; flex-direction:column; line-height:1.25; min-width:0">
             <span style="font-size:13.5px; font-weight:600; letter-spacing:-0.015em; color:var(--text-main)">onlayn mahalla</span>
             <span style="font-size:10.5px; color:var(--text-dim)">Davlat platformasi</span>
@@ -1204,7 +1243,7 @@
       <div class="workspace-grid">
 
         <!-- LEFT 8/12: FORM STEPPER -->
-        <div class="composer-pane" id="composerMain">
+        <main class="composer-pane" id="composerMain" tabindex="-1">
 
           <div class="hero-heading-box">
             <div class="hero-copy">
@@ -1364,7 +1403,7 @@
                       </div>
                       <input type="text" class="devin-input" id="title-uz" data-field="title" data-lang="uz" maxlength="120" placeholder="Masalan, Profilaktika ishlari" />
                       <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-uz"></div></div>
-                      <div class="field-error" id="err-title-uz" role="alert"><svg><use href="#i-warn"/></svg> O'zbekcha sarlavhani yozing</div>
+                      <div class="field-error" id="err-title-uz"><svg><use href="#i-warn"/></svg> O'zbekcha sarlavhani yozing</div>
                     </div>
                     <div>
                       <div class="label-row">
@@ -1394,7 +1433,7 @@
                         <div class="wysiwyg-editor" id="body-uz" contenteditable="true" aria-labelledby="lbl-body-uz" aria-describedby="err-body-uz" data-field="body" data-lang="uz" data-placeholder="Xabarnoma matnini yozing... Uzun matnlar uchun pastga scroll qilasiz." role="textbox" aria-multiline="true"></div>
                       </div>
                       <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-uz"></div></div>
-                        <div class="field-error" id="err-body-uz" role="alert"><svg><use href="#i-warn"/></svg> O'zbekcha matnni yozing</div>
+                        <div class="field-error" id="err-body-uz"><svg><use href="#i-warn"/></svg> O'zbekcha matnni yozing</div>
                     </div>
                   </div>
                 </div>
@@ -1418,7 +1457,7 @@
                       </div>
                       <input type="text" class="devin-input" id="title-ru" data-field="title" data-lang="ru" maxlength="120" placeholder="Например, Профилактические работы" />
                       <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-ru"></div></div>
-                      <div class="field-error" id="err-title-ru" role="alert"><svg><use href="#i-warn"/></svg> Ruscha sarlavhani yozing</div>
+                      <div class="field-error" id="err-title-ru"><svg><use href="#i-warn"/></svg> Ruscha sarlavhani yozing</div>
                     </div>
                     <div>
                       <div class="label-row">
@@ -1448,7 +1487,7 @@
                         <div class="wysiwyg-editor" id="body-ru" contenteditable="true" aria-labelledby="lbl-body-ru" aria-describedby="err-body-ru" data-field="body" data-lang="ru" data-placeholder="Текст уведомления... Для длинных текстов прокручивайте вниз." role="textbox" aria-multiline="true"></div>
                       </div>
                       <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-ru"></div></div>
-                        <div class="field-error" id="err-body-ru" role="alert"><svg><use href="#i-warn"/></svg> Ruscha matnni yozing</div>
+                        <div class="field-error" id="err-body-ru"><svg><use href="#i-warn"/></svg> Ruscha matnni yozing</div>
                     </div>
                   </div>
                 </div>
@@ -1598,7 +1637,7 @@
                     </select>
                     <svg><use href="#i-chevrons-up-down"/></svg>
                   </div>
-                  <div class="field-error" id="err-region" role="alert"><svg><use href="#i-warn"/></svg> Viloyatni tanlang</div>
+                  <div class="field-error" id="err-region"><svg><use href="#i-warn"/></svg> Viloyatni tanlang</div>
                 </div>
 
                 <div class="geo-arrow" id="geoArrow1" aria-hidden="true"><svg><use href="#i-chevron-right"/></svg></div>
@@ -1611,7 +1650,7 @@
                     </select>
                     <svg><use href="#i-chevrons-up-down"/></svg>
                   </div>
-                  <div class="field-error" id="err-district" role="alert"><svg><use href="#i-warn"/></svg> Tumanni tanlang</div>
+                  <div class="field-error" id="err-district"><svg><use href="#i-warn"/></svg> Tumanni tanlang</div>
                 </div>
 
                 <div class="geo-arrow" id="geoArrow2" aria-hidden="true"><svg><use href="#i-chevron-right"/></svg></div>
@@ -1624,7 +1663,7 @@
                     </select>
                     <svg><use href="#i-chevrons-up-down"/></svg>
                   </div>
-                  <div class="field-error" id="err-mahalla" role="alert"><svg><use href="#i-warn"/></svg> Mahallani tanlang</div>
+                  <div class="field-error" id="err-mahalla"><svg><use href="#i-warn"/></svg> Mahallani tanlang</div>
                 </div>
               </div>
 
@@ -1672,7 +1711,7 @@
                     <button type="button" class="preset-pill" data-preset="today_18">Bugun 18:00</button>
                     <button type="button" class="preset-pill" data-preset="tomorrow_09">Ertaga 09:00</button>
                   </div>
-                  <div class="field-error" id="err-sendAt" role="alert"><svg><use href="#i-warn"/></svg> Kelajakdagi sana va vaqtni tanlang</div>
+                  <div class="field-error" id="err-sendAt"><svg><use href="#i-warn"/></svg> Kelajakdagi sana va vaqtni tanlang</div>
                 </div>
 
                 <!-- Takroriy sozlamalar -->
@@ -1706,7 +1745,7 @@
                       <button type="button" class="day-chip" data-wd="6">Sha</button>
                       <button type="button" class="day-chip" data-wd="0">Yak</button>
                     </div>
-                    <div class="field-error" id="err-weekdays" role="alert"><svg><use href="#i-warn"/></svg> Kamida bitta kunni tanlang</div>
+                    <div class="field-error" id="err-weekdays"><svg><use href="#i-warn"/></svg> Kamida bitta kunni tanlang</div>
                   </div>
 
                   <div id="monthDayField" hidden>
@@ -1725,7 +1764,7 @@
 
                     <!-- 1..31 Days Matrix -->
                     <div class="month-days-matrix" id="monthDaysMatrix"></div>
-                    <div class="field-error" id="err-monthDays" role="alert"><svg><use href="#i-warn"/></svg> Kamida bitta sanani tanlang</div>
+                    <div class="field-error" id="err-monthDays"><svg><use href="#i-warn"/></svg> Kamida bitta sanani tanlang</div>
                   </div>
                 </div>
               </div>
@@ -1788,7 +1827,7 @@
             </div>
           </div>
 
-        </div>
+        </main>
 
 
       </div>
@@ -2794,6 +2833,13 @@
           const show = keys.has(k) && (state.touched || state.blurred.has(k));
           if (errEl) errEl.classList.toggle("active", show);
           if (inpEl && inpEl.classList) inpEl.classList.toggle("error", show);
+          /* Xato holati yordamchi texnologiyaga ham yetsin: maydonning o'zi
+             noto'g'ri deb belgilanadi va xato matniga bog'lanadi. */
+          if (inpEl && inpEl.setAttribute && errEl) {
+            inpEl.setAttribute("aria-invalid", String(show));
+            if (show) inpEl.setAttribute("aria-describedby", errEl.id);
+            else inpEl.removeAttribute("aria-describedby");
+          }
           if (k.startsWith("body-")) {
             const wrapEl = $(`wysiwyg-wrap-${k.replace("body-", "")}`);
             if (wrapEl) wrapEl.classList.toggle("error", show);
@@ -2865,6 +2911,8 @@
         meta.className = "attach-meta";
         const name = document.createElement("b");
         name.textContent = file.name;
+        /* Nom kesiladi — to'liq qiymat hover/fokusda ko'rinsin */
+        name.title = file.name;
         const size = document.createElement("span");
         size.textContent = humanSize(file.size);
         meta.append(name, size);
@@ -3352,8 +3400,8 @@
         $("submitBtn").click();
       }
       if (e.key === "Escape") {
-        $("testModal").classList.remove("show");
-        $("doneModal").classList.remove("open");
+        (setModalOpen($("testModal"), false), $("testModal").classList.remove("show"));
+        (setModalOpen($("doneModal"), false), $("doneModal").classList.remove("open"));
       }
     });
 
@@ -3368,10 +3416,11 @@
         return;
       }
       $("testModal").classList.add("show");
+      setModalOpen($("testModal"), true);
       $("testPhone").focus();
     });
-    $("testClose").addEventListener("click", () => $("testModal").classList.remove("show"));
-    $("testCancel").addEventListener("click", () => $("testModal").classList.remove("show"));
+    $("testClose").addEventListener("click", () => (setModalOpen($("testModal"), false), $("testModal").classList.remove("show")));
+    $("testCancel").addEventListener("click", () => (setModalOpen($("testModal"), false), $("testModal").classList.remove("show")));
 
     $("testSend").addEventListener("click", () => {
       const phone = $("testPhone").value.trim();
@@ -3384,12 +3433,32 @@
       $("testSendLabel").textContent = "Yuborilmoqda...";
       setTimeout(() => {
         $("testSendLabel").textContent = "Yuborish";
-        $("testModal").classList.remove("show");
+        (setModalOpen($("testModal"), false), $("testModal").classList.remove("show"));
         toast(`Test bildirishnomasi ${phone} raqamiga yuborildi`);
       }, 700);
     });
 
     // Submit & GovTech Receipt Modal
+
+    /* ---------- Modal fokus tuzog'i (APG): orqa fon inert, fokus qaytadi ----------
+       Ilgari dialog ochiq turganda Tab orqadagi tugmalarga o'tib ketardi. */
+    let modalReturnFocus = null;
+    function setModalOpen(el, open) {
+      const root = document.querySelector(".app-root");
+      if (open) {
+        modalReturnFocus = document.activeElement;
+        root.inert = true;
+        el.inert = false;
+        const first = el.querySelector("input:not([type=hidden]), button, select, textarea, [href]");
+        if (first) setTimeout(() => first.focus(), 30);
+      } else {
+        root.inert = false;
+        const back = modalReturnFocus;
+        modalReturnFocus = null;
+        if (back && document.contains(back)) setTimeout(() => back.focus(), 0);
+      }
+    }
+
     $("submitBtn").addEventListener("click", () => {
       state.touched = true;
       const bad = allProblems();
@@ -3407,10 +3476,11 @@
       $("receiptSchedule").textContent = state.send.mode === "now" ? "Hoziroq (Darhol)" : state.send.at || "Reja bo‘yicha";
 
       $("doneModal").classList.add("open");
+      setModalOpen($("doneModal"), true);
     });
 
     $("againBtn").addEventListener("click", () => {
-      $("doneModal").classList.remove("open");
+      (setModalOpen($("doneModal"), false), $("doneModal").classList.remove("open"));
       state.texts = { uz: { title: "", body: "" }, ru: { title: "", body: "" } };
       for (const l of ["uz", "ru"]) {
         $(`title-${l}`).value = "";
@@ -3432,7 +3502,7 @@
     });
 
     $("viewListBtn").addEventListener("click", () => {
-      $("doneModal").classList.remove("open");
+      (setModalOpen($("doneModal"), false), $("doneModal").classList.remove("open"));
       toast("Xabarnomalar ro‘yxatiga yo‘naltirilmoqda...");
     });
 
