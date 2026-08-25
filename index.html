@@ -169,11 +169,11 @@
 
     /* Bosish javobi — barcha bosiladigan element uchun bir xil 0.96. */
     .btn-devin-secondary, .icon-btn-quiet, .lang-toggle-btn, .sev-btn,
-    .day-chip, .preset-pill, .month-preset-chip, .bilingual-tab-btn,
+    .day-chip, .preset-pill, .month-preset-chip,
     .format-tag-pill, .trans-trigger-btn { transition-property: background, border-color, color, box-shadow, transform; }
     .btn-devin-secondary:active, .icon-btn-quiet:active, .lang-toggle-btn:active,
     .sev-btn:active, .day-chip:active, .preset-pill:active, .month-preset-chip:active,
-    .bilingual-tab-btn:active, .format-tag-pill:active, .trans-trigger-btn:active { transform: scale(0.96); }
+    .format-tag-pill:active, .trans-trigger-btn:active { transform: scale(0.96); }
 
     /* Bosish maydoni: ko'rinadigan element kichik bo'lsa ham barmoq/kursor
        tegadigan maydon >= 40px. Qo'shni interaktiv element bilan KESISHMAYDI —
@@ -185,9 +185,9 @@
     }
     /* .link-btn faqat ALOHIDA turgan joyda kengaytiriladi — jumla ICHIDAGI
        inline havolaga 40px band qo'yilsa, atrofdagi matnni belgilab bo'lmaydi. */
-    .cchip, .lang-toggle-btn,
+    .lang-toggle-btn,
     .slot-head .link-btn, .manual-head .link-btn, .slot-dirty .link-btn { position: relative; }
-    .cchip::after, .lang-toggle-btn::after,
+    .lang-toggle-btn::after,
     .slot-head .link-btn::after, .manual-head .link-btn::after, .slot-dirty .link-btn::after {
       content: ""; position: absolute; top: 50%; left: 0; right: 0;
       height: 40px; transform: translateY(-50%);
@@ -625,44 +625,6 @@
     .month-day-cell.active { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
 
     /* ---------------- BILINGUAL ---------------- */
-    /* Til tanlovi: ikkita teng kartochka, ichida holat va to'ldirilganlik */
-    .bilingual-tabs-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .bilingual-tab-btn {
-      position: relative; cursor: pointer; text-align: left;
-      border: 1px solid var(--line-2); border-radius: var(--r-md); background: var(--bg-panel);
-      padding: 11px 13px; color: var(--text-muted);
-      display: flex; align-items: center; gap: 10px;
-      transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
-    }
-    @media (hover: hover) {
-      .bilingual-tab-btn:hover {   border-color: var(--line-3); }
-    }
-    .bilingual-tab-btn.active { border-color: var(--accent); background: var(--accent-soft); }
-
-    .tab-lang-dot {
-      width: 26px; height: 26px; flex: none; border-radius: var(--r-sm);
-      display: grid; place-items: center;
-      background: var(--bg-raise); color: var(--text-muted);
-      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: .04em;
-      transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
-    }
-    .bilingual-tab-btn.active .tab-lang-dot { background: var(--accent); color: var(--on-accent); }
-
-    .tab-lang-copy { display: flex; flex-direction: column; line-height: 1.3; min-width: 0; }
-    .tab-lang-copy b { font-size: var(--fs-base); font-weight: 600; color: var(--text-main); }
-    .bilingual-tab-btn.active .tab-lang-copy b { color: var(--accent-text); }
-    .tab-lang-copy span { font-size: var(--fs-tiny); color: var(--text-muted); font-variant-numeric: tabular-nums; }
-
-    .tab-status-icon {
-      margin-inline-start: auto; flex: none; width: 18px; height: 18px; border-radius: 50%;
-      display: grid; place-items: center;
-      font-size: var(--fs-micro); font-weight: 700; line-height: 1;
-      background: var(--bg-raise); color: var(--text-muted);
-      transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
-    }
-    .tab-status-icon[data-done="true"] { background: var(--ok-soft); color: var(--ok); }
-    .tab-status-icon[data-done="miss"] { background: var(--crit-soft); color: var(--crit); }
-
     /* Til paneli sarlavhasi: tarjima amali + avto-tarjima holati */
     .lang-actions {
       display: flex; align-items: center; gap: 10px;
@@ -672,8 +634,36 @@
     .lang-actions-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
     .lang-actions .hint { font-size: var(--fs-tiny); color: var(--text-muted); }
 
-    .bilingual-pane { display: none; margin-top: 16px; }
-    .bilingual-pane.active { display: block; animation: paneIn var(--dur-3) var(--ease) both; }
+    /* Ikkala til YONMA-YON: ilgari ruscha matn tab ortida yashirin edi va
+       operator uni ko'rmay yuborardi. Endi ikkalasi ham bir ekranda. */
+    .bilingual-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      align-items: start; margin-top: 16px;
+    }
+    .bilingual-pane { display: block; min-width: 0; }
+    .pane-head {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+      font-size: var(--fs-sm); font-weight: 600; color: var(--text-main); letter-spacing: -0.01em;
+    }
+    .pane-tag {
+      display: inline-grid; place-items: center; min-width: 24px; height: 20px; padding: 0 6px;
+      border-radius: var(--r-sm); background: var(--bg-raise); color: var(--text-muted);
+      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: .04em;
+    }
+    .pane-status {
+      flex: none; width: 18px; height: 18px; border-radius: 50%;
+      display: grid; place-items: center; line-height: 1;
+      font-size: var(--fs-micro); font-weight: 700;
+      background: var(--bg-raise); color: var(--text-muted);
+      transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+    }
+    .pane-status[data-done="true"] { background: var(--ok-soft); color: var(--ok); }
+    .pane-status[data-done="miss"] { background: var(--crit-soft); color: var(--crit); }
+    .pane-state {
+      margin-inline-start: auto; font-size: var(--fs-tiny); font-weight: 400;
+      color: var(--text-muted); font-variant-numeric: tabular-nums;
+    }
+    @media (max-width: 900px) { .bilingual-grid { grid-template-columns: 1fr; gap: 22px; } }
     @keyframes paneIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
     .bilingual-card { display: flex; flex-direction: column; gap: 16px; }
@@ -1117,41 +1107,6 @@
 
     .manual-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
     .manual-head .page-legend { margin: 0; }
-
-    /* Kam ishlatiladigan sozlamalar: tinch chip qatori + ochiladigan panel */
-    .cstrip { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 2px 0 8px; }
-    .cchip {
-      display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 11px; cursor: pointer;
-      border: 1px solid transparent; border-radius: var(--r-md); background: transparent;
-      color: var(--text-muted); font-family: inherit; font-size: var(--fs-tiny); font-weight: 500;
-      transition: border-color var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease), transform var(--dur-1) var(--ease);
-    }
-    .cchip:active { transform: scale(0.96); }
-    .cchip > svg { width: 14px; height: 14px; flex: none; }
-    .cchip .cchev { width: 11px; height: 11px; color: var(--text-muted); }
-    .cchip.is-set { border-color: var(--line-2); background: var(--bg-panel); color: var(--text-body); }
-    .cchip.is-set > svg:first-of-type { color: var(--accent); }
-    @media (hover: hover) {
-      .cchip:hover {   border-color: var(--line-3); background: var(--bg-hover); }
-    }
-    .cchip[aria-expanded="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent-text); }
-    .cchip[aria-expanded="true"] > svg { color: var(--accent-text); }
-    .cchip.is-bad { border-color: var(--crit); background: var(--crit-soft); color: var(--crit); }
-    .cchip.is-bad > svg { color: var(--crit); }
-    .cchip:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
-    /* Panel o'zini ochgan chip ustidan "o'sadi" — qayerdan kelgani ko'rinadi */
-    .cpanel {
-      transform-origin: var(--panel-origin, 50%) top;
-      animation: panelIn var(--dur-3) var(--ease) both;
-    }
-    @keyframes panelIn {
-      from { opacity: 0; transform: translateY(-6px) scale(0.97); }
-      to { opacity: 1; transform: none; }
-    }
-    /* Chiqish kirishdan yumshoqroq: qisqaroq, kichikroq siljish, scale'siz. */
-    .cpanel.is-closing { animation: panelOut var(--dur-2) var(--ease) both; pointer-events: none; }
-    @keyframes panelOut {
-      from { opacity: 1; transform: none; }
       to { opacity: 0; transform: translateY(-4px); }
     }
 
@@ -1159,7 +1114,6 @@
     @keyframes swapIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
     @media (prefers-reduced-motion: reduce) {
-      .cpanel { animation: none; }
       .sc-card { transition: none; }
     }
     @media (max-width: 900px) {
@@ -1197,7 +1151,6 @@
       .scope-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .geo-cascade { grid-template-columns: 1fr !important; gap: 12px; }
       .geo-arrow { display: none; }
-      .bilingual-tabs-bar { grid-template-columns: 1fr; }
     }
     @media (max-width: 620px) {
       .top-navbar-right .rail-card, .top-navbar-right .status-live-chip { display: none; }
@@ -1228,7 +1181,7 @@
       /* 7 ta 44px tugma 320px ga sig'maydi -> ikkinchi qatorga tushsin,
          aks holda oxirgi tugma overflow:hidden ostida qolib bosilmaydi */
       .wysiwyg-toolbar { flex-wrap: wrap; }
-      .cchip, .btn-ghost-sm, .lang-toggle-btn, .trans-trigger-btn { min-height: 44px; }
+      .btn-ghost-sm, .lang-toggle-btn, .trans-trigger-btn { min-height: 44px; }
       .day-chip { height: 44px; }
       .month-day-cell { height: 40px; }
       .template-pill, .format-tag-pill, .preset-pill, .month-preset-chip { min-height: 44px; }
@@ -1383,287 +1336,15 @@
             </div>
           </div>
 
-          <div class="sc-grid" id="scGrid" role="radiogroup" aria-label="Xabar ssenariysi">
-            <button type="button" class="sc-card" data-sc="suv" role="radio" aria-checked="false">
-              <span class="sc-top">
-                <span class="sc-ico"><svg><use href="#i-drop"/></svg></span>
-                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
-              </span>
-              <span class="sc-name">Suv ta‘minoti to‘xtatilishi</span>
-              <span class="sc-meta">3 ta bo‘shliq</span>
-            </button>
-            <button type="button" class="sc-card" data-sc="elektr" role="radio" aria-checked="false">
-              <span class="sc-top">
-                <span class="sc-ico"><svg><use href="#i-bolt"/></svg></span>
-                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
-              </span>
-              <span class="sc-name">Elektr tarmog‘i ta‘miri</span>
-              <span class="sc-meta">3 ta bo‘shliq</span>
-            </button>
-            <button type="button" class="sc-card" data-sc="yigin" role="radio" aria-checked="false">
-              <span class="sc-top">
-                <span class="sc-ico"><svg><use href="#i-bell"/></svg></span>
-                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
-              </span>
-              <span class="sc-name">Mahalla umumiy yig‘ini</span>
-              <span class="sc-meta">3 ta bo‘shliq</span>
-            </button>
-            <button type="button" class="sc-card" data-sc="hashar" role="radio" aria-checked="false">
-              <span class="sc-top">
-                <span class="sc-ico"><svg><use href="#i-leaf"/></svg></span>
-                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
-              </span>
-              <span class="sc-name">Hashar va obodonlashtirish</span>
-              <span class="sc-meta">3 ta bo‘shliq</span>
-            </button>
-            <button type="button" class="sc-card" data-sc="emlash" role="radio" aria-checked="false">
-              <span class="sc-top">
-                <span class="sc-ico"><svg><use href="#i-med"/></svg></span>
-                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
-              </span>
-              <span class="sc-name">Tibbiy ko‘rik va emlash</span>
-              <span class="sc-meta">3 ta bo‘shliq</span>
-            </button>
-            <button type="button" class="sc-card" data-sc="obhavo" role="radio" aria-checked="false">
-              <span class="sc-top">
-                <span class="sc-ico"><svg><use href="#i-warn"/></svg></span>
-                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
-              </span>
-              <span class="sc-name">Ob-havo ogohlantirishi</span>
-              <span class="sc-meta">2 ta bo‘shliq</span>
-            </button>
-          </div>
+          
 
           <!-- ==================================================================
                1-QISM: XABAR MATNI VA ILOVA
                ================================================================== -->
-          <div class="form-block" id="blockText">
-            <div class="form-card">
-              <div class="form-card-title">
-                <h2 id="composeTitle">Xabar matni</h2>
-                <div style="display:flex; align-items:center; gap:8px">
-                  <div class="auto-trans-status" id="autoTransStatus" title="Yozganingizda avtomatik ikkinchi tilga tarjima qilinadi">
-                    <svg width="12" height="12"><use href="#i-sparkles"/></svg>
-                    <span id="autoTransStatusText">Avto-tarjima faol</span>
-                  </div>
-                  <span class="sub" id="langState">Ikkala til kerak</span>
-                </div>
-              </div>
-
-              <!-- Ssenariy bo‘shliqlari: shu yerda faqat o‘zgaradigan qiymat kiritiladi -->
-              <div class="slot-editor" id="slotEditor" hidden>
-                <div class="slot-head">
-                  <b id="slotScName">—</b>
-                  <span class="slot-ok" id="slotOk" data-ok="true">Ikkala til tayyor</span>
-                  <span style="flex:1"></span>
-                  <button type="button" class="link-btn" id="manualBtn">Matnni qo‘lda tahrirlash</button>
-                </div>
-
-                <div class="slot-grid" id="slotGrid"></div>
-
-                <div class="slot-dirty" id="slotDirty" hidden>
-                  <svg><use href="#i-warn"/></svg>
-                  <span>Matn qo‘lda o‘zgartirilgan — ssenariy bilan bog‘lanmagan.</span>
-                  <button type="button" class="link-btn" id="regenBtn" style="color:var(--warn)">Ssenariy bo‘yicha qayta yaratish</button>
-                </div>
-
-                <div class="gen-list">
-                  <div class="gen-row"><span class="gen-badge">UZ</span><span class="gen-text" id="genUz"></span></div>
-                  <div class="gen-row"><span class="gen-badge">RU</span><span class="gen-text" id="genRu"></span></div>
-                </div>
-              </div>
-
-              <!-- Bo‘sh holat: hali ssenariy tanlanmagan -->
-              <div class="empty-hint" id="scEmptyHint">
-                <svg><use href="#i-sparkles"/></svg>
-                <span>Yuqoridan ssenariy tanlang — sarlavha va matn ikkala tilda o‘zi yoziladi.
-                  Ro‘yxatda mos ssenariy bo‘lmasa, <button type="button" class="link-btn" id="freeFormBtn2">bo‘sh xabar yozing</button>.</span>
-              </div>
-
-              <div id="manualBox" hidden>
-                <div class="manual-head">
-                  <p class="page-legend">
-                    <span class="legend-swatch" aria-hidden="true"></span>
-                    Chapida chiziq turgan va <b>*</b> bilan belgilangan maydonlar to‘ldirilishi shart
-                  </p>
-                  <button type="button" class="link-btn" id="backToScBtn" hidden>Ssenariyga qaytish</button>
-                </div>
-                <!-- Language Tabs -->
-                <div class="bilingual-tabs-bar" id="bilingualTabsBar" role="tablist" aria-label="Matn tili">
-                  <button type="button" class="bilingual-tab-btn active" data-tab="uz" role="tab" aria-selected="true" aria-controls="bilingualPaneUz">
-                    <span class="tab-lang-dot">UZ</span>
-                    <span class="tab-lang-copy">
-                      <b>O‘zbekcha</b>
-                      <span id="tabMetaUz">to‘ldirilmagan</span>
-                    </span>
-                    <span class="tab-status-icon" id="tabStatusUz" aria-hidden="true"></span>
-                  </button>
-                  <button type="button" class="bilingual-tab-btn" data-tab="ru" role="tab" aria-selected="false" aria-controls="bilingualPaneRu">
-                    <span class="tab-lang-dot">RU</span>
-                    <span class="tab-lang-copy">
-                      <b>Русский</b>
-                      <span id="tabMetaRu">to‘ldirilmagan</span>
-                    </span>
-                    <span class="tab-status-icon" id="tabStatusRu" aria-hidden="true"></span>
-                  </button>
-                </div>
-
-                <!-- UZ Pane -->
-                <div class="bilingual-pane active" id="bilingualPaneUz" data-pane="uz">
-                  <div class="bilingual-card">
-                    <div class="lang-actions">
-                      <div class="lang-actions-left">
-                        <button type="button" class="trans-trigger-btn" id="btnTranslateToRu" title="O'zbekcha matnni ruschaga o'girish">
-                          <svg width="11" height="11"><use href="#i-sparkles"/></svg>
-                          <span>Ruschaga o‘girish</span>
-                        </button>
-                        <span class="hint">Yozganingizda avtomatik o‘giriladi</span>
-                      </div>
-                    </div>
-                    <div>
-                      <div class="label-row">
-                        <label class="form-label" for="title-uz">Sarlavha<span class="req-mark">*</span></label>
-                        <span class="label-count" id="bcount-uz-title"></span>
-                      </div>
-                      <input type="text" class="devin-input" id="title-uz" data-field="title" data-lang="uz" maxlength="120" placeholder="Masalan, Profilaktika ishlari" />
-                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-uz"></div></div>
-                      <div class="field-error" id="err-title-uz"><svg><use href="#i-warn"/></svg> O'zbekcha sarlavhani yozing</div>
-                    </div>
-                    <div>
-                      <div class="label-row">
-                        <label class="form-label" id="lbl-body-uz">Xabarnoma matni<span class="req-mark">*</span></label>
-                        <span class="label-count" id="count-uz">0 / 600</span>
-                      </div>
-                      <div class="wysiwyg-wrapper" id="wysiwyg-wrap-uz">
-                        <div class="wysiwyg-toolbar" data-target="body-uz">
-                          <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Qalin (Ctrl+B)" aria-label="Qalin (Ctrl+B)"><b>B</b></button>
-                          <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Kursiv (Ctrl+I)" aria-label="Kursiv (Ctrl+I)"><i>I</i></button>
-                          <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Tagiga chizish (Ctrl+U)" aria-label="Tagiga chizish (Ctrl+U)"><u>U</u></button>
-                          <span class="wysiwyg-sep"></span>
-                          <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Belgili ro'yxat" aria-label="Belgili ro'yxat">
-                            <svg width="13" height="13"><use href="#i-list-bullet"/></svg>
-                          </button>
-                          <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Raqamli ro'yxat" aria-label="Raqamli ro'yxat">
-                            <svg width="13" height="13"><use href="#i-list-number"/></svg>
-                          </button>
-                          <span class="wysiwyg-sep"></span>
-                          <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#ffdd84" title="Ajratib ko'rsatish" aria-label="Ajratib ko'rsatish">
-                            <span style="background:#ffdd84; color:#541c00; padding:0 3px; border-radius:2px; font-weight:800; font-size:var(--fs-micro)">HL</span>
-                          </button>
-                          <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Formatni tozalash" aria-label="Formatni tozalash">
-                            <svg width="12" height="12"><use href="#i-x"/></svg>
-                          </button>
-                        </div>
-                        <div class="wysiwyg-editor" id="body-uz" contenteditable="true" aria-labelledby="lbl-body-uz" aria-describedby="err-body-uz" data-field="body" data-lang="uz" data-placeholder="Xabarnoma matnini yozing... Uzun matnlar uchun pastga scroll qilasiz." role="textbox" aria-multiline="true"></div>
-                      </div>
-                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-uz"></div></div>
-                        <div class="field-error" id="err-body-uz"><svg><use href="#i-warn"/></svg> O'zbekcha matnni yozing</div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- RU Pane -->
-                <div class="bilingual-pane" id="bilingualPaneRu" data-pane="ru">
-                  <div class="bilingual-card">
-                    <div class="lang-actions">
-                      <div class="lang-actions-left">
-                        <button type="button" class="trans-trigger-btn" id="btnTranslateToUz" title="Ruscha matnni o'zbekchaga o'girish">
-                          <svg width="11" height="11"><use href="#i-sparkles"/></svg>
-                          <span>O‘zbekchaga o‘girish</span>
-                        </button>
-                        <span class="hint">Yozganingizda avtomatik o‘giriladi</span>
-                      </div>
-                    </div>
-                    <div>
-                      <div class="label-row">
-                        <label class="form-label" for="title-ru">Заголовок<span class="req-mark">*</span></label>
-                        <span class="label-count" id="bcount-ru-title"></span>
-                      </div>
-                      <input type="text" class="devin-input" id="title-ru" data-field="title" data-lang="ru" maxlength="120" placeholder="Например, Профилактические работы" />
-                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-ru"></div></div>
-                      <div class="field-error" id="err-title-ru"><svg><use href="#i-warn"/></svg> Ruscha sarlavhani yozing</div>
-                    </div>
-                    <div>
-                      <div class="label-row">
-                        <label class="form-label" id="lbl-body-ru">Текст уведомления<span class="req-mark">*</span></label>
-                        <span class="label-count" id="count-ru">0 / 600</span>
-                      </div>
-                      <div class="wysiwyg-wrapper" id="wysiwyg-wrap-ru">
-                        <div class="wysiwyg-toolbar" data-target="body-ru">
-                          <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Жирный (Ctrl+B)" aria-label="Жирный (Ctrl+B)"><b>B</b></button>
-                          <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Курсив (Ctrl+I)" aria-label="Курсив (Ctrl+I)"><i>I</i></button>
-                          <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Подчеркнутый (Ctrl+U)" aria-label="Подчеркнутый (Ctrl+U)"><u>U</u></button>
-                          <span class="wysiwyg-sep"></span>
-                          <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Маркированный список" aria-label="Маркированный список">
-                            <svg width="13" height="13"><use href="#i-list-bullet"/></svg>
-                          </button>
-                          <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Нумерованный список" aria-label="Нумерованный список">
-                            <svg width="13" height="13"><use href="#i-list-number"/></svg>
-                          </button>
-                          <span class="wysiwyg-sep"></span>
-                          <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#ffdd84" title="Выделить" aria-label="Выделить">
-                            <span style="background:#ffdd84; color:#541c00; padding:0 3px; border-radius:2px; font-weight:800; font-size:var(--fs-micro)">HL</span>
-                          </button>
-                          <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Очистить форматирование" aria-label="Очистить форматирование">
-                            <svg width="12" height="12"><use href="#i-x"/></svg>
-                          </button>
-                        </div>
-                        <div class="wysiwyg-editor" id="body-ru" contenteditable="true" aria-labelledby="lbl-body-ru" aria-describedby="err-body-ru" data-field="body" data-lang="ru" data-placeholder="Текст уведомления... Для длинных текстов прокручивайте вниз." role="textbox" aria-multiline="true"></div>
-                      </div>
-                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-ru"></div></div>
-                        <div class="field-error" id="err-body-ru"><svg><use href="#i-warn"/></svg> Ruscha matnni yozing</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="verdict-line" id="prevVerdict" data-v="idle">
-                <span class="verdict-dot"></span>
-                <span id="prevVerdictText">Bildirishnomada 1 qator sarlavha va 2 qator matn ko‘rinadi</span>
-              </div>
-
-              <!-- Formatting & Structuring Quick Tag Pills -->
-              <div class="formatting-chip-row" id="tagRow" hidden>
-                <span style="font-size:var(--fs-tiny); font-weight:700; color:var(--text-muted); text-transform:uppercase">Tezkor teglar:</span>
-                <button type="button" class="format-tag-pill" data-insert="[DIQQAT!]">Diqqat</button>
-                <button type="button" class="format-tag-pill" data-insert="[Manzil: ]">Manzil</button>
-                <button type="button" class="format-tag-pill" data-insert="[Vaqti: ]">Vaqt</button>
-                <button type="button" class="format-tag-pill" data-insert="[Murojaat uchun: +998 ]">Aloqa</button>
-              </div>
-
-
-            </div>
-          </div>
-
-          <!-- ==================================================================
-               KAM ISHLATILADIGAN SOZLAMALAR — chip ortida, bir bosishda ochiladi
-               ================================================================== -->
-          <div class="cstrip" role="group" aria-label="Qo‘shimcha sozlamalar">
-            <button type="button" class="cchip is-set" data-panel="panelScope" aria-expanded="false" aria-controls="panelScope">
-              <svg aria-hidden="true"><use href="#i-pin"/></svg>
-              <span id="chipScope">Qamrov</span>
-              <svg class="cchev" aria-hidden="true"><use href="#i-chevrons-up-down"/></svg>
-            </button>
-            <button type="button" class="cchip is-set" data-panel="panelSend" aria-expanded="false" aria-controls="panelSend">
-              <svg aria-hidden="true"><use href="#i-bolt"/></svg>
-              <span id="chipSend">Hoziroq</span>
-              <svg class="cchev" aria-hidden="true"><use href="#i-chevrons-up-down"/></svg>
-            </button>
-            <button type="button" class="cchip" data-panel="panelFiles" aria-expanded="false" aria-controls="panelFiles">
-              <svg aria-hidden="true"><use href="#i-clip"/></svg>
-              <span id="chipFiles">Ilova qo‘shish</span>
-              <svg class="cchev" aria-hidden="true"><use href="#i-chevrons-up-down"/></svg>
-            </button>
-          </div>
-
-          <div class="cpanel" id="panelScope" hidden>
-          <!-- ==================================================================
-               3-QISM: HUDUD
-               ================================================================== -->
           <div class="form-block" id="blockAudience">
             <div class="form-card">
               <div class="form-card-title">
-                <h2>Hududni belgilash</h2>
+                <h2><span class="block-num" aria-hidden="true">1</span>Kim oladi?</h2>
                 <span class="sub">Xabar kimlarga ko‘rinadi</span>
               </div>
 
@@ -1794,16 +1475,245 @@
             </div>
           </div>
 
-          </div>
-
-          <div class="cpanel" id="panelSend" hidden>
-          <!-- ==================================================================
-               2-QISM: YUBORISH TARTIBI
-               ================================================================== -->
-          <div class="form-block" id="blockSchedule">
+<div class="form-block" id="blockText">
             <div class="form-card">
               <div class="form-card-title">
-                <h2>Yuborish tartibi</h2>
+                <h2><span class="block-num" aria-hidden="true">2</span><span id="composeTitle">Nima yoziladi?</span></h2>
+                <div style="display:flex; align-items:center; gap:8px">
+                  <div class="auto-trans-status" id="autoTransStatus" title="Yozganingizda avtomatik ikkinchi tilga tarjima qilinadi">
+                    <svg width="12" height="12"><use href="#i-sparkles"/></svg>
+                    <span id="autoTransStatusText">Avto-tarjima faol</span>
+                  </div>
+                  <span class="sub" id="langState">Ikkala til kerak</span>
+                </div>
+              </div>
+
+<div class="sc-grid" id="scGrid" role="radiogroup" aria-label="Xabar ssenariysi">
+            <button type="button" class="sc-card" data-sc="suv" role="radio" aria-checked="false">
+              <span class="sc-top">
+                <span class="sc-ico"><svg><use href="#i-drop"/></svg></span>
+                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+              </span>
+              <span class="sc-name">Suv ta‘minoti to‘xtatilishi</span>
+              <span class="sc-meta">3 ta bo‘shliq</span>
+            </button>
+            <button type="button" class="sc-card" data-sc="elektr" role="radio" aria-checked="false">
+              <span class="sc-top">
+                <span class="sc-ico"><svg><use href="#i-bolt"/></svg></span>
+                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+              </span>
+              <span class="sc-name">Elektr tarmog‘i ta‘miri</span>
+              <span class="sc-meta">3 ta bo‘shliq</span>
+            </button>
+            <button type="button" class="sc-card" data-sc="yigin" role="radio" aria-checked="false">
+              <span class="sc-top">
+                <span class="sc-ico"><svg><use href="#i-bell"/></svg></span>
+                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+              </span>
+              <span class="sc-name">Mahalla umumiy yig‘ini</span>
+              <span class="sc-meta">3 ta bo‘shliq</span>
+            </button>
+            <button type="button" class="sc-card" data-sc="hashar" role="radio" aria-checked="false">
+              <span class="sc-top">
+                <span class="sc-ico"><svg><use href="#i-leaf"/></svg></span>
+                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+              </span>
+              <span class="sc-name">Hashar va obodonlashtirish</span>
+              <span class="sc-meta">3 ta bo‘shliq</span>
+            </button>
+            <button type="button" class="sc-card" data-sc="emlash" role="radio" aria-checked="false">
+              <span class="sc-top">
+                <span class="sc-ico"><svg><use href="#i-med"/></svg></span>
+                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+              </span>
+              <span class="sc-name">Tibbiy ko‘rik va emlash</span>
+              <span class="sc-meta">3 ta bo‘shliq</span>
+            </button>
+            <button type="button" class="sc-card" data-sc="obhavo" role="radio" aria-checked="false">
+              <span class="sc-top">
+                <span class="sc-ico"><svg><use href="#i-warn"/></svg></span>
+                <span class="sc-tick" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+              </span>
+              <span class="sc-name">Ob-havo ogohlantirishi</span>
+              <span class="sc-meta">2 ta bo‘shliq</span>
+            </button>
+          </div>
+              <!-- Ssenariy bo‘shliqlari: shu yerda faqat o‘zgaradigan qiymat kiritiladi -->
+              <div class="slot-editor" id="slotEditor" hidden>
+                <div class="slot-head">
+                  <b id="slotScName">—</b>
+                  <span class="slot-ok" id="slotOk" data-ok="true">Ikkala til tayyor</span>
+                  <span style="flex:1"></span>
+                  <button type="button" class="link-btn" id="manualBtn">Matnni qo‘lda tahrirlash</button>
+                </div>
+
+                <div class="slot-grid" id="slotGrid"></div>
+
+                <div class="slot-dirty" id="slotDirty" hidden>
+                  <svg><use href="#i-warn"/></svg>
+                  <span>Matn qo‘lda o‘zgartirilgan — ssenariy bilan bog‘lanmagan.</span>
+                  <button type="button" class="link-btn" id="regenBtn" style="color:var(--warn)">Ssenariy bo‘yicha qayta yaratish</button>
+                </div>
+
+                <div class="gen-list">
+                  <div class="gen-row"><span class="gen-badge">UZ</span><span class="gen-text" id="genUz"></span></div>
+                  <div class="gen-row"><span class="gen-badge">RU</span><span class="gen-text" id="genRu"></span></div>
+                </div>
+              </div>
+
+              <!-- Bo‘sh holat: hali ssenariy tanlanmagan -->
+              <div class="empty-hint" id="scEmptyHint">
+                <svg><use href="#i-sparkles"/></svg>
+                <span>Yuqoridan ssenariy tanlang — sarlavha va matn ikkala tilda o‘zi yoziladi.
+                  Ro‘yxatda mos ssenariy bo‘lmasa, <button type="button" class="link-btn" id="freeFormBtn2">bo‘sh xabar yozing</button>.</span>
+              </div>
+
+              <div id="manualBox" hidden>
+                <div class="manual-head">
+                  <p class="page-legend">
+                    <span class="legend-swatch" aria-hidden="true"></span>
+                    Chapida chiziq turgan va <b>*</b> bilan belgilangan maydonlar to‘ldirilishi shart
+                  </p>
+                  <button type="button" class="link-btn" id="backToScBtn" hidden>Ssenariyga qaytish</button>
+                </div>
+                <!-- Language Tabs -->
+                
+
+                <!-- UZ Pane -->
+                <div class="bilingual-grid">
+                <section class="bilingual-pane" id="bilingualPaneUz" data-pane="uz" aria-labelledby="paneHeadUz">
+                  <h3 class="pane-head" id="paneHeadUz"><span class="pane-tag">UZ</span>O‘zbekcha<span class="pane-state" id="tabMetaUz">to‘ldirilmagan</span><span class="pane-status" id="tabStatusUz" aria-hidden="true"></span></h3>
+                  <div class="bilingual-card">
+                    <div class="lang-actions">
+                      <div class="lang-actions-left">
+                        <button type="button" class="trans-trigger-btn" id="btnTranslateToRu" title="O'zbekcha matnni ruschaga o'girish">
+                          <svg width="11" height="11"><use href="#i-sparkles"/></svg>
+                          <span>Ruschaga o‘girish</span>
+                        </button>
+                        <span class="hint">Yozganingizda avtomatik o‘giriladi</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="label-row">
+                        <label class="form-label" for="title-uz">Sarlavha<span class="req-mark">*</span></label>
+                        <span class="label-count" id="bcount-uz-title"></span>
+                      </div>
+                      <input type="text" class="devin-input" id="title-uz" data-field="title" data-lang="uz" maxlength="120" placeholder="Masalan, Profilaktika ishlari" />
+                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-uz"></div></div>
+                      <div class="field-error" id="err-title-uz"><svg><use href="#i-warn"/></svg> O'zbekcha sarlavhani yozing</div>
+                    </div>
+                    <div>
+                      <div class="label-row">
+                        <label class="form-label" id="lbl-body-uz">Xabarnoma matni<span class="req-mark">*</span></label>
+                        <span class="label-count" id="count-uz">0 / 600</span>
+                      </div>
+                      <div class="wysiwyg-wrapper" id="wysiwyg-wrap-uz">
+                        <div class="wysiwyg-toolbar" data-target="body-uz">
+                          <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Qalin (Ctrl+B)" aria-label="Qalin (Ctrl+B)"><b>B</b></button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Kursiv (Ctrl+I)" aria-label="Kursiv (Ctrl+I)"><i>I</i></button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Tagiga chizish (Ctrl+U)" aria-label="Tagiga chizish (Ctrl+U)"><u>U</u></button>
+                          <span class="wysiwyg-sep"></span>
+                          <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Belgili ro'yxat" aria-label="Belgili ro'yxat">
+                            <svg width="13" height="13"><use href="#i-list-bullet"/></svg>
+                          </button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Raqamli ro'yxat" aria-label="Raqamli ro'yxat">
+                            <svg width="13" height="13"><use href="#i-list-number"/></svg>
+                          </button>
+                          <span class="wysiwyg-sep"></span>
+                          <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#ffdd84" title="Ajratib ko'rsatish" aria-label="Ajratib ko'rsatish">
+                            <span style="background:#ffdd84; color:#541c00; padding:0 3px; border-radius:2px; font-weight:800; font-size:var(--fs-micro)">HL</span>
+                          </button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Formatni tozalash" aria-label="Formatni tozalash">
+                            <svg width="12" height="12"><use href="#i-x"/></svg>
+                          </button>
+                        </div>
+                        <div class="wysiwyg-editor" id="body-uz" contenteditable="true" aria-labelledby="lbl-body-uz" aria-describedby="err-body-uz" data-field="body" data-lang="uz" data-placeholder="Xabarnoma matnini yozing... Uzun matnlar uchun pastga scroll qilasiz." role="textbox" aria-multiline="true"></div>
+                      </div>
+                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-uz"></div></div>
+                        <div class="field-error" id="err-body-uz"><svg><use href="#i-warn"/></svg> O'zbekcha matnni yozing</div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- RU Pane -->
+                <section class="bilingual-pane" id="bilingualPaneRu" data-pane="ru" aria-labelledby="paneHeadRu">
+                  <h3 class="pane-head" id="paneHeadRu"><span class="pane-tag">RU</span>Русский<span class="pane-state" id="tabMetaRu">to‘ldirilmagan</span><span class="pane-status" id="tabStatusRu" aria-hidden="true"></span></h3>
+                  <div class="bilingual-card">
+                    <div class="lang-actions">
+                      <div class="lang-actions-left">
+                        <button type="button" class="trans-trigger-btn" id="btnTranslateToUz" title="Ruscha matnni o'zbekchaga o'girish">
+                          <svg width="11" height="11"><use href="#i-sparkles"/></svg>
+                          <span>O‘zbekchaga o‘girish</span>
+                        </button>
+                        <span class="hint">Yozganingizda avtomatik o‘giriladi</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="label-row">
+                        <label class="form-label" for="title-ru">Заголовок<span class="req-mark">*</span></label>
+                        <span class="label-count" id="bcount-ru-title"></span>
+                      </div>
+                      <input type="text" class="devin-input" id="title-ru" data-field="title" data-lang="ru" maxlength="120" placeholder="Например, Профилактические работы" />
+                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-title-ru"></div></div>
+                      <div class="field-error" id="err-title-ru"><svg><use href="#i-warn"/></svg> Ruscha sarlavhani yozing</div>
+                    </div>
+                    <div>
+                      <div class="label-row">
+                        <label class="form-label" id="lbl-body-ru">Текст уведомления<span class="req-mark">*</span></label>
+                        <span class="label-count" id="count-ru">0 / 600</span>
+                      </div>
+                      <div class="wysiwyg-wrapper" id="wysiwyg-wrap-ru">
+                        <div class="wysiwyg-toolbar" data-target="body-ru">
+                          <button type="button" class="wysiwyg-btn" data-cmd="bold" title="Жирный (Ctrl+B)" aria-label="Жирный (Ctrl+B)"><b>B</b></button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="italic" title="Курсив (Ctrl+I)" aria-label="Курсив (Ctrl+I)"><i>I</i></button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="underline" title="Подчеркнутый (Ctrl+U)" aria-label="Подчеркнутый (Ctrl+U)"><u>U</u></button>
+                          <span class="wysiwyg-sep"></span>
+                          <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList" title="Маркированный список" aria-label="Маркированный список">
+                            <svg width="13" height="13"><use href="#i-list-bullet"/></svg>
+                          </button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList" title="Нумерованный список" aria-label="Нумерованный список">
+                            <svg width="13" height="13"><use href="#i-list-number"/></svg>
+                          </button>
+                          <span class="wysiwyg-sep"></span>
+                          <button type="button" class="wysiwyg-btn" data-cmd="hiliteColor" data-val="#ffdd84" title="Выделить" aria-label="Выделить">
+                            <span style="background:#ffdd84; color:#541c00; padding:0 3px; border-radius:2px; font-weight:800; font-size:var(--fs-micro)">HL</span>
+                          </button>
+                          <button type="button" class="wysiwyg-btn" data-cmd="removeFormat" title="Очистить форматирование" aria-label="Очистить форматирование">
+                            <svg width="12" height="12"><use href="#i-x"/></svg>
+                          </button>
+                        </div>
+                        <div class="wysiwyg-editor" id="body-ru" contenteditable="true" aria-labelledby="lbl-body-ru" aria-describedby="err-body-ru" data-field="body" data-lang="ru" data-placeholder="Текст уведомления... Для длинных текстов прокручивайте вниз." role="textbox" aria-multiline="true"></div>
+                      </div>
+                      <div class="char-bar-track"><div class="char-bar-fill" id="bar-body-ru"></div></div>
+                        <div class="field-error" id="err-body-ru"><svg><use href="#i-warn"/></svg> Ruscha matnni yozing</div>
+                    </div>
+                  </div>
+                </section>
+                </div><!-- /.bilingual-grid -->
+              </div>
+
+              <div class="verdict-line" id="prevVerdict" data-v="idle">
+                <span class="verdict-dot"></span>
+                <span id="prevVerdictText">Bildirishnomada 1 qator sarlavha va 2 qator matn ko‘rinadi</span>
+              </div>
+
+              <!-- Formatting & Structuring Quick Tag Pills -->
+              <div class="formatting-chip-row" id="tagRow" hidden>
+                <span style="font-size:var(--fs-tiny); font-weight:700; color:var(--text-muted); text-transform:uppercase">Tezkor teglar:</span>
+                <button type="button" class="format-tag-pill" data-insert="[DIQQAT!]">Diqqat</button>
+                <button type="button" class="format-tag-pill" data-insert="[Manzil: ]">Manzil</button>
+                <button type="button" class="format-tag-pill" data-insert="[Vaqti: ]">Vaqt</button>
+                <button type="button" class="format-tag-pill" data-insert="[Murojaat uchun: +998 ]">Aloqa</button>
+              </div>
+
+
+            </div>
+          </div>
+
+<div class="form-block" id="blockSchedule">
+            <div class="form-card">
+              <div class="form-card-title">
+                <h2><span class="block-num" aria-hidden="true">3</span>Qachon yuboriladi?</h2>
                 <span class="sub">Toshkent vaqti · UTC+5</span>
               </div>
 
@@ -1896,13 +1806,10 @@
             </div>
           </div>
 
-          </div>
-
-          <div class="cpanel" id="panelFiles" hidden>
-            <div class="form-block">
+<div class="form-block">
               <div class="form-card">
                 <div class="form-card-title">
-                  <h2>Ilova fayllar</h2>
+                  <h2><span class="block-num" aria-hidden="true">4</span>Ilova qo‘shish</h2>
                   <span class="sub">ixtiyoriy</span>
                 </div>
 
@@ -1929,7 +1836,17 @@
               </div>
               </div>
             </div>
-          </div>
+
+          <!-- ==================================================================
+               KAM ISHLATILADIGAN SOZLAMALAR — chip ortida, bir bosishda ochiladi
+               ================================================================== -->
+          
+
+          
+
+          
+
+          
 
           <!-- YAKUNIY AMALLAR -->
           <div class="stale-note" id="staleNote">
@@ -2505,7 +2422,9 @@
       $("manualBox").hidden = !manual;
       $("tagRow").hidden = !manual;
       $("backToScBtn").hidden = !sc;
-      $("composeTitle").textContent = manual ? "Xabar matni · qo‘lda" : "Xabar matni";
+      /* Raqam alohida spanda: ilgari h2 ning textContent i yozilib, bo'lim
+         raqami har render da o'chib ketardi. */
+      $("composeTitle").textContent = manual ? "Nima yoziladi? · qo‘lda" : "Nima yoziladi?";
 
       if (sc && !manual) {
         $("slotScName").textContent = sc.name;
@@ -2536,18 +2455,8 @@
       const scFact = $("pvScenario");
       if (scFact) scFact.textContent = sc ? sc.name : (manual ? "Qo‘lda yozilgan" : "Tanlanmagan");
 
-      /* Chip qatori — qiymatni ko'rsatadi, bosilganda paneli ochiladi. */
-      $("chipScope").textContent = `${$("simTargetName").textContent} · ${$("simAudienceCount").textContent} kishi`;
-      $("chipSend").textContent = state.send.mode === "now" ? "Hoziroq" : (state.scheduleText || "Hoziroq");
-      $("chipFiles").textContent = state.files.length ? `${state.files.length} ta ilova` : "Ilova qo‘shish";
-
-      const bad = new Set(allProblems());
-      const chipScope = document.querySelector('.cchip[data-panel="panelScope"]');
-      const chipSend = document.querySelector('.cchip[data-panel="panelSend"]');
-      const chipFiles = document.querySelector('.cchip[data-panel="panelFiles"]');
-      if (chipScope) chipScope.classList.toggle("is-bad", state.touched && ["region", "district", "mahalla"].some((k) => bad.has(k)));
-      if (chipSend) chipSend.classList.toggle("is-bad", state.touched && ["sendAt", "weekdays", "monthDays"].some((k) => bad.has(k)));
-      if (chipFiles) chipFiles.classList.toggle("is-set", state.files.length > 0);
+      /* Chip qatori olib tashlandi: har bo'lim o'z sarlavhasi bilan OCHIQ turadi,
+         qiymat bo'limning ichida ko'rinadi — yashirin panel ortida emas. */
     }
 
 
@@ -2685,43 +2594,10 @@
     const langComplete = (lang) => Boolean(state.texts[lang].title.trim() && plainText(state.texts[lang].body));
 
     /* Birinchi xato maydonni ko‘rsatamiz — sahifa bitta, sakrash shart emas. */
-    const PANEL_OF = {
-      region: "panelScope", district: "panelScope", mahalla: "panelScope",
-      sendAt: "panelSend", weekdays: "panelSend", monthDays: "panelSend", files: "panelFiles"
-    };
-
-    /* Bitta panel ochiq turadi; id berilmasa hammasi yopiladi. */
-    function openPanel(id) {
-      document.querySelectorAll(".cchip").forEach((chip) => {
-        const on = Boolean(id) && chip.dataset.panel === id;
-        chip.setAttribute("aria-expanded", String(on));
-        const panel = $(chip.dataset.panel);
-        if (!panel) return;
-        if (on) {
-          /* Panel chip turgan nuqtadan ochilsin — origin o'sha yerga qo'yiladi */
-          clearTimeout(panel._closeTimer);
-          panel.classList.remove("is-closing");
-          panel.hidden = false;
-          const chipBox = chip.getBoundingClientRect();
-          const panelBox = panel.getBoundingClientRect();
-          const x = Math.round(chipBox.left + chipBox.width / 2 - panelBox.left);
-          panel.style.setProperty("--panel-origin", `${x}px`);
-        } else if (!panel.hidden && !panel.classList.contains("is-closing")) {
-          /* Darhol yashirmaymiz — avval yumshoq chiqish animatsiyasi tugasin. */
-          panel.classList.add("is-closing");
-          clearTimeout(panel._closeTimer);
-          panel._closeTimer = setTimeout(() => {
-            panel.hidden = true;
-            panel.classList.remove("is-closing");
-          }, 120);
-        }
-      });
-    }
 
     function focusProblem(key) {
       /* Ssenariy rejimida matn maydonlari yopiq — o'rniga bo'shliqqa olib boramiz. */
       if (state.compose === "scenario" && (key === "slots" || key.startsWith("title-") || key.startsWith("body-"))) key = "slots";
-      if (PANEL_OF[key]) openPanel(PANEL_OF[key]);
       const map = { monthDays: "monthDaysMatrix", weekdays: "weekdays", files: "dropzone", slots: "slotGrid",
                     stale: "slotGrid" };
       /* Placeholder qaysi maydonda topilgan bo'lsa, O'SHANGA olib boramiz —
@@ -2973,8 +2849,6 @@
             ? `${titleLen} + ${bodyLen} belgi`
             : titleLen || bodyLen ? "to‘liq emas" : "to‘ldirilmagan";
         }
-        const tab = document.querySelector(`.bilingual-tab-btn[data-tab="${lang}"]`);
-        if (tab) tab.setAttribute("aria-selected", String(lang === state.previewLang));
       }
 
       /* Ko'rilayotgan til matni bo'yicha uzunlik bahosi + telefon ko'rinishi */
@@ -3270,17 +3144,8 @@
     // Stepper Tab Clicks
 
 
-    // Bilingual Language Tab Switching
-    function switchLang(lang) {
-      document.querySelectorAll(".bilingual-tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === lang));
-      document.querySelectorAll(".bilingual-pane").forEach((p) => p.classList.toggle("active", p.dataset.pane === lang));
-      state.previewLang = lang;
-      render();
-    }
-
-    document.querySelectorAll(".bilingual-tab-btn").forEach((btn) => {
-      btn.addEventListener("click", () => switchLang(btn.dataset.tab));
-    });
+    /* Til tablari olib tashlandi: o'zbekcha va ruscha maydon YONMA-YON turadi.
+       Ilgari ruscha matn tab ortida yashirin edi — operator uni umuman ko'rmasdi. */
 
     // Ssenariy tanlash
     document.querySelectorAll(".sc-card").forEach((btn) => {
@@ -3320,28 +3185,6 @@
       toast("Matn ssenariy bo‘yicha qayta yaratildi");
     });
 
-    // Sozlamalar chiplari — bir vaqtda bitta panel ochiq
-    document.querySelectorAll(".cchip").forEach((chip) => {
-      chip.addEventListener("click", () => {
-        const wasOpen = chip.getAttribute("aria-expanded") === "true";
-        openPanel(wasOpen ? null : chip.dataset.panel);
-        if (wasOpen) return;
-        const panel = $(chip.dataset.panel);
-        if (!panel) return;
-        panel.scrollIntoView({ block: "nearest", behavior: "smooth" });
-        const first = panel.querySelector("input:not([type=file]), select, button");
-        if (first) first.focus({ preventScroll: true });
-      });
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key !== "Escape") return;
-      if (document.querySelector(".modal-backdrop.show, .success-modal-backdrop.open")) return;
-      const open = document.querySelector('.cchip[aria-expanded="true"]');
-      if (!open) return;
-      openPanel(null);
-      open.focus();
-    });
 
 
     // WYSIWYG Toolbar Commands
