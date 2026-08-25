@@ -146,6 +146,32 @@
     }
     .skip-link:focus { transform: none; }
 
+    /* Bosish javobi — barcha bosiladigan element uchun bir xil 0.96. */
+    .btn-devin-secondary, .icon-btn-quiet, .lang-toggle-btn, .sev-btn,
+    .day-chip, .preset-pill, .month-preset-chip, .bilingual-tab-btn,
+    .format-tag-pill, .trans-trigger-btn { transition-property: background, border-color, color, box-shadow, transform; }
+    .btn-devin-secondary:active, .icon-btn-quiet:active, .lang-toggle-btn:active,
+    .sev-btn:active, .day-chip:active, .preset-pill:active, .month-preset-chip:active,
+    .bilingual-tab-btn:active, .format-tag-pill:active, .trans-trigger-btn:active { transform: scale(0.96); }
+
+    /* Bosish maydoni: ko'rinadigan element kichik bo'lsa ham barmoq/kursor
+       tegadigan maydon >= 40px. Qo'shni interaktiv element bilan KESISHMAYDI —
+       shuning uchun zich joylashganlarida faqat BALANDLIK kengaytiriladi. */
+    .icon-btn-quiet { position: relative; }
+    .icon-btn-quiet::after {
+      content: ""; position: absolute; top: 50%; left: 50%;
+      width: 40px; height: 40px; transform: translate(-50%, -50%);
+    }
+    /* .link-btn faqat ALOHIDA turgan joyda kengaytiriladi — jumla ICHIDAGI
+       inline havolaga 40px band qo'yilsa, atrofdagi matnni belgilab bo'lmaydi. */
+    .cchip, .lang-toggle-btn,
+    .slot-head .link-btn, .manual-head .link-btn, .slot-dirty .link-btn { position: relative; }
+    .cchip::after, .lang-toggle-btn::after,
+    .slot-head .link-btn::after, .manual-head .link-btn::after, .slot-dirty .link-btn::after {
+      content: ""; position: absolute; top: 50%; left: 0; right: 0;
+      height: 40px; transform: translateY(-50%);
+    }
+
     .visually-hidden {
       position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
       overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
@@ -237,8 +263,15 @@
       margin-bottom: 18px;
     }
     .hero-copy { min-width: 0; }
-    .page-title { font-size: 23px; font-weight: 620; letter-spacing: -0.028em; color: var(--text-main); }
-    .page-desc { margin-top: 6px; font-size: 13px; color: var(--text-muted); max-width: 62ch; }
+    .page-title { font-size: 23px; font-weight: 620; letter-spacing: -0.028em; color: var(--text-main); text-wrap: balance; }
+    .page-desc { margin-top: 6px; font-size: 13px; color: var(--text-muted); max-width: 62ch; text-wrap: pretty; }
+    /* Matn o'ralishi (make-interfaces-feel-better): sarlavhada qatorlar teng
+       taqsimlansin, qisqa matnda oxirgi qatorda yolg'iz so'z qolmasin. */
+    .form-card-title h2, .sc-name, .slot-head b, .scope-card-title,
+    .receipt-title, .empty-hint span { text-wrap: balance; }
+    .sc-meta, .scope-card-desc, .gen-text, .hint, .form-card-title .sub,
+    .field-error, .slot-dirty span, .rail-card, .pv-fact dd { text-wrap: pretty; }
+
     .page-legend {
       display: flex; align-items: center; gap: 8px; margin-top: 10px;
       font-size: 12px; color: var(--text-dim);
@@ -350,18 +383,18 @@
 
     /* ---------------- BUTTONS ---------------- */
     .btn-devin-primary {
-      height: 36px; padding: 0 16px; border: 0; border-radius: var(--r-md); cursor: pointer;
+      height: 36px; padding: 0 14px 0 16px; border: 0; border-radius: var(--r-md); cursor: pointer;
       background: var(--accent); color: var(--on-accent);
       font-size: 13px; font-weight: 550;
       display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
       transition: background 140ms var(--ease), transform 110ms var(--ease);
     }
     .btn-devin-primary:hover { background: var(--accent-press); }
-    .btn-devin-primary:active { transform: scale(0.98); }
+    .btn-devin-primary:active { transform: scale(0.96); }
     .btn-devin-primary svg { width: 14px; height: 14px; }
 
     .btn-devin-secondary {
-      height: 36px; padding: 0 14px; cursor: pointer; border-radius: var(--r-md);
+      height: 36px; padding: 0 16px 0 14px; cursor: pointer; border-radius: var(--r-md);
       background: transparent; color: var(--text-body); border: 1px solid var(--line-2);
       font-size: 13px; font-weight: 500;
       display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
@@ -406,7 +439,7 @@
       transition: border-color 140ms var(--ease), background 140ms var(--ease), transform 110ms var(--ease);
     }
     .scope-card-btn:hover { border-color: var(--line-3); }
-    .scope-card-btn:active { transform: scale(0.98); }
+    .scope-card-btn:active { transform: scale(0.96); }
     .scope-card-btn.active { border-color: var(--accent); background: var(--accent-soft); }
 
     .scope-card-top { display: flex; align-items: center; gap: 9px; }
@@ -443,7 +476,7 @@
       transition: background 140ms var(--ease);
     }
     .scope-card-btn.active .scope-reach-fill { background: var(--accent); }
-    .scope-card-badge { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); }
+    .scope-card-badge { font-family: var(--font-mono); font-size: 10px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
     .scope-card-btn.active .scope-card-badge { color: var(--accent-text); }
 
     /* Kaskad: viloyat → tuman → mahalla, bog'langan yo'l ko'rinishida */
@@ -785,7 +818,7 @@
 
     .notif-bubble {
       display: flex; gap: 10px; padding: 11px 12px; cursor: default;
-      border-radius: 18px; background: rgba(250, 250, 252, 0.82);
+      border-radius: 20px; background: rgba(250, 250, 252, 0.82);
       backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
       box-shadow: 0 8px 22px -6px rgba(0, 0, 0, 0.45), inset 0 0 0 .5px rgba(255,255,255,.5);
       animation: pushIn 260ms var(--ease) both;
@@ -830,6 +863,10 @@
     }
     .pv-quick svg { width: 17px; height: 17px; }
     .pv-home { position: relative; z-index: 2; width: 116px; height: 5px; border-radius: 999px; margin: 0 auto 8px; background: rgba(255,255,255,.55); }
+
+    /* Dinamik o'zgaruvchi raqamlar — teng kenglikda (aholi soni, hisoblagich). */
+    #scopeAudienceBadge, #simAudienceCount, #chipScope, #chipFiles,
+    .pv-fact dd, .slot-ok, .attach-meta span { font-variant-numeric: tabular-nums; }
 
     .pv-facts { display: flex; flex-direction: column; gap: 1px; }
     .pv-fact {
@@ -919,7 +956,7 @@
       transition: border-color 140ms var(--ease), background-color 140ms var(--ease), transform 140ms var(--ease);
     }
     .sc-card:hover { border-color: var(--line-3); }
-    .sc-card:active { transform: scale(0.98); }
+    .sc-card:active { transform: scale(0.96); }
     .sc-card:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
     .sc-card.active { border-color: var(--accent); background: var(--accent-soft); }
     .sc-top { display: flex; align-items: center; justify-content: space-between; min-height: 19px; }
@@ -1002,7 +1039,7 @@
       transition: border-color 120ms var(--ease), background-color 120ms var(--ease);
     }
     .btn-ghost-sm:hover { border-color: var(--line-3); background: var(--bg-hover); }
-    .btn-ghost-sm:active { transform: scale(0.97); }
+    .btn-ghost-sm:active { transform: scale(0.96); }
     .btn-ghost-sm:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 
     .manual-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
@@ -1035,6 +1072,12 @@
     @keyframes panelIn {
       from { opacity: 0; transform: translateY(-6px) scale(0.97); }
       to { opacity: 1; transform: none; }
+    }
+    /* Chiqish kirishdan yumshoqroq: qisqaroq, kichikroq siljish, scale'siz. */
+    .cpanel.is-closing { animation: panelOut 120ms var(--ease) both; pointer-events: none; }
+    @keyframes panelOut {
+      from { opacity: 1; transform: none; }
+      to { opacity: 0; transform: translateY(-4px); }
     }
 
     /* Ssenariy almashganda: ramka qotadi, faqat ichki kontent almashadi */
@@ -2440,13 +2483,21 @@
         if (!panel) return;
         if (on) {
           /* Panel chip turgan nuqtadan ochilsin — origin o'sha yerga qo'yiladi */
+          clearTimeout(panel._closeTimer);
+          panel.classList.remove("is-closing");
           panel.hidden = false;
           const chipBox = chip.getBoundingClientRect();
           const panelBox = panel.getBoundingClientRect();
           const x = Math.round(chipBox.left + chipBox.width / 2 - panelBox.left);
           panel.style.setProperty("--panel-origin", `${x}px`);
-        } else {
-          panel.hidden = true;
+        } else if (!panel.hidden && !panel.classList.contains("is-closing")) {
+          /* Darhol yashirmaymiz — avval yumshoq chiqish animatsiyasi tugasin. */
+          panel.classList.add("is-closing");
+          clearTimeout(panel._closeTimer);
+          panel._closeTimer = setTimeout(() => {
+            panel.hidden = true;
+            panel.classList.remove("is-closing");
+          }, 120);
         }
       });
     }
