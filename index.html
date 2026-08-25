@@ -65,19 +65,6 @@
       --font-mono: "Roboto Mono", ui-monospace, "SF Mono", monospace;
       --ease: cubic-bezier(0.23, 1, 0.32, 1);
 
-      /* eski nomlar (JS/inline uchun) */
-      --primary: var(--accent);
-      --primary-soft: var(--accent-soft);
-      --border-base: var(--line);
-      --bg-sunk: var(--bg-field);
-      --radius-pill: var(--r-pill);
-      --info-text: var(--accent-text);
-      --warn-text: var(--warn);
-      --crit-text: var(--crit);
-      --ok-text: var(--ok);
-      --ok-icon: var(--ok);
-      --crit-icon: var(--crit);
-      --info-icon: var(--accent);
     }
 
     [data-theme="light"] {
@@ -93,7 +80,7 @@
       --text-main: #14171c;
       --text-body: #414852;
       --text-muted: #5b6472;
-      --text-dim: #67707c;
+      --text-dim: #656e7a;
 
       --bg-app: #f4f5f6;
       --bg-rail: #eff0f2;
@@ -818,7 +805,7 @@
 
     .notif-bubble {
       display: flex; gap: 10px; padding: 11px 12px; cursor: default;
-      border-radius: 20px; background: rgba(250, 250, 252, 0.82);
+      border-radius: 20px; background: rgba(250, 250, 252, 0.94);
       backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
       box-shadow: 0 8px 22px -6px rgba(0, 0, 0, 0.45), inset 0 0 0 .5px rgba(255,255,255,.5);
       animation: pushIn 260ms var(--ease) both;
@@ -832,7 +819,7 @@
     .notif-body { min-width: 0; flex: 1; }
     .notif-meta-row {
       display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
-      font-size: 10px; color: #5a6472;
+      font-size: 10px; color: #4c5664;
     }
     .notif-app-name { font-weight: 600; letter-spacing: .02em; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .notif-time { flex: none; font-family: var(--font-mono); font-size: 9.5px; }
@@ -1662,15 +1649,15 @@
                 <label class="form-label">Yuborish tartibi</label>
                 <div class="scope-card-grid" role="radiogroup" style="grid-template-columns:repeat(3, 1fr)">
                   <button type="button" class="sev-btn active" data-send="now" role="radio" aria-checked="true" style="padding:11px">
-                    <svg width="15" height="15" style="color:var(--primary)"><use href="#i-bolt"/></svg>
+                    <svg width="15" height="15" style="color:var(--accent)"><use href="#i-bolt"/></svg>
                     <span>Hoziroq (Darhol)</span>
                   </button>
                   <button type="button" class="sev-btn" data-send="scheduled" role="radio" aria-checked="false" style="padding:11px">
-                    <svg width="15" height="15" style="color:var(--primary)"><use href="#i-calendar"/></svg>
+                    <svg width="15" height="15" style="color:var(--accent)"><use href="#i-calendar"/></svg>
                     <span>Rejali (Keyinroq)</span>
                   </button>
                   <button type="button" class="sev-btn" data-send="recurring" role="radio" aria-checked="false" style="padding:11px">
-                    <svg width="15" height="15" style="color:var(--primary)"><use href="#i-repeat"/></svg>
+                    <svg width="15" height="15" style="color:var(--accent)"><use href="#i-repeat"/></svg>
                     <span>Takroriy (Davriy)</span>
                   </button>
                 </div>
@@ -1725,7 +1712,7 @@
                   <div id="monthDayField" hidden>
                     <label class="form-label" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
                       <span>Oyning takrorlanish sanalari (Bir nechta tanlash mumkin)</span>
-                      <span id="selectedMonthDayBadge" style="font-size:11.5px; font-weight:700; color:var(--primary); background:var(--primary-soft); padding:2px 8px; border-radius:var(--radius-pill)">1-sana</span>
+                      <span id="selectedMonthDayBadge" style="font-size:11.5px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:2px 8px; border-radius:var(--r-pill)">1-sana</span>
                     </label>
 
                     <!-- Smart Presets -->
