@@ -2125,16 +2125,16 @@
   <!-- SUCCESS DISPATCH RECEIPT MODAL -->
   <div class="success-modal-backdrop" id="doneModal" role="dialog" aria-modal="true" aria-labelledby="doneModalTitle">
     <div class="success-receipt-card">
-      <div class="receipt-check-circle" id="receiptCheck">
+      <div class="receipt-check-circle" id="receiptCheck" data-demo="true">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <h2 class="receipt-title" id="doneModalTitle">Xabarnoma navbatga qo‘yildi</h2>
-      <div class="receipt-sub" id="receiptSub">Belgilangan auditoriya va grafik bo‘yicha aholiga yetkaziladi.</div>
+      <h2 class="receipt-title" id="doneModalTitle">Demo: xabarnoma yuborilmadi</h2>
+      <div class="receipt-sub" id="receiptSub">Backend ulanmagan. Quyida faqat yig‘ilgan ma‘lumot — uni backend jamoasiga bering.</div>
 
       <div class="receipt-details-dossier">
         <div class="receipt-row">
           <span>Reestr raqami:</span>
-          <b id="receiptReestr">XM-2026/08-0419</b>
+          <b id="receiptReestr">berilmadi (demo)</b>
         </div>
         <div class="receipt-row">
           <span>Qamrov darajasi:</span>
@@ -2154,7 +2154,7 @@
         </div>
       </div>
 
-      <div class="demo-banner" id="demoBanner" hidden>
+      <div class="demo-banner" id="demoBanner">
         <svg><use href="#i-warn"/></svg>
         <span>Backend ulanmagan (demo rejimi). <b>Xabarnoma hech kimga yuborilmadi</b> — quyida faqat yig‘ilgan ma‘lumot ko‘rsatilgan.</span>
       </div>
