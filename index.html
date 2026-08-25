@@ -1932,6 +1932,8 @@
           <div class="stale-note" id="staleNote">
             <svg><use href="#i-warn"/></svg>
             <span id="staleNoteText"></span>
+            <span style="flex:1"></span>
+            <button type="button" class="link-btn" id="staleSkip" style="color:var(--warn)">Tarjimasiz davom etish</button>
           </div>
 
           <div class="send-error" id="sendError" role="alert">
@@ -2339,6 +2341,9 @@
       input.dataset.slot = key;
       input.type = sl.t === "date" ? "date" : sl.t === "time" ? "time" : "text";
       input.value = state.tpl.v[key] || "";
+      /* Belgilar state'da yashaydi: innerHTML qayta qurilganda yo'qolmasin. */
+      if (state.tpl.manual && state.tpl.manual[key]) input.dataset.manual = "true";
+      if (state.stale && state.stale[sl.k] && lang === "ru") input.dataset.stale = "true";
       if (sl.t === "text") {
         input.maxLength = 90;
         input.autocomplete = "off";
@@ -2435,7 +2440,8 @@
       const sl = sc && sc.slots.find((x) => x.k === key);
       if (!sl || sl.t !== "text") return;
       const ruEl = $(`slot-${key}_ru`);
-      if (!ruEl || ruEl.dataset.manual === "true") return;
+      if (!ruEl) return;
+      if (ruEl.dataset.manual === "true" || (state.tpl.manual && state.tpl.manual[key + "_ru"])) return;
       clearTimeout(slotTransTimers[key]);
       slotTransTimers[key] = setTimeout(async () => {
         const src = String(state.tpl.v[key] || "").trim();
@@ -2451,16 +2457,15 @@
           if (badge) badge.classList.remove("busy");
           if (badgeText) badgeText.textContent = "Avto-tarjima faol";
           ruEl.dataset.stale = "true";
-          markStale("ru", true, "Avto-tarjima");
+          markStale(key, true, "Avto-tarjima");
           return;
         }
         if (badge) badge.classList.remove("busy");
         if (badgeText) badgeText.textContent = "Avto-tarjima faol";
         if (!out || ruEl.dataset.manual === "true") return;
         ruEl.dataset.stale = "false";
-        markStale("ru", false);
+        markStale(key, false);
         state.tpl.v[key + "_ru"] = out;
-        state.tpl.v[key + "_ru_manual"] = false;
         ruEl.value = out;
         regenerateTexts();
         render();
@@ -2570,7 +2575,7 @@
       blurred: new Set(),
       touched: false,
       submitting: false,
-      staleLangs: new Set(),
+      stale: {},          /* { slotKalit|main: true } — SLOT bo'yicha, til bo'yicha emas */
       sendKey: null,
       previewLang: "uz"
     };
@@ -2646,12 +2651,18 @@
         /* Yig'ilgan MATNNING o'zini tekshiramiz — rejimdan qat'i nazar. Ssenariydan
            qo'lda rejimga o'tilsa slot tekshiruvi tushib qolar, lekin matnda
            "(sana)" kabi to'ldirilmagan joy qolgan bo'lishi mumkin. */
+        placeholderHit = null;
         for (const lang of ["uz", "ru"]) {
-          const text = (state.texts[lang].title || "") + " " + plainText(state.texts[lang].body);
-          if (PLACEHOLDER_RE.test(text) && !list.includes("placeholder")) list.push("placeholder");
+          const t = state.texts[lang].title || "";
+          const b = plainText(state.texts[lang].body);
+          const mT = PLACEHOLDER_RE.exec(t), mB = PLACEHOLDER_RE.exec(b);
+          if ((mT || mB) && !placeholderHit) {
+            placeholderHit = { field: mT ? `title-${lang}` : `body-${lang}`, token: (mT || mB)[0] };
+          }
         }
+        if (placeholderHit) list.push("placeholder");
         /* Tarjima muvaffaqiyatsiz bo'lib, ruscha eskirib qolgan bo'lsa — yubormaymiz. */
-        if (state.staleLangs && state.staleLangs.size) list.push("stale");
+        if (staleCount()) list.push("stale");
       } else if (step === 3) {
         if (state.send.mode === "scheduled" && !state.send.at) list.push("sendAt");
         if (state.send.mode === "recurring" && state.send.freq === "weekly" && state.send.weekdays.length === 0) list.push("weekdays");
@@ -2705,7 +2716,10 @@
       if (state.compose === "scenario" && (key === "slots" || key.startsWith("title-") || key.startsWith("body-"))) key = "slots";
       if (PANEL_OF[key]) openPanel(PANEL_OF[key]);
       const map = { monthDays: "monthDaysMatrix", weekdays: "weekdays", files: "dropzone", slots: "slotGrid",
-                    placeholder: "slotGrid", stale: "slotGrid" };
+                    stale: "slotGrid" };
+      /* Placeholder qaysi maydonda topilgan bo'lsa, O'SHANGA olib boramiz —
+         "slotGrid" qo'lda rejimda bo'sh bo'lib, fokus hech qayerga ketmasdi. */
+      if (key === "placeholder" && placeholderHit) key = placeholderHit.field;
       const host = $(map[key] || key);
       if (!host) return;
       const el = host.matches("input, select, textarea, button, [contenteditable]")
@@ -2891,7 +2905,7 @@
       foot.classList.toggle("is-bad", state.touched && problems.length > 0);
       foot.classList.toggle("is-pending", !state.touched && problems.length > 0);
       $("footStatusText").textContent = problems.includes("placeholder")
-        ? "Matnda to‘ldirilmagan joy bor — bo‘shliqlarni to‘ldiring"
+        ? `Matnda to‘ldirilmagan joy bor: «${placeholderHit ? placeholderHit.token : "…"}»`
         : problems.includes("stale")
         ? "Ruscha matn eskirgan — tarjimani tekshiring"
         : problems.length
@@ -3109,7 +3123,7 @@
 
     function saveDraft() {
       try {
-        const { touched, previewLang, files, scheduleText, blurred, submitting, staleLangs, ...keep } = state;
+        const { touched, previewLang, files, scheduleText, blurred, submitting, stale, sendKey, ...keep } = state;
         localStorage.setItem(DRAFT_KEY, JSON.stringify(keep));
         saveDraft._warned = false;
       } catch (e) {
@@ -3134,6 +3148,10 @@
         if (!t || typeof t.title !== "string" || typeof t.body !== "string") return false;
       }
       if (!d.send || typeof d.send !== "object") return false;
+      /* stepProblems(3) aynan shu ikkitasini himoyasiz o'qiydi — tekshiruv
+         shu yerda bo'lishi kerak, boshqa maydonlarda emas. */
+      if (!Array.isArray(d.send.weekdays)) return false;
+      if (!Array.isArray(d.send.monthDays)) return false;
       if (d.tpl && (typeof d.tpl !== "object" || typeof d.tpl.v !== "object")) return false;
       return true;
     }
@@ -3162,7 +3180,8 @@
         state.files = [];
         state.blurred = new Set();
         state.submitting = false;   /* hech qachon qoralamadan tiklanmasin */
-        state.staleLangs = new Set();
+        state.stale = {};
+        state.sendKey = null;       /* kalit YOZILGAN xabarga tegishli, qoralamaga emas */
         return true;
       } catch (e) { return false; }
     }
@@ -3267,7 +3286,13 @@
       if (!el) return;
       const key = el.dataset.slot;
       state.tpl.v[key] = el.value;
-      if (key.endsWith("_ru")) el.dataset.manual = "true";
+      if (key.endsWith("_ru")) {
+        el.dataset.manual = "true";
+        el.dataset.stale = "false";
+        if (!state.tpl.manual) state.tpl.manual = {};
+        state.tpl.manual[key] = true;   /* qayta qurilganda ham saqlanadi */
+        markStale(key.replace(/_ru$/, ""), false);   /* qo'lda to'g'rilandi */
+      }
       regenerateTexts();
       render();
       if (!key.endsWith("_ru")) queueSlotTranslation(key);
@@ -3471,11 +3496,17 @@
             targetEl.textContent = translated;
           }
           state.texts[targetLang][field] = translated;
+          markStale("main", false);
           saveDraft();
           render();
         }
+        return true;
       } catch (e) {
-        console.warn("Auto-translate error:", e);
+        /* Ilgari bu yerda faqat console.warn bor edi: ruscha matn eski
+           holicha qolar, tugma esa "tarjima qilindi" derdi. */
+        console.warn("Tarjima bajarilmadi:", e);
+        markStale("main", true, "Avto-tarjima");
+        return false;
       } finally {
         setTimeout(() => {
           if (targetWrap) targetWrap.classList.remove("translating-glow");
@@ -3501,11 +3532,14 @@
     // Manual quick-translate buttons
     $("btnTranslateToRu")?.addEventListener("click", async () => {
       toast("O‘zbekchadan ruschaga tarjima qilinmoqda...");
-      await Promise.all([
+      const done = await Promise.all([
         triggerFieldTranslation("title", "uz"),
         triggerFieldTranslation("body", "uz")
       ]);
-      toast("Ruschaga tarjima qilindi!");
+      /* Da'vo NATIJAGA bog'liq: yiqilganda "tarjima qilindi" deyish yolg'on. */
+      toast(done.every(Boolean)
+        ? "Ruschaga tarjima qilindi"
+        : "Tarjima bajarilmadi — ruscha matn eski holicha. Qo‘lda to‘g‘rilang.");
     });
 
     $("btnTranslateToUz")?.addEventListener("click", async () => {
@@ -3684,14 +3718,17 @@
     const SEND_TIMEOUT_MS = 15000;
     let lastPayload = null;
 
+    let placeholderHit = null;
     const PLACEHOLDER_RE = /\((sana|дата|vaqt|время|…)\)|\{\w+\}|--:--/;
 
     /* Teglarni olib tashlash YETARLI EMAS: "&amp;" kabi entity'lar shundayligicha
        fuqaroga ketardi. Brauzerning o'zi ochib beradi. */
-    const entityBox = document.createElement("textarea");
     const plainText = (html) => {
-      entityBox.innerHTML = String(html || "").replace(/<[^>]*>/g, " ");
-      return entityBox.value.replace(/\s+/g, " ").trim();
+      /* Har safar yangi element: textarea'ning "dirty value" bayrog'i bir marta
+         yonsa, .value keyingi innerHTML yozuvlarini aks ettirmay qo'yadi. */
+      const box = document.createElement("textarea");
+      box.innerHTML = String(html || "").replace(/<[^>]*>/g, " ");
+      return box.value.replace(/\s+/g, " ").trim();
     };
 
     function buildPayload() {
@@ -3750,18 +3787,33 @@
     /* Tarjima bajarilmaganda ruscha matn ESKI holicha qoladi. Bu jim o'tsa,
        o'zbekcha qor bo'roni haqida, ruscha esa shamol haqida ogohlantiradi.
        Shuning uchun belgilaymiz va yuborishni to'xtatamiz. */
-    function markStale(lang, on, what) {
-      if (!state.staleLangs) state.staleLangs = new Set();
-      if (on) state.staleLangs.add(lang); else state.staleLangs.delete(lang);
+    const staleCount = () => Object.keys(state.stale || {}).length;
+
+    /* Tarjima bajarilmaganda ruscha matn ESKI holicha qoladi — jim o'tsa,
+       o'zbekcha qor bo'roni haqida, ruscha shamol haqida ogohlantiradi.
+       KUZATUV SLOT BO'YICHA: bitta slot tuzalgani boshqasini oqlamaydi.
+       Operator qo'lda to'g'rilasa yoki "tarjimasiz davom etish" desa —
+       bloklash BO'SHAYDI. Bo'shatish yo'li bo'lmasa, bu yana bir abadiy
+       o'chgan tugma bo'lardi. */
+    function markStale(key, on, what) {
+      if (!state.stale || typeof state.stale !== "object") state.stale = {};
+      if (on) state.stale[key] = what || "Tarjima";
+      else delete state.stale[key];
+      paintStaleNote();
+      render();
+    }
+
+    function paintStaleNote() {
+      const keys = Object.keys(state.stale || {});
       const note = $("staleNote");
-      if (state.staleLangs.size) {
+      if (keys.length) {
+        const names = keys.map((k) => (k === "main" ? "asosiy matn" : k)).join(", ");
         $("staleNoteText").textContent =
-          `${what || "Tarjima"} bajarilmadi \u2014 ${[...state.staleLangs].map((l) => l.toUpperCase()).join(", ")} matni eski holicha. Qo\u2018lda to\u2018g\u2018rilang yoki qayta urinib ko\u2018ring.`;
+          `Ruschaga tarjima bajarilmadi (${names}) \u2014 ruscha matn eski holicha qoldi. Qo\u2018lda to\u2018g\u2018rilang, qayta urinib ko\u2018ring yoki tarjimasiz davom eting.`;
         note.classList.add("active");
       } else {
         note.classList.remove("active");
       }
-      render();
     }
 
     function setSending(on) {
@@ -3820,9 +3872,14 @@
       $("receiptScope").textContent = audienceLine();
       $("receiptAudience").textContent = $("scopeAudienceBadge").textContent;
       $("receiptSeverity").textContent = state.files.length
-        ? `${state.files.length} ta ilova (faqat nomi yuborildi)`
+        ? `${state.files.length} ta ilova (faqat nomi${demo ? " yig‘ildi" : " yuborildi"})`
         : "Ilovasiz";
       $("receiptSchedule").textContent = state.scheduleText || "Hoziroq";
+
+      /* Server qabul qilgan zahoti kalit o'z ishini bajardi. Saqlab qolsak,
+         KEYINGI boshqa xabar o'sha kalit bilan ketadi va backend uni takror
+         deb tashlab yuboradi — ekranda esa "yuborildi" turadi. */
+      if (!demo) state.sendKey = null;
 
       const view = $("payloadView");
       view.hidden = !demo;
@@ -3906,6 +3963,16 @@
       sendAnnouncement();
     });
 
+    $("staleSkip").addEventListener("click", () => {
+      /* Operatorning ONGLI qarori: ruscha matn eski, lekin yuborsin.
+         Bloklashning chiqish yo'li bo'lishi SHART. */
+      state.stale = {};
+      document.querySelectorAll('[data-stale="true"]').forEach((el) => { el.dataset.stale = "false"; });
+      paintStaleNote();
+      render();
+      toast("Tarjimasiz davom etilmoqda — ruscha matnni o‘zingiz tekshiring");
+    });
+
     $("sendRetry").addEventListener("click", () => {
       $("sendError").classList.remove("active");
       sendAnnouncement();
@@ -3932,8 +3999,8 @@
       state.compose = "scenario";
       state.tpl = { key: null, v: {} };
       state.sendKey = null;          /* yangi xabar = yangi idempotency kaliti */
-      state.staleLangs = new Set();
-      $("staleNote").classList.remove("active");
+      state.stale = {};
+      paintStaleNote();
       buildSlotInputs();
       openPanel(null);
       state.files = [];
@@ -3947,7 +4014,9 @@
 
     $("viewListBtn").addEventListener("click", () => {
       (setModalOpen($("doneModal"), false), $("doneModal").classList.remove("open"));
-      toast("Xabarnomalar ro‘yxatiga yo‘naltirilmoqda...");
+      /* Ro'yxat ekrani hali yo'q — "yo'naltirilmoqda" deyish yolg'on bo'lardi. */
+      state.sendKey = null;
+      toast("Xabarnomalar ro‘yxati hali ulanmagan");
     });
 
     /* ---------- Fayl yuklash hodisalari ---------- */
