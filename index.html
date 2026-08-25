@@ -1858,7 +1858,7 @@
               <!-- Schedule Mode -->
               <div class="form-group" style="margin-top:6px">
                 <label class="form-label">Yuborish tartibi</label>
-                <div class="scope-card-grid" role="radiogroup" style="grid-template-columns:repeat(3, 1fr)">
+                <div class="scope-card-grid" role="radiogroup" aria-label="Yuborish tartibi" style="grid-template-columns:repeat(3, 1fr)">
                   <button type="button" class="sev-btn active" data-send="now" role="radio" aria-checked="true" style="padding:11px">
                     <svg width="15" height="15" style="color:var(--accent)"><use href="#i-bolt"/></svg>
                     <span>Hoziroq (Darhol)</span>
@@ -4160,6 +4160,58 @@
     }
     paintPhoneClock();
     setInterval(paintPhoneClock, 30000);
+
+    /* ---------- Radiogroup klaviaturasi (ARIA APG) ----------
+       Uch guruh (`Xabar ssenariysi`, `Auditoriya qamrovi`, `Yuborish tartibi`)
+       `role="radiogroup"` deb belgilangan edi, lekin xulq-atvori yo'q edi:
+       o'q tugmalari hech narsa qilmasdi va 13 ta radio ham Tab tartibida
+       turardi (guruhiga 1 tadan bo'lishi kerak). Redizayndan keyin tanlangan
+       holat yumshoqroq (1px ink chegara) — klaviatura semantikasi yanada
+       muhimroq bo'lib qoldi. */
+
+    /* Guruhda BITTA tab to'xtashi: tanlangani, tanlanmagan bo'lsa birinchisi. */
+    function syncRovingTabindex(group) {
+      const radios = [...group.querySelectorAll('[role="radio"]')];
+      if (!radios.length) return;
+      const stop = radios.find((r) => r.getAttribute("aria-checked") === "true") || radios[0];
+      radios.forEach((r) => { r.tabIndex = r === stop ? 0 : -1; });
+    }
+
+    document.querySelectorAll('[role="radiogroup"]').forEach((group) => {
+      syncRovingTabindex(group);
+      /* `aria-checked`ni kim o'zgartirsa ham — bosish, ssenariy tanlash,
+         qoralamadan tiklash, render() qayta chizishi — tab to'xtashi ergashadi.
+         Shu sababli render() ga qo'lda ulanmaydi: kuzatuvchi o'zi ushlaydi. */
+      new MutationObserver(() => syncRovingTabindex(group)).observe(group, {
+        attributes: true, attributeFilter: ["aria-checked"], subtree: true,
+      });
+    });
+
+    /* O'q FAQAT fokusni ko'chiradi, tanlovni EMAS (APG'ning "selection follows
+       focus" emas, ikkinchi varianti). Sabab: ssenariy tanlash ikkala tildagi
+       matnni QAYTA YOZADI — o'q bilan ro'yxatdan o'tish operator yozganini
+       yo'q qilardi. Tanlash Space/Enter bilan, ya'ni <button>ning o'zida. */
+    document.addEventListener("keydown", (e) => {
+      const radio = e.target.closest?.('[role="radio"]');
+      if (!radio) return;
+      const group = radio.closest('[role="radiogroup"]');
+      if (!group) return;
+      const radios = [...group.querySelectorAll('[role="radio"]')].filter((r) => !r.disabled);
+      const i = radios.indexOf(radio);
+      if (i < 0) return;
+
+      let next = null;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") next = radios[(i + 1) % radios.length];
+      else if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = radios[(i - 1 + radios.length) % radios.length];
+      else if (e.key === "Home") next = radios[0];
+      else if (e.key === "End") next = radios[radios.length - 1];
+      else return;
+
+      e.preventDefault();
+      /* Fokus ko'chganda ro'yxat sakramasin: kerak bo'lgan eng kichik siljish. */
+      next.focus({ preventScroll: true });
+      next.scrollIntoView({ block: "nearest", inline: "nearest" });
+    });
 
     // Initial render
     buildSlotInputs();
