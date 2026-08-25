@@ -6,11 +6,15 @@
   <title>Onlayn Mahalla · Tizim xabarnomasi</title>
   <meta name="color-scheme" content="light dark" />
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+  <!-- JS yo'q bo'lganda ishlaydigan zaxira. Qiymat `--bg-rail` (navbar) bilan bir xil,
+       chunki status bar aynan navbar ustida turadi — `--bg-app` emas. Sahifada qo'lda
+       tema tanlash bor, shuning uchun JS bularni `data-theme` bo'yicha qayta yozadi
+       (`syncThemeColor`): tizim light, tanlov dark bo'lsa status bar oq qolmasin. -->
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" data-theme-color-fallback />
+  <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" data-theme-color-fallback />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@100..900&family=Inter+Tight:wght@400..700&display=swap" rel="stylesheet" />
   <style>
     /* ============================================================
        ONLAYN MAHALLA — WORKSPACE SHELL (Linear/Linktree referensi)
@@ -20,73 +24,114 @@
     :root {
       color-scheme: dark;
 
-      /* Ink = tanlov va birlamchi amal rangi (Geist: qora/oq teskarilash).
-         Ko'k FAQAT fokus va matn belgilashda — "indicator light" roli. */
-      --accent: #ededed;                      /* gray-1000 */
-      --accent-press: #cccccc;
-      --accent-text: #ededed;
-      --accent-soft: #1a1a1a;                 /* gray-100 */
-      --accent-line: rgba(255, 255, 255, 0.24);
-      --ring: #0071f6;                        /* blue-700 */
-      --ring-soft: rgba(0, 113, 246, 0.32);
+      /* ==========================================================
+         TIZIM MANBASI: designsystems.surf (2026-08-25 da jonli
+         sahifadan `getComputedStyle` bilan o'lchandi, taxmin emas).
+
+         Tipografika  Inter (matn) + Inter Tight (sarlavha — Framer'ning
+                      yopiq "Inter Display"ining ochiq ekvivalenti) +
+                      IBM Plex Mono (UPPERCASE yorliq).
+                      O'lchangan qadamlar: 56/61.6 ls-1.68px · 40/50 ls-0.8px ·
+                      32/40 ls-0.32px · 20/30 ls-0.6px · 16/24 ls-0.32px ·
+                      14/21 ls-0 · 12/18 ls-0.24px · mono 10/15 va 12/18.
+         Geometriya   radius 100px sahifada 308 marta uchraydi — tizim imzosi.
+                      Qolgan qadamlar: 6 · 8 · 12 · 16.
+         Chuqurlik    chegaradan emas, ko'p qatlamli yumshoq soyadan
+                      (0.6/2.29/10px, salbiy spread bilan).
+         Rang         monoxrom asos (#000 / #fff / #fafafa / #f5f5f5) +
+                      BITTA aksent.
+
+         AKSENT bu yerda DSS ning to'q sarig'i EMAS, my.gov.uz davlat ko'ki:
+         davlat platformasi brend rangini referens uchun almashtira olmaydi.
+         DSS dan tuzilma olindi, brenddan rang. */
+      --accent: #0068e0;                      /* brand-600 · oq matn ustida 5.18:1 */
+      --accent-press: #0153b2;                /* brand-800 */
+      --accent-text: #3b90ff;                 /* dark fonda o'qish uchun 6.62:1 */
+      --accent-soft: #0a1f38;                 /* brend ko'kning qorong'i yuzasi */
+      --accent-line: rgba(59, 144, 255, 0.34);
+      --brand-grad: linear-gradient(66deg, #0068e0 34%, #00dc82 122%);
+      /* DSS birlamchi tugmasi tinch holatda SOYASIZ (o'lchov: box-shadow none).
+         Bu yerda 1px lik iz qoldirildi — tugma mixlangan qatorda, orqasida
+         blur bor, mutlaqo tekis bo'lsa yuzadan ajralmaydi. */
+      --brand-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      --ring: #3b90ff;
+      --ring-soft: rgba(59, 144, 255, 0.32);
       --crit-ring: rgba(255, 94, 99, 0.30);
-      --on-accent: #0a0a0a;
+      --on-accent: #ffffff;
 
-      --text-main: #ededed;                   /* gray-1000 */
-      --text-body: #a1a1a1;                   /* gray-900 */
-      --text-muted: #8f8f8f;                  /* gray-700 */
+      /* DSS qora bo'limlarida matn SOF oq — #ededed emas. */
+      --text-main: #ffffff;
+      --text-body: #b3b3b3;                   /* rgba(255,255,255,.7) · 9.6:1 */
+      --text-muted: #8f8f8f;                  /* qora ustida 5.7:1, --bg-raise ustida 5.4:1 */
 
-      --bg-app: #000000;                      /* background-200 */
+      --bg-app: #000000;
       --bg-rail: #0a0a0a;
-      --bg-panel: #0a0a0a;                    /* background-100 */
+      --bg-panel: #0a0a0a;
       --bg-field: #0a0a0a;
-      /* Chegara boshqaruvni ANIQLAYDI (WCAG 1.4.11, 3:1) — Geist'ning
-         gray-alpha-400'i 1.9:1 beradi, shuning uchun bosqich ko'tarildi. */
+      /* Chegara boshqaruvni ANIQLAYDI (WCAG 1.4.11, 3:1) — DSS ning
+         rgba(0,0,0,.08) hairline'i 1.1:1 beradi va faqat dekorativ
+         ajratkichlar uchun yaroqli, maydon chegarasi uchun emas. */
       --field-line: #616161;
       --field-inset: none;
-      --bg-raise: #1a1a1a;                    /* gray-100 */
-      --bg-hover: rgba(255, 255, 255, 0.07);  /* gray-alpha-100 */
+      --bg-raise: #1a1a1a;
+      --bg-hover: rgba(255, 255, 255, 0.06);  /* DSS ghost fill .04 ning dark ekvivalenti */
 
-      --line: rgba(255, 255, 255, 0.09);      /* gray-alpha-200 */
-      --line-2: rgba(255, 255, 255, 0.14);    /* gray-alpha-400 */
-      --line-3: rgba(255, 255, 255, 0.24);    /* gray-alpha-500 */
+      --line: rgba(255, 255, 255, 0.09);
+      --line-2: rgba(255, 255, 255, 0.14);
+      --line-3: rgba(255, 255, 255, 0.24);
 
-      --ok: #00ca52;                          /* green-900 */
-      --ok-soft: #00250a;                     /* green-100 */
+      --ok: #00dc82;                          /* brend yashili — qora ustida 9.5:1 */
+      --ok-soft: #06251a;
       --warn: #ff9900;                        /* amber-900 */
       --warn-soft: #291800;                   /* amber-100 */
       --crit: #ff5e63;                        /* red-900 */
       --crit-soft: #330a11;                   /* red-100 */
 
-      --r-sm: 4px;
-      --r-md: 6px;
-      --r-lg: 8px;
-      --r-xl: 12px;
-      --r-pill: 9999px;
+      /* DSS radius taqsimoti: 100px (308) · 6px (30) · 8px (10) · 4px (9) ·
+         12px (3) · 16px (1). Bu yerda 4px tashlandi — eng kichik qadam 6px. */
+      --r-sm: 6px;
+      --r-md: 8px;
+      --r-lg: 12px;
+      --r-xl: 16px;
+      --r-pill: 100px;
 
-      /* Chuqurlik soyadan emas, 1px halqadan (Geist shadow-modal). */
+      /* Modal soyasi — DSS ning katta qatlamli qiymati, dark uchun
+         quyuqlashtirildi va 1px halqa qo'shildi (qora ustida qora soya
+         ko'rinmaydi, chekkani faqat halqa ajratadi). */
       --shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.145),
-        0 1px 1px rgba(0, 0, 0, 0.5),
-        0 8px 16px -4px rgba(0, 0, 0, 0.5),
-        0 24px 32px -8px rgba(0, 0, 0, 0.6);
+        0 0 0 1px rgba(255, 255, 255, 0.10),
+        0 0.637px 1.147px -0.875px rgba(0, 0, 0, 0.50),
+        0 1.932px 3.477px -1.75px rgba(0, 0, 0, 0.50),
+        0 5.106px 9.191px -2.625px rgba(0, 0, 0, 0.45),
+        0 16px 28.8px -3.5px rgba(0, 0, 0, 0.40);
+      /* Karta soyasi — DSS ning kichik qatlamli qiymati. */
+      --shadow-card:
+        0 0.602px 0.602px -1.25px rgba(0, 0, 0, 0.50),
+        0 2.289px 2.289px -2.5px rgba(0, 0, 0, 0.45),
+        0 10px 10px -3.75px rgba(0, 0, 0, 0.30);
+      --shadow-hair: 0 0.5px 0 0 rgba(255, 255, 255, 0.09);
 
-
-      /* Kegl shkalasi — 14 ta ad-hoc qiymat o'rniga 8 ta nomlangan qadam.
-         Nom ROLga qarab: micro = mono metadata, base = matn va boshqaruv. */
+      /* Kegl shkalasi — nom ROLga qarab: micro = mono metadata,
+         base = matn va boshqaruv, 2xl = sahifa sarlavhasi (DSS ning
+         eng kichik display qadami, 32/40). */
       --fs-micro: 11px;    /* mono katta harfli yorliq, badge */
       --fs-tiny: 12px;     /* ikkilamchi meta, chip, izoh */
       --fs-sm: 13px;       /* maydon yorlig'i, kichik UI matni */
-      --fs-base: 14px;     /* asosiy matn, input, tugma (Geist UI bazasi) */
-      --fs-lg: 16px;       /* karta sarlavhasi */
-      --fs-xl: 20px;       /* tasdiq oynasi sarlavhasi */
-      --fs-2xl: 28px;      /* sahifa sarlavhasi */
+      --fs-base: 14px;     /* asosiy matn, input, tugma */
+      --fs-lg: 16px;       /* yetakchi paragraf, karta sarlavhasi */
+      --fs-xl: 20px;       /* bo'lim sarlavhasi, tasdiq oynasi */
+      --fs-2xl: 32px;      /* sahifa sarlavhasi */
       --fs-clock: 74px;    /* telefon simulyatsiyasidagi soat */
 
-      --font-ui: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --font-mono: "Geist Mono", ui-monospace, "SF Mono", monospace;
-      /* Davomiylik shkalasi — 7 ta qo'lda yozilgan qiymat o'rniga 5 qadam.
-         Barchasi 300ms dan past (interface-craft): UI kutib turmaydi. */
+      --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-display: "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+      /* DSS mono yorliqlarida tracking `normal` — Plex Mono ning tabiiy
+         kengligi ishni bajaradi. 0.02em faqat 11px da: kirill katta
+         harflari lotinnikidan zichroq ko'rinadi. */
+      --ls-mono: 0.02em;
+
+      /* Davomiylik shkalasi — barchasi 300ms dan past: UI kutib turmaydi. */
       --dur-1: 110ms;  /* bosish javobi */
       --dur-2: 140ms;  /* hover, rang, chegara */
       --dur-3: 180ms;  /* panel/pane kirishi */
@@ -99,45 +144,59 @@
     [data-theme="light"] {
       color-scheme: light;
 
-      --accent: #171717;                      /* gray-1000 */
-      --accent-press: #383838;
-      --accent-text: #171717;
-      --accent-soft: #f2f2f2;                 /* gray-100 */
-      --accent-line: rgba(0, 0, 0, 0.22);
-      --ring: #0070f7;                        /* blue-700 */
-      --ring-soft: rgba(0, 112, 247, 0.24);
+      --accent: #0068e0;                      /* brand-600 · oq ustida 5.18:1 */
+      --accent-press: #0153b2;                /* brand-800 · 7.29:1 */
+      --accent-text: #0153b2;                 /* link/matn — 7.29:1 */
+      --accent-soft: #f2f7ff;                 /* my.gov.uz yumshoq ko'k yuzasi */
+      --accent-line: rgba(0, 104, 224, 0.28);
+      --brand-grad: linear-gradient(66deg, #0068e0 34%, #00dc82 122%);
+      --brand-shadow: 0 1px 2px rgba(0, 104, 224, 0.20);
+      --ring: #0068e0;
+      --ring-soft: rgba(0, 104, 224, 0.24);
       --crit-ring: rgba(214, 0, 32, 0.22);
       --on-accent: #ffffff;
 
-      --text-main: #171717;                   /* gray-1000 */
-      --text-body: #4d4d4d;                   /* gray-900 */
-      --text-muted: #666666;
+      /* DSS matn ierarxiyasi: #000 → rgba(0,0,0,.6) → rgba(0,0,0,.45).
+         Uchinchi qadam (#8c8c8c, 3.5:1) matn uchun AA dan o'tmaydi va
+         bu yerda ishlatilmadi; o'rniga #666 (DSS ning ikkinchi qadami)
+         eng past qadam qilib olindi, orasiga #525252 qo'yildi. */
+      --text-main: #000000;                   /* DSS birlamchi — sof qora */
+      --text-body: #525252;                   /* oq ustida 7.5:1 */
+      --text-muted: #666666;                  /* DSS rgba(0,0,0,.6) · 5.74:1 */
 
-      --bg-app: #ffffff;                      /* background-100 — yozuv yuzasi */
-      --bg-rail: #fafafa;                     /* background-200 — atrof-panel */
+      --bg-app: #ffffff;                      /* DSS sahifa foni */
+      --bg-rail: #fafafa;                     /* DSS bo'lim foni */
       --bg-panel: #ffffff;
       --bg-field: #ffffff;
-      --field-line: #8f8f8f;                  /* gray-700 — 3:1 (WCAG 1.4.11) */
+      --field-line: #8f8f8f;                  /* 3:1 (WCAG 1.4.11) */
       --field-inset: none;
-      --bg-raise: #f2f2f2;                    /* gray-100 */
-      --bg-hover: rgba(0, 0, 0, 0.05);
+      --bg-raise: #f5f5f5;                    /* DSS ikkilamchi yuzasi */
+      --bg-hover: rgba(0, 0, 0, 0.04);        /* DSS ghost fill */
 
-      --line: rgba(0, 0, 0, 0.08);
+      --line: rgba(0, 0, 0, 0.08);            /* DSS hairline, o'lchangan */
       --line-2: rgba(0, 0, 0, 0.12);
       --line-3: rgba(0, 0, 0, 0.22);
 
-      --ok: #107d32;                          /* green-900 */
-      --ok-soft: #ecfdec;                     /* green-100 */
+      /* Brend yashiliga (#00DC82) yaqinlashtirilgan, lekin o'qiladigan hue:
+         oq ustida 5.39:1. Sof brend yashili 1.82:1 — faqat gradientda. */
+      --ok: #0e7a48;                          /* brand-green-800 · 5.39:1 */
+      --ok-soft: #e6fbf1;
       --warn: #a64f00;                        /* amber-900 */
       --warn-soft: #fff6e1;                   /* amber-100 */
       --crit: #d60020;                        /* red-900 */
       --crit-soft: #ffeef0;                   /* red-100 */
 
+      /* DSS soyalari — jonli sahifadan aynan ko'chirildi. */
       --shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.08),
-        0 1px 1px rgba(0, 0, 0, 0.02),
-        0 8px 16px -4px rgba(0, 0, 0, 0.04),
-        0 24px 32px -8px rgba(0, 0, 0, 0.06);
+        0 0.637px 1.147px -0.875px rgba(0, 0, 0, 0.17),
+        0 1.932px 3.477px -1.75px rgba(0, 0, 0, 0.16),
+        0 5.106px 9.191px -2.625px rgba(0, 0, 0, 0.14),
+        0 16px 28.8px -3.5px rgba(0, 0, 0, 0.08);
+      --shadow-card:
+        0 0.602px 0.602px -1.25px rgba(0, 0, 0, 0.18),
+        0 2.289px 2.289px -2.5px rgba(0, 0, 0, 0.16),
+        0 10px 10px -3.75px rgba(0, 0, 0, 0.06);
+      --shadow-hair: 0 0.5px 0 0 rgba(0, 0, 0, 0.08);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -212,20 +271,35 @@
     /* Hover holatlari @media (hover: hover) ichida: touch'da tap'dan keyin
        hover stili yopishib qolmasin (better-accessibility). */
 
-    /* ---------------- SHELL ---------------- */
+    /* ---------------- SHELL ----------------
+       Sahifa BITTA scroll qiladi (hujjatlashtirilgan qaror). Ilgari `height:100vh`
+       + `.workspace-container{overflow-y:auto}` edi: kontent 1607px, ko'rinadigan
+       joy 904px — 700px matn hujjat scroll'idan tashqarida qolardi. Oqibati:
+       sahifa scrollbar'i yo'q (kontent davomi borligi bilinmaydi), sichqoncha
+       g'ildiragi kursor qayerdaligiga qarab boshqa ustunni suradi, brauzer
+       Ctrl+F va print yashiringan qismni ololmaydi. Endi hujjatning o'zi
+       scroll qiladi, o'ng ustun esa sticky bo'lib yonda turadi. */
     .app-root {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 420px;
-      grid-template-rows: 56px minmax(0, 1fr);
-      height: 100vh;
+      grid-template-rows: 56px auto;
+      min-height: 100vh;
     }
 
     /* ---------------- LEFT RAIL ---------------- */
     .top-navbar {
       grid-column: 1 / -1; grid-row: 1;
+      position: sticky; top: 0; z-index: 30;
       display: flex; align-items: center; justify-content: space-between; gap: 24px;
       padding: 0 22px;
       background: var(--bg-rail); border-bottom: 1px solid var(--line);
+    }
+    /* Davlat platformasi imzosi: navbar ostida 2px brend chizig'i. Ajratkich
+       chizig'ining o'zi neytral qoladi — gradient uning ustiga qo'shiladi,
+       shuning uchun kontrast hisobiga aralashmaydi. */
+    .top-navbar::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+      background: var(--brand-grad); opacity: 0.9;
     }
     .top-navbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
     .top-navbar-right { display: flex; align-items: center; gap: 10px; flex: none; }
@@ -275,7 +349,7 @@
 
     /* ---------------- CENTER ---------------- */
     .workspace-container {
-      grid-column: 1; grid-row: 2; min-height: 0; overflow-y: auto;
+      grid-column: 1; grid-row: 2; min-width: 0;
       background: var(--bg-app);
     }
     .workspace-grid { display: block; }
@@ -295,8 +369,26 @@
       margin-bottom: 18px;
     }
     .hero-copy { min-width: 0; }
-    .page-title { font-size: var(--fs-2xl); font-weight: 600; letter-spacing: -0.04em; color: var(--text-main); text-wrap: balance; }
-    .page-desc { margin-top: 6px; font-size: var(--fs-base); color: var(--text-muted); max-width: 62ch; text-wrap: pretty; }
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-2xl); line-height: 1.25; font-weight: 500;
+      letter-spacing: -0.02em; color: var(--text-main); text-wrap: balance;
+    }
+    /* DSS ning imzo motivi: sarlavha oxiridagi terminal kursori. U yerda
+       matnning bir qismi (`_` harfi) — bu yerda chizilgan blok, chunki ekran
+       o‘quvchi ::after kontentini o‘qiydi va sarlavhaga "pastki chiziq"
+       so‘zini qo‘shib yuboradi. Miltillamaydi: WCAG 2.2.2 5 soniyadan
+       uzoq miltillashni taqiqlaydi, kursorni to‘xtatib bo‘lmaydi. */
+    .page-title::after {
+      content: ""; display: inline-block; vertical-align: baseline;
+      width: 0.46em; height: 0.075em; margin-inline-start: 0.12em;
+      background: currentColor;
+    }
+    .page-desc {
+      margin-top: 8px; font-size: var(--fs-lg); line-height: 1.5;
+      letter-spacing: -0.02em; color: var(--text-muted);
+      max-width: 62ch; text-wrap: pretty;
+    }
     /* Matn o'ralishi (make-interfaces-feel-better): sarlavhada qatorlar teng
        taqsimlansin, qisqa matnda oxirgi qatorda yolg'iz so'z qolmasin. */
     .form-card-title h2, .sc-name, .slot-head b, .scope-card-title,
@@ -314,7 +406,7 @@
     }
     .hero-meta { flex: none; display: flex; align-items: center; gap: 10px; }
     .hero-meta-label {
-      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.1em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--ls-mono);
       text-transform: uppercase; color: var(--text-muted);
     }
     .hero-meta b { font-family: var(--font-mono); font-size: var(--fs-tiny); font-weight: 500; color: var(--text-muted); }
@@ -330,16 +422,21 @@
     }
     .form-card-title > h2, .form-card-title > span:first-child {
       display: flex; align-items: center;
-      font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.021em; color: var(--text-main);
+      font-family: var(--font-display);
+      font-size: var(--fs-xl); line-height: 1.3; font-weight: 500;
+      letter-spacing: -0.03em; color: var(--text-main);
     }
     .form-card-title .sub {
-      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.06em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--ls-mono);
       color: var(--text-muted); white-space: nowrap;
     }
     .block-num {
       display: inline-grid; place-items: center; width: 20px; height: 20px; margin-inline-end: 10px;
       border-radius: var(--r-sm); background: var(--bg-raise); color: var(--text-muted);
       font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600;
+      /* Sarlavhaning -0.03em tracking'ini MEROS QILMAYDI: 20px uchun
+         hisoblangan qiymat 11px mono raqamda -0.055em ga aylanadi. */
+      letter-spacing: var(--ls-mono);
     }
 
     /* ---------------- CONTROLS ---------------- */
@@ -362,7 +459,7 @@
     .devin-input, .devin-select {
       width: 100%; height: 40px; padding: 0 13px;
       background: var(--bg-field); color: var(--text-main);
-      border: 1px solid var(--field-line); border-radius: var(--r-md);
+      border: 1px solid var(--field-line); border-radius: var(--r-lg);
       box-shadow: var(--field-inset);
       font-size: var(--fs-base); outline: none;
       transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
@@ -419,22 +516,34 @@
     .char-bar-fill.warn { background: var(--warn); }
     .char-bar-fill.crit { background: var(--crit); }
 
-    /* ---------------- BUTTONS ---------------- */
+    /* ---------------- BUTTONS ----------------
+       Birlamchi amal — sahifadagi YAGONA joy, gradient va rangli soya ishlatiladigan.
+       Gradient my.gov.uz dan (66°, ko'kdan yashilga), soya ham o'shandan (brend
+       rangining o'zi 35% shaffoflikda). Pill shakli designsystems.surf dan: u yerda
+       radius 100px 293 marta uchraydi, ya'ni tasodifiy emas — tizimning imzosi.
+       Ikkilamchi tugmalar tekis va neytral qoladi, aks holda ierarxiya yo'qoladi. */
     .btn-devin-primary {
-      height: 36px; padding: 0 14px 0 16px; border: 0; border-radius: var(--r-md); cursor: pointer;
-      background: var(--accent); color: var(--on-accent);
+      height: 40px; padding: 0 20px 0 22px; border: 0; border-radius: var(--r-pill); cursor: pointer;
+      /* TEKIS brend ko'k, gradient EMAS. Gradient bu tugmada o'lchandi:
+         66° chiziq bo'ylab oq matn kontrasti 5.18 dan 2.84 gacha tushadi
+         (yorliqning o'ng chekkasida), AA 4.5 talab qiladi. my.gov.uz o'sha
+         gradientni katta hero yuzasida ishlatadi — 170px li tugma unga
+         yetarli joy bermaydi. Gradient matnsiz yuzalarga ko'chirildi. */
+      background-color: var(--accent);
+      color: var(--on-accent);
+      box-shadow: var(--brand-shadow);
       font-size: var(--fs-base); font-weight: 550;
       display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
-      transition: background var(--dur-2) var(--ease), transform var(--dur-1) var(--ease);
+      transition: background-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease), transform var(--dur-1) var(--ease);
     }
     @media (hover: hover) {
-      .btn-devin-primary:hover {   background: var(--accent-press); }
+      .btn-devin-primary:hover { background-color: var(--accent-press); box-shadow: 0 4px 14px rgba(0, 104, 224, 0.28); }
     }
-    .btn-devin-primary:active { transform: scale(0.96); }
+    .btn-devin-primary:active { transform: scale(0.96); box-shadow: var(--brand-shadow); }
     .btn-devin-primary svg { width: 14px; height: 14px; }
 
     .btn-devin-secondary {
-      height: 36px; padding: 0 16px 0 14px; cursor: pointer; border-radius: var(--r-md);
+      height: 40px; padding: 0 22px 0 20px; cursor: pointer; border-radius: var(--r-pill);
       background: var(--bg-panel); color: var(--text-main); border: 1px solid var(--line-2);
       font-size: var(--fs-base); font-weight: 500; letter-spacing: -0.01em;
       display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
@@ -476,9 +585,10 @@
     .scope-card-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
     .scope-card-btn {
       position: relative; cursor: pointer; text-align: left; padding: 13px 13px 12px;
-      background: var(--bg-panel); border: 1px solid var(--line-2); border-radius: var(--r-md);
+      background: var(--bg-panel); border: 1px solid var(--line-2); border-radius: var(--r-lg);
       display: flex; flex-direction: column; gap: 10px; overflow: hidden;
-      transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease), transform var(--dur-1) var(--ease);
+      box-shadow: var(--shadow-card);
+      transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease), transform var(--dur-1) var(--ease);
     }
     @media (hover: hover) {
       .scope-card-btn:hover {   border-color: var(--line-3); }
@@ -519,14 +629,16 @@
       display: block; height: 100%; border-radius: 999px; background: var(--line-3);
       transition: background var(--dur-2) var(--ease);
     }
-    .scope-card-btn.active .scope-reach-fill { background: var(--accent); }
+    /* Brend gradienti matnsiz yuzada — bu yerda u xavfsiz va qamrov ko'lamini
+       ko'kdan yashilga o'tish bilan ko'rsatadi (my.gov.uz imzosi). */
+    .scope-card-btn.active .scope-reach-fill { background: var(--brand-grad); }
     .scope-card-badge { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--text-muted); font-variant-numeric: tabular-nums; }
     .scope-card-btn.active .scope-card-badge { color: var(--accent-text); }
 
     /* Kaskad: viloyat → tuman → mahalla, bog'langan yo'l ko'rinishida */
     .geo-cascade {
       display: grid; grid-template-columns: 1fr 14px 1fr 14px 1fr; align-items: start; gap: 0;
-      padding: 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg-panel);
+      padding: 14px; border: 1px solid var(--line); border-radius: var(--r-xl); background: var(--bg-panel);
     }
     .geo-step { min-width: 0; padding: 0 12px; }
     .geo-step:first-child { padding-inline-start: 0; }
@@ -551,8 +663,8 @@
 
     /* ---------------- SEND MODE ---------------- */
     .sev-btn {
-      cursor: pointer; text-align: left; padding: 12px 13px;
-      background: var(--bg-panel); border: 1px solid var(--line-2); border-radius: var(--r-md);
+      cursor: pointer; text-align: left; padding: 12px 16px;
+      background: var(--bg-panel); border: 1px solid var(--line-2); border-radius: var(--r-pill);
       display: flex; align-items: center; gap: 9px;
       font-size: var(--fs-base); font-weight: 500; color: var(--text-body);
       transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
@@ -568,14 +680,14 @@
     .templates-bar { border: 0; padding: 0; background: transparent; }
     .templates-head {
       display: flex; align-items: center; gap: 7px; margin-bottom: 9px;
-      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.1em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--ls-mono);
       text-transform: uppercase; color: var(--text-muted);
     }
     .templates-head svg { width: 12px; height: 12px; }
     .templates-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 
     .template-pill, .format-tag-pill, .preset-pill, .month-preset-chip {
-      cursor: pointer; border: 1px solid var(--line-2); border-radius: var(--r-md);
+      cursor: pointer; border: 1px solid var(--line-2); border-radius: var(--r-pill);
       background: var(--bg-panel); color: var(--text-body);
       font-size: var(--fs-tiny); font-weight: 500; text-align: left;
       padding: 8px 11px; min-height: 34px;
@@ -593,7 +705,7 @@
 
     .formatting-chip-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
     .formatting-chip-row > span:first-child {
-      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.1em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--ls-mono);
       text-transform: uppercase; color: var(--text-muted); margin-inline-end: 4px;
     }
 
@@ -602,7 +714,7 @@
 
     .day-chip-grid { display: flex; gap: 6px; }
     .day-chip {
-      flex: 1; cursor: pointer; height: 36px; border-radius: var(--r-md);
+      flex: 1; cursor: pointer; height: 36px; border-radius: var(--r-pill);
       border: 1px solid var(--line-2); background: var(--bg-panel); color: var(--text-body);
       font-size: var(--fs-sm); font-weight: 500;
       transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
@@ -648,7 +760,7 @@
     .pane-tag {
       display: inline-grid; place-items: center; min-width: 24px; height: 20px; padding: 0 6px;
       border-radius: var(--r-sm); background: var(--bg-raise); color: var(--text-muted);
-      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: .04em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--ls-mono);
     }
     .pane-status {
       flex: none; width: 18px; height: 18px; border-radius: 50%;
@@ -689,7 +801,7 @@
 
     /* ---------------- WYSIWYG ---------------- */
     .wysiwyg-wrapper {
-      border: 1px solid var(--field-line); border-radius: var(--r-md);
+      border: 1px solid var(--field-line); border-radius: var(--r-lg);
       background: var(--bg-field); overflow: hidden; box-shadow: var(--field-inset);
       transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
     }
@@ -727,7 +839,7 @@
     .dropzone {
       width: 100%; cursor: pointer; text-align: left;
       display: flex; align-items: center; gap: 12px; padding: 13px 14px;
-      border: 1px dashed var(--line-2); border-radius: var(--r-md);
+      border: 1px dashed var(--line-2); border-radius: var(--r-lg);
       background: transparent; color: var(--text-body);
       transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
     }
@@ -769,8 +881,15 @@
     .attach-remove svg { width: 13px; height: 13px; }
 
     /* ---------------- PREVIEW PANEL ---------------- */
+    /* Yon ustun sahifa bilan birga surilmaydi — yozayotganda preview ko'z
+       oldida qolishi kerak. `align-self:start` shart: grid item default'da
+       stretch bo'ladi va cho'zilgan element hech qachon yopishmaydi.
+       Ichki scroll faqat shu yerda qoladi — panel viewport'dan baland bo'lsa
+       boshqa yo'l yo'q, va yon panelning o'z scroll'i kutilgan xatti-harakat. */
     .preview-pane {
-      grid-column: 2; grid-row: 2; min-height: 0; overflow-y: auto;
+      grid-column: 2; grid-row: 2;
+      position: sticky; top: 56px; align-self: start;
+      max-height: calc(100vh - 56px); overflow-y: auto;
       background-color: var(--bg-rail);
       background-image: radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0);
       background-size: 22px 22px;
@@ -781,14 +900,14 @@
 
     .pv-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .pv-title {
-      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.12em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--ls-mono);
       text-transform: uppercase; color: var(--text-muted);
     }
     .pv-langs { display: flex; gap: 2px; padding: 2px; border-radius: var(--r-md); background: var(--bg-raise); }
     .lang-toggle-btn {
       cursor: pointer; border: 0; background: transparent; border-radius: var(--r-sm);
       padding: 5px 11px; min-height: 26px;
-      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 500; letter-spacing: 0.08em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 500; letter-spacing: var(--ls-mono);
       color: var(--text-muted);
       transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
     }
@@ -897,7 +1016,11 @@
       margin-top: 3px; font-size: var(--fs-base); font-weight: 650; line-height: 1.3; color: #0a0e15;
       display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
     }
-    .notif-title.is-empty, .notif-text.is-empty { color: #8b95a3; font-weight: 400; }
+    /* Bo'sh holat matni — kartaning oq shaffof foniga nisbatan 4.64:1 (WCAG AA).
+       Oldingi #8b95a3 atigi 2.91 berardi: operator preview'da nima yozilishi
+       kerakligini aytadigan yagona qatorni zo'rg'a o'qirdi. Rang baribir
+       to'ldirilgan matndan (#2b3542) sezilarli ochroq — ierarxiya saqlanadi. */
+    .notif-title.is-empty, .notif-text.is-empty { color: #6b7280; font-weight: 400; }
     .notif-text {
       margin-top: 2px; font-size: var(--fs-sm); line-height: 1.42; color: #2b3542;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
@@ -931,7 +1054,7 @@
       padding: 9px 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm);
     }
     .pv-fact:last-child { border-bottom: 0; }
-    .pv-fact dt { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted); flex: none; }
+    .pv-fact dt { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--ls-mono); text-transform: uppercase; color: var(--text-muted); flex: none; }
     .pv-fact dd { color: var(--text-main); text-align: right; overflow-wrap: anywhere; }
 
     /* ---------------- MODALS ---------------- */
@@ -971,7 +1094,7 @@
     }
     .receipt-row:last-child { border-bottom: 0; }
     .receipt-row > span:first-child {
-      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: 0.06em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: var(--ls-mono);
       text-transform: uppercase; color: var(--text-muted); flex: none;
     }
     .receipt-row b { font-weight: 550; color: var(--text-main); text-align: right; }
@@ -1010,7 +1133,8 @@
       display: flex; flex-direction: column; gap: 7px; text-align: left; cursor: pointer;
       padding: 12px 13px; border: 1px solid var(--line-2); border-radius: var(--r-lg);
       background: var(--bg-panel); color: var(--text-body); font-family: inherit;
-      transition: border-color var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+      box-shadow: var(--shadow-card);
+      transition: border-color var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
     }
     @media (hover: hover) {
       .sc-card:hover {   border-color: var(--line-3); }
@@ -1047,7 +1171,7 @@
     .slot-lang { position: relative; display: block; }
     .slot-lang .slot-tag {
       position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
-      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: .04em;
+      font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--ls-mono);
       color: var(--text-muted); background: var(--bg-raise); border: 1px solid var(--line);
       border-radius: var(--r-sm); padding: 2px 4px; pointer-events: none;
     }
@@ -1066,7 +1190,7 @@
       padding: 11px 13px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg-raise);
     }
     .gen-badge {
-      flex: none; font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: .04em;
+      flex: none; font-family: var(--font-mono); font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--ls-mono);
       color: var(--text-body); background: var(--bg-field); border: 1px solid var(--line-2);
       border-radius: var(--r-sm); padding: 2px 5px; margin-top: 1px;
     }
@@ -1140,26 +1264,62 @@
       }
       .top-navbar { flex-wrap: wrap; height: auto; min-height: 56px; padding: 8px 16px; gap: 10px 14px; }
       .nav-breadcrumbs { display: none; }
-      .workspace-container { grid-column: 1; grid-row: 2; overflow-y: visible; }
+      .workspace-container { grid-column: 1; grid-row: 2; }
+      /* Bitta ustunda preview formadan KEYIN keladi — sticky bo'lsa o'zining
+         joyiga yopishib, tagidagi kontentni to'sib qo'yardi. */
       .preview-pane {
-        grid-column: 1; grid-row: 3; overflow-y: visible;
+        grid-column: 1; grid-row: 3;
+        position: static; max-height: none; overflow-y: visible;
         border-left: 0; border-top: 1px solid var(--line);
+        /* Preview bitta ustunda OXIRGI blok — mixlangan amal qatori uning
+           so'nggi qatorini (xulosaning "Aholi" satri) yarmigacha yopardi. */
+        padding-bottom: calc(var(--foot-h, 96px) + 28px + env(safe-area-inset-bottom));
       }
       .phone-stage { display: flex; justify-content: center; }
-      .composer-pane { padding: 22px 20px 100px; }
-      .stepper-foot { margin: 28px -20px 0; padding: 14px 20px; }
+      /* Mixlangan amal qatori balandligi kenglikka qarab o'zgaradi: 320px da tugmalar
+         ikki qatorga o'raladi va bar 139px bo'ladi. Qat'iy raqam o'sha yerda kam
+         qolib, "Hoziroq (Darhol)" tanlovini yopardi (o'lchandi: 9px kesilgan).
+         `--foot-h` ni ResizeObserver real balandlikdan yozadi; bu yerdagi
+         zaxira qiymat JS yuklanmaguncha ishlaydi. */
+      .composer-pane { padding: 22px 20px calc(var(--foot-h, 96px) + 28px + env(safe-area-inset-bottom)); }
+      /* Bitta ustunda preview forma OSTIDA turadi, ya'ni `sticky` amal qatori
+         composer-pane tugagan joyda o'z konteyneri bilan yuqorida qolib ketardi:
+         foydalanuvchi preview'ni ko'rish uchun pastga tushganda "Navbatga qo'yish"
+         ekrandan yo'qolardi (o'lchandi: 390px da y = -322). Ekranga mixlanadi.
+         `viewport-fit=cover` meta allaqachon bor — safe-area inset'siz bar iPhone
+         home indikatori ostida qolardi. */
+      .stepper-foot {
+        position: fixed; left: 0; right: 0; bottom: 0; margin: 0;
+        /* Faqat longhand: `padding` shorthand'dan keyin `padding-left/right`
+           yozilsa CSSOM shorthand'ni serializatsiya qilmaydi va keyingi tekshiruv
+           qoidani "yo'q" deb o'qiydi. */
+        padding-top: 14px;
+        padding-bottom: calc(14px + env(safe-area-inset-bottom));
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+      }
       .scope-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .geo-cascade { grid-template-columns: 1fr !important; gap: 12px; }
       .geo-arrow { display: none; }
     }
     @media (max-width: 620px) {
       .top-navbar-right .rail-card, .top-navbar-right .status-live-chip { display: none; }
-      .composer-pane { padding: 18px 14px 96px; }
-      .stepper-foot { margin: 24px -14px 0; padding: 12px 14px; flex-wrap: wrap; gap: 10px; }
+      .composer-pane { padding: 18px 14px calc(var(--foot-h, 140px) + 24px + env(safe-area-inset-bottom)); }
+      .stepper-foot {
+        margin: 0; flex-wrap: wrap; gap: 10px;
+        padding-top: 12px;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        padding-left: max(14px, env(safe-area-inset-left));
+        padding-right: max(14px, env(safe-area-inset-right));
+      }
       .stepper-foot > div { flex: 1 1 100%; }
       /* Jadval rejimi gridi markupda inline yozilgan -> !important shart */
       .scope-card-grid { grid-template-columns: 1fr !important; }
       .hero-heading-box { flex-direction: column; align-items: flex-start; gap: 12px; }
+      /* Bo'lim sarlavhasi + o'ngdagi meta 320px da yonma-yon sig'masdi: sarlavha
+         uch qatorga o'ralib, meta karta chegarasidan 13px chiqib ketardi
+         (o'lchandi: konteyner right 296, meta right 309). Ustma-ust qo'yiladi. */
+      .form-card-title { flex-direction: column; align-items: flex-start; gap: 8px; }
       /* Amal tugmalari 310px ga sig'masdi — o'ralsin va kengayasin */
       .stepper-foot > div:last-child { display: flex; flex-wrap: wrap; gap: 8px; }
       .stepper-foot > div:last-child > button { flex: 1 1 140px; justify-content: center; }
@@ -3485,12 +3645,49 @@
       });
     });
 
+    // Mixlangan amal qatori balandligini CSS'ga uzatadi. Tugmalar tor ekranda
+    // o'raladi va bar 91px dan 139px gacha o'sadi — pastdagi bo'sh joy qat'iy
+    // raqam bo'lsa o'sha yerda kam qolib, oxirgi boshqaruvni yopadi. Kuzatuv
+    // arzon: bar kamdan-kam o'lchamini o'zgartiradi.
+    (() => {
+      const foot = document.querySelector(".stepper-foot");
+      if (!foot || typeof ResizeObserver === "undefined") return;
+      const apply = () => {
+        const h = Math.round(foot.getBoundingClientRect().height);
+        if (h > 0) document.documentElement.style.setProperty("--foot-h", h + "px");
+      };
+      new ResizeObserver(apply).observe(foot);
+      apply();
+    })();
+
+    // Status bar foni sahifa foniga ergashsin. `prefers-color-scheme` ga bog'langan
+    // zaxira meta'lar TIZIM temasini kuzatadi — bu yerda esa QO'LDA tanlangan tema
+    // bor, ya'ni tizim light bo'lib turib sahifa dark bo'lishi mumkin. O'sha holatda
+    // status bar oq, sahifa qora bo'lib qolardi. Rang `--bg-rail` dan olinadi:
+    // status bar aynan navbar ustida turadi, sahifa tanasi ustida emas.
+    function syncThemeColor() {
+      const rail = getComputedStyle(document.documentElement)
+        .getPropertyValue("--bg-rail").trim();
+      if (!rail) return;
+      // Zaxira meta'lar media bilan cheklangan — qo'lda tanlov ular bilan
+      // ziddiyatga tushmasligi uchun ular olib tashlanadi va bittasi qoladi.
+      document.querySelectorAll('meta[data-theme-color-fallback]').forEach((m) => m.remove());
+      let meta = document.querySelector('meta[name="theme-color"]:not([media])');
+      if (!meta) {
+        meta = document.createElement("meta");
+        meta.setAttribute("name", "theme-color");
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute("content", rail);
+    }
+
     // Theme Switcher
     $("themeBtn").addEventListener("click", () => {
       const html = document.documentElement;
       const next = html.dataset.theme === "dark" ? "light" : "dark";
       html.dataset.theme = next;
       $("themeIcon").setAttribute("href", next === "dark" ? "#i-moon" : "#i-sun");
+      syncThemeColor();
       try { localStorage.setItem("announce.theme", next); } catch (e) {}
     });
 
@@ -3501,6 +3698,7 @@
         $("themeIcon").setAttribute("href", savedTheme === "dark" ? "#i-moon" : "#i-sun");
       }
     } catch (e) {}
+    syncThemeColor();
 
     // Keyboard Shortcuts (Cmd/Ctrl + Enter)
     document.addEventListener("keydown", (e) => {
