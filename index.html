@@ -2105,8 +2105,12 @@
         <h2 id="testModalTitle" style="font-size:var(--fs-lg); font-weight:600; letter-spacing:-0.015em; color:var(--text-main)">Test xabarnoma yuborish</h2>
         <button type="button" class="icon-btn-quiet" id="testClose" aria-label="Yopish"><svg><use href="#i-x"/></svg></button>
       </div>
-      <p style="font-size:var(--fs-base); color:var(--text-muted); margin-bottom:16px">
-        Xabar faqat ko‘rsatilgan telefon raqamdagi ilovaga boradi.
+      <div class="demo-banner" id="testDemoBanner">
+        <svg><use href="#i-warn"/></svg>
+        <span>Test yuborish backendga hali ulanmagan — <b>kiritilgan raqamga hech narsa ketmaydi</b>.</span>
+      </div>
+      <p id="testModalNote" style="font-size:var(--fs-base); color:var(--text-muted); margin-bottom:16px">
+        Raqamni hozir kiritib qo‘yishingiz mumkin — ulanish tayyor bo‘lgach shu oqim ishlaydi.
       </p>
       <div class="form-group" style="margin-bottom:18px">
         <label class="form-label" for="testPhone">Telefon raqamingiz</label>
@@ -3724,13 +3728,11 @@
         return;
       }
       $("testErr").classList.remove("active");
-      $("testSendLabel").textContent = "Yuborilmoqda...";
-      setTimeout(() => {
-        $("testSendLabel").textContent = "Yuborish";
-        (setModalOpen($("testModal"), false), $("testModal").classList.remove("show"));
-        /* Bu yo'l hali backendga ULANMAGAN — "yuborildi" deyish yolg'on bo'lardi. */
-        toast(`Test yuborish hali ulanmagan — ${phone} raqamiga hech narsa ketmadi`);
-      }, 700);
+      /* Bu yo'l hali backendga ULANMAGAN. Na "yuborildi" deyish mumkin, na
+         700ms soxta spinner ko'rsatish — ikkalasi ham bajarilmagan ishni
+         bajarilgandek ko'rsatadi. Javob darhol va rostgo'y. */
+      (setModalOpen($("testModal"), false), $("testModal").classList.remove("show"));
+      toast(`Test yuborish hali ulanmagan — ${phone} raqamiga hech narsa ketmadi`);
     });
 
     // Submit & GovTech Receipt Modal
@@ -3768,6 +3770,14 @@
     const API_ENDPOINT = "";
     const SEND_TIMEOUT_MS = 15000;
     let lastPayload = null;
+
+    /* Test oynasi maketi sukut bo'yicha DEMO holatida yozilgan (ulanmagan holat
+       hech qachon "boradi" deb va'da bermasin). Endpoint paydo bo'lishi bilan
+       va'da matni qaytadi — da'vo har doim haqiqiy holatga bog'liq. */
+    if (API_ENDPOINT) {
+      $("testDemoBanner").hidden = true;
+      $("testModalNote").textContent = "Xabar faqat ko\u2018rsatilgan telefon raqamdagi ilovaga boradi.";
+    }
 
     let placeholderHit = null;
     const PLACEHOLDER_RE = /\((sana|дата|vaqt|время|…)\)|\{\w+\}|--:--/;
