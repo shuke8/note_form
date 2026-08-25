@@ -1,0 +1,39 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Chastota tahlili", "x": 0, "y": 0, "w": 760, "h": 1000 },
+    { "file": "Variant-A.dc.html", "title": "A — Bitta varaq", "x": 840, "y": 0, "w": 1240, "h": 940 },
+    { "file": "Variant-B.dc.html", "title": "B — Ustuvor ustun", "x": 2160, "y": 0, "w": 1240, "h": 940 },
+    { "file": "Variant-C.dc.html", "title": "C — Shablondan", "x": 3480, "y": 0, "w": 1240, "h": 940 }
+  ],
+  "annotations": [
+    {
+      "id": "manba",
+      "x": 0,
+      "y": -178,
+      "w": 560,
+      "text": "Reyting analitikadan emas — formaning o‘z dalillaridan olindi: standart qiymatlar, 6 ta shablon, operatorning bitta MFYga biriktirilgani.\nReal raqamlaringiz bo‘lsa bering — tartib qayta hisoblanadi va uchala variant ham unga moslanadi."
+    },
+    {
+      "id": "thesis-a",
+      "x": 840,
+      "y": -178,
+      "w": 520,
+      "text": "A — bitta varaq. Yozish maydoni butun ekranni egallaydi, kam ishlatiladigan sozlamalar composer ostidagi tinch chip qatoriga tushadi.\nEng qisqa yo‘l: shablon → matn → yuborish. Tavsiya etaman."
+    },
+    {
+      "id": "thesis-b",
+      "x": 2160,
+      "y": -178,
+      "w": 520,
+      "text": "B — chap tomon faqat yozish, o‘ng tomon qolgan hammasi va u chastota bo‘yicha tartiblangan.\nHech narsa yashirilmaydi — kam ishlatiladigani pastda va so‘nik. Sozlamalar doim ko‘rinib tursin desangiz shu."
+    },
+    {
+      "id": "thesis-c",
+      "x": 3480,
+      "y": -178,
+      "w": 520,
+      "text": "C — 85% xabar 6 ta ssenariydan biri, demak yozish emas, bo‘shliq to‘ldirish.\nSsenariy tanlanadi, matn ikkala tilda tayyor keladi, operator faqat sana va soatni kiritadi. Eng tez, lekin erkin matn ikkinchi qatlamga tushadi."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

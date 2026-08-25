@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..700&family=Roboto+Mono:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #0b52b5; text-decoration: none; }
+    a:hover { color: #0f62d6; }
+    .sheet {
+      --accent: #0f62d6; --accent-text: #0b52b5; --accent-soft: #e9f0fd; --accent-line: rgba(15,98,214,.3);
+      --text-main: #14171c; --text-body: #414852; --text-muted: #5b6472; --text-dim: #67707c;
+      --bg-app: #f4f5f6; --bg-rail: #eff0f2; --bg-panel: #fbfbfc; --bg-field: #ffffff;
+      --line: rgba(20,23,28,.1); --line-2: rgba(20,23,28,.16); --line-3: rgba(20,23,28,.3);
+      --ok: #0f7d4f; --ok-soft: #e6f5ee; --warn: #96590a; --warn-soft: #fbf1e2; --crit: #b3251b;
+    }
+    .sheet[data-theme="dark"] {
+      --accent: #2f6fe8; --accent-text: #7fb0ff; --accent-soft: rgba(76,141,255,.14); --accent-line: rgba(76,141,255,.35);
+      --text-main: #e9ebef; --text-body: #b4bac4; --text-muted: #949cab; --text-dim: #848c9a;
+      --bg-app: #0b0c0f; --bg-rail: #0e1014; --bg-panel: #121419; --bg-field: #171a20;
+      --line: rgba(255,255,255,.07); --line-2: rgba(255,255,255,.12); --line-3: rgba(255,255,255,.2);
+      --ok: #3fcf8e; --ok-soft: rgba(63,207,142,.14); --warn: #e5a13a; --warn-soft: rgba(229,161,58,.14); --crit: #ff6f61;
+    }
+  </style>
+</helmet>
+
+<div class="sheet" data-theme="{{theme}}" style="width: 760px; height: 1000px; box-sizing: border-box; background: var(--bg-app); color: var(--text-body); font-family: 'Golos Text', -apple-system, 'Segoe UI', sans-serif; font-size: 13.5px; line-height: 1.5; padding: 30px 30px 24px; display: flex; flex-direction: column; gap: 20px; overflow: hidden">
+
+  <div style="display: flex; flex-direction: column; gap: 9px">
+    <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 10.5px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--text-dim)">Tahlil · kompozitor</span>
+    <h1 style="margin: 0; font-size: 23px; font-weight: 620; letter-spacing: -0.028em; color: var(--text-main); line-height: 1.25">Qaysi funksiyalar haqiqatan ishlatiladi</h1>
+    <p style="margin: 0; font-size: 12.5px; color: var(--text-muted); max-width: 640px; text-wrap: pretty">Reyting formaning o‘z dalillaridan olindi: standart qiymatlar (<b style="color: var(--text-body); font-weight: 550">mahalla</b>, <b style="color: var(--text-body); font-weight: 550">hoziroq</b>, <b style="color: var(--text-body); font-weight: 550">uz</b>), 6 ta tayyor shablon ro‘yxati va operator roli — u bitta MFYga biriktirilgan. Real analitika chiqsa, shu raqamlar almashtiriladi va tartib o‘zgaradi.</p>
+  </div>
+
+  <div style="height: 1px; background: var(--line)"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+      <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 10.5px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--text-dim)">Chastota reytingi</span>
+      <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 10.5px; color: var(--text-dim); font-variant-numeric: tabular-nums">Taxminiy ulush, %</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 1px">
+
+      <div style="display: grid; grid-template-columns: 1fr 176px 40px 70px; align-items: center; gap: 12px; padding: 6px 0">
+        <span style="font-size: 13px; font-weight: 550; color: var(--text-main)">Sarlavha va matn (o‘zbekcha)</span>
+        <span style="height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden"><span style="display: block; height: 100%; width: 100%; border-radius: 999px; background: var(--accent)"></span></span>
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--text-body); font-variant-numeric: tabular-nums; text-align: right">100</span>
+        <span style="justify-self: start; font-size: 10.5px; font-weight: 600; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; color: var(--ok); background: var(--ok-soft)">Doim</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 176px 40px 70px; align-items: center; gap: 12px; padding: 6px 0">
+        <span style="font-size: 13px; font-weight: 550; color: var(--text-main)">Ruscha versiya (avto-tarjima + tekshirish)</span>
+        <span style="height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden"><span style="display: block; height: 100%; width: 100%; border-radius: 999px; background: var(--accent)"></span></span>
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--text-body); font-variant-numeric: tabular-nums; text-align: right">100</span>
+        <span style="justify-self: start; font-size: 10.5px; font-weight: 600; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; color: var(--ok); background: var(--ok-soft)">Doim</span>
+      </div>
+
+
+      <div style="display: grid; grid-template-columns: 1fr 176px 40px 70px; align-items: center; gap: 12px; padding: 6px 0">
+        <span style="font-size: 13px; font-weight: 550; color: var(--text-main)">Qamrov — o‘z mahallasi (o‘zgartirilmaydi)</span>
+        <span style="height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden"><span style="display: block; height: 100%; width: 95%; border-radius: 999px; background: var(--accent)"></span></span>
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--text-body); font-variant-numeric: tabular-nums; text-align: right">95</span>
+        <span style="justify-self: start; font-size: 10.5px; font-weight: 600; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; color: var(--ok); background: var(--ok-soft)">Doim</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 176px 40px 70px; align-items: center; gap: 12px; padding: 6px 0">
+        <span style="font-size: 13px; font-weight: 550; color: var(--text-main)">Tayyor ssenariy tanlash (6 tadan biri)</span>
+        <span style="height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden"><span style="display: block; height: 100%; width: 85%; border-radius: 999px; background: var(--accent)"></span></span>
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--text-body); font-variant-numeric: tabular-nums; text-align: right">85</span>
+        <span style="justify-self: start; font-size: 10.5px; font-weight: 600; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; color: var(--ok); background: var(--ok-soft)">Doim</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 176px 40px 70px; align-items: center; gap: 12px; padding: 6px 0">
+        <span style="font-size: 13px; font-weight: 550; color: var(--text-main)">Darhol yuborish</span>
+        <span style="height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden"><span style="display: block; height: 100%; width: 77%; border-radius: 999px; background: var(--accent)"></span></span>
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--text-body); font-variant-numeric: tabular-nums; text-align: right">77</span>
+        <span style="justify-self: start; font-size: 10.5px; font-weight: 600; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; color: var(--ok); background: var(--ok-soft)">Doim</span>
+      </div>
+
+      <div style="height: 1px; background: var(--line); margin: 7px 0"></div>
+
+      <div style="display: grid; grid-template-columns: 1fr 176px 40px 70px; align-items: center; gap: 12px; padding: 6px 0">
+        <span style="font-size: 13px; font-weight: 500; color: var(--text-body)">Rejali sana (+1 soat / ertaga 09:00)</span>
+        <span style="height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden"><span style="display: block; height: 100%; width: 21%; border-radius: 999px; background: var(--text-dim)"></span></span>
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; text-align: right">21</span>
+        <span style="justify-self: start; font-size: 10.5px; font-weight: 600; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; color: var(--text-body); background: var(--bg-rail); border: 1px solid var(--line)">Ba‘zan</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 176px 40px 70px; align-items: center; gap: 12px; padding: 6px 0">
+        <span style="font-size: 13px; font-weight: 500; color: var(--text-body)">Test xabarnoma yuborish</span>
+        <span style="height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden"><span style="display: block; height: 100%; width: 16%; border-radius: 999px; background: var(--text-dim)"></span></span>
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--text-muted); font-variant-numeric: tabular-nums; text-align: right">16</span>
+        <span style="justify-self: start; font-size: 10.5px; font-weight: 600; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; color: var(--text-body); background: var(--bg-rail); border: 1px solid var(--line)">Ba‘zan</span>
+      </div>
+
+      <div style="height: 1px; background: var(--line); margin: 7px 0"></div>
+
+      <div style="display: grid; grid-template-columns: 1fr 176px 40px 70px; align-items: center; gap: 12px; padding: 6px 0">
+        <span style="font-size: 13px; font-weight: 400; color: var(--text-muted)">Fayl ilova qilish</span>
+        <span style="height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden"><span style="display: block; height: 100%; width: 8%; border-radius: 999px; background: var(--line-3)"></span></span>
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--text-dim); font-variant-numeric: tabular-nums; text-align: right">8</span>
+        <span style="justify-self: start; font-size: 10.5px; font-weight: 500; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; color: var(--text-dim)">Kam</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 176px 40px 70px; align-items: center; gap: 12px; padding: 6px 0">
+        <span style="font-size: 13px; font-weight: 400; color: var(--text-muted)">Boshqa hudud (tuman / viloyat / respublika)</span>
+        <span style="height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden"><span style="display: block; height: 100%; width: 5%; border-radius: 999px; background: var(--line-3)"></span></span>
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--text-dim); font-variant-numeric: tabular-nums; text-align: right">5</span>
+        <span style="justify-self: start; font-size: 10.5px; font-weight: 500; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; color: var(--text-dim)">Kam</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 176px 40px 70px; align-items: center; gap: 12px; padding: 6px 0">
+        <span style="font-size: 13px; font-weight: 400; color: var(--text-muted)">Takroriy jadval (31 kunlik matritsa)</span>
+        <span style="height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden"><span style="display: block; height: 100%; width: 2%; border-radius: 999px; background: var(--line-3)"></span></span>
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11.5px; color: var(--text-dim); font-variant-numeric: tabular-nums; text-align: right">2</span>
+        <span style="justify-self: start; font-size: 10.5px; font-weight: 500; letter-spacing: .02em; padding: 2px 7px; border-radius: 999px; color: var(--text-dim)">Kam</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="height: 1px; background: var(--line)"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 9px">
+    <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 10.5px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--text-dim)">Hozirgi forma bunga zid</span>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px">
+      <div style="display: flex; gap: 9px; align-items: flex-start">
+        <span style="flex: none; width: 5px; height: 5px; margin-top: 7px; border-radius: 999px; background: var(--crit)"></span>
+        <span style="font-size: 12.5px; color: var(--text-body)">Uch bosqichli rail uch bo‘limni <b style="font-weight: 550; color: var(--text-main)">teng</b> ko‘rsatadi — aslida 1-bo‘lim 100%, 3-bo‘lim 5%.</span>
+      </div>
+      <div style="display: flex; gap: 9px; align-items: flex-start">
+        <span style="flex: none; width: 5px; height: 5px; margin-top: 7px; border-radius: 999px; background: var(--crit)"></span>
+        <span style="font-size: 12.5px; color: var(--text-body)">Ikkinchi til tab ostida yashiringan, holbuki u <b style="font-weight: 550; color: var(--text-main)">har safar</b> to‘ldiriladi.</span>
+      </div>
+      <div style="display: flex; gap: 9px; align-items: flex-start">
+        <span style="flex: none; width: 5px; height: 5px; margin-top: 7px; border-radius: 999px; background: var(--crit)"></span>
+        <span style="font-size: 12.5px; color: var(--text-body)">2% ishlatiladigan takroriy jadval eng katta maydonni egallaydi.</span>
+      </div>
+      <div style="display: flex; gap: 9px; align-items: flex-start">
+        <span style="flex: none; width: 5px; height: 5px; margin-top: 7px; border-radius: 999px; background: var(--crit)"></span>
+        <span style="font-size: 12.5px; color: var(--text-body)">Ilova maydoni (8%) doim ochiq turadi va sahifani uzaytiradi.</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="height: 1px; background: var(--line)"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 9px">
+    <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 10.5px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--text-dim)">Redizayn qoidasi</span>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+      <div style="border: 1px solid var(--accent-line); background: var(--accent-soft); border-radius: 12px; padding: 12px 13px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; color: var(--accent-text); font-variant-numeric: tabular-nums">70% va yuqori</span>
+        <span style="font-size: 12.5px; font-weight: 550; color: var(--text-main)">Ekranda, tayyor holda</span>
+        <span style="font-size: 11.5px; color: var(--text-muted)">Bosish talab qilinmaydi</span>
+      </div>
+      <div style="border: 1px solid var(--line-2); background: var(--bg-panel); border-radius: 12px; padding: 12px 13px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; color: var(--text-body); font-variant-numeric: tabular-nums">10—30%</span>
+        <span style="font-size: 12.5px; font-weight: 550; color: var(--text-main)">Bitta bosishda</span>
+        <span style="font-size: 11.5px; color: var(--text-muted)">Chip → popover</span>
+      </div>
+      <div style="border: 1px solid var(--line); background: transparent; border-radius: 12px; padding: 12px 13px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; color: var(--text-dim); font-variant-numeric: tabular-nums">10% dan past</span>
+        <span style="font-size: 12.5px; font-weight: 550; color: var(--text-body)">So‘nik chip, ichkarida</span>
+        <span style="font-size: 11.5px; color: var(--text-muted)">Ko‘z tortmaydi, bir bosishda ochiladi</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light","section":"Ko‘rinish"},"$preview":{"width":760,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'light' };
+  }
+}
+</script>
+</body>
+</html>

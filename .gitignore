@@ -8,3 +8,8 @@
 .env*
 node_modules/
 .vercel
+
+# Design canvas: manba fayllar saqlanadi, 2.3MB yig'ilgan sahifa emas
+design/kompozitor-chastota-redizayn.html
+design/composer.js
+design/tags
