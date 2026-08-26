@@ -264,7 +264,19 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
   a.card:hover, button.card:hover { box-shadow: var(--lift-2); transform: translateY(-2px); }
 }
 
-.feed-item { display: flex; gap: 16px; align-items: flex-start; padding-block: 4px; }
+/* Karta — ochiladigan (disclosure), havola EMAS: bosilganda boshqa sahifaga
+   o'tilmaydi, xabarning o'zi shu yerda ochiladi. Butun karta bitta nishon,
+   shuning uchun kichik ilinadigan joy qidirish kerak emas. */
+.feed-item { display: flex; flex-direction: column; padding-block: 4px; }
+.feed-h { margin: 0; font: inherit; font-weight: inherit; }
+.feed-open {
+  display: flex; gap: 16px; align-items: flex-start; width: 100%;
+  padding: 8px; margin: -8px; border-radius: var(--r-4); text-align: left;
+  color: var(--ink); transition: background var(--d-hover) var(--ease-out);
+}
+@media (hover: hover) { .feed-open:hover { background: var(--ghost); } }
+.feed-open:active { transform: scale(.995); }
+.feed-head { flex: 1 1 auto; min-width: 0; }
 .feed-thumb {
   width: 56px; height: 56px; flex: none;
   border-radius: var(--r-pill);
@@ -272,10 +284,30 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
   background: var(--paper-raise); color: var(--ink);
   overflow: hidden;
 }
-.feed-title { font-size: var(--t-body); line-height: var(--lh-body); letter-spacing: var(--ls-body);
+.feed-title { display: block; font-size: var(--t-body); line-height: var(--lh-body); letter-spacing: var(--ls-body);
               color: var(--ink); font-weight: 500; }
-.feed-meta { margin-top: 8px; font-size: var(--t-ui); color: var(--ink-2); }
+.feed-meta { display: block; margin-top: 8px; font-size: var(--t-ui); color: var(--ink-2); }
 .feed-meta .sep { opacity: 0.5; margin-inline: 6px; }
+.feed-chev { flex: none; width: 16px; height: 16px; margin-top: 20px; color: var(--ink-2);
+             transition: transform var(--d-pane) var(--ease-out); }
+.feed-item[data-open="true"] .feed-chev { transform: rotate(180deg); }
+
+/* Ochilgan tana. `hidden` atributi bilan boshqariladi — balandlik animatsiyasi
+   emas: nol balandlikdagi konteyner ekran o'quvchi uchun HALI HAM mavjud
+   bo'lib qolardi. Ochilishda tizimning reveal imzosi takrorlanadi. */
+.feed-body { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--hairline); }
+.feed-item[data-open="true"] .feed-body { animation: feedIn var(--d-reveal) var(--ease-out) both; }
+@keyframes feedIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.feed-strong { margin-top: 6px; font-size: var(--t-ui); font-weight: 500; color: var(--ink); }
+.feed-text { margin-top: 4px; font-size: var(--t-ui); line-height: 1.55; color: var(--ink-2); }
+.feed-gap { margin-top: 16px; }
+.feed-facts { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.feed-facts > div { display: flex; flex-direction: column; gap: 2px; }
+.feed-facts dt { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+                 text-transform: uppercase; color: var(--ink-2); }
+.feed-facts dd { margin: 0; font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink);
+                 overflow-wrap: anywhere; }
+.feed-body .hint { margin-top: 16px; }
 
 /* -----------------------------------------------------------------------------
    MAYDONLAR

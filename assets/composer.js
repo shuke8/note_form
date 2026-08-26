@@ -565,6 +565,8 @@
   var DAY_FULL = { "1": "dushanba", "2": "seshanba", "3": "chorshanba", "4": "payshanba",
                    "5": "juma", "6": "shanba", "0": "yakshanba" };
   var MONTH_SHORT = ["Yan", "Fev", "Mar", "Apr", "May", "Iyun", "Iyul", "Avg", "Sen", "Okt", "Noy", "Dek"];
+  var MONTH_FULL = ["yanvar", "fevral", "mart", "aprel", "may", "iyun",
+                    "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
   var TZID = "Asia/Tashkent";
   var TZ_OFFSET_MIN = 300;      // Asia/Tashkent butun yil qat'iy +05:00, yozgi vaqt yo'q
   var MAX_SCAN_DAYS = 4000;
@@ -1262,14 +1264,20 @@
       el.setAttribute("data-empty", value ? "false" : "true");
     }
     setRecap("rcScope", path ? path.join(" · ") : "", "tanlanmagan");
-    setRecap("rcReach", reach ? "~" + reach : "", "—");
-    setRecap("rcUz", $("uzTitle").value.trim(), "yozilmagan");
-    setRecap("rcRu", $("ruTitle").value.trim(), "yozilmagan");
+    setRecap("rcReach", reach ? "~" + reach + " kishi" : "", "—");
+    setRecap("rcUzTitle", $("uzTitle").value.trim(), "Sarlavha yozilmagan");
+    setRecap("rcUzBody", $("uzBody").value.trim(), "Matn yozilmagan");
+    setRecap("rcRuTitle", $("ruTitle").value.trim(), "Sarlavha yozilmagan");
+    setRecap("rcRuBody", $("ruBody").value.trim(), "Matn yozilmagan");
     /* To'liq bo'lmagan yoki nol natijali jadval matni KO'RINIB turadi, lekin
-       `data-empty="true"` bilan bo'zaradi va qolgan besh qator bilan bir xil
+       `data-empty="true"` bilan bo'zaradi va qolgan qatorlar bilan bir xil
        qoidaga bo'ysunadi. */
     setRecap("rcWhen", scheduleReady() ? whenText() : "", whenText());
-    setRecap("rcFiles", state.files.length ? state.files.length + " ta fayl" : "", "yo‘q");
+    /* Fayl SONI o'zi hech narsa demaydi — «2 ta fayl» to'g'ri fayllar
+       ekanini tasdiqlamaydi. Nomlar ko'rinib tursin. */
+    setRecap("rcFiles", state.files.length
+      ? state.files.length + " ta · " + state.files.map(function (f) { return f.name; }).join(", ")
+      : "", "yo‘q");
 
     // --- holat qatori ---
     var errors = validate();
@@ -1286,6 +1294,7 @@
         ? errors.length + " ta muammo bor — 03-bo‘limni tekshiring"
         : errors.length + " ta maydon to‘ldirilishi kerak";
     }
+
     /* 03-bo'limga tegishli xatolar faqat foydalanuvchi o'sha bo'limga
        TEGGANDAN keyin (yoki «Navbatga qo'yish» bosilgandan keyin) ko'rsatiladi:
        rejim almashtirilgan zahoti panel qip-qizil ochilib qarshi olardi. */
@@ -1293,7 +1302,139 @@
       return !e.box || WHEN_BOXES.indexOf(e.box.id) < 0;
     });
     if (state.submitted) showErrors(shown);
+
+    /* Yakuniy ko'rinish HAR DOIM to'liq ro'yxatdan quriladi — u xato holati
+       emas, yo'l ko'rsatkich: bo'limga tegilmagan bo'lsa ham nima qolganini
+       aytadi. */
+    renderSummary(errors, path, reach);
     return errors;
+  }
+
+  /* ---------------------------------------------------------------------------
+     05 YAKUNIY KO'RINISH
+     Bitta jumla + nima qolgani. Ilgari bu yerda olti qatorli kalit-qiymat
+     jadvali turardi: u ma'lumotni ko'rsatardi, lekin «bu xabar kimga, qachon
+     va nima deb ketadi?» degan savolga javob bermasdi.
+  ------------------------------------------------------------------------- */
+  var SECTION_OF = {
+    scopeError: 1,
+    errUzTitle: 2, errUzBody: 2, errRuTitle: 2, errRuBody: 2,
+    errDate: 3, errTime: 3, errDays: 3, errRepeatTime: 3,
+    errMonths: 3, errFrom: 3, errTo: 3, errRuns: 3,
+    errFiles: 4
+  };
+  var SECTION_NAME = { 1: "Kim oladi", 2: "Nima yoziladi", 3: "Qachon ketadi", 4: "Ilova" };
+
+  function renderSummary(errors, path, reach) {
+    var line = $("rcLine"), todo = $("rcTodo"), list = $("rcTodoList");
+
+    /* Yo'l ko'rsatkich ro'yxati. Xato obyektining matni yo'q bo'lsa (qamrov
+       xatosi matnni markupda saqlaydi) qutining o'z matni olinadi — ikki
+       joyda ikki xil gap yozilmasin. */
+    var items = errors.map(function (e) {
+      var id = e.box ? e.box.id : "";
+      var text = e.msg || (e.box ? e.box.textContent.trim() : "");
+      return { section: SECTION_OF[id] || 0, text: text, el: e.el, box: e.box };
+    }).filter(function (i) { return i.section && i.text; });
+
+    if (!items.length) {
+      todo.hidden = true;
+      list.innerHTML = "";
+    } else {
+      todo.hidden = false;
+      $("rcTodoLabel").textContent = items.length === 1
+        ? "Bitta narsa qoldi" : items.length + " ta narsa qoldi";
+      list.innerHTML = "";
+      items.forEach(function (it, i) {
+        var li = document.createElement("li");
+        li.className = "sum-todo-item";
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "sum-todo-btn";
+        btn.setAttribute("data-idx", String(i));
+        btn.innerHTML = '<span class="sum-todo-sec">' + pad(it.section) + "</span>" +
+          '<span class="sum-todo-text"></span>' +
+          '<svg class="sum-todo-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+        btn.querySelector(".sum-todo-text").textContent = it.text;
+        /* Nishonning to'liq nomi harakatni ham aytadi: «... — 02-bo'limga o'tish».
+           Yolg'iz xato matni tugma nima qilishini aytmasdi. */
+        btn.setAttribute("aria-label", it.text + " — " + pad(it.section) + "-bo‘lim, " +
+          SECTION_NAME[it.section] + ", bo‘limga o‘tish");
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+      todoTargets = items;
+    }
+
+    /* Jumla FAQAT hamma bo'lak ma'lum bo'lganda quriladi. Yarim ma'lumot
+       bilan yozilgan jumla («Bu xabar — kishiga ketadi») ekranni bilmagan
+       narsasini biladi deb ko'rsatardi. */
+    var ready = !errors.length;
+    line.setAttribute("data-ready", ready ? "true" : "false");
+    if (!ready) {
+      line.textContent = "Xabar hali yuborishga tayyor emas.";
+      $("rcWhenLine").textContent = "Quyidagilar to‘ldirilgach, bu yerda kimga va qachon ketishi yoziladi.";
+      return;
+    }
+    /* Ikki jumla, har biri BITTA savolga javob beradi: kimga, va qachon.
+       Bitta uzun jumla («... kishiga — O'zbekiston Respublikasi — dushanba,
+       payshanba kunlari ...») o'qilmasdi. */
+    var who = path.join(" / ");
+    line.textContent = reach
+      ? "Bu xabar " + who + " bo‘yicha taxminan ~" + reach + " kishiga ketadi."
+      : "Bu xabar " + who + " bo‘yicha ketadi — qamrov soni reestrda ko‘rsatilmagan.";
+    $("rcWhenLine").textContent = whenSentence();
+  }
+
+  /* «A, B va C» — oxirgi bog'lovchi vergul emas, «va». Ro'yxat sifatida
+     yozilgan jumla («sentyabr, oktyabr oylarida») tugallanmagan tuyulardi. */
+  function joinWords(arr) {
+    if (arr.length < 2) return arr.join("");
+    return arr.slice(0, -1).join(", ") + " va " + arr[arr.length - 1];
+  }
+
+  /* Jumla ichidagi vaqt bo'lagi. `whenText()` qisqartmalar bilan yozadi
+     («Du, Pa · 09:00 · har yili Sen, Okt»); jumlada to'liq so'zlar kerak. */
+  function whenSentence() {
+    if (state.when === "now") return "Hoziroq yuboriladi.";
+    if (state.when === "later") {
+      return $("fDate").value + " kuni soat " + $("fTime").value + " da yuboriladi.";
+    }
+    var names = ORDER.filter(function (d) { return state.days.indexOf(d) > -1; })
+      .map(function (d) { return DAY_FULL[d]; });
+    /* Jumla bosh harf bilan boshlanadi: hafta kuni nomlari o'z holicha kichik
+       harfli, lekin bu yerda ular JUMLANI ochadi. */
+    var lead = joinWords(names);
+    lead = lead.charAt(0).toUpperCase() + lead.slice(1);
+    var when = lead + " kunlari soat " + $("fRepeatTime").value + " da";
+    if (state.span === "months") {
+      var ms = state.months.slice().sort(function (a, b) { return a - b; })
+        .map(function (n) { return MONTH_FULL[n - 1]; });
+      /* «har yili» ochiq yoziladi: oy tanlovi yilni bilmaydi va kelasi yil ham
+         qaytadi — buni ekranda aytmaslik jim va'da bo'lardi. */
+      return when + ", har yili " + joinWords(ms) + " oylarida yuboriladi.";
+    }
+    if (state.span === "range") {
+      return when + ", " + $("fFrom").value + " dan " + $("fTo").value + " gacha yuboriladi.";
+    }
+    return when + ", to‘xtatilmaguncha har hafta yuboriladi.";
+  }
+
+  /* Ro'yxat har chizilganda qayta quriladi, shuning uchun tugma bosilganda
+     nishon INDEKS bo'yicha topiladi — DOM ga element bog'lab qo'yish
+     qayta chizilgandan keyin o'lik havolaga aylanardi. */
+  var todoTargets = [];
+  function initSummary() {
+    $("rcTodoList").addEventListener("click", function (e) {
+      var btn = e.target.closest ? e.target.closest(".sum-todo-btn") : null;
+      if (!btn) return;
+      var it = todoTargets[+btn.getAttribute("data-idx")];
+      if (!it || !it.el) return;
+      /* Avval tegishli panel ochilishi kerak: yashirin elementga fokus
+         berish brauzerda jimgina muvaffaqiyatsiz tugaydi. */
+      it.el.scrollIntoView({ block: "center", behavior: "smooth" });
+      it.el.focus({ preventScroll: true });
+    });
   }
 
   /* So'rov tanasiga KIRADIGAN holatning imzosi. Ko'rinish tili, fokus,
@@ -1395,6 +1536,7 @@
   /* ------------------------------------------------------------------------ */
   function boot() {
     initScope();
+    initSummary();
     initText();
     initWhen();
     initFiles();

@@ -468,14 +468,46 @@
     </div>
 
     <div class="step-body">
-      <div class="recap">
-        <div class="recap-row"><span class="recap-key">Qamrov</span><span class="recap-val" id="rcScope" data-empty="true">tanlanmagan</span></div>
-        <div class="recap-row"><span class="recap-key">Aholi</span><span class="recap-val" id="rcReach" data-empty="true">—</span></div>
-        <div class="recap-row"><span class="recap-key">Sarlavha (UZ)</span><span class="recap-val" id="rcUz" data-empty="true">yozilmagan</span></div>
-        <div class="recap-row"><span class="recap-key">Sarlavha (RU)</span><span class="recap-val" id="rcRu" data-empty="true">yozilmagan</span></div>
-        <div class="recap-row"><span class="recap-key">Yuborish</span><span class="recap-val" id="rcWhen">hoziroq</span></div>
-        <div class="recap-row"><span class="recap-key">Ilova</span><span class="recap-val" id="rcFiles" data-empty="true">yo‘q</span></div>
+      <!-- Yuborishdan oldin odam AYNAN bitta savolga javob qidiradi: «bu xabar
+           kimga, qachon va nima deb ketadi?» Ilgari bu yerda olti qatorli
+           kalit-qiymat jadvali turardi va u savolga javob bermasdi: sarlavha
+           ko‘rinardi-yu, MATN ko‘rinmasdi; «Aholi» ustuni hududning aholisimi
+           yoki qabul qiluvchilar sonimi — noaniq edi; nima yetishmayotgani esa
+           faqat pastdagi status qatorida raqam bo‘lib turardi. -->
+      <p class="sum-line" id="rcLine"></p>
+      <p class="sum-when" id="rcWhenLine"></p>
+
+      <!-- Nima qolgani — XATO emas, yo‘l ko‘rsatkich: neytral ohang, qizil yo‘q,
+           har biri tegishli bo‘limga olib boradi. Xato holati (qizil) faqat
+           «Navbatga qo‘yish» bosilgandan keyin, o‘z maydonida chiqadi. -->
+      <div class="sum-todo" id="rcTodo" hidden>
+        <p class="eyebrow eyebrow-sm" id="rcTodoLabel"></p>
+        <ul class="sum-todo-list" id="rcTodoList" aria-labelledby="rcTodoLabel"></ul>
       </div>
+
+      <!-- Matnning O‘ZI: qabul qiluvchi telefonida aynan shu o‘qiladi.
+           Sarlavhaning yolg‘iz o‘zi tekshirish uchun yetarli emas edi. -->
+      <div class="sum-texts">
+        <div class="sum-text">
+          <p class="eyebrow eyebrow-sm">O‘zbekcha</p>
+          <p class="sum-title" id="rcUzTitle" data-empty="true">Sarlavha yozilmagan</p>
+          <p class="sum-body" id="rcUzBody" data-empty="true">Matn yozilmagan</p>
+        </div>
+        <div class="sum-text">
+          <p class="eyebrow eyebrow-sm">Ruscha</p>
+          <p class="sum-title" id="rcRuTitle" data-empty="true">Sarlavha yozilmagan</p>
+          <p class="sum-body" id="rcRuBody" data-empty="true">Matn yozilmagan</p>
+        </div>
+      </div>
+
+      <dl class="sum-facts">
+        <div><dt>Qamrov</dt><dd id="rcScope" data-empty="true">tanlanmagan</dd></div>
+        <!-- «Aholi» emas: raqam hududning aholisi, ya‘ni qamrovning TAXMINIY
+             kattaligi — yetkazilganlar soni emas, uni faqat server biladi. -->
+        <div><dt>Taxminiy qamrov</dt><dd id="rcReach" data-empty="true">—</dd></div>
+        <div><dt>Jadval</dt><dd id="rcWhen">Hoziroq</dd></div>
+        <div><dt>Ilova</dt><dd id="rcFiles" data-empty="true">yo‘q</dd></div>
+      </dl>
 
       <div id="resultSlot" aria-live="polite"></div>
     </div>

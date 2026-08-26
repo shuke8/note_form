@@ -356,11 +356,36 @@
     }, 3600);
   };
 
+  /* ---------------------------------------------------------------------------
+     SO'NGGI YUBORILGANLAR — ochiladigan karta
+     Karta bosilganda boshqa sahifaga O'TILMAYDI: xabarning o'zi shu yerda
+     ochiladi. Havola bo'lganida foydalanuvchi ro'yxatdagi joyini yo'qotib,
+     bir xabarni ko'rish uchun orqaga qaytishga majbur bo'lardi.
+  ------------------------------------------------------------------------- */
+  function initFeed() {
+    var items = document.querySelectorAll(".feed-item .feed-open");
+    if (!items.length) return;
+    items.forEach(function (btn) {
+      var card = btn.closest(".feed-item");
+      var body = document.getElementById(btn.getAttribute("aria-controls"));
+      if (!card || !body) return;
+      btn.addEventListener("click", function () {
+        var open = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", open ? "false" : "true");
+        card.setAttribute("data-open", open ? "false" : "true");
+        /* `hidden` — balandlik animatsiyasi emas: nol balandlikdagi konteyner
+           ekran o'quvchi uchun hali ham mavjud bo'lib qolardi va yopiq
+           kartaning matni ro'yxatga qo'shilib ketardi. */
+        body.hidden = open;
+      });
+    });
+  }
+
   /* Har qadam alohida o'raladi: ilgari `initTheme` dagi bitta xato
      `initReveal` ni ham olib ketardi va sahifa bo'm-bo'sh qolardi. */
   function boot() {
     var revealOk = false;
-    [initTheme, initStagger, initReveal, initTypewriter, initNav, initMenu]
+    [initTheme, initStagger, initReveal, initTypewriter, initNav, initMenu, initFeed]
       .forEach(function (step) {
         try {
           step();

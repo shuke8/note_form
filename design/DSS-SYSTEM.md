@@ -940,3 +940,76 @@ xatolari chaqnab o‘tmaydi va endi ochilgan panel qizil bo‘lib qarshi olmaydi
   (`mode: "at"` endi `tzid` ham olib yuradi).
 
 Kadrlar: `.screenshots/jadval-davr-*.png`
+
+---
+
+## «So‘nggi yuborilganlar» — karta ochiladi, sahifa almashmaydi
+
+Kartalar ilgari umuman bosilmasdi. Endi har biri **ochiladigan** (disclosure):
+bosilganda boshqa sahifaga o‘tilmaydi, xabarning o‘zi shu yerda ochiladi.
+Havola bo‘lganida foydalanuvchi ro‘yxatdagi joyini yo‘qotib, bitta xabarni
+ko‘rish uchun orqaga qaytishga majbur bo‘lardi.
+
+- Butun karta bitta nishon (`<h3><button aria-expanded aria-controls>`) —
+  kichik ilinadigan joy qidirilmaydi.
+- Ochilgan panelda ikkala til to‘liq, so‘ng qamrov / yuborilgan vaqt / jadval.
+- **Yetkazilganlar soni ataylab YO‘Q**: uni faqat server biladi, o‘ylab
+  topilgan raqam esa fakt bo‘lib ko‘rinardi. Panel oxirida shu ochiq aytiladi.
+- `hidden` atributi bilan boshqariladi, balandlik animatsiyasi bilan emas:
+  nol balandlikdagi konteyner ekran o‘quvchi uchun HALI HAM mavjud bo‘lib,
+  yopiq kartaning matni ro‘yxatga qo‘shilib ketardi. Ochilishda tizimning
+  reveal imzosi (opacity + 10px translateY) takrorlanadi.
+- `.feed-grid` ga `align-items: start` — ochilgan karta faqat O‘ZINI cho‘zsin;
+  standart `stretch` da bir qatordagi qolgan uchta karta ham baland qutiga
+  aylanib, ochilmagan holda ham «nimadir ochildi» degan taassurot berardi.
+
+## «Yakuniy ko‘rinish» — jadval o‘rniga jumla
+
+Ilgari bu yerda olti qatorli kalit-qiymat jadvali turardi. U ma’lumotni
+ko‘rsatardi, lekin yuborishdan oldingi yagona savolga — «bu xabar kimga,
+qachon va nima deb ketadi?» — javob bermasdi:
+
+- faqat SARLAVHA ko‘rinardi, matn umuman ko‘rinmasdi;
+- «Aholi» ustuni hududning aholisimi yoki qabul qiluvchilar sonimi — noaniq;
+- qiymatlar o‘ngga tekislangani uchun uzun yo‘l kaliti bilan to‘qnashardi;
+- nima yetishmayotgani faqat pastdagi status qatorida RAQAM bo‘lib turardi.
+
+Endi to‘rt qatlam:
+
+1. **Ikki jumla.** «Bu xabar O‘zbekiston Respublikasi bo‘yicha taxminan
+   ~35.1M kishiga ketadi.» / «Dushanba va payshanba kunlari soat 09:00 da,
+   har yili sentyabr va oktyabr oylarida yuboriladi.» Har biri bitta savolga
+   javob beradi — bitta uzun jumla o‘qilmasdi. Jumla FAQAT hamma bo‘lak
+   ma’lum bo‘lganda quriladi; yarim ma’lumot bilan yozilgan jumla ekranni
+   bilmagan narsasini biladi deb ko‘rsatardi.
+2. **Nima qolgani** — har biri tegishli bo‘limga olib boradigan tugma
+   (`01 Qamrovni tanlang…  →`). Bu XATO EMAS, yo‘l ko‘rsatkich: qizil yo‘q,
+   ogohlantirish ikonkasi yo‘q, va u «Navbatga qo‘yish» ni kutmaydi.
+   Qizil holat avvalgidek faqat urinishdan keyin, o‘z maydonida chiqadi.
+   Tugmaning to‘liq nomi harakatni ham aytadi: «… — 02-bo‘lim, Nima yoziladi,
+   bo‘limga o‘tish».
+3. **Matnning o‘zi** — ikki til yonma-yon, sarlavha va matn to‘liq.
+   Qabul qiluvchi telefonida aynan shu o‘qiladi.
+4. **Faktlar** — chapga tekislangan `<dl>`: qamrov, taxminiy qamrov, jadval,
+   ilova. «Aholi» → «Taxminiy qamrov»: raqam qamrovning kattaligi, yetkazilgan
+   xabarlar soni EMAS. Fayl qatori endi nomlarni ham ko‘rsatadi — «2 ta fayl»
+   to‘g‘ri fayllar ekanini tasdiqlamaydi.
+
+Yo‘l ko‘rsatkich ro‘yxati `validate()` ning O‘SHA natijasidan quriladi, ya‘ni
+ro‘yxatda turgan narsa bilan yuborishni bloklaydigan narsa bir xil bo‘lishi
+tuzilish darajasida kafolatlangan.
+
+### Verify (real brauzer)
+
+- Beshta yo‘l ko‘rsatkich tugmasining HAR BIRI to‘g‘ri boshqaruvga fokus
+  beradi: `scopeAll`, `uzTitle`, `uzBody`, `ruTitle`, `ruBody`.
+- Jumla to‘rt rejimda tekshirildi: hoziroq · belgilangan vaqt · takroriy+oylar
+  · takroriy+oraliq. Har birida ekrandagi jumla so‘rov tanasi bilan mos.
+- Karta ochilishi 8 viewport × 2 temada: `framenavigated` YO‘Q, URL o‘zgarmadi,
+  kartalar mustaqil ochiladi/yopiladi.
+- 8 viewport × 2 tema: 0 kontrast xatosi, overflow yo‘q, `pageerror` yo‘q,
+  barcha nishonlar ≥24×24.
+- Tuzatilgan kamchilik: bo‘sh holat matni `--ink-3` (dekorativ, 3.35:1) bilan
+  yozilgandi — `--ink-2` ga o‘tkazildi.
+
+Kadrlar: `.screenshots/yakun-*.png`, `.screenshots/feed-ochilgan-1440.png`

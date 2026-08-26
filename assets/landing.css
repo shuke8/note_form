@@ -60,7 +60,10 @@
 .step-text { font-size: var(--t-ui); color: var(--ink-2); line-height: 1.55; }
 
 /* YANGILANISHLAR */
-.feed-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+/* `align-items: start` — ochilgan karta faqat O'ZINI cho'zsin. Standart
+   `stretch` da bir qatordagi qolgan uchta karta ham baland qutiga aylanib,
+   ochilmagan holda ham «nimadir ochildi» degan taassurot berardi. */
+.feed-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; align-items: start; }
 
 /* YAKUNIY CTA */
 .cta { position: relative; border-radius: var(--r-2); overflow: hidden; padding: 96px 40px; text-align: center; }
