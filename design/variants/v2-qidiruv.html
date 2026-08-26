@@ -143,8 +143,9 @@
     function row(r, i) {  var it = r.it, reach = fmt(it.pop), sub = it.path.length ? it.path.join(" · ") : regions.length + " hudud yig‘indisi · butun mamlakat";
       return '<li class="v2-opt" role="option" id="v2-opt-' + i + '" aria-selected="false">' +
         '<span><span class="v2-nm">' + hl(it, r.at) + '</span><span class="v2-pt">' + esc(sub) + '</span></span>' +
-        '<span class="v2-side"><span class="eyebrow eyebrow-sm">' + SHORT[it.lvl] + '</span><span class="v2-rc mono" aria-hidden="true">~' +
-        reach + '</span><span class="sr-only">taxminiy qamrov ' + reach + '</span></span></li>';
+        '<span class="v2-side"><span class="eyebrow eyebrow-sm">' + SHORT[it.lvl] + '</span><span class="v2-rc mono" aria-hidden="true">' +
+        (reach === "—" ? reach : "~" + reach) + '</span><span class="sr-only">' +
+        (reach === "—" ? "aholi soni reestrda yo‘q" : "taxminiy qamrov " + reach) + '</span></span></li>';
     }
     function render() {
       var raw = input.value.trim(), q = fold(raw).t;  qlen = q.length;
@@ -173,12 +174,12 @@
       if (!sel) return;
       $("v2-lvl").textContent = FULL[sel.lvl];  $("v2-name").textContent = sel.name;
       $("v2-path").textContent = sel.path.length ? sel.path.join(" · ") : regions.length + " hudud yig‘indisi · butun mamlakat";
-      $("v2-num").textContent = "~" + fmt(sel.pop);
+      $("v2-num").textContent = sel.pop == null ? "—" : "~" + fmt(sel.pop);
     }
     function emit(lvl, rg, ds, mh, reach) { root.dispatchEvent(new CustomEvent("scopechange", { bubbles: true, detail: { level: lvl, region: rg, district: ds, mahalla: mh, reach: reach } })); }
     function choose(it) {
       sel = it; input.value = it.name; clearBtn.hidden = !input.value; close(); paint();
-      statusEl.textContent = FULL[it.lvl] + ": " + it.name + " · taxminiy qamrov ~" + fmt(it.pop);  /* aks holda ekran o‘quvchi faqat «collapsed» eshitardi */
+      statusEl.textContent = FULL[it.lvl] + ": " + it.name + (it.pop == null ? " · aholi soni reestrda yo‘q" : " · taxminiy qamrov ~" + fmt(it.pop));  /* aks holda ekran o‘quvchi faqat «collapsed» eshitardi */
       emit(it.lvl, it.region, it.district, it.mahalla, it.pop);
     }
 

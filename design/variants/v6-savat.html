@@ -78,7 +78,7 @@
   (function () {
     "use strict";
     var root = document.querySelector('[data-variant="6"]'); if (!root) return;
-    var GEO = window.OM_GEO || {}, REGIONS = Object.keys(GEO), q = function (id) { return root.querySelector("#" + id); };
+    var GEO = window.OM_GEO || {}, REGIONS = Object.keys(GEO).filter(function (k) { return GEO[k] && typeof GEO[k] === "object"; }) /* buzuq yozuv (null) butun variantni oldirmasin */, q = function (id) { return root.querySelector("#" + id); };
     var elR = q("v6-region"), elD = q("v6-district"), elM = q("v6-mahalla"), elAdd = q("v6-add"), elAll = q("v6-all");
     var elErr = q("v6-err"), elErrText = q("v6-errtext"), elPend = q("v6-pending"), elList = q("v6-list"), elEmpty = q("v6-empty");
     var elTotal = q("v6-total"), elCap = q("v6-cap"), elBar = q("v6-bar"), elFill = q("v6-fill"), elPct = q("v6-pct"), elWarn = q("v6-warn");

@@ -66,7 +66,7 @@
   "use strict";
   var root = document.querySelector('[data-variant="4"]');
   if (!root) return;
-  var GEO = window.OM_GEO || {}, NAMES = Object.keys(GEO);
+  var GEO = window.OM_GEO || {}, NAMES = Object.keys(GEO).filter(function (k) { return GEO[k] && typeof GEO[k] === "object"; }) /* buzuq yozuv (null) butun variantni oldirmasin */;
   var q = function (n) { return root.querySelector("#v4-" + n); };
   var svg = q("svg"), listEl = q("list"), crumbEl = q("crumbs"), sumEl = q("sum"), lvlEl = q("lvl"), liveEl = q("live");
   var WARN = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 2.9 18.6 17.4H1.4Z"></path><path d="M10 8.4v3.6M10 14.6h.01"></path></svg>';
@@ -91,8 +91,8 @@
   function fmt(n) { if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
     return n >= 1e4 ? Math.round(n / 1e3) + "K" : n >= 1e3 ? (n / 1e3).toFixed(1).replace(/\.0$/, "") + "K" : String(n); }
   /* Son yo'q bo'lsa «~0» emas, «—»: nol «hech kim» degani, tire «reestr aytmagan» degani. */
-  function num(n) { return typeof n === "number" ? "~" + fmt(n) : "—"; }
-  var noPop = NAMES.filter(function (n) { return typeof GEO[n].pop !== "number"; });
+  function num(n) { return (typeof n === "number" && isFinite(n) && n > 0) ? "~" + fmt(n) : "—"; } /* 0 va NaN ham "—": ular reach() da ham null */
+  var noPop = NAMES.filter(function (n) { var p = GEO[n].pop; return !(typeof p === "number" && isFinite(p) && p > 0); }); /* 0/NaN ham "raqam yo'q" — aks holda jami NaN bo'lib chiqardi */
   /* Bitta hududning soni yetishmasa respublika yig'indisi ham YO'Q: `|| 0` qisman yig'indini «butun respublika» deb ko'rsatardi — o'ylab topilgan fakt. */
   var TOTAL = noPop.length ? null : NAMES.reduce(function (s, n) { return s + GEO[n].pop; }, 0);
   function dists(r) { return (GEO[r] && GEO[r].districts) || {}; }

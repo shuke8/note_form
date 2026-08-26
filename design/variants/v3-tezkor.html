@@ -98,7 +98,7 @@
     var picks = id("v3-picks"), moreBtn = id("v3-more"), panel = id("v3-panel"), out = id("v3-out");
     var reg = id("v3-region"), dis = id("v3-district"), mah = id("v3-mahalla");
     var ok = id("v3-ok"), prev = id("v3-preview"), hint = id("v3-storage");
-    var cur = null, draft = null, storeOk = true;
+    var cur = null, draft = null, storeOk = true, dropped = false;
     /* Bitta viloyat raqamsiz bo‘lsa jami JIMGINA kamayardi va noto‘g‘ri son
        fakt bo‘lib chiqardi. Endi bunday holatda jami umuman berilmaydi. */
     var TOTAL = REGIONS.reduce(function (a, r) {
@@ -116,7 +116,7 @@
       if (!s || !LEVEL[s.level]) return null; if (s.level === "republic") return TOTAL || null;
       var r = GEO[s.region]; if (!r) return null; if (s.level === "region") return r.pop || null;
       var d = r.districts && r.districts[s.district]; if (!d) return null; if (s.level === "district") return d.pop || null;
-      var m = d.mahallas && d.mahallas[s.mahalla]; return typeof m === "number" ? m : null;
+      var m = d.mahallas && d.mahallas[s.mahalla]; return (typeof m === "number" && isFinite(m) && m > 0) ? m : null;
     }
     /* Tashqi yozuv (localStorage, profil) ixtiyoriy shaklda kelishi mumkin — `level` dan QAYTA QURILADI: tanlanmagan pog'ona `null` bo'lsin (kontrakt 4), `LEVEL` prototip kaliti o'tmasin. */
     function norm(s) { if (!s || !Object.prototype.hasOwnProperty.call(LEVEL, s.level)) return null; var deep = s.level === "district" || s.level === "mahalla";
@@ -130,11 +130,24 @@
     }
     function has(k) { for (var j = 0; j < recent.length; j++) if (key(recent[j]) === k) return true; return false; }
     /* Buzuq JSON (SyntaxError) — xotira sog'lom, keyingi saqlash uni almashtiradi; access xatosi (inkognito/siyosat) esa tarixni butunlay o'chiradi. Ikkisi BIR XIL xabar bermasin. */
+    /* Uchta ayri holat: (1) xotira ochiq va o'qildi; (2) xotira YOPIQ
+       (`storeOk=false`); (3) yozuv bor edi-yu, o'qib bo'lmadi yoki
+       shakli yaroqsiz (`dropped=true`). Ilgari (3) jim edi: foydalanuvchi
+       uchta yorliqni yo'qotardi va ekran ular hech qachon bo'lmaganday
+       ko'rinardi. */
     function load() {
+      var raw = null;
       try {
-        var a = JSON.parse(window.localStorage.getItem(KEY) || "[]");
-        return (a instanceof Array) ? a.map(norm).filter(function (s) { return s && reach(s) != null && key(s) !== key(HOME); }).slice(0, MAX) : [];
-      } catch (e) { if (!(e instanceof SyntaxError)) storeOk = false; return []; }
+        raw = window.localStorage.getItem(KEY);
+      } catch (e) { storeOk = false; return []; }
+      if (raw == null || raw === "") return [];
+      var a;
+      try { a = JSON.parse(raw); }
+      catch (e) { dropped = true; return []; }
+      if (!(a instanceof Array)) { dropped = true; return []; }
+      var out = a.map(norm).filter(function (s) { return s && reach(s) != null && key(s) !== key(HOME); }).slice(0, MAX);
+      if (a.length && !out.length) dropped = true;
+      return out;
     }
     function save() { try { window.localStorage.setItem(KEY, JSON.stringify(recent)); } catch (e) { storeOk = false; } }
     var recent = load(), homeOk = reach(HOME) != null;
@@ -157,7 +170,17 @@
         var e = add(picks, "div", "empty"); out.hidden = true; add(e, "p", "empty-title", "Qamrov tanlanmagan");
         add(e, "p", "small", "«Boshqa hudud tanlash» dan hududni tanlang — birinchi tanlovingiz shu yerda bir bosishlik tugma bo‘lib qoladi.");
       }
-      hint.hidden = storeOk && !recent.length;
+      if (!storeOk) {
+        hint.textContent = "Brauzer xotirasi yopiq: tanlovlar eslab qolinmaydi.";
+        hint.hidden = false;
+      } else if (dropped) {
+        hint.textContent = "Saqlangan tanlovlar o‘qib bo‘lmadi va tozalandi — panel orqali qayta tanlang.";
+        hint.hidden = false;
+      } else {
+        // Asl matnni qaytaramiz: oldingi render uni almashtirgan bo'lishi mumkin.
+        hint.textContent = "So‘nggi tanlovlar faqat shu qurilmada saqlanadi — serverga yozilmaydi.";
+        hint.hidden = !recent.length;
+      }
       if (!storeOk) hint.textContent = "Brauzer xotirasi yopiq: tanlovlar eslab qolinmaydi, har safar paneldan tanlanadi.";
     }
     function paint() {

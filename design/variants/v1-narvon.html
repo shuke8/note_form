@@ -198,7 +198,11 @@
     /* Yiqilgan init aks holda «to'la to'ldirilgan, ammo o'lik panel» qoldirardi: host inline skript xatosini ushlamaydi. */
     try {
       if (!REGIONS.length) { console.error("[v1-narvon] window.OM_GEO bo‘sh — hudud ma’lumotlari yuklanmadi"); fail("Hudud ma’lumotlari yuklanmadi. Sahifani yangilang; muammo qolsa administratorga xabar bering."); return; }
-      $("count").textContent = REGIONS.length + " hudud";
+      /* Chipda hudud soni, yonida esa FAQAT raqami bor hududlar jami
+         turardi — bitta qatorda ikki xil qamrov. */
+      $("count").textContent = POPS.length === REGIONS.length
+        ? REGIONS.length + " hudud"
+        : POPS.length + "/" + REGIONS.length + " hududda raqam bor";
       root.querySelectorAll(".v1-radio").forEach(function (input) { input.addEventListener("change", function () { setLevel(input.value); }); });
       $("f-region").addEventListener("change", function () {
         st.region = this.value; st.district = ""; st.mahalla = ""; var ds = Object.keys(dists(st.region));

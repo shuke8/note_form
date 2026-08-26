@@ -532,3 +532,100 @@ almashtirish uni o'chirmaydi); o'lik `.spinner` CSS olib tashlandi.
 
 Verify: ikkala sahifa, ikkala temada 0 kontrast xatosi, 1440 va 320 da
 overflow yo'q (resize'dan keyin ham).
+
+---
+
+## Uchinchi to'lqin — brauzerda ishga tushirilganda topilgan 11 kamchilik
+
+Sakkiz variant fragmentini 24 ta statik tekshiruvchi agent «toza» dedi.
+Keyin ularni **brauzerda ochib, har birini bosib chiqqan** tekshiruvchi
+11 ta kamchilik topdi. Bu bo'lim har birini va uni qanday takrorlashni
+yozib qo'yadi — asosiy saboq: *statik o'qish ishga tushirishning o'rnini
+bosmaydi*.
+
+### Mezbon (`variants.html` / `assets/variants.js`)
+
+**F1. `try/catch` otiladigan inline skriptni ushlay olmaydi.**
+Fragment skriptini qayta yaratish `document.head.appendChild(el)` orqali
+sinxron bajariladi, lekin xato `window` ga chiqadi — chaqiruv steki
+emas. `try { appendChild } catch {}` hech qachon ishlamasdi va otilgan
+fragment jimgina yarim yuklangan qolardi, mezbon esa «8/8 yuklandi»
+derdi. Endi `runScripts` skript ishga tushishidan oldin capture fazasida
+`window.addEventListener("error", …, true)` qo'yadi va birinchi xabarni
+qaytaradi. O'lchov: ataylab otiladigan fragment → «skript otildi:
+Uncaught Err…» kartasi va `7/8 variant yuklandi`.
+
+**F2. 200 javob bo'sh yoki begona tana bilan ham «yuklandi» sanalardi.**
+`fetch` `ok` bo'lsa yetarli deb hisoblanardi. Endi `mountedOk()`
+o'rnatishdan keyin `[data-variant]` ildizini va uning ichida kamida
+bitta bola borligini tekshiradi; yo'q bo'lsa mount tozalanadi va sabab
+kartasi qo'yiladi. O'lchov: bo'sh tana → «javob fragment emas
+(data-variant topilmadi)», begona HTML → o'sha xabar va `leaked: false`.
+
+**F3. Reestrda bitta `null` yozuv uchta variantni o'ldirardi.**
+`window.OM_GEO` dagi buzuq yozuv v4/v6/v7 ni to'xtatardi, lekin
+hisoblagich baribir `8/8` derdi. Endi har fragment reestrni o'qishdan
+oldin shaklini tekshiradi va buzuq yozuvni **o'tkazib yuboradi**, jami
+esa faqat haqiqatan o'qilgan yozuvlardan yig'iladi.
+
+**F4. Meta parseri notanish `@key` ni yutardi.** `@name/@idea/@best/@cost`
+dan boshqasi oldingi kalitning qiymatiga qo'shilib ketardi — v3 ning
+`@note` i ekranda «narx» matnining oxirida chiqib turardi. Endi regex
+keyingi `@[a-z]+:` da to'xtaydi. O'lchov: v3 `cost` 162 belgi,
+`hasNote: false`.
+
+**F5. Mezbon hodisaga skript ishga tushgandan KEYIN obuna bo'lardi.**
+Init paytida chiqadigan birinchi `scopechange` yo'qolardi va yonidagi
+panel bo'sh turardi. Endi obuna `runScripts` dan oldin. O'lchov:
+yuklangan zahoti `level=region · region=Andijon viloyati …`,
+`data-empty: "false"`.
+
+### Fragmentlar
+
+**F6–F7. Nol aholi soni yana fakt sifatida chiqardi.** v3 da mahalla
+`pop: 0` bo'lsa `~0`, `undefined` bo'lsa `~NaN`; v4 da `num()` o'zining
+nol qorovulini chetlab o'tardi. Ikkalasida ham raqam yo'qligi endi
+raqam emas — `—` va sababi yoziladi.
+
+**F8. v5 noma'lumlarni tashlab, to'liq hudud sonini da'vo qilardi.**
+Uch hududdan bittasida raqam bo'lmasa, jami qolgan ikkitasining
+yig'indisi bo'lardi-yu, ekran uni «3 hudud qamrovi» deb ko'rsatardi.
+Endi bitta noma'lum bo'lsa jami `—` ga tushadi va yo'l qatori
+«3 hududdan bir qismida son yo'q» deydi; ARIA matni ham,
+`scopechange` tanasidagi `reach` ham xuddi shuni aytadi — to'rt joy bir
+xil gapiradi.
+
+**F9. v1 chipi raqam qamragandan ko'proq hududni sanardi.** Endi chip
+«2/3 hududda raqam bor» deydi.
+
+**F10. v2 `~—` chiqarardi** — `~` prefiksi noma'lum qiymatga ham
+yopishtirilardi.
+
+**F11. Buzuq `localStorage` oxirgi tanlovlarni jimgina o'chirardi.**
+v3 `JSON.parse` xatosini yutib, ro'yxatni bo'shatardi — foydalanuvchi
+tanlovlari sababsiz yo'qolardi. Endi buzuq yoki begona shakldagi qiymat
+tozalanadi va ekranda «Saqlangan tanlovlar o'qib bo'lmadi va tozalandi —
+panel orqali qayta tanlang» deb aytiladi; bo'sh holat esa o'z matnini
+saqlab qoladi.
+
+### Verify (Playwright, real brauzer)
+
+- 1440 va 320px × light va dark: **0 kontrast xatosi**, sahifada
+  gorizontal scroll yo'q (`scrollWidth == clientWidth`), `pageerror`
+  va `console.error` bo'sh — har sakkiz variantda tanlov qilingandan
+  keyin o'lchandi.
+- Buzuq reestr (null yozuv + `pop:0` + `pop` siz hudud): ko'rinadigan
+  matnda `~0`/`~NaN` yo'q, o'lik variant yo'q.
+- `.v8-shift` ataylab yo'lakdan chiqadi (siljitgichni JS da o'lchamaslik
+  uchun) va `.v8-scale { overflow:hidden }` uni kesadi — ichida
+  fokuslanadigan element yo'q, sahifa scrolliga ta'sir qilmaydi.
+
+### Sabab va qoida
+
+Statik tekshiruvchi ko'ra olmaydigan narsalar: hisoblangan qiymat
+ekranga qanday chiqishi (`0`/`NaN`/`undefined`), kaskad natijasi,
+haqiqiy `scrollWidth`, hodisa tanasining ekranga mosligi, bir
+sahifadagi mustaqil bo'laklarning bir-biriga ta'siri. Shuning uchun
+ishga tushadigan artefakt chiqaradigan har workflow da **bajarish**
+bosqichi bo'lishi shart; statik bosqich «Statik ko'rib chiqish» deb
+nomlanadi, «Tekshirish» emas.

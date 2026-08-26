@@ -53,7 +53,7 @@
     "use strict";
     var root = document.querySelector('[data-variant="7"]');
     if (!root) return;
-    var GEO = window.OM_GEO || {}, REGIONS = Object.keys(GEO);
+    var GEO = window.OM_GEO || {}, REGIONS = Object.keys(GEO).filter(function (k) { return GEO[k] && typeof GEO[k] === "object"; }) /* buzuq yozuv (null) butun variantni oldirmasin */;
     var trail = root.querySelector("#v7-trail"), stage = root.querySelector("#v7-stage"), res = root.querySelector("#v7-res"), live = root.querySelector("#v7-say");
     var ICO = 'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"';
     /* O'lchamsiz `viewBox` li SVG uyasini to'ldirib yuboradi: `.empty-icon` da 40px bo'lib, stroke 1.6 ekranda 2.67px chiqardi. */

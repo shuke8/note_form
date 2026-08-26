@@ -29,7 +29,10 @@
     if (!block) return meta;
     var head = block[1];
     ["name", "idea", "best", "cost"].forEach(function (key) {
-      var m = head.match(new RegExp("@" + key + ":([\\s\\S]*?)(?=@(?:name|idea|best|cost):|$)"));
+      // Faqat to'rt kalitda to'xtash yetmaydi: fragmentdagi boshqa har qanday
+      // `@kalit:` (masalan ichki `@note:`) oxirgi maydonga yopishib, o'quvchiga
+      // ichki qurilish izohi bo'lib chiqadi.
+      var m = head.match(new RegExp("@" + key + ":([\\s\\S]*?)(?=\\s@[a-z]+:|$)", "i"));
       if (m) meta[key] = m[1].replace(/\s+/g, " ").trim();
     });
     return meta;
@@ -68,24 +71,43 @@
   }
 
   /* `innerHTML` qo'ygan skript ishga tushmaydi — nusxasini yaratamiz.
-     Xatoni yutmaymiz: buzuq fragment jimgina "bo'sh quti" bo'lib
-     qolsa, uning o'rniga sabab ko'rsatiladi. */
-  function runScripts(scope, slug) {
-    var ok = true;
-    scope.querySelectorAll("script").forEach(function (old) {
-      var fresh = document.createElement("script");
-      for (var i = 0; i < old.attributes.length; i++) {
-        fresh.setAttribute(old.attributes[i].name, old.attributes[i].value);
-      }
-      fresh.textContent = old.textContent;
-      try {
+
+     `try/catch` bu yerda ishlamaydi: inline skript SINXRON bajariladi,
+     lekin ichidagi xato spetsifikatsiya bo'yicha `window.onerror` ga
+     BERILADI, qo'yayotgan kodga qaytarilmaydi. Ya'ni otilgan fragment
+     jimgina bo'sh quti bo'lib qolardi. Shuning uchun natija SKRIPTDAN
+     KEYIN tekshiriladi — `mountedOk()`. */
+  function runScripts(scope) {
+    /* Inline skript SINXRON bajariladi, shuning uchun shu oyna ichida
+       otilgan har qanday xato AYNAN shu fragmentniki. `window` ga
+       vaqtincha ulanamiz — `try/catch` bu yerda ishlamaydi, chunki
+       klassik skript xatosi qo'yayotgan kodga qaytarilmaydi. */
+    var caught = null;
+    function onErr(e) { caught = caught || (e.message || "skriptda xato"); }
+    window.addEventListener("error", onErr, true);
+    try {
+      scope.querySelectorAll("script").forEach(function (old) {
+        var fresh = document.createElement("script");
+        for (var i = 0; i < old.attributes.length; i++) {
+          fresh.setAttribute(old.attributes[i].name, old.attributes[i].value);
+        }
+        fresh.textContent = old.textContent;
         old.replaceWith(fresh);
-      } catch (e) {
-        ok = false;
-        console.error("[variants] " + slug + " skripti ishlamadi", e);
-      }
-    });
-    return ok;
+      });
+    } finally {
+      window.removeEventListener("error", onErr, true);
+    }
+    return caught;
+  }
+
+  /* Fragment haqiqatan o'rnatildimi. HTTP 200 yetarli emas: bo'sh tana,
+     proksi xato sahifasi yoki yarim kelgan fayl ham 200 bilan keladi va
+     kartada begona kontent yoki bo'sh quti qolib ketardi. */
+  function mountedOk(mount) {
+    var root = mount.querySelector("[data-variant]");
+    if (!root) return "javob fragment emas (data-variant topilmadi)";
+    if (!root.querySelector("*")) return "fragment bo‘sh keldi";
+    return null;
   }
 
   function render(slug, text, order) {
@@ -128,10 +150,9 @@
 
     host.appendChild(card);
 
-    if (!runScripts(mount, slug)) {
-      mount.appendChild(failCard(slug, "skriptida xato bor, konsolga qarang"));
-    }
-
+    /* Obuna skriptdan OLDIN: fragment init paytida hodisa otsa (kontrakt
+       buni taqiqlamaydi), keyin ulansak birinchi qiymat yo'qolardi va
+       solishtirish sahifasining O'ZI yolg'on gapirardi. */
     mount.addEventListener("scopechange", function (e) {
       var d = e.detail || {};
       var parts = [
@@ -161,11 +182,20 @@
       out.setAttribute("data-empty", "false");
     });
 
+    var thrown = runScripts(mount);
+    var why = thrown ? ("skript otildi: " + thrown) : mountedOk(mount);
+    if (why) {
+      mount.innerHTML = "";
+      mount.appendChild(failCard(slug, why));
+      return false;
+    }
+
     var jump = el("a", "vx-jump");
     jump.href = "#vx-" + slug;
     jump.appendChild(el("b", null, String(order + 1).padStart(2, "0")));
     jump.appendChild(document.createTextNode(meta.name || slug));
     index.appendChild(jump);
+    return true;
   }
 
   function markCurrent() {
@@ -195,7 +225,7 @@
           if (!r.ok) throw new Error("HTTP " + r.status);
           return r.text();
         })
-        .then(function (text) { render(slug, text, i); loaded++; })
+        .then(function (text) { if (render(slug, text, i)) loaded++; })
         .catch(function (err) {
           var card = el("article", "vx-card");
           card.id = "vx-" + slug;

@@ -107,7 +107,15 @@
         if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, "") + (k || "K");   return String(n);
       }
       var GAPS = REGIONS.filter(function (r) { return popOf(GEO[r]) == null; }).length;   // soni kelmagan hududlar — jamini kam ko'rsatadi
-      var TOTAL = REGIONS.reduce(function (s, r) { return s + (popOf(GEO[r]) || 0); }, 0);
+      /* Noma'lum qo'shiluvchi 0 deb qo'shilsa, jami HAQIQATDAN kichik
+         chiqadi-yu, ekranda to'liq qamrovday ko'rinadi. Bunday holatda
+         jami umuman berilmaydi — ildiz qatoridagi «N hududda son yo'q»
+         izohi yagona to'g'ri javob bo'lib qoladi. */
+      var TOTAL = REGIONS.reduce(function (s, r) {
+        if (s === null) return null;
+        var p = popOf(GEO[r]);
+        return p == null ? null : s + p;
+      }, 0);
       function reach() {
         var L = state.level;   if (L === "republic") return num(TOTAL);   if (L === "region") return popOf(GEO[state.region]);
         if (L === "district") return popOf(districts(state.region)[state.district]);
@@ -153,7 +161,7 @@
         rootBtn.setAttribute("aria-pressed", state.level === "republic" ? "true" : "false");
         root.querySelector("#v5-reach").textContent = approx(reach());
         root.querySelector("#v5-path").textContent = !state.level ? HINT
-          : state.level === "republic" ? "O‘zbekiston Respublikasi · " + REGIONS.length + " hudud"
+          : state.level === "republic" ? "O‘zbekiston Respublikasi · " + (TOTAL == null ? REGIONS.length + " hududdan bir qismida son yo‘q" : REGIONS.length + " hudud")
           : [state.region, state.district, state.mahalla].filter(Boolean).join(" · ");
         if (ready) announce(state.level ? LABEL[state.level] + ". Taxminiy qamrov: " + say(reach()) + "." : "Tanlov tozalandi.");
       }
@@ -205,7 +213,7 @@
         var name = opts[to].dataset.name;   choose(i, name, true);   focusIn(i, name);
       }
       root.addEventListener("keydown", function (e) { still = true;   key(e);   still = false; });
-      rootBtn.setAttribute("aria-label", "O‘zbekiston Respublikasi — butun mamlakat, " + REGIONS.length + " hudud, " + say(TOTAL));
+      rootBtn.setAttribute("aria-label", "O‘zbekiston Respublikasi — butun mamlakat, " + REGIONS.length + " hudud, " + (TOTAL == null ? "jami aholi soni noma‘lum: ba‘zi hududda raqam yo‘q" : say(TOTAL)));
       rootBtn.querySelector(".v5-root-meta").textContent = REGIONS.length + " hudud · " + approx(TOTAL) + (GAPS ? " · " + GAPS + " hududda son yo‘q" : "");
       paint(0, true);   ready = true;
     } catch (e) { fail("fragment ishga tushmadi: " + (e && e.message)); }
