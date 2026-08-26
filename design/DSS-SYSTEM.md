@@ -629,3 +629,78 @@ sahifadagi mustaqil bo'laklarning bir-biriga ta'siri. Shuning uchun
 ishga tushadigan artefakt chiqaradigan har workflow da **bajarish**
 bosqichi bo'lishi shart; statik bosqich «Statik ko'rib chiqish» deb
 nomlanadi, «Tekshirish» emas.
+
+---
+
+## Qamrov: narvon → xarita (tanlangan yechim)
+
+Sakkiz variantdan foydalanuvchi **xarita** ni tanladi va bitta shart qo‘ydi:
+butun respublikani tanlash qulay bo‘lsin. Kompozitordagi eski narvon
+(to‘rtta daraja radiosi + uchta select) shu bilan almashtirildi.
+
+### Nega narvon olib tashlandi
+
+Narvonda «daraja» va «joy» ikki xil boshqaruv edi va ular bir-biridan
+uzilib qolardi: ekran «Viloyat» deb turib, `state` ichida eski mahalla
+qolib ketardi. Xaritada bunday holat MAVJUD EMAS — `goScope()` darajani
+va joyni bir vaqtda o‘rnatadi va joyi bo‘sh darajani umuman rad etadi.
+Shu sababli `validate()` dagi uchta «viloyatni tanlang / tumanni tanlang /
+mahallani tanlang» tekshiruvi o‘lik kodga aylandi va o‘chirildi.
+
+### Butun respublikani tanlashning uch yo‘li
+
+1. **Doimiy tugma.** Ro‘yxat qatori emas — panel tepasidagi tugma. Qator
+   bo‘lganida u tumanga kirilishi bilan yo‘qolardi va qaytish yo‘li faqat
+   kichkina yo‘l tugmasi edi: eng ko‘p ishlatiladigan qamrov eng chuqur
+   ko‘milgani bo‘lardi. Endi eng chuqur pog‘onadan ham **bir bosish**.
+   Tanlanganda u xaritadagi «on» katak bilan aynan bir xil gapiradi
+   (yumshoq alanga + qalin kontur), demak ko‘z ikkisini bitta holat deb
+   o‘qiydi.
+2. **Xarita foni.** Hududlar tashqarisidagi bo‘sh joy bosiladi. Kursor
+   ustiga kelganda butun xarita yumshoq alangaga bo‘yaladi va yuqorida
+   «BUTUN RESPUBLIKA» yorlig‘i chiqadi — gesture ko‘rinmas emas.
+   Fon `pointer-events` ni `.scope-map` dan meros qiladi, ya‘ni xarita
+   bosilmaydigan kenglikda (katak 44px dan kichik) u ham bosilmaydi va
+   izoh o‘sha holatda boshqa gap aytadi.
+3. **Yo‘l qatori va ArrowLeft.** «O‘zbekiston» crumb’i qamrovni
+   ko‘taradi; eng yuqori pog‘onada crumb tugmasi bo‘lmagani uchun
+   `upButton()` doimiy tugmaga tushadi — ArrowLeft hech qachon hech
+   qayerga olib bormay qolmaydi.
+
+Tugma bosilganda fokus ro‘yxatga **uloqtirilmaydi**: tugma o‘z joyida
+qoladi va `aria-current` bilan tanlovni o‘zi tasdiqlaydi.
+
+### Ikkinchi darajali, lekin muhim tuzatish
+
+Eski `REPUBLIC_POP` `|| 0` bilan yig‘ilardi: bitta hududda son bo‘lmasa
+qisman yig‘indi «butun respublika aholisi» deb ko‘rsatilardi — o‘ylab
+topilgan fakt. Endi bitta noma’lum bo‘lsa jami `—` ga tushadi, tugma
+«jami son noma’lum» deb yozadi va reestrdagi bo‘shliq ogohlantirishda
+nomi bilan aytiladi. Buzuq (null) yozuv butun qadamni o‘ldirmaydi —
+o‘tkazib yuboriladi.
+
+### Tor ekran
+
+Xarita 504px dan tor ustunda bosilmaydi (eng past katak 44px ga
+chiqmaydi). Shunday ekan u boshqaruvni 410px pastga surib turishi ham
+mumkin emas: 880px dan tor ekranda **panel birinchi**, xarita uning
+ostida tasdiq sifatida qoladi. Fokus tartibiga ta’sir qilmaydi — xarita
+`aria-hidden` va fokuslanmaydi.
+
+### Verify (real brauzer)
+
+- 8 viewport (1920…320) × light/dark: **0 kontrast xatosi**, overflow yo‘q,
+  `pageerror`/`console.error` yo‘q — respublika tanlangan va viloyat
+  ichiga kirilgan ikkala holatda ham o‘lchandi.
+- Torayish → kengayish: mahalla darajasidan viloyatga chiqilganda so‘rov
+  tanasida `district: null, mahalla: null` — ekran bilan tana bir xil.
+- Buzuq reestr (null yozuv + `pop` siz hudud): ekranda `~0`/`NaN` yo‘q,
+  o‘lik boshqaruv yo‘q. Reestr umuman yuklanmasa xarita ham, panel ham
+  yashiriladi — so‘ngan boshqaruv «bosib ko‘ring» deb aldaydi.
+- Faqat klaviatura: Enter tugmada → respublika; ArrowDown/ArrowRight →
+  viloyat ichiga; ArrowLeft → «Qamrovni butun respublikaga o‘zgartirish»
+  tugmasi; Enter → respublika va fokus doimiy tugmada.
+- Matn yozilganda ro‘yxat qayta qurilmaydi va fokus o‘g‘irlanmaydi
+  (`renderScope()` qamrov imzosi o‘zgarmasa chiqib ketadi).
+
+Kadrlar: `.screenshots/qamrov-xarita-*.png`

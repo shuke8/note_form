@@ -1,7 +1,7 @@
 <!-- @name: Xarita
      @idea: 14 hudud sxematik xaritada raqamlangan; bosilgan hudud yon paneldagi tuman va mahalla ro'yxatini ochadi, ro'yxat ustidagi kursor esa xaritani yoritadi.
      @best:  Operator hududni nomi bo'yicha emas, joylashuvi bo'yicha eslasa; «qaysi chekka», «qo'shni tuman» savoli muhim bo'lganda.
-     @cost:  Xarita faqat hudud darajasida gapira oladi — tuman va mahalla unda ko'rinmaydi; ustuni torayganda (katak 44px dan kichik) u ko'rsatkichga aylanadi va butun yuk ro'yxatga tushadi. -->
+     @cost:  Xarita hudud va butun respublika darajasida gapira oladi — tuman va mahalla unda ko'rinmaydi; ustuni torayganda (katak 44px dan kichik) u ko'rsatkichga aylanadi va butun yuk ro'yxatga tushadi. -->
 <section class="v4" data-variant="4" aria-labelledby="v4-title">
   <h3 class="v4-title" id="v4-title" hidden>Xarita</h3>
   <div class="v4-grid">
@@ -9,10 +9,19 @@
          Chizmani tasvirlash ham, bir tanlovni ikki marta Tab zanjiriga qo'yish ham — yuk, foyda emas. -->
     <figure class="v4-mapwrap tile" aria-hidden="true">
       <svg class="v4-map" id="v4-svg" viewBox="0 0 480 300" focusable="false"></svg>
-      <figcaption class="v4-cap hint">Sxematik chizma: chegaralar taxminiy, rasmiy karta emas. Tuman va mahalla xaritada ko‘rsatilmaydi — ular ro‘yxatda tanlanadi.
-        <span class="v4-cap-narrow">Bu kenglikda xarita katagi 44px dan kichik — u faqat ko‘rsatkich; tanlash ro‘yxatdan.</span></figcaption>
+      <span class="v4-maphint mono" id="v4-maphint">Butun respublika</span>
+      <figcaption class="v4-cap hint">Sxematik chizma: chegaralar taxminiy, rasmiy karta emas.
+        <span class="v4-cap-wide">Hududni bosing; hududlar tashqarisidagi bo‘sh joy — butun respublika.</span><span class="v4-cap-narrow">Bu kenglikda xarita katagi 44px dan kichik — u faqat ko‘rsatkich; tanlash «Butun respublika» tugmasi va ro‘yxatdan.</span>
+        Tuman va mahalla xaritada ko‘rsatilmaydi — ular ro‘yxatda tanlanadi.</figcaption>
     </figure>
     <div class="v4-panel">
+      <!-- Butun respublika ro‘yxat qatori EMAS, doimiy tugma. Qator bo‘lganida u tumanga kirilishi bilan yo‘qolardi
+           va qaytish yo‘li faqat kichkina yo‘l tugmasi edi — eng ko‘p ishlatiladigan qamrov eng chuqur ko‘milgani. -->
+      <button type="button" class="v4-all-btn" id="v4-all">
+        <span class="v4-all-ring" aria-hidden="true"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" focusable="false"><circle cx="11" cy="11" r="7.6"></circle><path d="M3.4 11h15.2M11 3.4c2.1 2.5 2.1 12.7 0 15.2c-2.1-2.5-2.1-12.7 0-15.2Z"></path></svg></span>
+        <span class="v4-all-txt"><span class="v4-all-name">Butun respublika</span><span class="v4-all-sub" id="v4-all-sub"></span></span>
+        <span class="v4-all-pop mono" id="v4-all-pop">—</span>
+      </button>
       <nav class="v4-crumbs" id="v4-crumbs" aria-label="Tanlangan qamrov yo‘li"></nav>
       <p class="eyebrow eyebrow-sm" id="v4-lvl"></p>
       <ul class="v4-list" id="v4-list" role="list" aria-labelledby="v4-lvl"></ul>
@@ -24,10 +33,10 @@
     <span>Bu — ko‘rinish namunasi: server yo‘q, hech narsa yuborilmaydi. Aholi raqamlari namuna reestridan olingan <b>taxminiy</b> qiymatlar.</span></p>
 </section>
 <style>
-  .v4 { display: block; } .v4 .v4-cap { margin-top: 8px; } .v4 .v4-cap-narrow { display: inline; }
+  .v4 { display: block; } .v4 .v4-cap { margin-top: 8px; } .v4 .v4-cap-narrow { display: inline; } .v4 .v4-cap-wide { display: none; }
   .v4 .v4-grid { display: grid; grid-template-columns: minmax(0,1.02fr) minmax(0,.98fr); gap: var(--gap-group); align-items: start; }
   /* Yuza — tizimning `.tile` si (nuqtali to'r + hairline); bu yerda faqat ichki bo'shliq va o'lchov konteyneri qo'shiladi. */
-  .v4 .v4-mapwrap { margin: 0; padding: 12px 12px 8px; container-type: inline-size; } .v4 .v4-map { width: 100%; height: auto; pointer-events: none; }
+  .v4 .v4-mapwrap { position: relative; margin: 0; padding: 12px 12px 8px; container-type: inline-size; } .v4 .v4-map { width: 100%; height: auto; pointer-events: none; }
   .v4 .v4-cell { transform-box: fill-box; transform-origin: 50% 50%; transition: transform var(--d-hover) var(--ease-out); }
   /* Chegara `--edge` — 1.4.11 bo'yicha 3:1 dan yuqori; `--ghost` (tugma to'ldirishi) bu yerda 1.1:1 berardi, shakllar ko'rinmasdi. */
   .v4 .v4-rg { fill: var(--paper-sunk); stroke: var(--edge); stroke-width: 1.5; }
@@ -38,8 +47,28 @@
   .v4 .v4-cell[data-state="on"] .v4-rg { fill: var(--flame-soft); stroke: var(--flame-solid); stroke-width: 2.5; } .v4 .v4-cell[data-state="on"] .v4-num { fill: var(--flame-ink); }
   /* Xarita FAQAT O'Z USTUNI 504px dan keng bo'lganda bosiladi: eng past katak (300 birlikdan 42 tasi) shunda 44px ga chiqadi.
      Viewport eni yolg'on o'lchov edi — ikki ustunli maketda xarita undan ikki barobar tor bo'ladi. Tor holatda raqam 11px dan kichik chiqadi: o'qib bo'lmaydigan belgidan ko'ra yo'qligi halolroq. */
-  @container (min-width: 504px) { .v4 .v4-map { pointer-events: auto; } .v4 .v4-cell { cursor: pointer; } .v4 .v4-cap-narrow { display: none; } }
+  @container (min-width: 504px) { .v4 .v4-map { pointer-events: auto; } .v4 .v4-cell { cursor: pointer; } .v4 .v4-cap-narrow { display: none; } .v4 .v4-cap-wide { display: inline; } }
   @container (max-width: 503.98px) { .v4 .v4-num { display: none; } }
+  /* Bosiladigan fon: kataklardan TASHQARIDAGI bo‘sh joy — «hammasi». Ko‘rinmas, lekin ustidagi yorliq va butun xaritaning yonishi uni aytib turadi. */
+  .v4 .v4-back { fill: transparent; }
+  .v4 .v4-maphint { position: absolute; left: 20px; top: 20px; z-index: 1; padding: 5px 11px; border-radius: var(--r-pill); background: var(--ink); color: var(--paper); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); text-transform: uppercase; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity var(--d-hover) var(--ease-out), transform var(--d-hover) var(--ease-out); }
+  .v4[data-allhot="true"] .v4-maphint { opacity: 1; transform: none; }
+  /* `:not([data-state="on"])` — tanlangan katak kuchini YO‘QOTMASIN; respublika tanlanganida hamma katak «on», demak bu qoida umuman ishlamaydi. */
+  .v4[data-allhot="true"] .v4-cell:not([data-state="on"]) .v4-rg { fill: var(--flame-soft); stroke: var(--flame-line); }
+  /* Tanlangan tugma xaritadagi «on» katak bilan AYNAN bir xil gapiradi (yumshoq alanga + qalin kontur) — ko‘z ikkisini bitta holat deb o‘qiydi. */
+  .v4 .v4-all-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: var(--r-5); text-align: left; color: var(--ink); background: var(--paper-sunk); box-shadow: inset 0 0 0 1px var(--hairline); transition: background var(--d-hover) var(--ease-out), box-shadow var(--d-hover) var(--ease-out), transform var(--d-tap) var(--ease-out); }
+  .v4 .v4-all-ring { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: var(--r-pill); background: var(--paper); box-shadow: inset 0 0 0 1px var(--hairline); color: var(--ink-2); }
+  .v4 .v4-all-ring svg { width: 20px; height: 20px; }
+  .v4 .v4-all-txt { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .v4 .v4-all-name { font-size: var(--t-ui); font-weight: 600; }
+  .v4 .v4-all-sub { font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink-2); }
+  .v4 .v4-all-pop { flex: none; font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  @media (hover: hover) { .v4 .v4-all-btn:hover { background: var(--ghost); } }
+  .v4 .v4-all-btn:active { transform: scale(.99); }
+  .v4 .v4-all-btn[data-hot="true"] { box-shadow: inset 0 0 0 1.5px var(--flame-line); }
+  .v4 .v4-all-btn[aria-current="true"] { background: var(--flame-soft); box-shadow: inset 0 0 0 2px var(--flame-solid); }
+  .v4 .v4-all-btn[aria-current="true"] :is(.v4-all-name, .v4-all-sub, .v4-all-pop) { color: var(--flame-ink); }
+  .v4 .v4-all-btn[aria-current="true"] .v4-all-ring { background: var(--paper); color: var(--flame-ink); box-shadow: inset 0 0 0 1px var(--flame-line); }
   .v4 .v4-panel { display: flex; flex-direction: column; gap: 10px; min-width: 0; } .v4 .v4-crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; min-height: 30px; }
   .v4 .v4-crumb { display: inline-flex; align-items: center; min-height: 26px; padding: 4px 7px; border-radius: var(--r-2); font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink); }
   @media (pointer: coarse) { .v4 .v4-crumb { min-height: 44px; } }  /* sensorli ekranda «yuqoriga chiqish» yagona yo'l shu — nishon to'liq 44px (2.5.5) */
@@ -48,18 +77,17 @@
   .v4 .v4-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 10px; border-radius: var(--r-3); text-align: left; color: var(--ink); transition: transform var(--d-tap) var(--ease-out); }
   @media (hover: hover) { .v4 .v4-crumb-btn:hover { background: var(--ghost); color: var(--ink); } .v4 .v4-row:hover { background: var(--ghost); } }
   .v4 .v4-row:active { transform: scale(.985); } .v4 .v4-row[data-hot="true"] { background: var(--flame-soft); } .v4 .v4-row[aria-current="true"] { background: var(--ink); color: var(--paper); }
-  /* Ramka `box-shadow` bilan: `border` quti ichini 1px surib, indeks ustunini qo'shni qatorlardan chiqarib yuborardi. */
-  .v4 .v4-row-all { box-shadow: inset 0 0 0 1px var(--flame-line); } .v4 .v4-idx, .v4 .v4-all { flex: none; width: 22px; } .v4 .v4-all { height: 22px; color: var(--flame-ink); }
+  .v4 .v4-idx { flex: none; width: 22px; }
   .v4 .v4-idx, .v4 .v4-pop { font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); } .v4 .v4-idx { color: var(--ink-2); } /* --ink-3 dekorativ: oq ustida 3.5:1, matn uchun AA dan o‘tmaydi */ .v4 .v4-pop { flex: none; color: var(--ink-2); } .v4 .v4-sub { color: var(--ink-2); }
   .v4 .v4-name { flex: 1 1 auto; min-width: 0; font-size: var(--t-ui); overflow-wrap: anywhere; } .v4 .v4-chev { flex: none; width: 14px; height: 14px; color: var(--ink-3); }
   /* Tanlangan qatorda RANG ham almashadi: yolg'iz `opacity` qora fon ustida qora raqamni butunlay yo'qotardi. */
-  .v4 .v4-row[aria-current="true"] :is(.v4-idx, .v4-all, .v4-pop, .v4-sub, .v4-chev) { color: var(--paper); opacity: .86; }
+  .v4 .v4-row[aria-current="true"] :is(.v4-idx, .v4-pop, .v4-sub, .v4-chev) { color: var(--paper); opacity: .86; }
   .v4 .v4-sum { border-top: 1px solid var(--hairline); padding-top: 12px; } .v4 .v4-note { margin-top: var(--gap-row); } .v4 .v4-reach { display: flex; align-items: baseline; gap: 8px; margin-top: 5px; }
   /* `line-height: 1.1` ataylab: bitta qatorli katta raqam; `--lh-d3` (1.25) yonidagi «kishi» so'zini baza chizig'idan pastga tushirardi. */
   .v4 .v4-reach b { font-family: var(--mono); font-weight: 500; font-size: var(--t-d3); line-height: 1.1; color: var(--ink); font-variant-numeric: tabular-nums; }
   .v4 .v4-path { margin-top: 4px; font-size: var(--t-body); letter-spacing: var(--ls-body); color: var(--ink); }
   @media (max-width: 860px) { .v4 .v4-grid { grid-template-columns: 1fr; } .v4 .v4-list { max-height: none; } }
-  @media (max-width: 400px) { .v4 .v4-row { gap: 8px; padding-inline: 8px; } .v4 .v4-idx, .v4 .v4-all { width: 20px; } }
+  @media (max-width: 400px) { .v4 .v4-row { gap: 8px; padding-inline: 8px; } .v4 .v4-idx { width: 20px; } }
 </style>
 <script>
 (function () {
@@ -69,10 +97,11 @@
   var GEO = window.OM_GEO || {}, NAMES = Object.keys(GEO).filter(function (k) { return GEO[k] && typeof GEO[k] === "object"; }) /* buzuq yozuv (null) butun variantni oldirmasin */;
   var q = function (n) { return root.querySelector("#v4-" + n); };
   var svg = q("svg"), listEl = q("list"), crumbEl = q("crumbs"), sumEl = q("sum"), lvlEl = q("lvl"), liveEl = q("live");
+  var allBtn = q("all"), allSub = q("all-sub"), allPop = q("all-pop");
   var WARN = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 2.9 18.6 17.4H1.4Z"></path><path d="M10 8.4v3.6M10 14.6h.01"></path></svg>';
   /* Reestr yuklanmasa qamrov TANLANMAYDI. «0 kishi» yolg'on bo'lardi: nol «hech kim» degani, bu yerda esa «bilmaymiz». */
   if (!NAMES.length) {
-    crumbEl.hidden = lvlEl.hidden = listEl.hidden = true; root.querySelector(".v4-mapwrap").hidden = true;
+    crumbEl.hidden = lvlEl.hidden = listEl.hidden = allBtn.hidden = true; root.querySelector(".v4-mapwrap").hidden = true;
     /* Butun jumla BITTA `<span>` ichida: `.note` — flex konteyner, bo'lingan matn 12px oraliqli tor ustunlarga siqilardi. */
     sumEl.innerHTML = '<p class="note note-crit">' + WARN + '<span>Hudud reestri (<span class="mono">OM_GEO</span> — <span class="mono">assets/composer-data.js</span>) yuklanmadi. Qamrovni tanlab bo‘lmaydi va taxminiy raqam ham ko‘rsatilmaydi.</span></p>';
     return;
@@ -84,7 +113,6 @@
     ["Toshkent shahri", "M352 58 394 60 398 96 360 100 344 80Z", 372, 82], ["Sirdaryo", "M352 108 396 100 410 130 378 150 352 138Z", 378, 126], ["Namangan", "M414 106 462 100 472 136 432 148 410 132Z", 440, 126], ["Farg", "M398 152 432 158 436 186 406 200 384 176Z", 412, 176], ["Andijon", "M440 152 474 146 478 180 444 190 434 172Z", 456, 172]
   ];
   var CHEV = '<svg class="v4-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3.5 10.5 8 6 12.5"></path></svg>';
-  var ALL = '<svg class="v4-all" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7.6"></circle><path d="M3.4 11h15.2M11 3.4c2.1 2.5 2.1 12.7 0 15.2c-2.1-2.5-2.1-12.7 0-15.2Z"></path></svg>';
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function pad(n) { return (n < 10 ? "0" : "") + n; }
   /* Yaxlitlash composer bilan bir xil — 2 400 kishini «~2K» ga aylantirib yubormaydi. */
@@ -95,6 +123,10 @@
   var noPop = NAMES.filter(function (n) { var p = GEO[n].pop; return !(typeof p === "number" && isFinite(p) && p > 0); }); /* 0/NaN ham "raqam yo'q" — aks holda jami NaN bo'lib chiqardi */
   /* Bitta hududning soni yetishmasa respublika yig'indisi ham YO'Q: `|| 0` qisman yig'indini «butun respublika» deb ko'rsatardi — o'ylab topilgan fakt. */
   var TOTAL = noPop.length ? null : NAMES.reduce(function (s, n) { return s + GEO[n].pop; }, 0);
+  /* Tugma yozuvi bir marta yoziladi va boshqa o‘zgarmaydi: respublika yig‘indisi ham, hudud soni ham reestr bilan qotgan.
+     Shu sababli `render()` tugmani QAYTA YARATMAYDI — faqat holat atributini almashtiradi, demak undagi fokus saqlanadi. */
+  allPop.textContent = num(TOTAL);
+  allSub.textContent = "Reestrdagi barcha " + NAMES.length + " hudud" + (TOTAL == null ? " · jami son noma’lum" : "");
   function dists(r) { return (GEO[r] && GEO[r].districts) || {}; }
   function mahs(r, d) { var x = dists(r)[d]; return (x && x.mahallas) || {}; }
   var st = { level: null, region: null, district: null, mahalla: null }, lastSig = "";
@@ -108,6 +140,7 @@
   /* Nom reestrda topilmasa shakl chizilmaydi — hech qayerga olib bormaydigan hudud bosilmasin. */
   var cells = {}, NS = "http://www.w3.org/2000/svg";
   function mk(t, a) { var e = document.createElementNS(NS, t); for (var k in a) e.setAttribute(k, a[k]); return e; }
+  svg.appendChild(mk("rect", { "class": "v4-back", x: "0", y: "0", width: "480", height: "300" }));
   MAP.forEach(function (m) {
     var name = null, i;
     for (i = 0; i < NAMES.length; i++) if (NAMES[i].indexOf(m[0]) === 0) { name = NAMES[i]; break; }
@@ -126,7 +159,7 @@
     if (st.level === "region") return Object.keys(dists(st.region)).map(function (n, i) { return { k: "district", n: n, p: dists(st.region)[n].pop, idx: i + 1, deep: true }; });
     if (st.level === "district" || st.level === "mahalla") { var m = mahs(st.region, st.district);
       return Object.keys(m).map(function (n, i) { return { k: "mahalla", n: n, p: m[n], idx: i + 1 }; }); }
-    var out = [{ k: "republic", n: "Butun respublika", p: TOTAL, sub: NAMES.length + " hudud" }];
+    var out = [];
     NAMES.forEach(function (n, i) { out.push({ k: "region", n: n, p: GEO[n].pop, idx: i + 1, deep: true }); }); return out;
   }
   /* `aria-current` — `aria-pressed` EMAS: qator «bosilgan/bo'shatilgan» emas, «hozirgi tanlov». Qayta bosish holatni o'zgartirmaydi, demak o'chirilishini va'da qilish yolg'on bo'lardi. */
@@ -134,9 +167,9 @@
     var rows = rowsFor();
     if (!rows.length) { listEl.innerHTML = '<li class="v4-empty hint">Reestrda bu pog‘ona uchun yozuv yo‘q — qamrov yuqoridagi darajada qoladi.</li>'; return; }
     listEl.innerHTML = rows.map(function (it) {
-      var on = (it.k === "republic" && st.level === "republic") || (it.k === "mahalla" && st.mahalla === it.n);
-      return '<li><button type="button" class="v4-row' + (it.k === "republic" ? " v4-row-all" : "") + '" data-kind="' + it.k + '" data-name="' + esc(it.n) + '"' + (on ? ' aria-current="true"' : "") + ">" +
-        (it.k === "republic" ? ALL : '<span class="v4-idx mono">' + pad(it.idx) + "</span>") + '<span class="v4-name">' + esc(it.n) + (it.sub ? ' <span class="v4-sub">· ' + esc(it.sub) + "</span>" : "") + "</span>" + '<span class="v4-pop mono">' + num(it.p) + "</span>" + (it.deep ? CHEV : "") + "</button></li>";
+      var on = it.k === "mahalla" && st.mahalla === it.n;
+      return '<li><button type="button" class="v4-row" data-kind="' + it.k + '" data-name="' + esc(it.n) + '"' + (on ? ' aria-current="true"' : "") + ">" +
+        '<span class="v4-idx mono">' + pad(it.idx) + "</span>" + '<span class="v4-name">' + esc(it.n) + (it.sub ? ' <span class="v4-sub">· ' + esc(it.sub) + "</span>" : "") + "</span>" + '<span class="v4-pop mono">' + num(it.p) + "</span>" + (it.deep ? CHEV : "") + "</button></li>";
     }).join("");
   }
   /* Crumb sof navigatsiya EMAS — u qamrovni o'sha darajaga KO'TARADI, shuning uchun label harakatni aytadi: «qaytish» desa, ko'r foydalanuvchi 450 ming o'rniga 35 millionni tasdiqlab qo'yardi. */
@@ -151,7 +184,7 @@
     }).join("");
   }
   function renderSum() {
-    if (!st.level) return void (sumEl.innerHTML = '<div class="empty"><span class="empty-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17.6S15.4 12.9 15.4 8.7A5.4 5.4 0 0 0 4.6 8.7C4.6 12.9 10 17.6 10 17.6Z"></path><circle cx="10" cy="8.6" r="2"></circle></svg></span><p class="empty-title">Qamrov tanlanmagan</p><p>Xaritadan hududni bosing yoki ro‘yxatdan tanlang. Xabar kimga ketishini tizim o‘zi taxmin qilmaydi.</p></div>');
+    if (!st.level) return void (sumEl.innerHTML = '<div class="empty"><span class="empty-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17.6S15.4 12.9 15.4 8.7A5.4 5.4 0 0 0 4.6 8.7C4.6 12.9 10 17.6 10 17.6Z"></path><circle cx="10" cy="8.6" r="2"></circle></svg></span><p class="empty-title">Qamrov tanlanmagan</p><p>Butun respublika uchun yuqoridagi tugmani bosing; tor qamrov uchun xaritadan hududni yoki ro‘yxatdan qatorni tanlang. Xabar kimga ketishini tizim o‘zi taxmin qilmaydi.</p></div>');
     var r = reach(), share = r == null || TOTAL == null ? null : (r / TOTAL) * 100;
     sumEl.innerHTML = '<p class="eyebrow eyebrow-sm">Taxminiy qamrov</p><p class="v4-reach"><b>' + num(r) + "</b><span>" +
       (r == null ? "reestrda bu pog‘ona uchun son yo‘q" : "kishi" + (st.level === "republic" ? " · reestrdagi barcha hududlar" : share == null ? "" : " · reestrdagi jami aholining " + (share < 0.1 ? "0,1% dan kam" : "~" + share.toFixed(1).replace(".", ",") + "%"))) +
@@ -159,10 +192,13 @@
   }
   function rowByName(n) { var a = listEl.querySelectorAll(".v4-row"), i;
     for (i = 0; i < a.length; i++) if (a[i].getAttribute("data-name") === n) return a[i]; return null; }
-  function upBtn() { var b = crumbEl.querySelectorAll(".v4-crumb-btn"); return b.length ? b[b.length - 1] : null; }
+  /* Yuqoriga chiqish tugmasi bo‘lmasa (eng yuqori pog‘ona) — doimiy tugma. ArrowLeft hech qachon hech qayerga olib bormay qolmaydi. */
+  function upBtn() { var b = crumbEl.querySelectorAll(".v4-crumb-btn"); return b.length ? b[b.length - 1] : allBtn; }
   function render(moveFocus, silent) {
     var act = document.activeElement === document.body && preRow ? preRow : document.activeElement, keep = listEl.contains(act) ? act.getAttribute("data-name") : null;
     renderCrumbs(); renderList(); renderSum();
+    /* Tugma QAYTA YARATILMAYDI — atribut almashadi, shuning uchun undagi fokus va o‘tish animatsiyasi joyida qoladi. */
+    if (st.level === "republic") allBtn.setAttribute("aria-current", "true"); else allBtn.removeAttribute("aria-current");
     Object.keys(cells).forEach(function (n) { cells[n].setAttribute("data-state",
       st.level === "republic" ? "on" : !st.region ? "idle" : n === st.region ? "on" : "dim"); });
     var rows = listEl.querySelectorAll(".v4-row"), r = reach();
@@ -173,7 +209,8 @@
     /* `innerHTML` fokusdagi tugmani yo'q qiladi — fokus <body> ga tushsa, keyingi Tab butun hujjat boshidan boshlanardi.
        Shuning uchun: o'sha nomli qator qolgan bo'lsa — o'sha; ro'yxat butunlay almashgan bo'lsa — birinchi qator; ro'yxat bo'sh bo'lsa — yuqoriga chiqish tugmasi. */
     var f = keep == null ? null : rowByName(keep);
-    if (!f && (moveFocus || keep != null)) f = listEl.querySelector('.v4-row[aria-current="true"]') || rows[0] || upBtn();
+    /* Respublikaga o‘tilganda fokus RO‘YXATGA sakramaydi: bosilgan yo‘l tugmasi yo‘qoldi, uning o‘rnini bosgan nishon — doimiy tugma. */
+    if (!f && (moveFocus || keep != null)) f = listEl.querySelector('.v4-row[aria-current="true"]') || (st.level === "republic" ? allBtn : null) || rows[0] || upBtn();
     if (f) f.focus();
     /* Holat o'zgarmagan bo'lsa hodisa YO'Q: audit jurnaliga bo'lmagan o'zgarish yozilmasin. */
     var sig = [st.level, st.region, st.district, st.mahalla, r].join("|");
@@ -191,6 +228,10 @@
   function hot(t) {
     var c = t && t.closest && (t.closest(".v4-cell") || t.closest('.v4-row[data-kind="region"]'));
     var name = c ? c.getAttribute("data-r") || c.getAttribute("data-name") : null;
+    /* Fon yoki doimiy tugma ustidagi kursor «hammasi» ni OLDINDAN ko‘rsatadi: butun xarita yumshoq alangaga bo‘yaladi va yorliq chiqadi. */
+    var all = !c && !!(t && t.closest && (t.closest(".v4-back") || t.closest(".v4-all-btn")));
+    root.setAttribute("data-allhot", all ? "true" : "false");
+    allBtn.setAttribute("data-hot", all ? "true" : "false");
     Object.keys(cells).forEach(function (k) { cells[k].setAttribute("data-hot", k === name ? "true" : "false"); });
     listEl.querySelectorAll('.v4-row[data-kind="region"]').forEach(function (b) { b.setAttribute("data-hot", b.getAttribute("data-name") === name ? "true" : "false"); });
   }
@@ -198,8 +239,12 @@
   root.addEventListener("pointerdown", function () { preRow = listEl.contains(document.activeElement) ? document.activeElement : null; });
   root.addEventListener("click", function (e) {
     var t = e.target, row = t.closest && t.closest(".v4-row"), up = t.closest && t.closest(".v4-crumb-btn"), cell = t.closest && t.closest(".v4-cell");
+    var all = t.closest && t.closest(".v4-all-btn"), back = t.closest && t.closest(".v4-back");
     if (row) go(row.getAttribute("data-kind"), row.getAttribute("data-name"), true); else if (up) go(up.getAttribute("data-up"), null, true);
+    /* `moveFocus` YO‘Q: tugma o‘z joyida qoladi va `aria-current` bilan tanlovni o‘zi tasdiqlaydi — fokusni ro‘yxatga uloqtirish kerak emas. */
+    else if (all) go("republic", null, false);
     else if (cell) go("region", cell.getAttribute("data-r"), false);
+    else if (back) go("republic", null, false);
   });
   root.addEventListener("keydown", function (e) {
     var row = e.target.closest && e.target.closest(".v4-row"), k = e.key;

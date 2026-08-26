@@ -70,13 +70,18 @@
      yonidagi select esa o'sha darajaning hududini beradi.
   ------------------------------------------------------------------------- */
   var LEVELS = ["republic", "region", "district", "mahalla"];
-  var LEVEL_LABEL = { republic: "Respublika", region: "Viloyat", district: "Tuman", mahalla: "Mahalla" };
 
-  var REPUBLIC_POP = (function () {
-    var total = 0;
-    Object.keys(GEO).forEach(function (r) { total += GEO[r].pop || 0; });
-    return total;
-  })();
+  /* Reestrda buzuq yozuv (null, satr) bo'lsa u BUTUN qadamni o'ldirmasin —
+     o'tkazib yuboriladi va yig'indi faqat haqiqatan o'qilganidan yig'iladi. */
+  var NAMES = Object.keys(GEO).filter(function (k) { return GEO[k] && typeof GEO[k] === "object"; });
+
+  function hasPop(v) { return typeof v === "number" && isFinite(v) && v > 0; }
+
+  /* Bitta hududning soni yetishmasa respublika yig'indisi ham YO'Q.
+     `|| 0` qisman yig'indini «butun respublika aholisi» deb ko'rsatardi —
+     o'ylab topilgan fakt: ekran bilmagan narsasini biladi deb da'vo qilardi. */
+  var NO_POP = NAMES.filter(function (n) { return !hasPop(GEO[n].pop); });
+  var REPUBLIC_POP = NO_POP.length ? null : NAMES.reduce(function (s, n) { return s + GEO[n].pop; }, 0);
 
   /* Raqam o'qiladigan bo'lsin: 35 100 000 emas, 35.1M. Yaxlitlash darajasi
      kattalikka qarab — 2.4K va 2.44K orasida farq operatorga kerak emas. */
@@ -84,23 +89,13 @@
     if (n == null) return null;
     if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
     // 10K dan past qiymatda o'nlik saqlanadi: mahalla 2 400 kishi bo'lsa
-    // «~2K» uni chorak qismga yaxlitlab yuboradi.
+    // «~2K» uni chorak qismga yaxlitlab yuborardi.
     if (n >= 1e4) return Math.round(n / 1e3) + "K";
     if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, "") + "K";
     return String(n);
   }
-
-  function fillSelect(sel, items, placeholder) {
-    sel.innerHTML = "";
-    var opt = document.createElement("option");
-    opt.value = ""; opt.textContent = placeholder;
-    sel.appendChild(opt);
-    items.forEach(function (name) {
-      var o = document.createElement("option");
-      o.value = name; o.textContent = name;
-      sel.appendChild(o);
-    });
-  }
+  /* Son yo'q bo'lsa «~0» emas, «—»: nol «hech kim» degani, tire «reestr aytmagan» degani. */
+  function popText(n) { return hasPop(n) ? "~" + formatPop(n) : "—"; }
 
   function districtsOf(region) { return (GEO[region] && GEO[region].districts) || {}; }
   function mahallasOf(region, district) {
@@ -108,17 +103,14 @@
     return (d && d.mahallas) || {};
   }
 
-  /* Har darajaning taxminiy qamrovi. Tanlanmagan bo'lsa null — ekranda
-     «—» chiqadi, nol EMAS: nol «hech kim» degan ma'noni berardi. */
+  /* Har darajaning taxminiy qamrovi. Tanlanmagan yoki reestrda yo'q bo'lsa
+     null — ekranda «—» chiqadi, nol EMAS: nol «hech kim» degan ma'noni berardi. */
   function reachOf(level) {
-    if (level === "republic") return REPUBLIC_POP;
-    if (level === "region")   return state.region ? GEO[state.region].pop : null;
-    if (level === "district") {
-      if (!state.region || !state.district) return null;
-      return districtsOf(state.region)[state.district].pop;
-    }
-    if (!state.region || !state.district || !state.mahalla) return null;
-    return mahallasOf(state.region, state.district)[state.mahalla];
+    var v = level === "republic" ? REPUBLIC_POP
+      : level === "region" ? (state.region ? GEO[state.region].pop : null)
+      : level === "district" ? (state.region && state.district ? districtsOf(state.region)[state.district].pop : null)
+      : (state.region && state.district && state.mahalla ? mahallasOf(state.region, state.district)[state.mahalla] : null);
+    return hasPop(v) ? v : null;
   }
 
   function currentReach() {
@@ -136,50 +128,252 @@
     return parts.length ? parts : null;
   }
 
-  /* Narvondan YUQORIGA chiqilganda pastdagi tanlovlar tozalanadi.
-     Aks holda ekran «Viloyat» deb turadi, `state` esa mahallani ushlab
-     qoladi va so'rov tanasiga tushadi — ekran bilan tana bir-biriga
-     zid ikki narsani aytadi. */
-  function clearBelow(level) {
-    var depth = LEVELS.indexOf(level);
-    if (depth < 3) { state.mahalla = ""; $("fMahalla").value = ""; }
-    if (depth < 2) {
-      state.district = ""; $("fDistrict").value = "";
-      fillSelect($("fMahalla"), [], "Avval tumanni tanlang");
-    }
-    if (depth < 1) {
-      state.region = ""; $("fRegion").value = "";
-      fillSelect($("fDistrict"), [], "Avval viloyatni tanlang");
-    }
+  /* ---------------------------------------------------------------------------
+     01 QAMROV — XARITA
+     Qamrov = TURGAN JOYING. Daraja alohida tanlanmaydi: `goScope` darajani va
+     joyni BIR VAQTDA o'rnatadi, shuning uchun ekran bilan so'rov tanasi
+     bir-biridan uzilib qololmaydi.
+  ------------------------------------------------------------------------- */
+  /* [reestr nomining boshlanishi, path, raqam X, raqam Y] — soddalashtirilgan chizma, rasmiy karta emas. */
+  var MAP_SHAPES = [
+    ["Qoraqalpog", "M14 16 152 16 152 92 120 128 58 148 14 116Z", 80, 74],
+    ["Xorazm", "M50 158 110 138 126 164 104 196 58 192Z", 88, 168],
+    ["Navoiy", "M156 18 268 30 288 82 278 96 242 130 188 140 156 102Z", 216, 80],
+    ["Buxoro", "M128 162 182 144 238 138 250 192 204 224 144 208Z", 192, 182],
+    ["Samarqand", "M252 138 298 128 330 156 320 188 282 196 248 172Z", 288, 162],
+    ["Jizzax", "M296 80 332 66 352 104 336 142 302 118 292 94Z", 322, 104],
+    ["Qashqadaryo", "M244 208 296 202 338 222 330 262 272 266 240 238Z", 288, 236],
+    ["Surxondaryo", "M342 232 378 216 408 246 398 292 352 288 338 262Z", 372, 258],
+    ["Toshkent viloyati", "M344 16 440 12 464 56 440 100 398 94 390 58 346 54Z", 424, 48],
+    ["Toshkent shahri", "M352 58 394 60 398 96 360 100 344 80Z", 372, 82],
+    ["Sirdaryo", "M352 108 396 100 410 130 378 150 352 138Z", 378, 126],
+    ["Namangan", "M414 106 462 100 472 136 432 148 410 132Z", 440, 126],
+    ["Farg", "M398 152 432 158 436 186 406 200 384 176Z", 412, 176],
+    ["Andijon", "M440 152 474 146 478 180 444 190 434 172Z", 456, 172]
+  ];
+  var CHEV = '<svg class="scope-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3.5 10.5 8 6 12.5"></path></svg>';
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  var cells = {};
+  var scopeSig = null;      // oxirgi chizilgan qamrov holati
+  var wantFocus = false;    // fokus faqat QAMROV bilan ishlaganda ko'chadi
+  var preRow = null;        // sichqoncha bosishi fokusni blur qiladi — kim turganini eslaymiz
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function mkSvg(tag, attrs) {
+    var el = document.createElementNS(SVG_NS, tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
   }
 
-  function setLevel(level) {
-    var prev = state.scope;
-    if (prev && LEVELS.indexOf(level) < LEVELS.indexOf(prev)) clearBelow(level);
+  function buildMap() {
+    var svg = $("scopeSvg");
+    /* Bosiladigan fon kataklardan OLDIN qo'yiladi: SVG da ustki element bosiladi,
+       demak katak ustidagi bosish hududni, tashqarisidagi bosish respublikani beradi. */
+    svg.appendChild(mkSvg("rect", { "class": "scope-back", x: "0", y: "0", width: "480", height: "300" }));
+    MAP_SHAPES.forEach(function (shape) {
+      var name = null, i;
+      for (i = 0; i < NAMES.length; i++) if (NAMES[i].indexOf(shape[0]) === 0) { name = NAMES[i]; break; }
+      // Nom reestrda topilmasa shakl chizilmaydi — hech qayerga olib bormaydigan hudud bosilmasin.
+      if (!name || cells[name]) return;
+      var g = mkSvg("g", { "class": "scope-cell", "data-r": name, "data-state": "idle" });
+      var path = mkSvg("path", { "class": "scope-rg", d: shape[1] });
+      var num = mkSvg("text", { "class": "scope-num", x: shape[2], y: shape[3] });
+      var title = mkSvg("title", {});
+      title.textContent = name + " · " + popText(GEO[name].pop) + " kishi (taxminiy)";
+      num.textContent = pad(NAMES.indexOf(name) + 1);
+      path.appendChild(title); g.appendChild(path); g.appendChild(num);
+      svg.appendChild(g); cells[name] = g;
+    });
+  }
+
+  /* Reestrdagi bo'shliq JIM qolmasin: ekran «hammasi shu yerda» degan taassurot bermasin. */
+  function reportGaps() {
+    var gaps = [], noCell = NAMES.filter(function (n) { return !cells[n]; });
+    if (NO_POP.length) gaps.push("aholi soni yo‘q — " + NO_POP.join(", "));
+    if (noCell.length) gaps.push("xaritada ko‘rsatilmagan — " + noCell.join(", "));
+    if (!gaps.length) return;
+    $("scopeCrumbs").insertAdjacentHTML("beforebegin",
+      '<p class="note note-warn"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 2.9 18.6 17.4H1.4Z"></path><path d="M10 8.4v3.6M10 14.6h.01"></path></svg>' +
+      '<span>Reestr to‘liq emas: ' + esc(gaps.join("; ")) + '. Bu hududlar uchun taxminiy raqam ham, respublika yig‘indisi ham ko‘rsatilmaydi.</span></p>');
+  }
+
+  function scopeRows() {
+    if (state.scope === "region") {
+      var ds = districtsOf(state.region);
+      return Object.keys(ds).map(function (n, i) { return { kind: "district", name: n, pop: ds[n].pop, idx: i + 1, deep: true }; });
+    }
+    if (state.scope === "district" || state.scope === "mahalla") {
+      var ms = mahallasOf(state.region, state.district);
+      return Object.keys(ms).map(function (n, i) { return { kind: "mahalla", name: n, pop: ms[n], idx: i + 1 }; });
+    }
+    return NAMES.map(function (n, i) { return { kind: "region", name: n, pop: GEO[n].pop, idx: i + 1, deep: true }; });
+  }
+
+  /* `aria-current` — `aria-pressed` EMAS: qator «bosilgan/bo'shatilgan» emas,
+     «hozirgi tanlov». Qayta bosish holatni o'zgartirmaydi, demak o'chirilishini
+     va'da qilish yolg'on bo'lardi. */
+  function renderScopeList() {
+    var rows = scopeRows(), list = $("scopeList");
+    if (!rows.length) {
+      list.innerHTML = '<li class="scope-empty hint">Reestrda bu pog‘ona uchun yozuv yo‘q — qamrov yuqoridagi darajada qoladi.</li>';
+      return rows;
+    }
+    list.innerHTML = rows.map(function (it) {
+      var on = it.kind === "mahalla" && state.mahalla === it.name;
+      return '<li><button type="button" class="scope-row" data-kind="' + it.kind + '" data-name="' + esc(it.name) + '"' +
+        ' aria-describedby="scopeError"' + (on ? ' aria-current="true"' : "") + ">" +
+        '<span class="scope-idx">' + pad(it.idx) + "</span>" +
+        '<span class="scope-name">' + esc(it.name) + "</span>" +
+        '<span class="scope-pop">' + popText(it.pop) + "</span>" + (it.deep ? CHEV : "") + "</button></li>";
+    }).join("");
+    return rows;
+  }
+
+  /* Crumb sof navigatsiya EMAS — u qamrovni o'sha darajaga KO'TARADI, shuning
+     uchun label harakatni aytadi: «qaytish» desa, ko'r foydalanuvchi 450 ming
+     o'rniga 35 millionni tasdiqlab qo'yardi. */
+  function renderScopeCrumbs() {
+    var el = $("scopeCrumbs");
+    if (!state.scope) { el.innerHTML = '<span class="scope-crumb scope-crumb-off">Qamrov hali tanlanmagan</span>'; return; }
+    var cr = [{ up: "republic", label: "O‘zbekiston", action: "Qamrovni butun respublikaga o‘zgartirish" }];
+    if (state.region) cr.push({ up: "region", label: state.region, action: "Qamrovni butun " + state.region + "ga o‘zgartirish" });
+    if (state.scope !== "region" && state.district) cr.push({ up: "district", label: state.district, action: "Qamrovni butun " + state.district + "ga o‘zgartirish" });
+    if (state.scope === "mahalla" && state.mahalla) cr.push({ label: state.mahalla });
+    el.innerHTML = cr.map(function (c, i) {
+      var sep = i ? '<span class="scope-sep" aria-hidden="true">/</span>' : "";
+      return sep + (i === cr.length - 1
+        ? '<span class="scope-crumb" aria-current="true">' + esc(c.label) + "</span>"
+        : '<button type="button" class="scope-crumb scope-crumb-btn" data-up="' + c.up + '" aria-label="' + esc(c.action) + '">' + esc(c.label) + "</button>");
+    }).join("");
+  }
+
+  function renderScopeSum() {
+    var sum = $("scopeSum");
+    if (!state.scope) {
+      sum.innerHTML = '<div class="empty"><span class="empty-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17.6S15.4 12.9 15.4 8.7A5.4 5.4 0 0 0 4.6 8.7C4.6 12.9 10 17.6 10 17.6Z"></path><circle cx="10" cy="8.6" r="2"></circle></svg></span>' +
+        '<p class="empty-title">Qamrov tanlanmagan</p><p>Butun respublika uchun yuqoridagi tugmani bosing; tor qamrov uchun xaritadan hududni yoki ro‘yxatdan qatorni tanlang. Xabar kimga ketishini tizim o‘zi taxmin qilmaydi.</p></div>';
+      return;
+    }
+    var reach = currentReach();
+    var share = (reach == null || REPUBLIC_POP == null) ? null : (reach / REPUBLIC_POP) * 100;
+    var tail = reach == null ? "reestrda bu pog‘ona uchun son yo‘q"
+      : "kishi" + (state.scope === "republic" ? " · reestrdagi barcha hududlar"
+        : share == null ? "" : " · reestrdagi jami aholining " + (share < 0.1 ? "0,1% dan kam" : "~" + share.toFixed(1).replace(".", ",") + "%"));
+    sum.innerHTML = '<p class="eyebrow eyebrow-sm">Taxminiy qamrov</p>' +
+      '<p class="scope-reach"><b>' + popText(reach) + "</b><span>" + tail + "</span></p>" +
+      '<p class="scope-path">' + esc(scopePath().join(" / ")) + "</p>" +
+      '<p class="hint">Raqam namuna reestridan olingan taxmin — aniq son emas; yuborishdan oldin reestrdan yangilanadi.</p>';
+  }
+
+  function rowByName(name) {
+    var rows = $("scopeList").querySelectorAll(".scope-row"), i;
+    for (i = 0; i < rows.length; i++) if (rows[i].getAttribute("data-name") === name) return rows[i];
+    return null;
+  }
+  /* Yuqoriga chiqish tugmasi bo'lmasa (eng yuqori pog'ona) — doimiy tugma.
+     ArrowLeft hech qachon hech qayerga olib bormay qolmaydi. */
+  function upButton() {
+    var b = $("scopeCrumbs").querySelectorAll(".scope-crumb-btn");
+    return b.length ? b[b.length - 1] : $("scopeAll");
+  }
+
+  function renderScope() {
+    if (state.dataFailed) return;
+    var sig = [state.scope, state.region, state.district, state.mahalla].join("|");
+    // Matn yozilayotganda `refresh()` sekundiga o'nlab marta chaqiriladi —
+    // qamrov o'zgarmagan bo'lsa ro'yxatni qayta qurish bekorga DOM churn va
+    // fokusni ushlab turgan qatorni yo'q qilish xavfi.
+    if (sig === scopeSig && !wantFocus) return;
+    var changed = sig !== scopeSig;
+    scopeSig = sig;
+
+    var list = $("scopeList");
+    var active = document.activeElement === document.body && preRow ? preRow : document.activeElement;
+    var keep = list.contains(active) ? active.getAttribute("data-name") : null;
+
+    if (changed) { renderScopeCrumbs(); renderScopeSum(); }
+    var rows = changed ? renderScopeList() : scopeRows();
+
+    Object.keys(cells).forEach(function (n) {
+      cells[n].setAttribute("data-state",
+        state.scope === "republic" ? "on" : !state.region ? "idle" : n === state.region ? "on" : "dim");
+    });
+    var all = $("scopeAll");
+    if (state.scope === "republic") all.setAttribute("aria-current", "true"); else all.removeAttribute("aria-current");
+
+    var count = state.scope === "region" ? "Tumanlar va shaharlar · " + rows.length
+      : (state.scope === "district" || state.scope === "mahalla") ? "Mahallalar (MFY) · " + rows.length
+      : "Hududlar · " + NAMES.length;
+    $("scopeLvl").textContent = count;
+    /* Ekran o'quvchi uchun HAL QILUVCHI raqam — qamrov; yo'lning o'zi tanlov bo'lganini ham aytadi. */
+    var reach = currentReach();
+    $("scopeLive").textContent = state.scope
+      ? scopePath().join(" / ") + " tanlandi. Taxminiy qamrov " + (reach == null ? "noma’lum" : popText(reach) + " kishi") + ". " + count + "."
+      : "Qamrov tanlanmagan. " + count + ".";
+
+    /* `innerHTML` fokusdagi tugmani yo'q qiladi — fokus <body> ga tushsa, keyingi
+       Tab butun hujjat boshidan boshlanardi. Shuning uchun: o'sha nomli qator
+       qolgan bo'lsa — o'sha; ro'yxat almashgan bo'lsa — birinchi qator;
+       respublikaga chiqilgan bo'lsa — doimiy tugma. */
+    if (wantFocus || keep != null) {
+      var target = keep == null ? null : rowByName(keep);
+      if (!target) {
+        target = list.querySelector('.scope-row[aria-current="true"]') ||
+          (state.scope === "republic" ? all : null) ||
+          list.querySelector(".scope-row") || upButton();
+      }
+      if (target) target.focus();
+    }
+    wantFocus = false;
+  }
+
+  /* Turgan joying = qamroving. Yuqoriga chiqqanda pastdagi tanlov TOZALANADI —
+     aks holda ekran «viloyat» deb turib, `state` ichida eski mahallani ushlab
+     qolardi va u so'rov tanasiga tushardi. */
+  function goScope(level, name, moveFocus) {
+    if (level === "republic") { state.region = state.district = state.mahalla = ""; }
+    else if (level === "region") { if (name) state.region = name; state.district = state.mahalla = ""; }
+    else if (level === "district") { if (name) state.district = name; state.mahalla = ""; }
+    else if (name) state.mahalla = name;
+    // Joyi yo'q daraja O'RNATILMAYDI: «Tuman» deb turib tumani bo'sh qolgan
+    // holat ekranni ham, so'rov tanasini ham yolg'onchi qilardi.
+    if (level !== "republic" && !state[level]) return;
     state.scope = level;
-    var input = document.querySelector('.rung-radio[value="' + level + '"]');
-    if (input) input.checked = true;
     $("scopeError").hidden = true;
+    wantFocus = !!moveFocus;
     refresh();
   }
 
-  /* Qiymat tanlanganda daraja O'SHA qatorga ko'chadi — lekin faqat
-     PASTGA. Operator «Mahalla» ni tanlab qo'yib, keyin viloyatni
-     ko'rsatsa, daraja viloyatga qaytib ketmasligi kerak. */
-  function deepenTo(level) {
-    if (!state.scope || LEVELS.indexOf(level) > LEVELS.indexOf(state.scope)) setLevel(level);
-    else refresh();
+  /* Xarita va ro'yxat bir-birini yoritadi — sichqoncha ostida ham, klaviatura fokusida ham. */
+  function hotlight(target) {
+    var near = target && target.closest && (target.closest(".scope-cell") || target.closest('.scope-row[data-kind="region"]'));
+    var name = near ? near.getAttribute("data-r") || near.getAttribute("data-name") : null;
+    /* Fon yoki doimiy tugma ustidagi kursor «hammasi» ni OLDINDAN ko'rsatadi:
+       butun xarita yumshoq alangaga bo'yaladi va yorliq chiqadi. */
+    var all = !near && !!(target && target.closest && (target.closest(".scope-back") || target.closest(".scope-all")));
+    $("scope").setAttribute("data-allhot", all ? "true" : "false");
+    $("scopeAll").setAttribute("data-hot", all ? "true" : "false");
+    Object.keys(cells).forEach(function (k) { cells[k].setAttribute("data-hot", k === name ? "true" : "false"); });
+    $("scopeList").querySelectorAll('.scope-row[data-kind="region"]').forEach(function (b) {
+      b.setAttribute("data-hot", b.getAttribute("data-name") === name ? "true" : "false");
+    });
   }
 
-  /* `composer-data.js` yuklanmasa (deploy nomi o'zgargan, so'rov
-     bloklangan) GEO bo'sh qoladi. Ilgari sahifa buni jimgina yutib,
-     «~0 · butun respublika aholisi» deb yozardi va bu raqamni FAKT
-     sifatida ko'rsatardi. Endi qadam bloklanadi va sabab aytiladi. */
+  /* `composer-data.js` yuklanmasa (deploy nomi o'zgargan, so'rov bloklangan)
+     GEO bo'sh qoladi. Ilgari sahifa buni jimgina yutib, «~0 · butun respublika
+     aholisi» deb yozardi va bu raqamni FAKT sifatida ko'rsatardi.
+     Endi qadam bloklanadi va sabab aytiladi — so'ngan boshqaruv qoldirilmaydi,
+     chunki u «bosib ko'ring» deb aldaydi. */
   function reportDataFailure() {
     state.dataFailed = true;
     var box = $("scopeError");
     box.textContent = "";
-    var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    var icon = document.createElementNS(SVG_NS, "svg");
     icon.setAttribute("viewBox", "0 0 16 16");
     icon.setAttribute("fill", "none");
     icon.setAttribute("stroke", "currentColor");
@@ -190,88 +384,69 @@
     box.appendChild(document.createTextNode(
       "Hudud ma’lumotlari yuklanmadi. Sahifani yangilang; muammo qolsa administratorga xabar bering."));
     box.hidden = false;
-    // Bo'm-bo'sh select "buzilgan" degan taassurot beradi — sababni
-    // maydonning o'zi ham aytsin.
-    ["fRegion", "fDistrict", "fMahalla"].forEach(function (id) {
-      fillSelect($(id), [], "Ma’lumot yuklanmadi");
-    });
-    document.querySelectorAll(".rung-radio, #fRegion, #fDistrict, #fMahalla").forEach(function (el) {
-      el.disabled = true;
-    });
-    $("scopeLadder").setAttribute("data-failed", "true");
+    $("scope").setAttribute("data-failed", "true");
     console.error("[composer] OM_GEO bo‘sh — composer-data.js yuklanmadi");
   }
 
   function initScope() {
-    if (!Object.keys(GEO).length) { reportDataFailure(); return; }
-    fillSelect($("fRegion"), Object.keys(GEO), "Viloyatni tanlang");
-    fillSelect($("fDistrict"), [], "Avval viloyatni tanlang");
-    fillSelect($("fMahalla"), [], "Avval tumanni tanlang");
+    if (!NAMES.length) { reportDataFailure(); return; }
+    buildMap();
+    reportGaps();
+    /* Tugma yozuvi bir marta yoziladi va boshqa o'zgarmaydi: respublika
+       yig'indisi ham, hudud soni ham reestr bilan qotgan. Shu sababli
+       `renderScope()` tugmani QAYTA YARATMAYDI — faqat holat atributini
+       almashtiradi, demak undagi fokus saqlanadi. */
+    $("scopeAllPop").textContent = popText(REPUBLIC_POP);
+    $("scopeAllSub").textContent = "Reestrdagi barcha " + NAMES.length + " hudud" +
+      (REPUBLIC_POP == null ? " · jami son noma’lum" : "");
 
-    document.querySelectorAll(".rung-radio").forEach(function (input) {
-      input.addEventListener("change", function () { setLevel(input.value); });
+    var root = $("scope");
+    root.addEventListener("pointerdown", function () {
+      preRow = $("scopeList").contains(document.activeElement) ? document.activeElement : null;
     });
-
-    $("fRegion").addEventListener("change", function () {
-      state.region = this.value;
-      state.district = state.mahalla = "";
-      if (state.region) {
-        fillSelect($("fDistrict"), Object.keys(districtsOf(state.region)), "Tumanni tanlang");
-      } else {
-        fillSelect($("fDistrict"), [], "Avval viloyatni tanlang");
+    root.addEventListener("click", function (e) {
+      var t = e.target;
+      var row = t.closest && t.closest(".scope-row");
+      var up = t.closest && t.closest(".scope-crumb-btn");
+      var all = t.closest && t.closest(".scope-all");
+      var cell = t.closest && t.closest(".scope-cell");
+      var back = t.closest && t.closest(".scope-back");
+      if (row) goScope(row.getAttribute("data-kind"), row.getAttribute("data-name"), true);
+      else if (up) goScope(up.getAttribute("data-up"), null, true);
+      /* Doimiy tugmada `moveFocus` YO'Q: tugma o'z joyida qoladi va `aria-current`
+         bilan tanlovni o'zi tasdiqlaydi — fokusni ro'yxatga uloqtirish kerak emas. */
+      else if (all) goScope("republic", null, false);
+      else if (cell) goScope("region", cell.getAttribute("data-r"), false);
+      else if (back) goScope("republic", null, false);
+    });
+    root.addEventListener("keydown", function (e) {
+      var row = e.target.closest && e.target.closest(".scope-row");
+      if (!row) return;
+      var all = Array.prototype.slice.call($("scopeList").querySelectorAll(".scope-row"));
+      var i = all.indexOf(row), to = -1, k = e.key;
+      if (k === "ArrowDown") to = Math.min(i + 1, all.length - 1);
+      else if (k === "ArrowUp") to = Math.max(i - 1, 0);
+      else if (k === "Home") to = 0;
+      else if (k === "End") to = all.length - 1;
+      else if (k === "ArrowRight" && row.querySelector(".scope-chev")) {
+        e.preventDefault();
+        return goScope(row.getAttribute("data-kind"), row.getAttribute("data-name"), true);
       }
-      fillSelect($("fMahalla"), [], "Avval tumanni tanlang");
-      deepenTo("region");
+      /* ArrowLeft faqat FOKUSNI yuqoriga ko'chiradi: o'q tugmasi qamrovni
+         tasdiqlamasin — tasdiq Enter/Space/bosish bilan, ataylab bo'ladi. */
+      else if (k === "ArrowLeft") { var b = upButton(); if (b) { e.preventDefault(); b.focus(); } return; }
+      else return;
+      e.preventDefault();
+      all[to].focus();
     });
-
-    $("fDistrict").addEventListener("change", function () {
-      state.district = this.value;
-      state.mahalla = "";
-      if (state.region && state.district) {
-        fillSelect($("fMahalla"), Object.keys(mahallasOf(state.region, state.district)), "Mahallani tanlang");
-      } else {
-        fillSelect($("fMahalla"), [], "Avval tumanni tanlang");
-      }
-      deepenTo("district");
+    ["pointerover", "focusin"].forEach(function (t) {
+      root.addEventListener(t, function (e) { hotlight(e.target); });
     });
-
-    $("fMahalla").addEventListener("change", function () {
-      state.mahalla = this.value;
-      deepenTo("mahalla");
+    ["pointerleave", "focusout"].forEach(function (t) {
+      root.addEventListener(t, function () { hotlight(null); });
     });
   }
 
-  /* Narvonni state'dan qayta chizish. Har qator uchun: faolmi, selecti
-     ochiqmi, qamrov raqami nima. */
-  function renderLadder() {
-    LEVELS.forEach(function (level) {
-      var row = document.querySelector('.rung[data-level="' + level + '"]');
-      row.setAttribute("data-active", state.scope === level ? "true" : "false");
-      var reach = state.dataFailed ? null : reachOf(level);
-      $("reach-" + level).textContent = reach == null ? "—" : "~" + formatPop(reach);
-    });
-    if (state.dataFailed) {
-      $("reachFill").style.width = "0";
-      $("reachCaption").textContent = "Ma’lumot yuklanmadi";
-      return;
-    }
-
-    // Select faqat ota-onasi tanlangandagina ochiladi — bo'sh ro'yxatni
-    // ochib qo'yish «tanlov yo'q» degan noto'g'ri xabar beradi.
-    $("fDistrict").disabled = !state.region;
-    $("fMahalla").disabled = !state.district;
-
-    var reach = currentReach();
-    var share = reach == null ? 0 : (reach / REPUBLIC_POP) * 100;
-    $("reachFill").style.width = reach == null ? "0" : Math.max(share, 0.35) + "%";
-
-    var caption = $("reachCaption");
-    if (!state.scope) caption.textContent = "Daraja tanlanmagan";
-    else if (reach == null) caption.textContent = LEVEL_LABEL[state.scope] + " tanlanmagan";
-    else if (state.scope === "republic") caption.textContent = "~" + formatPop(reach) + " · butun respublika aholisi";
-    else caption.textContent = "~" + formatPop(reach) + " · respublika aholisining " +
-      (share >= 1 ? share.toFixed(1) : share.toFixed(share >= 0.1 ? 2 : 3)) + "%";
-  }
 
   /* ---------------------------------------------------------------------------
      02 MATN
@@ -511,13 +686,7 @@
         msg: "Hudud ma’lumotlari yuklanmadi. Sahifani yangilang; muammo qolsa administratorga xabar bering."
       });
     }
-    else if (!state.scope) errors.push({ el: document.querySelector(".rung-radio"), box: $("scopeError"), msg: null });
-
-    if (state.scope && state.scope !== "republic") {
-      if (!state.region) errors.push({ el: $("fRegion"), box: $("errRegion"), msg: "Viloyatni tanlang." });
-      if (state.scope !== "region" && !state.district) errors.push({ el: $("fDistrict"), box: $("errDistrict"), msg: "Tumanni tanlang." });
-      if (state.scope === "mahalla" && !state.mahalla) errors.push({ el: $("fMahalla"), box: $("errMahalla"), msg: "Mahallani tanlang." });
-    }
+    else if (!state.scope) errors.push({ el: $("scopeAll"), box: $("scopeError"), msg: null });
 
     var textRules = [
       { id: "uzTitle", box: "errUzTitle", empty: "O‘zbekcha sarlavhani yozing.", limit: LIMIT.title, over: "Sarlavha bir qatorga sig‘maydi — {n} ta belgi ortiqcha." },
@@ -600,7 +769,7 @@
     if (slot.firstChild && payloadSignature() !== renderedSignature) slot.innerHTML = "";
 
     // --- qamrov ---
-    renderLadder();
+    renderScope();
     var path = scopePath();
     var reachNum = currentReach();
     var reach = reachNum == null ? null : formatPop(reachNum);
@@ -724,7 +893,7 @@
   }
 
   function renderDemoResult() {
-    // Daraja bo'yicha kesish — `clearBelow` bilan birga ikkinchi himoya.
+    // Daraja bo'yicha kesish — `goScope` bilan birga ikkinchi himoya.
     // Tana HECH QACHON o'z `scope_level` idan chuqurroq hudud ko'rsatmasin.
     var depth = LEVELS.indexOf(state.scope);
     var payload = {
