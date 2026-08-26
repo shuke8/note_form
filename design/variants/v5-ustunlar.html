@@ -1,0 +1,213 @@
+<!-- @name: Ustunli drill-down
+     @idea: macOS Finder ustunlari — uch ustun yonma-yon, daraja siz TO‘XTAGAN joyda aniqlanadi.
+     @best:  Ierarxiyani ko‘rib turib tez pastga tushish; qo‘shni hududlarni yonma-yon solishtirish.
+     @cost:  Uch ustun tik ekranda akkordeonga siqiladi; ro‘yxat uzaysa qidiruv yo‘qligi biladi. -->
+<section class="v5" data-variant="5" aria-labelledby="v5-title">
+  <h3 class="v5-title" id="v5-title" hidden>Kim oladi? — ustunli drill-down</h3>
+  <p class="note note-crit v5-fail" id="v5-fail" hidden><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8"/><path d="M10 6v4.6M10 13.4h.01"/></svg><span><b>Hudud reestri yuklanmadi.</b> Ustunlar bo‘sh — bu «hech kim» degani EMAS. Sahifani yangilang yoki ma’lumot manbasini tekshiring.</span></p>
+  <div class="v5-shell" id="v5-shell">
+    <!-- Ustunlarning otasi: respublika darajasi shu qatorda to‘xtaydi. -->
+    <button type="button" class="v5-root" id="v5-root" aria-pressed="false"><span class="v5-root-tick" aria-hidden="true"></span><span class="v5-root-name">O‘zbekiston Respublikasi</span><span class="v5-root-meta mono">—</span></button>
+    <div class="v5-cols" id="v5-cols"></div>
+    <div class="v5-foot">
+      <div class="v5-foot-l"><span class="chip chip-mono" id="v5-lvl">Daraja tanlanmagan</span>
+        <p class="v5-path" id="v5-path">Hech narsa tanlanmagan. Viloyatlar ro‘yxatidan boshlang yoki yuqoridagi «O‘zbekiston Respublikasi» qatorini belgilang.</p></div>
+      <div class="v5-foot-r"><span class="eyebrow eyebrow-sm">Taxminiy qamrov</span><p class="v5-reach mono" id="v5-reach">—</p></div>
+    </div>
+  </div>
+  <!-- Butun futer live region bo'lsa har o'q bosishda ATOMIK qayta o'qilardi (role=status). Faqat shu qator gapiradi: -->
+  <p class="sr-only" id="v5-say" role="status"></p>
+  <p class="v5-legal small">Raqamlar namunaviy reestrdan olingan taxmin — shuning uchun «~» bilan. Tuman va mahalla ro‘yxatlari ham namuna, to‘liq emas. Aniq qiymat rasmiy reestrda; bu ekran uni o‘zi hisoblamaydi.</p>
+</section>
+
+<style>
+  .v5 { display: flex; flex-direction: column; gap: 12px; }
+  .v5-fail { align-items: flex-start; }   .v5-legal { color: var(--ink-2); }
+  .v5-shell { border: 1px solid var(--hairline); border-radius: var(--r-5); background: var(--paper); overflow: hidden; }
+  .v5-root { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--hairline); }
+  .v5-root:focus-visible, .v5-tog:focus-visible { outline-offset: -2px; }   /* shell overflow:hidden tashqi halqani qirqardi */
+  .v5-root-tick { width: 10px; height: 10px; flex: none; border-radius: 50%; border: 1.6px solid var(--edge); transition: transform var(--d-tap) var(--ease-out); }
+  .v5-root-name { flex: 1; min-width: 0; font-size: var(--t-ui); font-weight: 500; color: var(--ink); overflow-wrap: anywhere; }
+  .v5-root-meta { flex: none; font-size: var(--t-mono-sm); color: var(--ink-2); white-space: nowrap; }
+  /* «Daraja shu yerda to'xtadi» BITTA vizual til bilan gapiradi: ustun qatori ham, ildiz qatori ham to'liq inversiya. */
+  .v5-root[aria-pressed="true"] { background: var(--ink); }   .v5-root[aria-pressed="true"] .v5-root-name { color: var(--paper); }
+  .v5-root[aria-pressed="true"] .v5-root-meta { color: var(--paper); opacity: 0.7; }   .v5-root[aria-pressed="true"] .v5-root-tick { background: var(--paper); border-color: var(--paper); transform: scale(1.2); }   .v5-root[aria-pressed="true"]:focus-visible { outline-color: var(--focus-halo); }
+  .v5-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }   .v5-col + .v5-col { border-left: 1px solid var(--hairline); }
+  .v5-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 12px 14px 10px; border-bottom: 1px solid var(--hairline); }
+  .v5-n { font-size: var(--t-mono-sm); color: var(--ink-2); }   .v5-tog { display: none; }
+  .v5-list { display: flex; flex-direction: column; gap: 2px; padding: 6px; max-height: 296px; overflow-y: auto; overscroll-behavior: contain; }
+  .v5 .empty { padding: 26px 16px; gap: 6px; border: 0; }   .v5 .empty .small { color: var(--ink-2); max-width: 28ch; }
+  .v5-opt { position: relative; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 10px; border-radius: var(--r-3); color: var(--ink); cursor: pointer; -webkit-user-select: none; user-select: none; animation: v5-in 180ms var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 14ms); }
+  /* Fon o'zgarishi animatsiya QILINMAYDI — hover uchun alohida qatlam, u faqat opacity bilan kiradi. */
+  .v5-opt::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--ghost); opacity: 0; transition: opacity var(--d-hover) var(--ease-out); }
+  .v5-opt > * { position: relative; }   .v5-opt:focus-visible { outline-offset: -2px; }   /* scroll konteyner tashqi halqani qirqardi */
+  .v5-list[data-still="1"] .v5-opt { animation: none; }   /* klaviatura bilan ko'rib chiqishda bola ustunlar miltillamasin */
+  .v5-opt[data-state="stop"]:focus-visible { outline-color: var(--focus-halo); }   /* qora qator ustida qora halqa ko'rinmasdi */
+  .v5-opt:active, .v5-root:active, .v5-tog:active { transform: scale(0.99); }   /* touch'da hover qatlami o'lik — bosishga javob shu */
+  @media (hover: hover) { .v5-root:not([aria-pressed="true"]):hover { background: var(--ghost-quiet); } .v5-opt:hover::before { opacity: 1; } }
+  .v5-opt-name { flex: 1; min-width: 0; font-size: var(--t-ui); overflow-wrap: anywhere; }   .v5-opt-n { flex: none; font-size: var(--t-mono-sm); color: var(--ink-2); }   .v5-chev { width: 14px; height: 14px; flex: none; color: var(--ink-3); }   .v5-opt[data-state="path"] { background: var(--ghost-hover); }   /* yo'ldagi bo'g'in */
+  .v5-opt[data-state="stop"] { background: var(--ink); color: var(--paper); }    /* daraja shu yerda to'xtadi */
+  .v5-opt[data-state="stop"] .v5-opt-n, .v5-opt[data-state="stop"] .v5-chev { color: var(--paper); opacity: 0.7; }
+  @keyframes v5-in { from { opacity: 0; transform: translateY(6px); } }   @media (prefers-reduced-motion: reduce) { .v5-opt { animation-delay: 0s; } }   /* global reset faqat davomiylikni nolga tushiradi, kechikishni emas */
+  .v5-foot { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; padding: 14px 16px; border-top: 1px solid var(--hairline); background: var(--paper-alt); }
+  .v5-foot-l { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }   .v5-foot-r { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  .v5-path { font-size: var(--t-ui); color: var(--ink); overflow-wrap: anywhere; }   .v5-reach { font-size: var(--t-lead); line-height: 1.2; color: var(--ink); font-variant-numeric: tabular-nums; }
+  @media (max-width: 880px) {   /* uch ustun → akkordeon */
+    .v5-cols { grid-template-columns: 1fr; }   .v5-head { display: none; }   /* sanoq `.v5-tog` ichida takrorlanadi — mobil ham ro'yxat uzunligini biladi */
+    .v5-list { max-height: 262px; overscroll-behavior: auto; }   /* akkordeon oddiy sahifa kontenti: scroll zanjiri uzilmasin */
+    .v5-col + .v5-col { border-left: 0; border-top: 1px solid var(--hairline); }   .v5-col[data-open="false"] .v5-body { display: none; }
+    .v5-tog { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 52px; padding: 12px 16px; text-align: left; }
+    /* Ochiq bo'limda qiymat ro'yxatda ko'rinib turibdi — ko'zdan yashiriladi, lekin tugma NOMIDAN olinmaydi (`sr-only`ni JS qo'yadi). */
+    .v5-tog-val { flex: 1; min-width: 0; font-size: var(--t-ui); color: var(--ink); text-align: right; overflow-wrap: anywhere; }
+    .v5-chev-t { width: 16px; height: 16px; flex: none; margin-left: auto; color: var(--ink-2); transition: transform var(--d-hover) var(--ease-out); }   .v5-tog[aria-expanded="true"] .v5-chev-t { transform: rotate(180deg); } }
+  @media (max-width: 520px) { .v5-foot-r { align-items: flex-start; } }
+</style>
+
+<script>
+  (function () {
+    "use strict";
+    var root = document.querySelector('[data-variant="5"]');
+    if (!root) return;
+    /* Reestr kelmasa YOKI init ijro paytida uzilsa — «0» yozmaymiz, sababni ko'rsatib bloklaymiz. Host `replaceWith`
+       try/catch'i skript IJRO xatosini ushlamaydi (u window.onerror ga ketadi) — shuning uchun o'zimiz ushlaymiz. */
+    function fail(why) { root.querySelector("#v5-fail").hidden = false;   root.querySelector("#v5-shell").hidden = true;   console.error("[v5] " + why); }
+    try {
+      var GEO = window.OM_GEO || {};
+      /* Qisman buzuq reestr eng xavflisi: ekran tirik ko'rinib, ichi bo'sh qolardi. Shaklni oldindan filtrlaymiz. */
+      var REGIONS = Object.keys(GEO).filter(function (r) { return GEO[r] && typeof GEO[r] === "object"; });
+      if (!REGIONS.length) { fail("OM_GEO bo‘sh yoki shakli buzuq — composer-data.js yuklanmadi."); return; }
+      var ORDER = ["republic", "region", "district", "mahalla"];
+      var LABEL = { republic: "Respublika darajasi", region: "Viloyat darajasi", district: "Tuman darajasi", mahalla: "Mahalla darajasi" };
+      var SVG = 'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"';
+      var CHEV = '<svg class="v5-chev" viewBox="0 0 16 16" ' + SVG + '><path d="M6 3.5 10.5 8 6 12.5"/></svg>';
+      var COLS = [
+        ["Viloyat", "Viloyatlar", "Ro‘yxat bo‘sh", "Reestrdan birorta hudud kelmadi."],
+        ["Tuman", "Tumanlar", "Viloyat tanlanmagan", "Avval viloyatni tanlang — tumanlar shu yerda chiqadi."],
+        ["Mahalla", "Mahallalar", "Tuman tanlanmagan", "Tuman tanlansa, uning MFY namunalari shu yerda chiqadi."]];
+      /* Uch ustun bir xil — nusxa emas, bitta qolipdan. */
+      root.querySelector("#v5-cols").innerHTML = COLS.map(function (c, i) {
+        return '<div class="v5-col" data-open="' + (i === 0) + '"><p class="v5-head"><span class="eyebrow eyebrow-sm">' + c[0] + '</span><span class="v5-n mono">—</span></p>'
+          + '<button type="button" class="v5-tog" aria-expanded="' + (i === 0) + '" aria-controls="v5-b' + i + '"><span class="eyebrow eyebrow-sm">' + c[0] + '</span><span class="v5-n mono v5-tog-n">—</span><span class="v5-tog-val">Tanlanmagan</span><svg class="v5-chev-t" viewBox="0 0 16 16" ' + SVG + '><path d="M3.5 6 8 10.5 12.5 6"/></svg></button>'
+          + '<div class="v5-body" id="v5-b' + i + '"><ul class="v5-list" role="listbox" aria-label="' + c[1] + '" hidden></ul>'
+          + '<div class="empty v5-none"><p class="empty-title">' + c[2] + '</p><p class="small">' + c[3] + '</p></div></div></div>';
+      }).join("");
+      var cols = Array.prototype.slice.call(root.querySelectorAll(".v5-col"));
+      var rootBtn = root.querySelector("#v5-root"), manual = null;   // manual: akkordeonda qo'lda (yoki klaviatura bilan) ochilgan ustun
+      var still = false, ready = false, sayEl = root.querySelector("#v5-say"), sayT = 0;
+      var state = { level: null, region: null, district: null, mahalla: null };
+      var HINT = root.querySelector("#v5-path").textContent;   // bo'sh holat matni markupda, nusxasi yo'q
+      function districts(r) { return (GEO[r] && GEO[r].districts) || {}; }   function pick(i) { return [state.region, state.district, state.mahalla][i]; }
+      function mahallas(r, d) { var x = districts(r)[d]; return (x && x.mahallas) || {}; }
+      /* Yagona haqiqat manbasi: yaroqsiz/yo'q son hech qayerda «0» bo'lib ko'rinmaydi — ekranda ham, ovozda ham «—». */
+      function num(n) { return typeof n === "number" && isFinite(n) && n > 0 ? n : null; }
+      function popOf(x) { return num(x && typeof x === "object" ? x.pop : x); }   // tuman {pop:…}, mahalla — yalang'och son
+      function approx(n) { return num(n) == null ? "—" : "~" + fmt(n); }   function say(n) { return num(n) == null ? "aholi soni ko‘rsatilmagan" : "taxminan " + fmt(n, " million", " ming") + " kishi"; }
+      function fmt(n, m, k) {   /* Kattalikka qarab yaxlitlash: 35 600 000 emas, 35.6M. m/k — ovoz uchun, «M» «em» deb o'qilmasin. */
+        if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + (m || "M");   if (n >= 1e4) return Math.round(n / 1e3) + (k || "K");
+        if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, "") + (k || "K");   return String(n);
+      }
+      var GAPS = REGIONS.filter(function (r) { return popOf(GEO[r]) == null; }).length;   // soni kelmagan hududlar — jamini kam ko'rsatadi
+      var TOTAL = REGIONS.reduce(function (s, r) { return s + (popOf(GEO[r]) || 0); }, 0);
+      function reach() {
+        var L = state.level;   if (L === "republic") return num(TOTAL);   if (L === "region") return popOf(GEO[state.region]);
+        if (L === "district") return popOf(districts(state.region)[state.district]);
+        if (L === "mahalla") return popOf(mahallas(state.region, state.district)[state.mahalla]);   return null;
+      }
+      function announce(msg) { clearTimeout(sayT);   sayT = setTimeout(function () { sayEl.textContent = msg; }, 250); }
+      function fill(i) {
+        var src = i === 0 ? GEO : i === 1 ? (state.region ? districts(state.region) : {})
+          : (state.region && state.district ? mahallas(state.region, state.district) : {});
+        var names = i === 0 ? REGIONS : Object.keys(src), list = cols[i].querySelector(".v5-list");   // 0-ustun FILTRLANGAN ro'yxatdan: buzuq yozuv tanlanadigan qator bo'lib chiqmasin
+        list.textContent = "";   list.hidden = !names.length;   list.dataset.still = still ? "1" : "";
+        /* Tuman/mahalla reestri NAMUNA: «3 ta» deb yozish «hammasi shu» degan yolg'on bo'lardi. Viloyat esa to'liq 14 ta. */
+        var cnt = names.length ? names.length + (i ? " ta namuna" : " ta") : "—";
+        cols[i].querySelector(".v5-n").textContent = cnt;   cols[i].querySelector(".v5-tog-n").textContent = cnt;
+        var none = cols[i].querySelector(".v5-none"), up = i > 0 && pick(i - 1), low = COLS[i][0].toLowerCase();   none.hidden = names.length > 0;
+        /* Ota tanlangan-u ro'yxat bo'sh bo'lsa, «tanlanmagan» deyish YOLG'ON bo'lardi — «yo'q» deyish ham: ma'lumot kelmadi xolos. */
+        none.firstChild.textContent = up ? "Ro‘yxat kelmadi" : COLS[i][2];
+        none.lastChild.textContent = up ? "Reestrda «" + up + "» uchun " + low + " ro‘yxati bo‘sh keldi — bu «" + low + " yo‘q» degani EMAS." : COLS[i][3];
+        names.forEach(function (name, k) {
+          var pop = popOf(src[name]), li = document.createElement("li"), nm = document.createElement("span"), qty = document.createElement("span");
+          li.className = "v5-opt";   li.setAttribute("role", "option");   li.dataset.name = name;
+          li.style.setProperty("--i", String(Math.min(k, 7)));   // kechikish 7-da to'xtaydi: butun ketma-ketlik 300ms ichida
+          li.setAttribute("aria-label", name + ", " + say(pop));   // ko'z bilan «—» bo'lsa quloq bilan ham «—», «undefined» emas
+          nm.className = "v5-opt-name";   nm.textContent = name;   qty.className = "v5-opt-n mono";   qty.textContent = approx(pop);
+          li.appendChild(nm);   li.appendChild(qty);   if (i < 2) li.insertAdjacentHTML("beforeend", CHEV);   list.appendChild(li);
+        });
+      }
+      function sync() {
+        var depth = ORDER.indexOf(state.level);   // -1 = daraja tanlanmagan
+        var open = manual !== null ? manual : (!state.region ? 0 : (!state.district ? 1 : 2));
+        cols.forEach(function (c, i) {
+          var chosen = pick(i), up = i === open;
+          Array.prototype.forEach.call(c.querySelectorAll(".v5-opt"), function (li, k) {
+            var on = li.dataset.name === chosen;   li.setAttribute("aria-selected", on ? "true" : "false");
+            li.dataset.state = on ? (i + 1 === depth ? "stop" : "path") : "";
+            li.tabIndex = on || (!chosen && k === 0) ? 0 : -1;   // tanlovsiz ustunga ham Tab bilan kiriladi
+          });
+          c.dataset.open = up ? "true" : "false";   c.querySelector(".v5-tog").setAttribute("aria-expanded", up ? "true" : "false");
+          var v = c.querySelector(".v5-tog-val");   v.textContent = chosen || "Tanlanmagan";   v.className = up ? "v5-tog-val sr-only" : "v5-tog-val";
+        });
+        var lvl = root.querySelector("#v5-lvl");   lvl.className = state.level ? "chip chip-mono chip-flame" : "chip chip-mono";
+        lvl.textContent = state.level ? LABEL[state.level] : "Daraja tanlanmagan";
+        rootBtn.setAttribute("aria-pressed", state.level === "republic" ? "true" : "false");
+        root.querySelector("#v5-reach").textContent = approx(reach());
+        root.querySelector("#v5-path").textContent = !state.level ? HINT
+          : state.level === "republic" ? "O‘zbekiston Respublikasi · " + REGIONS.length + " hudud"
+          : [state.region, state.district, state.mahalla].filter(Boolean).join(" · ");
+        if (ready) announce(state.level ? LABEL[state.level] + ". Taxminiy qamrov: " + say(reach()) + "." : "Tanlov tozalandi.");
+      }
+      function paint(from, quiet) {
+        for (var i = from; i < 3; i++) fill(i);   sync();   /* Init'da hodisa OTILMAYDI: kontraktda `level` ∈ to'rt qiymat, «hali tanlanmagan» — natija emas. */
+        if (!quiet) root.dispatchEvent(new CustomEvent("scopechange", { bubbles: true, detail: { level: state.level, region: state.region, district: state.district, mahalla: state.mahalla, reach: reach() } }));
+      }
+      /* Daraja = TO'XTAGAN joy. Pastdagi tanlov bekor bo'ladi — u endi boshqa otaga tegishli. */
+      function choose(i, name, stay) {
+        if (i === 0) { state.region = name; state.district = null; state.mahalla = null; state.level = "region"; }
+        else if (i === 1) { state.district = name; state.mahalla = null; state.level = "district"; }
+        else { state.mahalla = name; state.level = "mahalla"; }
+        manual = stay ? i : null;   // stay: klaviatura ishlayotgan ustun akkordeonda YOPILMASIN — display:none fokusni yo'qotadi
+        paint(i + 1);
+      }
+      function focusIn(i, name) { var opts = cols[i].querySelectorAll(".v5-opt");   for (var k = 0; k < opts.length; k++) if (opts[k].dataset.name === name) { opts[k].focus(); return; } }
+      /* Ustunlar orasida yurish. Maqsad ustun akkordeonda yopiq bo'lsa `.focus()` o'lik — avval ochamiz. Tanlovga TEGMAYDI. */
+      function hop(i) {
+        if (i < 0) { rootBtn.focus(); return; }   if (i > 2) return;
+        var opts = cols[i].querySelectorAll(".v5-opt"), none = cols[i].querySelector(".v5-none");
+        if (!opts.length) { announce(none.firstChild.textContent + ". " + none.lastChild.textContent); return; }   // jim o'lik tugma bo'lmasin
+        manual = i;   sync();   focusIn(i, pick(i) || opts[0].dataset.name);
+      }
+      root.addEventListener("click", function (e) {
+        var t = e.target;   if (!t || !t.closest) return;
+        if (t.closest("#v5-root")) {   // ildiz qatori
+          state.level = state.level === "republic" ? null : "republic";   // qayta bosish = tanlovni tozalash
+          state.region = state.district = state.mahalla = null;   manual = null;   paint(0);   return;
+        }
+        var tog = t.closest(".v5-tog"), opt = t.closest(".v5-opt");
+        if (tog) { var c = tog.closest(".v5-col"); manual = c.dataset.open === "true" ? -1 : cols.indexOf(c); sync(); return; }
+        if (!opt) return;
+        var i = cols.indexOf(opt.closest(".v5-col"));   choose(i, opt.dataset.name);
+        /* Akkordeon tanlangan ustunni yopdi: fokus `display:none` ostida qolmasin — ochilgan bo'lim sarlavhasiga ko'chadi. */
+        if (!opt.offsetParent) { var o = cols.filter(function (c2) { return c2.dataset.open === "true"; })[0];   if (o) o.querySelector(".v5-tog").focus(); }
+      });
+      function key(e) {
+        var opt = e.target && e.target.closest ? e.target.closest(".v5-opt") : null;   if (!opt) return;
+        var col = opt.closest(".v5-col"), i = cols.indexOf(col), k = e.key;
+        var opts = Array.prototype.slice.call(col.querySelectorAll(".v5-opt")), at = opts.indexOf(opt), n = opts.length, to = -1;
+        /* O'ngga — avval joriy bo'g'in tasdiqlanadi, keyin bolaga kiriladi: «kirish» harakati javobni o'zgartirmaydi. */
+        if (k === "ArrowRight") { e.preventDefault();   if (opt.dataset.name !== pick(i)) choose(i, opt.dataset.name, true);   hop(i + 1);   return; }
+        if (k === "ArrowLeft") { e.preventDefault();   hop(i - 1);   return; }
+        if (k === "Enter" || k === " ") { e.preventDefault();   choose(i, opt.dataset.name, true);   focusIn(i, opt.dataset.name);   return; }
+        if (k === "ArrowDown") to = Math.min(at + 1, n - 1);   else if (k === "ArrowUp") to = Math.max(at - 1, 0);
+        else if (k === "Home") to = 0;   else if (k === "End") to = n - 1;   else return;
+        e.preventDefault();   if (to === at) return;   /* Fokus qimirlamasa TANLOV ham qayta qilinmaydi — aks holda pastki bo'g'in jimgina o'chib, qamrov kengayardi. */
+        /* Tanlov fokusga ergashadi: ustunda o'q bosish ayni paytda «shu yerda to'xtadim» degani. */
+        var name = opts[to].dataset.name;   choose(i, name, true);   focusIn(i, name);
+      }
+      root.addEventListener("keydown", function (e) { still = true;   key(e);   still = false; });
+      rootBtn.setAttribute("aria-label", "O‘zbekiston Respublikasi — butun mamlakat, " + REGIONS.length + " hudud, " + say(TOTAL));
+      rootBtn.querySelector(".v5-root-meta").textContent = REGIONS.length + " hudud · " + approx(TOTAL) + (GAPS ? " · " + GAPS + " hududda son yo‘q" : "");
+      paint(0, true);   ready = true;
+    } catch (e) { fail("fragment ishga tushmadi: " + (e && e.message)); }
+  })();
+</script>

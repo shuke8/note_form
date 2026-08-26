@@ -17,13 +17,20 @@
   var index = document.getElementById("vxIndex");
   if (!host || !index) return;
 
-  /* Fragment boshidagi izohdan metama'lumot: @name / @idea / @best / @cost */
+  /* Fragment boshidagi izohdan metama'lumot: @name / @idea / @best / @cost
+
+     Avval BIRINCHI izoh blokining ichi ajratiladi, keyin kalitlar faqat
+     shu ichkarida qidiriladi. Ilgari qidiruv butun matnda ketardi va
+     izoh oxiri qatorning O'RTASIDA tugasa (`--> <section ...`) oxirgi
+     kalit butun fragment kodini yutib yuborardi. */
   function readMeta(text) {
     var meta = {};
-    var head = text.slice(0, 1200);
+    var block = text.match(/<!--([\s\S]*?)-->/);
+    if (!block) return meta;
+    var head = block[1];
     ["name", "idea", "best", "cost"].forEach(function (key) {
-      var m = head.match(new RegExp("@" + key + ":\\s*([^\\n]*(?:\\n(?!\\s*@|\\s*-->)[^\\n]*)*)"));
-      if (m) meta[key] = m[1].replace(/\s+/g, " ").replace(/-->\s*$/, "").trim();
+      var m = head.match(new RegExp("@" + key + ":([\\s\\S]*?)(?=@(?:name|idea|best|cost):|$)"));
+      if (m) meta[key] = m[1].replace(/\s+/g, " ").trim();
     });
     return meta;
   }
@@ -134,7 +141,23 @@
         "mahalla=" + (d.mahalla == null ? "—" : d.mahalla),
         "reach=" + (d.reach == null ? "—" : "~" + d.reach)
       ];
-      body.textContent = parts.join("  ·  ");
+      /* Ko'p tanlovli variant bitta manzilga sig'maydi: u pog'onalarni
+         ataylab bo'sh qoldirib, to'liq holatni `items` da beradi. Buni
+         ko'rsatmasak, variant ekranda savat to'la turganda ham «hech nima
+         tanlanmagan» deb ko'ringan bo'lardi. */
+      if (d.items && d.items.length) {
+        parts.push("items=" + d.items.length);
+        var lines = d.items.map(function (it) {
+          var path = [it.region, it.district, it.mahalla].filter(Boolean).join(" · ") || "O‘zbekiston Respublikasi";
+          return "  " + (it.counted === false ? "(sanalmaydi) " : "") + path +
+                 " · " + it.level + (it.reach == null ? "" : " · ~" + it.reach);
+        });
+        body.textContent = parts.join("  ·  ") + "\n" + lines.join("\n");
+        body.style.whiteSpace = "pre";
+      } else {
+        body.textContent = parts.join("  ·  ");
+        body.style.whiteSpace = "";
+      }
       out.setAttribute("data-empty", "false");
     });
 

@@ -85,4 +85,8 @@
 }
 @media (max-width: 560px) {
   .vx-mount { padding: 16px; margin-inline: -4px; }
+  /* Holat chipi `nowrap` — tor ekranda `margin-inline-start:auto` uni
+     o'ng chetdan chiqarib yuborardi. */
+  .vx-head .rule-head { flex-wrap: wrap; gap: 8px; }
+  .vx-head .rule-head .chip { margin-inline-start: 0 !important; }
 }

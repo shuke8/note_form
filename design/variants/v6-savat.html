@@ -1,0 +1,219 @@
+<!-- @name: Ko‘p tanlov savati
+     @idea: Bitta tugun emas — bir necha hudud savatga yig‘iladi, ichma-ich tushgani jamidan chiqariladi.
+     @best: Bir voqea bir nechta qo‘shni hududga tegsa (toshqin, gaz uzilishi, karantin yo‘lagi).
+     @cost: Bir hududlik xabar uchun ortiqcha qadam; bitta manzil maydonlariga sig‘maydi — host `detail.items` ni o‘qishi shart. -->
+<section class="v6" data-variant="6" aria-labelledby="v6-title">
+  <h3 class="v6-title" id="v6-title" hidden>Ko‘p tanlov savati</h3>
+  <p class="note note-crit" id="v6-blocked" hidden><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="9" cy="9" r="7"/><path d="M9 5.5v4.2M9 12.4h.01"/></svg><span>Hudud ro‘yxati yuklanmadi (<span class="mono">OM_GEO</span> bo‘sh). Qamrov hisoblanmaydi — «0» ham yozilmaydi. Ma‘lumot faylini tekshiring.</span></p>
+  <!-- QO‘SHGICH: uch pog‘onali tanlov, natija — savatga tushadigan BITTA element. Chuqurroq
+       select bo‘sh qolsa daraja yuqorida to‘xtaydi: shuning uchun placeholder «Butun viloyat». -->
+  <div class="v6-panel">
+    <div class="v6-picks">
+      <label class="field"><span class="label">Viloyat <span class="req">*</span></span><select class="select" id="v6-region" aria-required="true"></select></label>
+      <label class="field"><span class="label">Tuman <span class="opt">— ixtiyoriy</span></span><select class="select" id="v6-district" disabled></select></label>
+      <label class="field"><span class="label">Mahalla <span class="opt">— ixtiyoriy</span></span><select class="select" id="v6-mahalla" disabled></select></label>
+    </div>
+    <div class="v6-addbar">
+      <p class="v6-pending" id="v6-pending">Viloyatni tanlang.</p>
+      <div class="v6-acts">
+        <button class="btn btn-ghost btn-sm" type="button" id="v6-all">Butun respublika</button>
+        <button class="btn btn-flame btn-sm" type="button" id="v6-add" aria-describedby="v6-pending"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M8 3.2v9.6M3.2 8h9.6"/></svg>Savatga qo‘shish</button>
+      </div>
+    </div>
+    <p class="field-error v6-err" id="v6-err" role="alert" hidden><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.6M8 11h.01"/></svg><span id="v6-errtext"></span></p>
+  </div>
+  <!-- SAVAT: jami tepada — operator avval «qancha odam» ni ko‘radi, keyin ro‘yxatni. -->
+  <div class="v6-basket">
+    <div class="v6-sum">
+      <span class="eyebrow eyebrow-sm">Taxminiy jami qamrov</span>
+      <p class="v6-total mono" id="v6-total">—</p>
+      <p class="v6-cap" id="v6-cap" role="status">Savat bo‘sh</p>
+      <span class="v6-bar" id="v6-bar" aria-hidden="true" hidden><span class="v6-fill" id="v6-fill"></span></span><p class="v6-pct" id="v6-pct" hidden></p>
+    </div>
+    <p class="note note-warn v6-warn" id="v6-warn" hidden><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 2.6 16.2 15H1.8L9 2.6Z"/><path d="M9 7.4v3M9 12.6h.01"/></svg><span id="v6-warntext"></span></p>
+    <ul class="v6-list" id="v6-list" aria-label="Savatdagi hududlar" hidden></ul>
+    <div class="empty" id="v6-empty">
+      <span class="empty-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 6.5h14l-1.4 9.1a1.4 1.4 0 0 1-1.4 1.2H5.8a1.4 1.4 0 0 1-1.4-1.2L3 6.5Z"/><path d="M7.2 6.5 10 2.8l2.8 3.7"/></svg></span>
+      <p class="empty-title">Savat bo‘sh</p>
+      <p>Yuqorida hudud tanlab «Savatga qo‘shish» ni bosing. Bir nechta hudud qo‘shsangiz, jami qamrov shu yerda yig‘iladi.</p>
+    </div>
+    <p class="v6-foot">Aholi raqamlari — reestrdagi <b>taxminiy</b> qiymatlar, aniq ro‘yxat emas. Bu ekran hech qayerga hech nima yubormaydi.</p>
+  </div>
+</section>
+<style>
+  .v6 { display: flex; flex-direction: column; gap: var(--gap-row); }
+  /* Yuza pog‘onasi ikkala temada BIR yo‘nalishda: mount(--paper) → karta(--paper-alt) → qator(--paper-raise). */
+  .v6-panel, .v6-basket { padding: 16px; border: 1px solid var(--hairline); border-radius: var(--r-5); background: var(--paper-alt); }
+  /* auto-fit: 320px da bitta ustun, kengroq joyda uchtagacha — media query kerak emas. */
+  .v6-picks { display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); gap: 12px; }
+  .v6-addbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: 14px; }
+  .v6-pending { flex: 1 1 190px; min-width: 0; font-size: var(--t-sm); line-height: var(--lh-sm); color: var(--ink-2); }
+  .v6-acts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .v6 .v6-err { margin-top: 12px; } .v6 .v6-warn { margin-top: 14px; }
+  .v6-sum { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+  .v6-sum .eyebrow { flex-basis: 100%; }
+  .v6-total { font-size: var(--t-d3); line-height: var(--lh-d3); letter-spacing: var(--ls-d3); color: var(--ink); font-variant-numeric: tabular-nums; }
+  .v6-cap { flex: 1 1 150px; min-width: 0; font-size: var(--t-sm); line-height: var(--lh-sm); color: var(--ink-2); }
+  .v6-bar { flex-basis: 100%; height: 4px; margin-top: 10px; border-radius: var(--r-pill); background: var(--paper-sunk); overflow: hidden; }
+  .v6-fill { display: block; height: 100%; background-image: var(--flame); transform: scaleX(0); transform-origin: left center; transition: transform var(--d-pane) var(--ease-out); }
+  /* Chiziq — yorliqsiz miqdor edi: maxraji endi yonidagi matnda aytiladi, aks holda bo‘sh trek «nol» deb o‘qiladi. */
+  .v6-pct { flex-basis: 100%; margin-top: 6px; font-size: var(--t-sm); line-height: var(--lh-sm); color: var(--ink-2); }
+  .v6-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .v6-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 4px 8px 14px; border: 1px solid var(--hairline); border-radius: var(--r-5); background: var(--paper-raise); }
+  @keyframes v6-enter { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  .v6-main { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; padding-block: 5px; }
+  .v6-lv { flex: none; } .v6-x { align-self: center; } .v6-item.v6-new { animation: v6-enter var(--d-pane) var(--ease-out); }
+  .v6-nm { flex: 1 1 auto; min-width: 0; font-size: var(--t-ui); font-weight: 500; color: var(--ink); overflow-wrap: anywhere; }
+  /* `margin-left: auto` YO‘Q: 320px da raqam o‘z satriga tushib o‘ng chekkaga uchib ketardi — endi nom tagida qoladi. */
+  .v6-rc { flex: none; font-size: var(--t-sm); color: var(--ink-2); white-space: nowrap; }
+  .v6-sub { flex-basis: 100%; font-size: var(--t-sm); line-height: var(--lh-sm); color: var(--ink-2); overflow-wrap: anywhere; }
+  /* Yutilgan element O‘CHIRILMAYDI. Raqamga `opacity` YO‘Q: --ink-2 alfa-rang, ustiga shaffoflik AA dan tushirardi. */
+  .v6-item[data-covered="true"] { background: transparent; border-style: dashed; }
+  .v6-item[data-covered="true"] .v6-nm { color: var(--ink-2); font-weight: 400; } .v6-item[data-covered="true"] .v6-sub { color: var(--warn); }
+  .v6 .empty { margin-top: 14px; } .v6 .empty p { max-width: 42ch; }
+  .v6-foot { margin-top: 14px; font-size: var(--t-sm); line-height: var(--lh-sm); color: var(--ink-2); }
+  .v6-foot b { color: var(--ink); font-weight: 600; }
+</style>
+<script>
+  (function () {
+    "use strict";
+    var root = document.querySelector('[data-variant="6"]'); if (!root) return;
+    var GEO = window.OM_GEO || {}, REGIONS = Object.keys(GEO), q = function (id) { return root.querySelector("#" + id); };
+    var elR = q("v6-region"), elD = q("v6-district"), elM = q("v6-mahalla"), elAdd = q("v6-add"), elAll = q("v6-all");
+    var elErr = q("v6-err"), elErrText = q("v6-errtext"), elPend = q("v6-pending"), elList = q("v6-list"), elEmpty = q("v6-empty");
+    var elTotal = q("v6-total"), elCap = q("v6-cap"), elBar = q("v6-bar"), elFill = q("v6-fill"), elPct = q("v6-pct"), elWarn = q("v6-warn");
+    var ORDER = ["republic", "region", "district", "mahalla"];
+    var LABEL = { republic: "Respublika", region: "Viloyat", district: "Tuman", mahalla: "Mahalla" };
+    var XMARK = '<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M5.2 5.2l7.6 7.6M12.8 5.2l-7.6 7.6"/></svg>';
+    var LIMIT = 12, basket = [], errRaf = 0;
+    /* Son bo‘lmagan qiymat NOL emas, NOMA‘LUM (`|| 0` kam raqamni to‘liq jami qilib ko‘rsatardi); bitta viloyat soni yo‘q bo‘lsa respublika jamisi ham noma‘lum. */
+    function num(v) { return typeof v === "number" && isFinite(v) && v > 0 ? v : null; }
+    var REPUBLIC_POP = REGIONS.length && REGIONS.every(function (k) { return num(GEO[k].pop) !== null; }) ? REGIONS.reduce(function (s, k) { return s + GEO[k].pop; }, 0) : null;
+    /* Qiymat yo‘q bo‘lsa «—» qaytadi, NOL emas: nol «hech kim» degan yolg‘on bo‘lardi. */
+    function fmt(n) {
+      if (n == null) return "—"; if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
+      return n >= 1e4 ? Math.round(n / 1e3) + "K" : n >= 1e3 ? (n / 1e3).toFixed(1).replace(/\.0$/, "") + "K" : String(n);
+    }
+    function span(cls, text) { var s = document.createElement("span"); s.className = cls; s.textContent = text; return s; }
+    function fill(sel, names, placeholder) {
+      sel.innerHTML = ""; sel.appendChild(new Option(placeholder, "")); names.forEach(function (n) { sel.appendChild(new Option(n, n)); }); sel.disabled = names.length === 0;
+    }
+    function districtsOf(r) { return (GEO[r] && GEO[r].districts) || {}; }
+    function mahallasOf(r, d) { var x = districtsOf(r)[d]; return (x && x.mahallas) || {}; }
+    function pathOf(it) { return it.level === "republic" ? [] : [it.region, it.district, it.mahalla].filter(Boolean); }
+    /* Kalit yo‘q bo‘lsa `null`: himoyasiz indekslash render o‘rtasida uzilib, ekranda eski jamini qoldirardi. */
+    function reachOf(it) {
+      if (it.level === "republic") return REPUBLIC_POP;
+      var r = GEO[it.region]; if (!r) return null; if (it.level === "region") return num(r.pop);
+      var d = districtsOf(it.region)[it.district];
+      return !d ? null : it.level === "district" ? num(d.pop) : num((d.mahallas || {})[it.mahalla]);
+    }
+    function nameOf(it) { var p = pathOf(it); return p.length ? p[p.length - 1] : "O‘zbekiston Respublikasi"; }
+    function withinOf(it) { return it.level === "republic" ? "Barcha " + REGIONS.length + " hudud" : it.level === "region" ? "Butun viloyat — barcha tumanlari" : pathOf(it).slice(0, -1).join(" · "); }
+    function same(a, b) { return a.level === b.level && pathOf(a).join("|") === pathOf(b).join("|"); }
+    /* a, b ni ichiga oladimi: a ning yo‘li qisqaroq VA b nikining boshi. */
+    function swallows(a, b) { var pa = pathOf(a), pb = pathOf(b); return pa.length < pb.length && pa.every(function (v, i) { return v === pb[i]; }); }
+    /* Ko‘p tanlov bitta manzilga sig‘maydi: nomni boshqa elementning raqami bilan yamamaslik uchun pog‘onalar FAQAT bitta element bo‘lganda to‘ladi, to‘liq holat `items` da; noma‘lum qo‘shiluvchi bo‘lsa reach — null. */
+    function emit(total, cov, reach) {
+      var one = basket.length === 1 ? basket[0] : null, w = basket.reduce(function (a, b) { return ORDER.indexOf(b.level) < ORDER.indexOf(a.level) ? b : a; }, basket[0]);
+      var d = basket.length ? { level: w.level, region: one ? one.region : null, district: one ? one.district : null, mahalla: one ? one.mahalla : null, reach: total,
+        items: basket.map(function (it, i) { return { level: it.level, region: it.region, district: it.district, mahalla: it.mahalla, reach: reach[i], counted: !cov[i] }; }) }
+        : { level: null, region: null, district: null, mahalla: null, reach: null, items: [] };
+      root.dispatchEvent(new CustomEvent("scopechange", { bubbles: true, detail: d }));
+    }
+    function render(fireEvent, newIdx) {
+      var cov = basket.map(function (it, i) { return basket.some(function (o, j) { return j !== i && swallows(o, it); }); });
+      var reach = basket.map(reachOf), total = 0, nCov = 0, nUnk = 0;
+      basket.forEach(function (it, i) { if (cov[i]) { nCov++; } else if (reach[i] == null) { nUnk++; } else { total += reach[i]; } }); elList.innerHTML = "";
+      basket.forEach(function (it, i) {
+        var li = document.createElement("li"), main = document.createElement("div"), x = document.createElement("button");
+        li.className = i === newIdx ? "v6-item v6-new" : "v6-item"; li.setAttribute("data-covered", cov[i] ? "true" : "false"); main.className = "v6-main"; main.id = "v6-row-" + i;
+        [["eyebrow eyebrow-sm v6-lv", LABEL[it.level]], ["v6-nm", nameOf(it)], ["v6-rc mono", (reach[i] == null ? "" : "~") + fmt(reach[i])],
+          ["v6-sub", cov[i] ? "Kattaroq tanlov ichida — jamiga qo‘shilmadi" : withinOf(it)]].forEach(function (a) { main.appendChild(span(a[0], a[1])); });
+        x.type = "button"; x.className = "icon-btn v6-x"; x.innerHTML = XMARK; x.setAttribute("aria-describedby", main.id); x.setAttribute("aria-keyshortcuts", "Delete");
+        /* Har ✕ Tab bilan yetiladi (roving tabindex YO‘Q — kompozit `role` siz u 12 tadan bittasini qoldirardi); nom yolg‘iz yetarli emas — daraja, qamrov va «sanalmadi» tavsifda o‘qiladi. */
+        x.setAttribute("aria-label", nameOf(it) + (cov[i] ? " (jamiga qo‘shilmagan)" : "") + " — savatdan olib tashlash");
+        x.addEventListener("click", function () { remove(i); }); li.appendChild(main); li.appendChild(x); elList.appendChild(li);
+      });
+      elList.hidden = !basket.length; elEmpty.hidden = basket.length > 0; var counted = basket.length - nCov, known = counted - nUnk;
+      elTotal.textContent = !known ? "—" : (nUnk ? "≥ ~" : "~") + fmt(total);
+      elCap.textContent = !basket.length ? "Savat bo‘sh"
+        : (nCov ? basket.length + " tanlovdan " + counted + " tasi sanaldi — qolgani kattaroq tanlov ichida" : counted + " ta hudud")
+        + (known ? " · " + (nUnk ? "kamida " : "") + "taxminan " + fmt(total) + " kishi" : "") + (nUnk ? " · " + nUnk + " ta hudud aholisi noma‘lum, jamiga kirmadi" : "");
+      var part = REPUBLIC_POP && known ? Math.min(1, total / REPUBLIC_POP) : 0;
+      elFill.style.transform = "scaleX(" + part + ")"; elBar.hidden = elPct.hidden = !part;
+      if (part) elPct.textContent = "Butun respublika aholisiga nisbatan " + (part < 0.001 ? "0.1% dan kam" : "~" + (part >= 0.1 ? Math.round(part * 100) : (part * 100).toFixed(1)) + "%") + (nUnk ? " (noma‘lumlar hisobsiz)" : "");
+      elWarn.hidden = !nCov;
+      if (nCov) q("v6-warntext").textContent = nCov + " ta tanlov kattaroq hudud ichida qoldi — jamiga faqat kattarog‘i qo‘shildi, bitta odam ikki marta sanalmasin.";
+      updatePending(); if (fireEvent) emit(basket.length && !nUnk ? total : null, cov, reach);
+    }
+    function clearErr() { elErr.hidden = true; elErrText.textContent = ""; elR.removeAttribute("aria-invalid"); elR.removeAttribute("aria-describedby"); }
+    /* Konteyner AVVAL ochiladi, matn keyingi kadrda: bir xil xato takrorlanganda ham bu haqiqiy o‘zgarish bo‘ladi (`role="alert"` jim qolmaydi) va fokus e‘loni bilan urishmaydi. */
+    function fail(msg) {
+      elErrText.textContent = ""; elErr.hidden = false;
+      cancelAnimationFrame(errRaf); errRaf = requestAnimationFrame(function () { elErrText.textContent = msg; }); return false;
+    }
+    function add(it) {
+      if (basket.length >= LIMIT) return fail("Savatda ko‘pi bilan " + LIMIT + " ta hudud bo‘ladi — avval keraksizini olib tashlang.");
+      var at = -1; basket.forEach(function (o, i) { if (same(o, it)) at = i; });
+      /* Takror qo‘shilmaydi. Fokus O‘CHIRISH tugmasiga ko‘chmaydi — u yerda ikkinchi Enter qatorni o‘chirib yuborardi; o‘rniga qator o‘zi fokus oladi va butun matni o‘qiladi. */
+      if (at >= 0) { render(false); elList.children[at].tabIndex = -1; elList.children[at].focus(); return fail(nameOf(it) + " savatda bor — takror qo‘shilmadi."); }
+      basket.push(it); render(true, basket.length - 1); return true;
+    }
+    function remove(i) {
+      basket.splice(i, 1); render(true); var btns = elList.querySelectorAll(".v6-x"); (btns.length ? btns[Math.max(0, Math.min(i, basket.length - 1))] : elR).focus();
+    }
+    function draft() { /* chuqurroq select bo‘sh bo‘lsa daraja yuqorida to‘xtaydi */
+      return !elR.value ? null : { level: elM.value ? "mahalla" : elD.value ? "district" : "region", region: elR.value, district: elD.value || null, mahalla: elM.value || null };
+    }
+    function updatePending() {
+      clearErr(); /* eski qizil xato yangi tanlov yonida turib qolmasin */
+      if (basket.length >= LIMIT) { elPend.textContent = "Savat to‘ldi: " + LIMIT + " ta hudud. Yangisini qo‘shish uchun avval bittasini olib tashlang."; return; }
+      var it = draft();
+      if (!it) { elPend.textContent = "Viloyatni tanlang. Tuman va mahalla ixtiyoriy — bo‘sh qoldirsangiz butun viloyat qo‘shiladi."; return; }
+      if (basket.some(function (o) { return same(o, it); })) { elPend.textContent = nameOf(it) + " — savatda allaqachon bor."; return; }
+      /* Kattaroq tanlov buni yutadi: raqam VA‘DA QILINMAYDI, chunki jamiga +0 qo‘shiladi. */
+      var big = null; basket.forEach(function (o) { if (swallows(o, it)) big = o; }); var r = reachOf(it);
+      elPend.textContent = big ? "Qo‘shiladi: " + nameOf(it) + " · " + LABEL[it.level] + " — lekin " + nameOf(big) + " savatda, jamiga qo‘shilmaydi."
+        : "Qo‘shiladi: " + nameOf(it) + " · " + LABEL[it.level] + (r == null ? " · aholi soni noma‘lum" : " · taxminan " + fmt(r) + " kishi");
+    }
+    elR.addEventListener("change", function () {
+      fill(elD, elR.value ? Object.keys(districtsOf(elR.value)) : [], elR.value ? "Butun viloyat" : "Avval viloyatni tanlang");
+      fill(elM, [], "Avval tumanni tanlang"); updatePending();
+    });
+    elD.addEventListener("change", function () {
+      fill(elM, elD.value ? Object.keys(mahallasOf(elR.value, elD.value)) : [], elD.value ? "Butun tuman" : "Avval tumanni tanlang"); updatePending();
+    });
+    elM.addEventListener("change", updatePending);
+    elAdd.addEventListener("click", function () {
+      var it = draft();
+      /* Fokus avval ko‘chadi, xato matni keyingi kadrda — ikki e‘lon bir-birini kesmasin. */
+      if (!it) { elR.setAttribute("aria-invalid", "true"); elR.setAttribute("aria-describedby", "v6-err"); elR.focus(); fail("Avval viloyatni tanlang — tizim hududni o‘zi taxmin qilmaydi."); return; }
+      if (!add(it)) return;
+      /* Eng chuqur pog‘ona bo‘shatiladi. Fokus AVVAL ko‘chadi: fokuslangan select’ni disable qilish uni <body> ga tashlardi. */
+      if (it.mahalla) { elM.value = ""; elM.focus(); }
+      else if (it.district) { elD.value = ""; elD.focus(); fill(elM, [], "Avval tumanni tanlang"); }
+      else { elR.value = ""; elR.focus(); fill(elD, [], "Avval viloyatni tanlang"); fill(elM, [], "Avval tumanni tanlang"); }
+      updatePending();
+    });
+    elAll.addEventListener("click", function () { add({ level: "republic", region: null, district: null, mahalla: null }); });
+    root.querySelector(".v6-picks").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); elAdd.click(); } });
+    /* Ro‘yxat: o‘q tugmalar bilan yurish, Delete bilan olib tashlash (`aria-keyshortcuts` da e‘lon qilingan). Backspace YO‘Q: «orqaga» odati qatorni tasdiqsiz o‘chirib yuborardi. */
+    elList.addEventListener("keydown", function (e) {
+      var btns = Array.prototype.slice.call(elList.querySelectorAll(".v6-x")), i = btns.indexOf(document.activeElement);
+      if (i < 0) return;
+      if (e.key === "Delete") { e.preventDefault(); remove(i); return; }
+      var step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      var n = e.key === "Home" ? 0 : e.key === "End" ? btns.length - 1 : step ? (i + step + btns.length) % btns.length : -1;
+      if (n < 0) return;
+      e.preventDefault(); btns[n].focus();
+    });
+    if (!REGIONS.length) {
+      q("v6-blocked").hidden = false; root.querySelector(".v6-panel").hidden = true;
+      /* Tanlagich yashiringach bo‘sh holat «yuqorida tanlang» deb TURMASIN — bunday tugma qolmadi. */ elEmpty.lastElementChild.textContent = "Hudud ro‘yxati yuklanmagani uchun tanlash mumkin emas.";
+      elCap.textContent = "Hudud ro‘yxati yuklanmadi — qamrov hisoblanmaydi"; return;
+    }
+    fill(elR, REGIONS, "Viloyatni tanlang"); fill(elD, [], "Avval viloyatni tanlang");
+    fill(elM, [], "Avval tumanni tanlang"); render(false);
+  })();
+</script>
