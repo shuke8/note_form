@@ -7,9 +7,15 @@
 (function () {
   "use strict";
 
-  document.documentElement.classList.remove("no-js");
-
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  /* Safari 14 dan past va eski Android'da `MediaQueryList.addEventListener`
+     yo'q — faqat eski `addListener` bor. Uni to'g'ridan-to'g'ri chaqirish
+     butun boot'ni yiqitardi. */
+  function onMedia(mq, fn) {
+    if (typeof mq.addEventListener === "function") mq.addEventListener("change", fn);
+    else if (typeof mq.addListener === "function") mq.addListener(fn);
+  }
 
   /* ---------------------------------------------------------------------------
      1. SCROLL REVEAL
@@ -25,6 +31,7 @@
 
     if (reduced.matches || !("IntersectionObserver" in window)) {
       nodes.forEach(function (n) { n.classList.add("is-in", "is-done"); });
+      document.documentElement.classList.remove("no-js");
       return;
     }
 
@@ -44,6 +51,8 @@
     }, { rootMargin: "0px 0px -10% 0px", threshold: 0.01 });
 
     nodes.forEach(function (n) { io.observe(n); });
+    // Kuzatuvchi ULANGANDAN keyingina zaxirani olib tashlaymiz.
+    document.documentElement.classList.remove("no-js");
   }
 
   /* ---------------------------------------------------------------------------
@@ -79,7 +88,14 @@
     var slot = host.querySelector("[data-tw-slot]");
     var caret = host.querySelector(".caret-el");
     var words;
-    try { words = JSON.parse(host.getAttribute("data-typewriter")); } catch (e) { words = null; }
+    try {
+      words = JSON.parse(host.getAttribute("data-typewriter"));
+    } catch (e) {
+      // Jim o'tib ketilsa, sarlavha ostida muzlab qolgan kursor qoladi va
+      // sababi hech qayerda ko'rinmaydi.
+      console.error("[motion] data-typewriter yaroqli JSON emas", e);
+      words = null;
+    }
     if (!slot || !Array.isArray(words) || words.length < 2) return;
 
     // Sarlavha kengligi so'z almashganda sakramasin: eng uzun so'z bo'yicha
@@ -94,6 +110,17 @@
       widest = Math.max(widest, probe.getBoundingClientRect().width);
     });
     probe.remove();
+    // O'lchov QO'LLANADI. Ilgari u hisoblanib tashlab yuborilardi va
+    // sarlavha har so'z almashganda qayta o'ralardi.
+    // Kursor kengligi ham qo'shiladi: u ham shu qutining ichida turadi,
+    // hisobga olinmasa quti eng uzun so'zda baribir kengayib ketadi.
+    var tail = slot.parentNode;
+    var caretW = 0;
+    if (caret) {
+      var cs = getComputedStyle(caret);
+      caretW = caret.getBoundingClientRect().width + (parseFloat(cs.marginInlineStart) || 0);
+    }
+    if (widest > 0 && tail) tail.style.minWidth = Math.ceil(widest + caretW) + "px";
 
     slot.textContent = words[0];
     // Ekran o'quvchi almashinuvni o'qib turmasin — u statik matnni oladi.
@@ -213,6 +240,7 @@
      turadi, sahifa foni ustida emas.
   ------------------------------------------------------------------------- */
   var THEME_KEY = "om-theme";
+  var storageWarned = false;
 
   function readStored() {
     try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
@@ -250,7 +278,7 @@
     var system = window.matchMedia("(prefers-color-scheme: dark)");
     applyTheme(stored || (system.matches ? "dark" : "light"));
 
-    system.addEventListener("change", function (e) {
+    onMedia(system, function (e) {
       if (!readStored()) applyTheme(e.matches ? "dark" : "light");
     });
 
@@ -258,7 +286,18 @@
       btn.addEventListener("click", function () {
         var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
         applyTheme(next);
-        try { localStorage.setItem(THEME_KEY, next); } catch (e) { /* private rejim */ }
+        try {
+          localStorage.setItem(THEME_KEY, next);
+        } catch (e) {
+          // Private rejimda saqlash ishlamaydi. Tanlov shu sahifada
+          // qoladi, lekin keyingi sahifada yo'qoladi — buni bir marta
+          // aytamiz, aks holda foydalanuvchi tema "o'z-o'zidan qaytdi"
+          // deb o'ylaydi.
+          if (!storageWarned) {
+            storageWarned = true;
+            if (window.omToast) window.omToast("Mavzu tanlovi bu brauzerda saqlanmaydi");
+          }
+        }
       });
     });
   }
@@ -287,13 +326,16 @@
     }, 3600);
   };
 
+  /* Har qadam alohida o'raladi: ilgari `initTheme` dagi bitta xato
+     `initReveal` ni ham olib ketardi va sahifa bo'm-bo'sh qolardi. */
   function boot() {
-    initTheme();
-    initStagger();
-    initReveal();
-    initTypewriter();
-    initNav();
-    initMenu();
+    [initTheme, initStagger, initReveal, initTypewriter, initNav, initMenu]
+      .forEach(function (step) {
+        try { step(); }
+        catch (e) { console.error("[motion] " + (step.name || "step") + " ishlamadi", e); }
+      });
+    // Qaysi qadam yiqilishidan qat'i nazar kontent ko'rinadigan qolsin.
+    document.documentElement.classList.remove("no-js");
   }
 
   if (document.readyState === "loading") {

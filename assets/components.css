@@ -354,7 +354,13 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 .seg-btn svg { width: 15px; height: 15px; flex: none; }
 @media (hover: hover) { .seg-btn:hover { border-color: var(--ink-2); color: var(--ink); } }
 .seg-btn:active { transform: scale(0.97); }
-.seg-btn[aria-checked="true"], .seg-btn[aria-selected="true"] {
+/* `aria-pressed` ham shu yerda: kun chiplari toggle tugmalari va ular
+   `aria-pressed` ishlatadi. Ilgari faqat `aria-checked` stillangani
+   uchun kod `role=button` da ruxsat etilmagan atributni faqat CSS
+   ilgagi bo'lsin deb qo'shib yurgan edi. */
+.seg-btn[aria-checked="true"],
+.seg-btn[aria-selected="true"],
+.seg-btn[aria-pressed="true"] {
   background: var(--ink); border-color: var(--ink); color: var(--paper);
 }
 

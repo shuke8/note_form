@@ -18,6 +18,7 @@
   var state = {
     scope: null,          // republic | region | district | mahalla
     region: "", district: "", mahalla: "",
+    dataFailed: false,    // `composer-data.js` yuklanmadi
     when: "now",
     days: [],
     files: [],
@@ -120,7 +121,10 @@
     return mahallasOf(state.region, state.district)[state.mahalla];
   }
 
-  function currentReach() { return state.scope ? reachOf(state.scope) : null; }
+  function currentReach() {
+    if (state.dataFailed) return null;
+    return state.scope ? reachOf(state.scope) : null;
+  }
 
   function scopePath() {
     if (!state.scope) return null;
@@ -132,7 +136,26 @@
     return parts.length ? parts : null;
   }
 
+  /* Narvondan YUQORIGA chiqilganda pastdagi tanlovlar tozalanadi.
+     Aks holda ekran «Viloyat» deb turadi, `state` esa mahallani ushlab
+     qoladi va so'rov tanasiga tushadi — ekran bilan tana bir-biriga
+     zid ikki narsani aytadi. */
+  function clearBelow(level) {
+    var depth = LEVELS.indexOf(level);
+    if (depth < 3) { state.mahalla = ""; $("fMahalla").value = ""; }
+    if (depth < 2) {
+      state.district = ""; $("fDistrict").value = "";
+      fillSelect($("fMahalla"), [], "Avval tumanni tanlang");
+    }
+    if (depth < 1) {
+      state.region = ""; $("fRegion").value = "";
+      fillSelect($("fDistrict"), [], "Avval viloyatni tanlang");
+    }
+  }
+
   function setLevel(level) {
+    var prev = state.scope;
+    if (prev && LEVELS.indexOf(level) < LEVELS.indexOf(prev)) clearBelow(level);
     state.scope = level;
     var input = document.querySelector('.rung-radio[value="' + level + '"]');
     if (input) input.checked = true;
@@ -148,7 +171,39 @@
     else refresh();
   }
 
+  /* `composer-data.js` yuklanmasa (deploy nomi o'zgargan, so'rov
+     bloklangan) GEO bo'sh qoladi. Ilgari sahifa buni jimgina yutib,
+     «~0 · butun respublika aholisi» deb yozardi va bu raqamni FAKT
+     sifatida ko'rsatardi. Endi qadam bloklanadi va sabab aytiladi. */
+  function reportDataFailure() {
+    state.dataFailed = true;
+    var box = $("scopeError");
+    box.textContent = "";
+    var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    icon.setAttribute("viewBox", "0 0 16 16");
+    icon.setAttribute("fill", "none");
+    icon.setAttribute("stroke", "currentColor");
+    icon.setAttribute("stroke-width", "1.6");
+    icon.setAttribute("aria-hidden", "true");
+    icon.innerHTML = '<circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.6M8 11h.01" stroke-linecap="round"/>';
+    box.appendChild(icon);
+    box.appendChild(document.createTextNode(
+      "Hudud ma’lumotlari yuklanmadi. Sahifani yangilang; muammo qolsa administratorga xabar bering."));
+    box.hidden = false;
+    // Bo'm-bo'sh select "buzilgan" degan taassurot beradi — sababni
+    // maydonning o'zi ham aytsin.
+    ["fRegion", "fDistrict", "fMahalla"].forEach(function (id) {
+      fillSelect($(id), [], "Ma’lumot yuklanmadi");
+    });
+    document.querySelectorAll(".rung-radio, #fRegion, #fDistrict, #fMahalla").forEach(function (el) {
+      el.disabled = true;
+    });
+    $("scopeLadder").setAttribute("data-failed", "true");
+    console.error("[composer] OM_GEO bo‘sh — composer-data.js yuklanmadi");
+  }
+
   function initScope() {
+    if (!Object.keys(GEO).length) { reportDataFailure(); return; }
     fillSelect($("fRegion"), Object.keys(GEO), "Viloyatni tanlang");
     fillSelect($("fDistrict"), [], "Avval viloyatni tanlang");
     fillSelect($("fMahalla"), [], "Avval tumanni tanlang");
@@ -192,9 +247,14 @@
     LEVELS.forEach(function (level) {
       var row = document.querySelector('.rung[data-level="' + level + '"]');
       row.setAttribute("data-active", state.scope === level ? "true" : "false");
-      var reach = reachOf(level);
+      var reach = state.dataFailed ? null : reachOf(level);
       $("reach-" + level).textContent = reach == null ? "—" : "~" + formatPop(reach);
     });
+    if (state.dataFailed) {
+      $("reachFill").style.width = "0";
+      $("reachCaption").textContent = "Ma’lumot yuklanmadi";
+      return;
+    }
 
     // Select faqat ota-onasi tanlangandagina ochiladi — bo'sh ro'yxatni
     // ochib qo'yish «tanlov yo'q» degan noto'g'ri xabar beradi.
@@ -237,8 +297,15 @@
 
     document.querySelectorAll("[data-tpl]").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        var t = TEMPLATES[btn.getAttribute("data-tpl")];
-        if (!t) return;
+        var key = btn.getAttribute("data-tpl");
+        var t = TEMPLATES[key];
+        if (!t) {
+          // Ilgari bu jim `return` edi: tugma bosilardi va HECH NIMA
+          // bo'lmasdi — na matn, na xabar, na konsolda iz.
+          console.error("[composer] ssenariy topilmadi: " + key);
+          if (window.omToast) window.omToast("Ssenariy matni yuklanmadi — sahifani yangilang");
+          return;
+        }
         var replacing = TEXT_FIELDS.some(function (f) { return $(f.id).value.trim(); });
         if (replacing && !window.confirm("Yozilgan matn ssenariy matni bilan almashtiriladi. Davom etamizmi?")) return;
         $("uzTitle").value = t.uzTitle; $("uzBody").value = t.uzBody;
@@ -283,10 +350,10 @@
       chip.addEventListener("click", function () {
         var day = chip.getAttribute("data-day");
         var on = chip.getAttribute("aria-pressed") === "true";
+        // `aria-pressed` — `aria-checked` EMAS: bir nechta kun birga
+        // tanlanadi, bu radiogroup emas. `role=button` da `aria-checked`
+        // umuman ruxsat etilmaydi, u faqat CSS ilgagi bo'lib qolgandi.
         chip.setAttribute("aria-pressed", on ? "false" : "true");
-        // `aria-pressed` toggle tugmasi — `aria-checked` emas: bir nechta
-        // kun birga tanlanadi, bu radiogroup emas.
-        chip.setAttribute("aria-checked", on ? "false" : "true");
         state.days = on ? state.days.filter(function (d) { return d !== day; }) : state.days.concat(day);
         refresh();
       });
@@ -308,13 +375,17 @@
     if (state.when === "now") return "Hoziroq";
     if (state.when === "later") {
       var d = $("fDate").value, t = $("fTime").value;
-      return d && t ? d + " · " + t : "Sana tanlanmagan";
+      if (!d) return "Sana tanlanmagan";
+      if (!t) return d + " · vaqt tanlanmagan";
+      return d + " · " + t;
     }
     var names = { "1": "Du", "2": "Se", "3": "Ch", "4": "Pa", "5": "Ju", "6": "Sh", "0": "Ya" };
     if (!state.days.length) return "Kunlar tanlanmagan";
     var order = ["1", "2", "3", "4", "5", "6", "0"];
     var picked = order.filter(function (d) { return state.days.indexOf(d) > -1; });
-    return picked.map(function (d) { return names[d]; }).join(", ") + " · " + $("fRepeatTime").value;
+    var rt = $("fRepeatTime").value;
+    // Osilib qolgan ajratkich («Du · ») chiqmasin.
+    return picked.map(function (d) { return names[d]; }).join(", ") + (rt ? " · " + rt : " · vaqt tanlanmagan");
   }
 
   /* ---------------------------------------------------------------------------
@@ -339,16 +410,33 @@
   }
 
   function addFiles(list) {
-    var problems = [];
+    var problems = [], added = 0;
+    function pushProblem(msg) { if (problems.indexOf(msg) === -1) problems.push(msg); }
+    $("errFiles").hidden = true;      // eski xabar yangi urinishga qolib ketmasin
     Array.prototype.forEach.call(list, function (file) {
-      if (state.files.length >= MAX_FILES) { problems.push("5 tadan ortiq fayl qo‘shib bo‘lmaydi"); return; }
-      if (file.size > MAX_BYTES) { problems.push("“" + file.name + "” 10 MB dan katta"); return; }
-      if (!/\.(pdf|jpe?g|png)$/i.test(file.name)) { problems.push("“" + file.name + "” — faqat PDF, JPG yoki PNG"); return; }
+      // Bir xil sabab takrorlanmasin: 3 ta fayl chegaradan oshsa,
+      // «5 tadan ortiq…» jumlasi uch marta yozilib chiqardi.
+      if (state.files.length >= MAX_FILES) { pushProblem("5 tadan ortiq fayl qo‘shib bo‘lmaydi"); return; }
+      if (file.size > MAX_BYTES) { pushProblem("“" + file.name + "” 10 MB dan katta"); return; }
+      if (!/\.(pdf|jpe?g|png)$/i.test(file.name)) { pushProblem("“" + file.name + "” — faqat PDF, JPG yoki PNG"); return; }
       state.files.push({ name: file.name, size: file.size });
+      added++;
     });
     var err = $("errFiles");
     if (problems.length) {
-      err.textContent = problems[0];
+      // Ilgari faqat BIRINCHI muammo ko'rsatilardi: 6 ta fayl tashlansa
+      // qaysilari rad etilgani bilinmasdi.
+      err.textContent = "";
+      var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      icon.setAttribute("viewBox", "0 0 16 16");
+      icon.setAttribute("fill", "none");
+      icon.setAttribute("stroke", "currentColor");
+      icon.setAttribute("stroke-width", "1.6");
+      icon.setAttribute("aria-hidden", "true");
+      icon.innerHTML = '<circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.6M8 11h.01" stroke-linecap="round"/>';
+      err.appendChild(icon);
+      err.appendChild(document.createTextNode(
+        added + " ta qo‘shildi, " + problems.length + " tasi rad etildi: " + problems.join(" · ")));
       err.hidden = false;
     } else {
       err.hidden = true;
@@ -386,6 +474,9 @@
       del.setAttribute("aria-label", "“" + f.name + "” faylini olib tashlash");
       del.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l8 8M14 6l-8 8"/></svg>';
       del.addEventListener("click", function () {
+        // «5 tadan ortiq» xabari o'chirishdan keyin ham turib qolardi —
+        // ya'ni u endi mavjud bo'lmagan chegarani da'vo qilardi.
+        $("errFiles").hidden = true;
         state.files.splice(i, 1);
         renderFiles();
         refresh();
@@ -406,7 +497,10 @@
   function validate() {
     var errors = [];
 
-    if (!state.scope) errors.push({ el: document.querySelector(".rung-radio"), box: $("scopeError"), msg: null });
+    // Ma'lumot yo'q bo'lsa forma umuman yuborilmaydi; xabar `scopeError`
+    // da allaqachon turibdi, uni bosib ketmaymiz.
+    if (state.dataFailed) errors.push({ el: null, box: null, msg: null });
+    else if (!state.scope) errors.push({ el: document.querySelector(".rung-radio"), box: $("scopeError"), msg: null });
 
     if (state.scope && state.scope !== "republic") {
       if (!state.region) errors.push({ el: $("fRegion"), box: $("errRegion"), msg: "Viloyatni tanlang." });
@@ -439,8 +533,16 @@
         }
       }
     }
-    if (state.when === "repeat" && !state.days.length) {
-      errors.push({ el: $("dayRow").querySelector("[data-day]"), box: $("errDays"), msg: "Kamida bitta kunni tanlang." });
+    if (state.when === "repeat") {
+      if (!state.days.length) {
+        errors.push({ el: $("dayRow").querySelector("[data-day]"), box: $("errDays"), msg: "Kamida bitta kunni tanlang." });
+      }
+      // Maydon yulduzcha bilan majburiy deb belgilangan edi, lekin hech
+      // qayerda tekshirilmasdi: bo'sh qoldirilsa ekran «Hammasi
+      // to'ldirilgan» deb turardi va ko'rinishda 09:00 paydo bo'lardi.
+      if (!$("fRepeatTime").value) {
+        errors.push({ el: $("fRepeatTime"), box: $("errRepeatTime"), msg: "Takroriy yuborish vaqtini tanlang." });
+      }
     }
     return errors;
   }
@@ -478,6 +580,12 @@
      bir-biridan uzilib qoladi.
   ------------------------------------------------------------------------- */
   function refresh() {
+    // Forma o'zgardi — pastdagi so'rov tanasi endi ekranga mos emas.
+    // Uni qoldirish sahifani bir vaqtda «to'ldirilmagan» va «mana
+    // tayyor tanangiz» deb turishga majbur qilardi.
+    var slot = $("resultSlot");
+    if (slot.firstChild) slot.innerHTML = "";
+
     // --- qamrov ---
     renderLadder();
     var path = scopePath();
@@ -503,10 +611,12 @@
     var body = $(lang + "Body").value.trim();
     $("pvTitle").textContent = title;
     $("pvText").textContent = body;
-    $("pvTime").textContent =
-      state.when === "now"    ? "hozir" :
-      state.when === "repeat" ? ($("fRepeatTime").value || "09:00")
-                              : ($("fTime").value || "09:00");
+    // Tanlanmagan vaqt o'rniga 09:00 QO'YILMAYDI — ilgari ko'rinish
+    // operator kiritmagan vaqtni ko'rsatib turardi.
+    var pvTime = state.when === "now" ? "hozir"
+      : state.when === "repeat" ? $("fRepeatTime").value
+      : $("fTime").value;
+    $("pvTime").textContent = pvTime || "—";
 
     var fit = $("pvFit"), fitText = $("pvFitText");
     fit.className = "chip";
@@ -573,34 +683,25 @@
     });
   }
 
+  /* Bu yerda kutiladigan hech narsa yo'q: tekshiruv `click` ichida
+     sinxron tugaydi, tana esa darhol yig'iladi. Ilgari 700ms lik
+     kechikish va «Tekshirilmoqda» yozuvi bor edi — ular bo'lmagan
+     ishni bo'layotgandek ko'rsatardi. Javob endi darhol chiqadi;
+     tugma bosilganini panelning o'zi va toast tasdiqlaydi. */
   function runSubmit() {
-    var btn = $("submitBtn"), label = $("submitLabel");
-    btn.setAttribute("aria-busy", "true");
-    btn.disabled = true;
-    var original = label.textContent;
-    label.textContent = "Tekshirilmoqda";
-    var spin = document.createElement("span");
-    spin.className = "spinner";
-    btn.insertBefore(spin, label);
-
-    // Bu kechikish TAQLID emas, tekshiruvning ko'rinadigan bosqichi:
-    // tugma darhol "tayyor" bo'lib qolsa, bosildimi-yo'qmi bilinmaydi.
-    setTimeout(function () {
-      spin.remove();
-      label.textContent = original;
-      btn.removeAttribute("aria-busy");
-      btn.disabled = false;
-      renderDemoResult();
-      $("resultSlot").scrollIntoView({ block: "center", behavior: "smooth" });
-    }, 700);
+    renderDemoResult();
+    $("resultSlot").scrollIntoView({ block: "center", behavior: "smooth" });
   }
 
   function renderDemoResult() {
+    // Daraja bo'yicha kesish — `clearBelow` bilan birga ikkinchi himoya.
+    // Tana HECH QACHON o'z `scope_level` idan chuqurroq hudud ko'rsatmasin.
+    var depth = LEVELS.indexOf(state.scope);
     var payload = {
       scope_level: state.scope,
-      region: state.region || null,
-      district: state.district || null,
-      mahalla: state.mahalla || null,
+      region:   depth >= 1 ? (state.region || null) : null,
+      district: depth >= 2 ? (state.district || null) : null,
+      mahalla:  depth >= 3 ? (state.mahalla || null) : null,
       body: {
         uz: { title: $("uzTitle").value.trim(), text: $("uzBody").value.trim() },
         ru: { title: $("ruTitle").value.trim(), text: $("ruBody").value.trim() }

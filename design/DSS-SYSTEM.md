@@ -368,3 +368,122 @@ almashtirildi.
 | Klaviatura | ArrowDown/Up darajani almashtiradi (native) |
 | Tekshiruv oqimi | Mahalla darajasi + bo'sh hudud → 7 xato, birinchi maydonga fokus, natija paneli OCHILMAYDI |
 | Tuzatgandan keyin | 3 ta geo xatosi yo'qoladi, ulush chizig'i va yakun yangilanadi |
+
+---
+
+# Mustaqil verifikatsiya va tuzatishlar (2026-08-26)
+
+Ikkita alohida, toza kontekstli agent kod ko'rib chiqdi (implementer o'zini
+verify qila olmaydi): biri arxitektura/xatolik/a11y bo'yicha, ikkinchisi
+faqat «jim ishlamay qolish» va yolg'on holatlarni ovladi. 13 ta tasdiqlangan
+kamchilik topildi, hammasi tuzatildi.
+
+## Kritik
+
+**1. Narvon torayganda so'rov tanasi torayardi.** Mahalla darajasigacha
+tushib, keyin «Viloyat» radiosini bosgan operator ekranda «Andijon viloyati»
+ni ko'rardi, so'rov tanasida esa `scope_level: "region"` bilan birga
+`district: "Asaka tumani"` va `mahalla: "Asaka MFY"` qolib ketardi.
+Eng aniq maydonni hurmat qiladigan server ~2 500 kishiga, `scope_level` ga
+qaraydigani 3.3 millionga yuborardi. Ikki himoya qo'yildi: `setLevel()`
+yuqoriga chiqilganda pastdagi tanlovlarni tozalaydi, `renderDemoResult()`
+esa tanani darajaga qarab kesadi.
+
+**2. `no-js` zaxirasi kontent ko'rinishidan OLDIN olib tashlanardi.**
+`motion.js` boshida `classList.remove("no-js")` turardi; `initReveal()` esa
+uchinchi bo'lib ishga tushardi. Boot'dagi har qanday xato butun
+`[data-reveal]` kontentini ko'rinmas qoldirardi — CSS zaxirasi esa
+allaqachon o'chirilgan bo'lardi. Real trigger ham topildi: Safari 14 dan
+past va eski Android'da `MediaQueryList.addEventListener` yo'q, faqat
+`addListener` bor; `initTheme()` shu qatorda otilardi.
+
+Uchta tuzatish: eski media API uchun `onMedia()` moslashtiruvchisi;
+`no-js` faqat kuzatuvchi ulangandan keyin olinadi; har boot qadami alohida
+`try/catch` ichida — biri yiqilsa qolgani ishlaydi.
+
+Sinov: `matchMedia` eski API ga qaytarildi, `localStorage` otiladigan
+qilindi va `IntersectionObserver` butunlay o'chirildi. Natija: 4/4 reveal
+elementi ko'rinadi, mavzu tugmasi ishlaydi.
+
+## Yuqori
+
+**3. `fRegn`… kechikkan majburiy maydon.** `fRepeatTime` yulduzcha bilan
+majburiy deb belgilangan, lekin hech qayerda tekshirilmasdi. Uni tozalab
+qo'yilsa: holat «Hammasi to'ldirilgan», yakunda osilib qolgan `Du · `,
+ko'rinishda esa operator kiritmagan **09:00**. Endi tekshiriladi, ikkala
+`|| "09:00"` zaxirasi olib tashlandi (`—` chiqadi) va matn «vaqt
+tanlanmagan» deydi.
+
+**4. Yuklanmagan ma'lumot fakt sifatida ko'rsatilardi.** `composer-data.js`
+so'rovi bekor bo'lsa `window.OM_GEO || {}` uni jimgina yutardi va sahifa
+«~0 · butun respublika aholisi» deb yozardi — ya'ni O'zbekistonda nol odam
+yashashini **da'vo qilardi**. Ssenariy tugmalari ham jimgina o'lardi.
+Endi: qadam bloklanadi, sabab aytiladi («Hudud ma'lumotlari yuklanmadi…»),
+raqamlar `—`, yuborish to'xtatiladi, tugma bosilganda toast chiqadi.
+Real 404 bilan sinaldi.
+
+## O'rta
+
+**5. Demo panel eskirardi.** Yuborilgandan keyin formani tahrirlasangiz,
+sahifa bir vaqtda «1 ta maydon to'ldirilishi kerak» va eski to'liq so'rov
+tanasini ko'rsatib turardi. Endi `refresh()` panelni tozalaydi.
+
+**6. Rad etilgan fayllarning faqat BIRINCHISI aytilardi.** 6 ta fayl
+tashlansa qaysilari o'tmagani bilinmasdi. Endi: «1 ta qo'shildi, 3 tasi rad
+etildi: …» — hammasi nomi bilan, takroriy sabab birlashtiriladi.
+
+**7. Fayl xatosi hech qachon tozalanmasdi.** «5 tadan ortiq…» xabari
+fayllar o'chirilgandan keyin ham turardi — mavjud bo'lmagan chegarani
+da'vo qilardi. Endi o'chirishda ham, yangi urinishda ham tozalanadi.
+
+**8. «Tekshirilmoqda» soxta ish edi.** Tekshiruv `click` ichida sinxron
+tugaydi; 700ms lik kechikish va spinner davomida hech narsa qilinmasdi.
+Kechikish olib tashlandi — javob darhol chiqadi.
+
+**9. Mavzu tanlovi jimgina yo'qolardi.** Private rejimda `setItem` otiladi,
+`catch` uni yutardi va foydalanuvchi sahifa almashganda tema «o'z-o'zidan
+qaytdi» deb o'ylardi. Endi bir marta aytiladi.
+
+**9b. Mavzu birinchi bo'yoqdan keyin qo'yilardi.** `motion.js` `defer`
+bilan yuklanadi, shuning uchun saqlangan qorong'i mavzu har ochilishda oq
+bo'lib yonib ketardi. Ikkala sahifa `&lt;head&gt;` iga inline snippet qo'shildi.
+
+## Past
+
+**10. Yozuv mashinkasi kengligi hisoblanib TASHLAB YUBORILARDI.** Izoh
+«sarlavha sakramasin» deb va'da berardi, `widest` esa hech qayerda
+ishlatilmasdi. Endi qo'llanadi — kursor kengligi bilan birga, aks holda
+quti eng uzun so'zda baribir kengayardi. O'lchov: 18 ta namunada sarlavha
+balandligi ham, qutining kengligi ham o'zgarmadi (123px / 326px).
+
+**11. `data-typewriter` JSON xatosi ko'rinmasdi** — endi `console.error`.
+
+**12. Kun chiplarida yaroqsiz ARIA.** `role=button` da `aria-checked`
+ruxsat etilmaydi; u faqat CSS ilgagi bo'lgani uchun qo'shilgandi.
+`components.css` ga `[aria-pressed="true"]` qoidasi qo'shildi, atribut
+olib tashlandi.
+
+**13. Qamrov xatosi radiolarga bog'lanmagandi.** `role="alert"` bir marta
+o'qiladi; fokus qaytganda sabab qolmasdi. Endi har radioning
+`aria-describedby` sida `scopeError` bor.
+
+Shuningdek o'lik `.step-sec .pick` selektori `.rung-pick` ga to'g'rilandi.
+
+## Tekshiruvchilar tasdiqlagan, kamchilik topilmagan
+
+Yuborish yo'lida muvaffaqiyat da'vosi yoki o'ylab topilgan reestr raqami
+yo'q (bo'sh joyli matn, takroriy bosish, reset'dan keyingi yuborish —
+hammasi sinaldi); `state.files` va ro'yxat sinxron; ochilgan-yopilgan
+select'dan qolgan qiymat tanaga tushmaydi; mobil menyuda focus trap
+kerak emas (modal emas); `refresh()` da layout thrash yo'q; kuzatuvchi
+sizmaydi.
+
+## Yakuniy o'lchov (2026-08-26)
+
+| Tekshiruv | landing | composer |
+|---|---|---|
+| Kontrast (AA), light + dark | 0 xato | 0 xato |
+| Overflow: 320 / 1440 | 0 | 0 |
+| Konsol | 0 | 0 |
+| Boot chidamliligi (3 ta buzilish birga) | 4/4 element ko'rinadi | — |
+| Ma'lumot yo'q holati | — | bloklanadi, sabab aytiladi |

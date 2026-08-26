@@ -9,6 +9,20 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+<script>
+  /* Mavzu birinchi bo'yoqdan OLDIN qo'yiladi. `motion.js` `defer` bilan
+     yuklanadi, shuning uchun saqlangan qorong'i mavzu har ochilishda bir
+     marta oq bo'lib yonib ketardi. */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem("om-theme"); } catch (e) { /* private rejim */ }
+    if (!t) {
+      t = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark" : "light";
+    }
+    document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" />
@@ -108,7 +122,7 @@
 
         <div class="rung" data-level="republic">
           <label class="rung-pick">
-            <input class="rung-radio" type="radio" name="scopeLevel" value="republic" aria-describedby="reach-republic" />
+            <input class="rung-radio" type="radio" name="scopeLevel" value="republic" aria-describedby="reach-republic scopeError" />
             <span class="rung-level">Respublika</span>
           </label>
           <p class="rung-fixed">O‘zbekiston Respublikasi <span class="rung-note">14 hudud</span></p>
@@ -118,7 +132,7 @@
 
         <div class="rung" data-level="region">
           <label class="rung-pick">
-            <input class="rung-radio" type="radio" name="scopeLevel" value="region" aria-describedby="reach-region" />
+            <input class="rung-radio" type="radio" name="scopeLevel" value="region" aria-describedby="reach-region scopeError" />
             <span class="rung-level">Viloyat</span>
           </label>
           <div class="rung-value">
@@ -131,7 +145,7 @@
 
         <div class="rung" data-level="district">
           <label class="rung-pick">
-            <input class="rung-radio" type="radio" name="scopeLevel" value="district" aria-describedby="reach-district" />
+            <input class="rung-radio" type="radio" name="scopeLevel" value="district" aria-describedby="reach-district scopeError" />
             <span class="rung-level">Tuman</span>
           </label>
           <div class="rung-value">
@@ -144,7 +158,7 @@
 
         <div class="rung" data-level="mahalla">
           <label class="rung-pick">
-            <input class="rung-radio" type="radio" name="scopeLevel" value="mahalla" aria-describedby="reach-mahalla" />
+            <input class="rung-radio" type="radio" name="scopeLevel" value="mahalla" aria-describedby="reach-mahalla scopeError" />
             <span class="rung-level">Mahalla</span>
           </label>
           <div class="rung-value">
@@ -347,7 +361,8 @@
         </div>
         <div class="field" style="max-width:260px;margin-top:16px">
           <label class="label" for="fRepeatTime">Vaqt <span class="req" aria-hidden="true">*</span></label>
-          <input class="input" id="fRepeatTime" type="time" value="09:00" />
+          <input class="input" id="fRepeatTime" type="time" value="09:00" aria-describedby="errRepeatTime" />
+          <p class="field-error" id="errRepeatTime" role="alert" hidden></p>
         </div>
       </div>
     </div>

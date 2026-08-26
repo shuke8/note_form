@@ -57,6 +57,9 @@
   background: var(--paper-alt);
 }
 .ladder-num { text-align: end; }
+/* Ma'lumot fayli yuklanmagan holat — narvon ishlamasligi ko'rinib tursin. */
+.ladder[data-failed="true"] { opacity: .55; }
+.ladder[data-failed="true"] .rung-reach { color: var(--ink-2); }
 
 .rung {
   position: relative;
@@ -177,7 +180,7 @@
    yurganda brauzer elementni eng kam siljish bilan ko‘rsatadi va u
    tasma ostida qolib ketardi. */
 .step-sec .input, .step-sec .select, .step-sec .textarea,
-.step-sec .seg-btn, .step-sec .pick, .step-sec .tpl { scroll-margin-top: 110px; }
+.step-sec .seg-btn, .step-sec .rung-pick, .step-sec .tpl { scroll-margin-top: 110px; }
 /* Bir xil aniqlikdagi qoidalarda oxirgisi yutadi — shuning uchun
    matn ustuni qoidasi yuqoridagidan KEYIN turishi shart. */
 .lang-col .input, .lang-col .textarea { scroll-margin-top: 300px; }
