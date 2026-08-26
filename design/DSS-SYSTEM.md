@@ -704,3 +704,82 @@ ostida tasdiq sifatida qoladi. Fokus tartibiga ta’sir qilmaydi — xarita
   (`renderScope()` qamrov imzosi o‘zgarmasa chiqib ketadi).
 
 Kadrlar: `.screenshots/qamrov-xarita-*.png`
+
+---
+
+## Sxematik chizma → HAQIQIY chegaralar
+
+Foydalanuvchi: «real O'zbekiston mapini ishlat». Qo'lda yozilgan 14 ta
+ko'pburchak o'rniga haqiqiy ma'muriy chegaralar qo'yildi.
+
+### Manba va proyeksiya
+
+- **Natural Earth 10m admin-1** (jamoat mulki — atributsiya majburiyati
+  yo'q, lekin manba ekranda ataladi). `adm0_a3 = UZB` bo'yicha 14 ta
+  yozuv, reestrdagi 14 hudud bilan bir-biriga to'liq tushadi. Ikkita
+  «Tashkent» yozuvi yuzasi bo'yicha ajratiladi (shahar — kichigi),
+  nomi bo'yicha emas.
+- **Albers TENG-YUZALI konus** proyeksiyasi, standart parallellar
+  38,5°N va 44,5°N. Bu ataylab: xaritada hududning kattaligi ko'z uchun
+  «qancha joy» degani. Merkator Qoraqalpog'istonni shimolda bo'rttirib,
+  Surxondaryoni janubda kichraytirib yuborardi — yonidagi raqam to'g'ri
+  turib, chizmaning o'zi yolg'on gapirardi.
+- Duglas-Peyker bilan 0,42 birlik dopuskda soddalashtirildi (540px enida
+  ~0,5px — ko'z ilg'amaydi). Natija: 14 hudud uchun **11 KB** path,
+  tashqi so'rovsiz, JS ichida.
+- geoBoundaries/OSM ham ko'rildi (ODbL): ishlaydi, lekin share-alike va
+  atributsiya majburiyati qo'shiladi. Natural Earth tanlandi.
+
+Izohda **rasmiy chegara hujjati emas** deb yozib qo'yilgan: 1:10 mln
+umumiy ma'lumot to'plami rasmiy kadastr o'rnini bosmaydi.
+
+### Nima o'zgardi va nega
+
+**Shakl ichidagi raqam olib tashlandi.** Haqiqiy geometriyada Toshkent
+shahri 537px lik xaritada **6,9×7,5px** — unga 12px lik raqam sig'maydi,
+Farg'ona vodiysida esa raqamlar bir-birining ustiga chiqardi. Endi nom
+xaritaning burchagidagi **bitta suzuvchi yorliqda** chiqadi: «14 ·
+Toshkent shahri». To'qnashuv yo'q, eng kichik hudud ham nomsiz qolmaydi.
+Xuddi shu yorliq fon ustida «Butun respublika» deydi — bitta komponent,
+ikkita vazifa.
+
+**Kichik hudud uchun ko'rinadigan nishon.** Shakli 14 birlikdan kichik
+hududga (bugun faqat Toshkent shahri) ko'rinadigan halqa va r=11 birlik
+bosish doirasi beriladi — 537px da **24,6px**, ya'ni WCAG 2.5.8 (24×24)
+bo'yicha yetarli. Halqa MAJBURIY: ko'rinmas kattalashtirilgan nishon
+«nega bu yerni bosganda shahar chiqdi?» degan savol tug'dirardi.
+
+**Kengaytirilgan bosish yo'lagi RAD ETILDI.** Har shakl atrofiga shaffof
+`stroke` qo'yish har bir hududning nishonini kattalashtirardi, lekin
+yo'laklar ustma-ust tushib, chegaradan 13px ichkarida turgan bosish
+qo'shni hududga ketardi — ya'ni aniq ko'rinib turgan joyni bosganda
+boshqa narsa tanlanardi. O'lchangan yechim: shaklning o'zi + kichiklar
+uchun doira.
+
+**Chizish tartibi kattadan kichikka.** SVG da keyingi element ustki
+bo'ladi, demak kichik hudud kattaning ustida qoladi va bosish
+o'g'irlanmaydi. 14/14 hudud o'z markazida to'g'ri tanlanishi o'lchandi.
+
+### Nishon o'lchamlari (537px lik ustunda, 1,119px/birlik)
+
+Eng kichik bbox: Toshkent shahri 6,9×7,5px → nishon doirasi 24,6px.
+Keyingilari: Andijon 47,9×27,7 · Sirdaryo 31,3×45,4 · Farg'ona 57,5×37,6
+· Namangan 55,7×38,5. Qolgan 9 tasi 53px dan katta.
+Shakli ingichka bo'lgan hududlarda ham **ro'yxatdagi 44px lik qator**
+teng qiymatli boshqaruv bo'lib qoladi — xarita hech qachon yagona yo'l
+emas.
+
+### Verify (real brauzer)
+
+- 14/14 hudud o'z markazidan bosilganda AYNAN o'zi tanlanadi
+  (`elementFromPoint` bilan o'lchandi) — qo'shni o'g'irlamaydi.
+- Chegara kontrasti: hudud konturi to'ldirishga nisbatan **4,55:1**
+  (light) va **4,05:1** (dark) — 1.4.11 talabi 3:1 dan yuqori.
+  Kichik hudud halqasi 5,44:1 / 8,02:1.
+- 8 viewport × 2 tema: 0 kontrast xatosi, overflow yo'q, xato yo'q.
+- Yorliq: hudud ustida «NN · nom», fon ustida «Butun respublika»,
+  ro'yxatdagi mos qator bir vaqtda yonadi.
+
+Kadrlar: `.screenshots/qamrov-xarita-*.png`
+Generator: `scratchpad/mkmap.py` (Natural Earth → path; qayta ishlatish
+uchun repoga ko'chirilmagan — chiqishi `composer.js` ichida qotgan).
