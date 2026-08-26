@@ -264,3 +264,107 @@ Ish davomida topilgan va shu yerda tuzatilganlar — hammasi o‘lchov bilan:
    qo‘shildi.
 10. **Bildirishnoma sarlavhasi va matni bir qatorga yopishardi.** Ular
     `span` edi — blok elementlarga aylantirildi.
+
+---
+
+# «Kim oladi?» — qamrov narvoni (2026-08-26)
+
+## Nima almashtirildi
+
+Oldin bu bo'lim uchta ayri boshqaruvdan iborat edi: yuqorida qamrov yo'li
+yozilgan chiziq, ostida to'rtta tanlov kartasi (Respublika / Viloyat /
+Tuman / Mahalla), ularning ostida esa daraja tanlanganda ochilib-yopiladigan
+uchta select. Uchta muammosi bor edi:
+
+1. **Ikki xil model.** Karta «daraja» ni, select «hudud» ni so'raydi — lekin
+   ular bir-biriga bog'liq, ekranda esa bog'liqlik ko'rinmasdi.
+2. **330px joy.** Karta to'ri + kaskad + xulosa chizig'i.
+3. **Sakrash.** Daraja almashganda kaskad paydo bo'lardi/yo'qolardi va
+   ostidagi butun sahifa siljirdi.
+
+Endi bitta boshqaruv — **narvon**. Har qator bitta daraja:
+
+    DARAJA        HUDUD                      TAXMINIY QAMROV
+    ○ Respublika  O‘zbekiston Respublikasi   ·············  ~35.1M
+      ○ Viloyat   [Xorazm viloyati      ▾]   ·············   ~1.9M
+        ◉ Tuman   [Qo‘shko‘pir tumani   ▾]   ·············   ~125K
+          ○ Mahalla [8-mahalla …        ▾]   ·············   ~2.4K
+    ▓·····························  ~125K · respublika aholisining 0.36%
+
+- **Radio = «shu yerda to'xtat».** Daraja va hudud endi bir qatorda.
+- **Otstup.** Har chuqurroq daraja 14px o'ngga suriladi — narvon daraxt
+  bo'lib o'qiladi, ustun sarlavhasiz ham ierarxiya ko'rinadi.
+- **Nuqtali yetaklovchi.** Raqamlar o'ngga tekislanadi (to'rttasini
+  vertikal solishtirish uchun), qiymat bilan raqam orasidagi bo'sh joy
+  esa chizma tilidagi yetaklovchi bilan bog'lanadi.
+- **Ulush chizig'i.** «~2.4K» yolg'iz turganda katta ham, kichik ham
+  tuyulishi mumkin; chiziq uni respublika miqyosiga qo'yib beradi.
+- **Sakrash yo'q.** Barcha to'rt qator doim joyida turadi.
+
+Balandlik 330px dan ~250px ga tushdi va ikkita boshqaruv o'rniga bitta
+qoldi.
+
+## Xulq qoidalari
+
+- Qiymat tanlanganda daraja o'sha qatorga ko'chadi — **faqat pastga**.
+  Operator «Mahalla» ni tanlab qo'yib keyin viloyatni ko'rsatsa, daraja
+  viloyatga qaytib ketmaydi.
+- Select faqat ota-onasi tanlangandagina ochiladi. Bo'sh ro'yxatni ochib
+  qo'yish «tanlov yo'q» degan noto'g'ri xabar beradi.
+- Tanlanmagan daraja qamrovi `—`, **nol emas**: nol «hech kim» degan
+  ma'noni berardi.
+
+## Semantika
+
+`fieldset` + `legend` + **native `input[type=radio]`**. Ilgari bu
+`role="radiogroup"` va `role="radio"` bo'lgan tugmalar edi, roving
+tabindex qo'lda yozilgandi. Native radio bilan o'q tugmalar, guruhlash va
+«4 tadan 3-si» e'loni brauzerdan tekinga keladi — va guruh ichida select
+turgani a'zolikni buzmaydi. Real klaviatura bilan tekshirildi: ArrowDown
+Respublika → Viloyat ga o'tdi, `change` otildi, qator va ulush chizig'i
+yangilandi.
+
+## Ma'lumot
+
+`composer-data.js` qayta yozildi: har tuman va har mahallaga aniq aholi
+raqami qo'yildi (ilgari faqat viloyat darajasida bor edi va tuman raqami
+umuman yo'q edi). 14 hudud · 35 tuman · 76 mahalla · jami ~35.1M.
+
+Raqamlar — namuna to'plami, fayl boshida shunday yozilgan; ekranda ular
+doim `~` bilan va «TAXMINIY QAMROV» yorlig'i ostida chiqadi. Real qiymat
+reestrdan keladi.
+
+## Tuzatilgan tizim xatosi
+
+Bu ish paytida **butun tizimga taalluqli** xato topildi:
+
+    :focus-visible { …; border-radius: var(--r-2); }
+    .shell :focus-visible { border-radius: inherit; }
+
+Bu qoida fokusdagi elementning O'Z radiusini qayta yozib yuborardi.
+Natijada: dumaloq radio kvadratga aylanardi, pill tugma 100px dan 0 ga
+tushardi, 12px li input ham 0 bo'lardi — `.shell` ichidagi **har bir**
+fokuslanadigan element. Ikkala sahifada, birinchi kundan beri.
+
+Sabab: outline elementning radiusiga ergashsin deb yozilgan edi — holbuki
+zamonaviy brauzerlarda u allaqachon shunday qiladi. Ikkala qator ham
+o'chirildi. Tekshirildi: radio 50%, pill 100px, select 8px, input 12px —
+hammasida fokus halqasi bor va shakl buzilmaydi.
+
+**O'lchov eslatmasi:** bu xato uzoq vaqt ko'rinmadi, chunki
+`python3 -m http.server` `Cache-Control` yubormaydi va brauzer tahrirlangan
+CSS ni eski holida ko'rsatib turadi. Tekshiruv serveri `no-store` bilan
+qayta ishga tushirildi; shundan keyin ham brauzer xotira keshini ushlab
+qolgani uchun o'lchovdan oldin `<link>` href'lari yangi so'rov bilan
+almashtirildi.
+
+## Verify (2026-08-26)
+
+| Tekshiruv | Natija |
+|---|---|
+| Kontrast (AA), light + dark | 0 xato |
+| Gorizontal overflow: 320 / 390 / 1440 | 0 |
+| Fokus izi (narvon radiolari) | 4/4, shakl buzilmagan |
+| Klaviatura | ArrowDown/Up darajani almashtiradi (native) |
+| Tekshiruv oqimi | Mahalla darajasi + bo'sh hudud → 7 xato, birinchi maydonga fokus, natija paneli OCHILMAYDI |
+| Tuzatgandan keyin | 3 ta geo xatosi yo'qoladi, ulush chizig'i va yakun yangilanadi |

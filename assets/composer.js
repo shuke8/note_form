@@ -64,9 +64,30 @@
   }
 
   /* ---------------------------------------------------------------------------
-     01 QAMROV
+     01 QAMROV — NARVON
+     To'rt daraja bitta boshqaruvda: radio «shu yerda to'xtat» degani,
+     yonidagi select esa o'sha darajaning hududini beradi.
   ------------------------------------------------------------------------- */
+  var LEVELS = ["republic", "region", "district", "mahalla"];
   var LEVEL_LABEL = { republic: "Respublika", region: "Viloyat", district: "Tuman", mahalla: "Mahalla" };
+
+  var REPUBLIC_POP = (function () {
+    var total = 0;
+    Object.keys(GEO).forEach(function (r) { total += GEO[r].pop || 0; });
+    return total;
+  })();
+
+  /* Raqam o'qiladigan bo'lsin: 35 100 000 emas, 35.1M. Yaxlitlash darajasi
+     kattalikka qarab — 2.4K va 2.44K orasida farq operatorga kerak emas. */
+  function formatPop(n) {
+    if (n == null) return null;
+    if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
+    // 10K dan past qiymatda o'nlik saqlanadi: mahalla 2 400 kishi bo'lsa
+    // «~2K» uni chorak qismga yaxlitlab yuboradi.
+    if (n >= 1e4) return Math.round(n / 1e3) + "K";
+    if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, "") + "K";
+    return String(n);
+  }
 
   function fillSelect(sel, items, placeholder) {
     sel.innerHTML = "";
@@ -80,60 +101,28 @@
     });
   }
 
-  function initScope() {
-    fillSelect($("fRegion"), Object.keys(GEO), "Viloyatni tanlang");
-
-    wireRadioGroup($("scopeGroup"), function (el) {
-      state.scope = el.getAttribute("data-scope");
-      state.region = state.district = state.mahalla = "";
-      $("fRegion").value = ""; $("fDistrict").value = ""; $("fMahalla").value = "";
-      $("fDistrict").disabled = true; $("fMahalla").disabled = true;
-
-      var needsGeo = state.scope !== "republic";
-      $("cascade").hidden = !needsGeo;
-      $("wrapDistrict").hidden = state.scope === "region";
-      $("wrapMahalla").hidden = state.scope !== "mahalla";
-      $("scopeError").hidden = true;
-      refresh();
-    });
-
-    $("fRegion").addEventListener("change", function () {
-      state.region = this.value;
-      state.district = state.mahalla = "";
-      var d = $("fDistrict");
-      if (state.region && GEO[state.region]) {
-        fillSelect(d, Object.keys(GEO[state.region].districts), "Tumanni tanlang");
-        d.disabled = false;
-      } else {
-        fillSelect(d, [], "Avval viloyatni tanlang");
-        d.disabled = true;
-      }
-      $("fMahalla").disabled = true;
-      fillSelect($("fMahalla"), [], "Avval tumanni tanlang");
-      refresh();
-    });
-
-    $("fDistrict").addEventListener("change", function () {
-      state.district = this.value;
-      state.mahalla = "";
-      var m = $("fMahalla");
-      if (state.region && state.district) {
-        fillSelect(m, GEO[state.region].districts[state.district] || [], "Mahallani tanlang");
-        m.disabled = false;
-      } else {
-        fillSelect(m, [], "Avval tumanni tanlang");
-        m.disabled = true;
-      }
-      refresh();
-    });
-
-    $("fMahalla").addEventListener("change", function () {
-      state.mahalla = this.value;
-      refresh();
-    });
+  function districtsOf(region) { return (GEO[region] && GEO[region].districts) || {}; }
+  function mahallasOf(region, district) {
+    var d = districtsOf(region)[district];
+    return (d && d.mahallas) || {};
   }
 
-  function scopePathText() {
+  /* Har darajaning taxminiy qamrovi. Tanlanmagan bo'lsa null — ekranda
+     «—» chiqadi, nol EMAS: nol «hech kim» degan ma'noni berardi. */
+  function reachOf(level) {
+    if (level === "republic") return REPUBLIC_POP;
+    if (level === "region")   return state.region ? GEO[state.region].pop : null;
+    if (level === "district") {
+      if (!state.region || !state.district) return null;
+      return districtsOf(state.region)[state.district].pop;
+    }
+    if (!state.region || !state.district || !state.mahalla) return null;
+    return mahallasOf(state.region, state.district)[state.mahalla];
+  }
+
+  function currentReach() { return state.scope ? reachOf(state.scope) : null; }
+
+  function scopePath() {
     if (!state.scope) return null;
     if (state.scope === "republic") return ["O‘zbekiston Respublikasi"];
     var parts = [];
@@ -143,9 +132,85 @@
     return parts.length ? parts : null;
   }
 
-  function scopeReachText() {
-    var checked = $("scopeGroup").querySelector('[aria-checked="true"]');
-    return checked ? checked.getAttribute("data-reach") : null;
+  function setLevel(level) {
+    state.scope = level;
+    var input = document.querySelector('.rung-radio[value="' + level + '"]');
+    if (input) input.checked = true;
+    $("scopeError").hidden = true;
+    refresh();
+  }
+
+  /* Qiymat tanlanganda daraja O'SHA qatorga ko'chadi — lekin faqat
+     PASTGA. Operator «Mahalla» ni tanlab qo'yib, keyin viloyatni
+     ko'rsatsa, daraja viloyatga qaytib ketmasligi kerak. */
+  function deepenTo(level) {
+    if (!state.scope || LEVELS.indexOf(level) > LEVELS.indexOf(state.scope)) setLevel(level);
+    else refresh();
+  }
+
+  function initScope() {
+    fillSelect($("fRegion"), Object.keys(GEO), "Viloyatni tanlang");
+    fillSelect($("fDistrict"), [], "Avval viloyatni tanlang");
+    fillSelect($("fMahalla"), [], "Avval tumanni tanlang");
+
+    document.querySelectorAll(".rung-radio").forEach(function (input) {
+      input.addEventListener("change", function () { setLevel(input.value); });
+    });
+
+    $("fRegion").addEventListener("change", function () {
+      state.region = this.value;
+      state.district = state.mahalla = "";
+      if (state.region) {
+        fillSelect($("fDistrict"), Object.keys(districtsOf(state.region)), "Tumanni tanlang");
+      } else {
+        fillSelect($("fDistrict"), [], "Avval viloyatni tanlang");
+      }
+      fillSelect($("fMahalla"), [], "Avval tumanni tanlang");
+      deepenTo("region");
+    });
+
+    $("fDistrict").addEventListener("change", function () {
+      state.district = this.value;
+      state.mahalla = "";
+      if (state.region && state.district) {
+        fillSelect($("fMahalla"), Object.keys(mahallasOf(state.region, state.district)), "Mahallani tanlang");
+      } else {
+        fillSelect($("fMahalla"), [], "Avval tumanni tanlang");
+      }
+      deepenTo("district");
+    });
+
+    $("fMahalla").addEventListener("change", function () {
+      state.mahalla = this.value;
+      deepenTo("mahalla");
+    });
+  }
+
+  /* Narvonni state'dan qayta chizish. Har qator uchun: faolmi, selecti
+     ochiqmi, qamrov raqami nima. */
+  function renderLadder() {
+    LEVELS.forEach(function (level) {
+      var row = document.querySelector('.rung[data-level="' + level + '"]');
+      row.setAttribute("data-active", state.scope === level ? "true" : "false");
+      var reach = reachOf(level);
+      $("reach-" + level).textContent = reach == null ? "—" : "~" + formatPop(reach);
+    });
+
+    // Select faqat ota-onasi tanlangandagina ochiladi — bo'sh ro'yxatni
+    // ochib qo'yish «tanlov yo'q» degan noto'g'ri xabar beradi.
+    $("fDistrict").disabled = !state.region;
+    $("fMahalla").disabled = !state.district;
+
+    var reach = currentReach();
+    var share = reach == null ? 0 : (reach / REPUBLIC_POP) * 100;
+    $("reachFill").style.width = reach == null ? "0" : Math.max(share, 0.35) + "%";
+
+    var caption = $("reachCaption");
+    if (!state.scope) caption.textContent = "Daraja tanlanmagan";
+    else if (reach == null) caption.textContent = LEVEL_LABEL[state.scope] + " tanlanmagan";
+    else if (state.scope === "republic") caption.textContent = "~" + formatPop(reach) + " · butun respublika aholisi";
+    else caption.textContent = "~" + formatPop(reach) + " · respublika aholisining " +
+      (share >= 1 ? share.toFixed(1) : share.toFixed(share >= 0.1 ? 2 : 3)) + "%";
   }
 
   /* ---------------------------------------------------------------------------
@@ -341,7 +406,7 @@
   function validate() {
     var errors = [];
 
-    if (!state.scope) errors.push({ el: $("scopeGroup").querySelector('[role="radio"]'), box: $("scopeError"), msg: null });
+    if (!state.scope) errors.push({ el: document.querySelector(".rung-radio"), box: $("scopeError"), msg: null });
 
     if (state.scope && state.scope !== "republic") {
       if (!state.region) errors.push({ el: $("fRegion"), box: $("errRegion"), msg: "Viloyatni tanlang." });
@@ -414,27 +479,10 @@
   ------------------------------------------------------------------------- */
   function refresh() {
     // --- qamrov ---
-    var path = scopePathText();
-    var pathHost = $("scopePath");
-    pathHost.innerHTML = "";
-    if (!path) {
-      pathHost.textContent = "Qamrov tanlanmagan";
-      pathHost.style.color = "var(--ink-2)";
-    } else {
-      pathHost.style.color = "";
-      path.forEach(function (p, i) {
-        if (i) {
-          var sep = document.createElement("span");
-          sep.className = "sep"; sep.textContent = "·";
-          pathHost.appendChild(sep);
-        }
-        var s = document.createElement("span");
-        s.textContent = p;
-        pathHost.appendChild(s);
-      });
-    }
-    var reach = scopeReachText();
-    $("scopeReach").textContent = reach ? "~" + reach + " aholi" : "— aholi";
+    renderLadder();
+    var path = scopePath();
+    var reachNum = currentReach();
+    var reach = reachNum == null ? null : formatPop(reachNum);
 
     // --- matn hisoblagichlari ---
     TEXT_FIELDS.forEach(function (f) {

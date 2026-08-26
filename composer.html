@@ -90,82 +90,81 @@
     </div>
 
     <div class="step-body">
-      <div class="scope-summary">
-        <p class="scope-path" id="scopePath">
-          <span>Qamrov tanlanmagan</span>
-        </p>
-        <p class="scope-reach" id="scopeReach">— aholi</p>
-      </div>
+      <!-- Qamrov narvoni: daraja tanlash va hudud tanlash BITTA boshqaruvda.
+           Ilgari bu to‘rtta karta + alohida ochiladigan uch select edi —
+           ikki xil model, 330px joy va har almashishda sakraydigan blok.
+           Endi har qator bitta daraja: chapda «shu yerda to‘xtat» radiosi,
+           o‘rtada hudud, o‘ngda taxminiy qamrov. Munosabat ko‘rinib turadi. -->
+      <fieldset class="ladder" id="scopeLadder">
+        <legend class="sr-only">Qamrov darajasi va hududi</legend>
+        <span class="tick tick-tl" aria-hidden="true"></span><span class="tick tick-tr" aria-hidden="true"></span>
+        <span class="tick tick-bl" aria-hidden="true"></span><span class="tick tick-br" aria-hidden="true"></span>
 
-      <div class="pick-grid" role="radiogroup" aria-labelledby="h-step-1" id="scopeGroup">
-        <button type="button" class="pick" role="radio" aria-checked="false" data-scope="republic" data-reach="3.2M" data-fill="100">
-          <span class="pick-top">
-            <span class="pick-name">Respublika</span>
-            <span class="pick-mark" aria-hidden="true"></span>
-          </span>
-          <span class="pick-desc">Butun mamlakat, 14 hudud</span>
-          <span class="pick-foot">
-            <span class="reach-bar" aria-hidden="true"><span class="reach-fill" style="width:100%"></span></span>
-            <span class="pick-reach">~3.2M aholi</span>
-          </span>
-        </button>
-        <button type="button" class="pick" role="radio" aria-checked="false" data-scope="region" data-reach="350K" data-fill="62">
-          <span class="pick-top">
-            <span class="pick-name">Viloyat</span>
-            <span class="pick-mark" aria-hidden="true"></span>
-          </span>
-          <span class="pick-desc">Bitta viloyat yoki Toshkent shahri</span>
-          <span class="pick-foot">
-            <span class="reach-bar" aria-hidden="true"><span class="reach-fill" style="width:62%"></span></span>
-            <span class="pick-reach">~350K aholi</span>
-          </span>
-        </button>
-        <button type="button" class="pick" role="radio" aria-checked="false" data-scope="district" data-reach="28K" data-fill="30">
-          <span class="pick-top">
-            <span class="pick-name">Tuman</span>
-            <span class="pick-mark" aria-hidden="true"></span>
-          </span>
-          <span class="pick-desc">Bitta tuman yoki shahar</span>
-          <span class="pick-foot">
-            <span class="reach-bar" aria-hidden="true"><span class="reach-fill" style="width:30%"></span></span>
-            <span class="pick-reach">~28K aholi</span>
-          </span>
-        </button>
-        <button type="button" class="pick" role="radio" aria-checked="false" data-scope="mahalla" data-reach="2.4K" data-fill="12">
-          <span class="pick-top">
-            <span class="pick-name">Mahalla</span>
-            <span class="pick-mark" aria-hidden="true"></span>
-          </span>
-          <span class="pick-desc">Bitta aniq mahalla (MFY)</span>
-          <span class="pick-foot">
-            <span class="reach-bar" aria-hidden="true"><span class="reach-fill" style="width:12%"></span></span>
-            <span class="pick-reach">~2.4K aholi</span>
-          </span>
-        </button>
-      </div>
+        <div class="ladder-head" aria-hidden="true">
+          <span class="eyebrow eyebrow-sm">Daraja</span>
+          <span class="eyebrow eyebrow-sm">Hudud</span>
+          <span class="eyebrow eyebrow-sm ladder-num">Taxminiy qamrov</span>
+        </div>
+
+        <div class="rung" data-level="republic">
+          <label class="rung-pick">
+            <input class="rung-radio" type="radio" name="scopeLevel" value="republic" aria-describedby="reach-republic" />
+            <span class="rung-level">Respublika</span>
+          </label>
+          <p class="rung-fixed">O‘zbekiston Respublikasi <span class="rung-note">14 hudud</span></p>
+          <span class="rung-leader" aria-hidden="true"></span>
+          <span class="rung-reach" id="reach-republic">—</span>
+        </div>
+
+        <div class="rung" data-level="region">
+          <label class="rung-pick">
+            <input class="rung-radio" type="radio" name="scopeLevel" value="region" aria-describedby="reach-region" />
+            <span class="rung-level">Viloyat</span>
+          </label>
+          <div class="rung-value">
+            <select class="select select-flush" id="fRegion" aria-label="Viloyatni tanlang" aria-describedby="errRegion"></select>
+            <p class="field-error" id="errRegion" role="alert" hidden></p>
+          </div>
+          <span class="rung-leader" aria-hidden="true"></span>
+          <span class="rung-reach" id="reach-region">—</span>
+        </div>
+
+        <div class="rung" data-level="district">
+          <label class="rung-pick">
+            <input class="rung-radio" type="radio" name="scopeLevel" value="district" aria-describedby="reach-district" />
+            <span class="rung-level">Tuman</span>
+          </label>
+          <div class="rung-value">
+            <select class="select select-flush" id="fDistrict" aria-label="Tuman yoki shaharni tanlang" aria-describedby="errDistrict" disabled></select>
+            <p class="field-error" id="errDistrict" role="alert" hidden></p>
+          </div>
+          <span class="rung-leader" aria-hidden="true"></span>
+          <span class="rung-reach" id="reach-district">—</span>
+        </div>
+
+        <div class="rung" data-level="mahalla">
+          <label class="rung-pick">
+            <input class="rung-radio" type="radio" name="scopeLevel" value="mahalla" aria-describedby="reach-mahalla" />
+            <span class="rung-level">Mahalla</span>
+          </label>
+          <div class="rung-value">
+            <select class="select select-flush" id="fMahalla" aria-label="Mahallani (MFY) tanlang" aria-describedby="errMahalla" disabled></select>
+            <p class="field-error" id="errMahalla" role="alert" hidden></p>
+          </div>
+          <span class="rung-leader" aria-hidden="true"></span>
+          <span class="rung-reach" id="reach-mahalla">—</span>
+        </div>
+
+        <div class="ladder-foot">
+          <span class="reach-track" aria-hidden="true"><span class="reach-fill" id="reachFill" style="width:0"></span></span>
+          <p class="reach-caption" id="reachCaption">Daraja tanlanmagan</p>
+        </div>
+      </fieldset>
 
       <p class="field-error" id="scopeError" role="alert" hidden>
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.6M8 11h.01"/></svg>
         Qamrov darajasini tanlang — xabar kimga ketishini tizim taxmin qilmaydi.
       </p>
-
-      <div class="cascade" id="cascade" hidden>
-        <div class="field">
-          <label class="label" for="fRegion">Viloyat <span class="req" aria-hidden="true">*</span></label>
-          <select class="select" id="fRegion" required aria-describedby="errRegion"></select>
-          <p class="field-error" id="errRegion" role="alert" hidden></p>
-        </div>
-        <div class="field" id="wrapDistrict" hidden>
-          <label class="label" for="fDistrict">Tuman / shahar <span class="req" aria-hidden="true">*</span></label>
-          <select class="select" id="fDistrict" required aria-describedby="errDistrict" disabled></select>
-          <p class="field-error" id="errDistrict" role="alert" hidden></p>
-        </div>
-        <div class="field" id="wrapMahalla" hidden>
-          <label class="label" for="fMahalla">Mahalla (MFY) <span class="req" aria-hidden="true">*</span></label>
-          <select class="select" id="fMahalla" required aria-describedby="errMahalla" disabled></select>
-          <p class="field-error" id="errMahalla" role="alert" hidden></p>
-        </div>
-      </div>
     </div>
   </section>
 

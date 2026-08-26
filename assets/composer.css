@@ -24,35 +24,137 @@
               text-transform: uppercase; color: var(--ink-2); flex: none; }
 .step-body { margin-top: 28px; display: flex; flex-direction: column; gap: 22px; }
 
-/* --- 01 QAMROV ------------------------------------------------------------ */
-.scope-summary {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  flex-wrap: wrap;
-  padding: 14px 18px; border-radius: var(--r-5);
-  background: var(--paper-raise); border: 1px solid var(--hairline);
+/* --- 01 QAMROV: NARVON --------------------------------------------------
+   Har qator bitta daraja. Chapda «shu yerda to‘xtat» radiosi, o‘rtada
+   hudud, o‘ngda taxminiy qamrov. Pastda ulush chizig‘i — raqam yolg‘iz
+   turganda «~2.4K» katta ham, kichik ham tuyulishi mumkin; chiziq uni
+   respublika miqyosiga qo‘yib beradi.
+   ---------------------------------------------------------------------- */
+.ladder {
+  position: relative;
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+  padding: 0;
+  min-width: 0;            /* fieldset o‘z kontentidan kengayib ketmasin */
 }
-.scope-path { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0;
-              font-size: var(--t-body); color: var(--ink); letter-spacing: var(--ls-body); }
-.scope-path .sep { color: var(--ink-2); }
-.scope-reach { font-family: var(--mono); font-size: var(--t-sm); letter-spacing: var(--ls-mono);
-               color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ladder-head,
+.rung {
+  display: grid;
+  align-items: center;
+  gap: 16px;
+  padding: 0 18px;
+}
+/* To'rtinchi ustun — nuqtali yetaklovchi. Raqamlar o'ngga tekislanadi
+   (ustunni vertikal solishtirish uchun), lekin qiymat bilan raqam orasida
+   600px lik bo'sh joy qolib, qator uzilib ko'rinardi. Chizma tilidagi
+   yetaklovchi ularni bog'laydi. */
+.ladder-head { grid-template-columns: minmax(156px, 210px) minmax(0, 1fr) minmax(96px, auto); }
+.rung { grid-template-columns: minmax(156px, 210px) minmax(0, 320px) 1fr minmax(96px, auto); }
+.rung-leader { height: 0; border-bottom: 1px dotted var(--hairline-2); align-self: center; }
+.ladder-head {
+  padding-block: 12px;
+  border-bottom: 1px solid var(--hairline);
+  background: var(--paper-alt);
+}
+.ladder-num { text-align: end; }
 
-.pick-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.pick-reach { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
-              color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.pick[aria-checked="true"] .pick-reach { color: var(--ink); }
-/* `span` lar inline bo‘lgani uchun `height` qator balandligiga bo‘ysunadi —
-   blokka aylantirilmasa 3px lik chiziq 14px lik plita bo‘lib chiqadi. */
-.pick-foot { display: block; }
-.reach-bar { display: block; height: 3px; border-radius: 2px; background: var(--hairline-2);
-             overflow: hidden; margin-bottom: 8px; }
-.reach-fill { display: block; height: 100%; background: var(--ink-2); border-radius: 2px;
-              transition: width var(--d-pane) var(--ease-out); }
-.pick-name, .pick-desc, .pick-reach { display: block; }
-.pick[aria-checked="true"] .reach-fill { background-image: var(--flame); }
+.rung {
+  position: relative;
+  min-height: 62px;
+  padding-block: 10px;
+  transition: background var(--d-hover) var(--ease-out);
+}
+.rung + .rung { border-top: 1px solid var(--hairline); }
+/* Tanlangan qator: chap chetda issiq chiziq + yumshoq yuza.
+   Faqat rang bilan ajratilmaydi — chiziq shakl beradi (rang ko‘rmaydigan
+   foydalanuvchi ham qaysi qator faol ekanini ko‘radi). */
+.rung::before {
+  content: ""; position: absolute; inset-block: 0; inset-inline-start: 0;
+  width: 3px; background-image: var(--flame);
+  transform: scaleY(0); transform-origin: center;
+  transition: transform var(--d-pane) var(--ease-out);
+}
+.rung[data-active="true"]::before { transform: scaleY(1); }
+.rung[data-active="true"] { background: var(--paper-raise); }
+.rung[data-active="true"] .rung-level { color: var(--ink); font-weight: 600; }
+.rung[data-active="true"] .rung-reach { color: var(--ink); }
+@media (hover: hover) { .rung:not([data-active="true"]):hover { background: var(--ghost-quiet); } }
 
-.cascade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;
-           padding: 20px; border: 1px solid var(--hairline); border-radius: var(--r-6); }
+.rung-pick { display: flex; align-items: center; gap: 12px; cursor: pointer; min-width: 0; }
+.rung-radio {
+  appearance: none; -webkit-appearance: none;
+  width: 18px; height: 18px; flex: none; margin: 0;
+  border: 1.5px solid var(--edge); border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  transition: border-color var(--d-hover) var(--ease-out), background var(--d-hover) var(--ease-out);
+}
+.rung-radio::after {
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--paper); transform: scale(0);
+  transition: transform var(--d-hover) var(--ease-out);
+}
+.rung-radio:checked { background: var(--ink); border-color: var(--ink); }
+.rung-radio:checked::after { transform: scale(1); }
+.rung-radio:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (hover: hover) { .rung-pick:hover .rung-radio:not(:checked) { border-color: var(--ink-2); } }
+
+.rung-level {
+  font-size: var(--t-body); font-weight: 500; letter-spacing: var(--ls-body);
+  color: var(--ink-2);
+  transition: color var(--d-hover) var(--ease-out);
+}
+.rung-value { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.rung-fixed { display: block; min-width: 0; font-size: var(--t-ui); color: var(--ink-2); }
+.rung-note {
+  margin-inline-start: 10px;
+  font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+  text-transform: uppercase; color: var(--ink-2); opacity: .8;
+}
+
+/* Ichma-ich daraja chapga surilib boradi — narvon daraxt bo'lib o'qiladi,
+   ustun sarlavhasiz ham qaysi daraja qaysinisining ichida ekani ko'rinadi. */
+.rung[data-level="region"]   .rung-pick { padding-inline-start: 14px; }
+.rung[data-level="district"] .rung-pick { padding-inline-start: 28px; }
+.rung[data-level="mahalla"]  .rung-pick { padding-inline-start: 42px; }
+/* Narvon ichidagi select qator balandligini oshirmasin: chegara faqat
+   ostida qoladi, qolgan chetlar qatorning o‘z chizig‘iga tayanadi. */
+.select-flush {
+  width: 100%;
+  min-height: 40px; padding: 8px 40px 8px 12px;
+  border-radius: var(--r-3);
+  background-color: var(--paper);
+  background-position: right 12px center;
+}
+.rung[data-active="true"] .select-flush { background-color: var(--paper); }
+
+.rung-reach {
+  font-family: var(--mono); font-size: var(--t-sm); letter-spacing: var(--ls-mono);
+  color: var(--ink-2); text-align: end; font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transition: color var(--d-hover) var(--ease-out);
+}
+
+.ladder-foot {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--hairline);
+  background: var(--paper-alt);
+}
+.reach-track {
+  flex: 1 1 auto; height: 4px; border-radius: 2px;
+  background: var(--hairline-2); overflow: hidden; min-width: 80px;
+}
+.reach-fill {
+  display: block; height: 100%; border-radius: 2px;
+  background-image: var(--flame);
+  min-width: 3px;                 /* 0.007% ham ko‘rinadigan iz qoldirsin */
+  transition: width var(--d-pane) var(--ease-out);
+}
+.reach-caption {
+  flex: none; font-family: var(--mono); font-size: var(--t-mono-sm);
+  letter-spacing: var(--ls-mono); color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
 
 /* --- 02 MATN -------------------------------------------------------------- */
 
@@ -168,12 +270,13 @@
 
 /* --- RESPONSIV ------------------------------------------------------------ */
 @media (max-width: 1080px) {
-  .pick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tpl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 880px) {
   .lang-grid { grid-template-columns: 1fr; }
-  .cascade { grid-template-columns: 1fr; }
+  .ladder-head { grid-template-columns: minmax(130px, 168px) minmax(0, 1fr) minmax(78px, auto); }
+  .rung { grid-template-columns: minmax(130px, 168px) minmax(0, 260px) 1fr minmax(78px, auto); }
+  .ladder-head, .rung { gap: 12px; padding-inline: 14px; }
   .recap { grid-template-columns: 1fr; }
   /* Tor ekranda yopishqoq tasma ekranning yarmini yeydi — u oddiy blokka
      aylanadi va matn maydonlari ustida qoladi. */
@@ -183,8 +286,26 @@
   .preview-card { width: 100%; }
 }
 @media (max-width: 620px) {
-  .pick-grid { grid-template-columns: 1fr; }
   .tpl-grid { grid-template-columns: 1fr; }
+  /* Tor ekranda uch ustun sig‘maydi: daraja va qamrov bitta qatorga
+     chiqadi, hudud ular ostida to‘liq kenglikni oladi. */
+  .ladder-head { display: none; }
+  /* Otstup tor ekranda hududga joy qoldirmaydi — daraja qatori o'z
+     satrida turadi, ierarxiya tartibdan ham ko'rinadi.
+     Selektor `[data-level]` bilan: otstup qoidalari ham shunday, aks
+     holda ular aniqlik bo'yicha yengib ketardi. */
+  .rung[data-level] .rung-pick { padding-inline-start: 0; }
+  .rung {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "pick reach" "value value";
+    gap: 10px 12px; padding-block: 14px;
+  }
+  .rung-leader { display: none; }
+  .rung-pick  { grid-area: pick; }
+  .rung-reach { grid-area: reach; }
+  .rung-value { grid-area: value; }
+  .ladder-foot { flex-direction: column; align-items: stretch; gap: 10px; }
+  .reach-track { width: 100%; }
   .when-grid { grid-template-columns: 1fr; }
   .actions { flex-direction: column; align-items: stretch; }
   .actions-buttons { width: 100%; }

@@ -213,13 +213,17 @@ table { border-collapse: collapse; }
 
 /* Fokus izi qora/oq halqa ustida — DSS ning fokus uslubi shu:
    ichkarida yuza rangidagi bo'shliq, tashqarida qattiq halqa.
-   Har ikkala temada ham 3:1 dan yuqori (qora↔oq). */
+   Har ikkala temada ham 3:1 dan yuqori (qora↔oq).
+
+   `border-radius` bu yerda O'RNATILMAYDI. Ilgari shu qoida elementning
+   o'z radiusini fokus paytida qayta yozib yuborardi — dumaloq radio
+   kvadratga, pill tugma esa 6px ga aylanardi. Zamonaviy brauzerlarda
+   outline elementning O'Z radiusiga ergashadi, boshqa hech nima kerak
+   emas. */
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
-  border-radius: var(--r-2);
 }
-.shell :focus-visible { border-radius: inherit; }
 
 ::selection { background: var(--flame-warm); color: #000; }
 

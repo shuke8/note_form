@@ -338,44 +338,6 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 .char-count[data-level="warn"] { color: var(--warn); }
 .char-count[data-level="crit"] { color: var(--crit); }
 
-/* Tanlov kartasi (radio) — pill emas, chunki ichida ko'p qatorli kontent bor */
-.pick {
-  position: relative;
-  display: flex; flex-direction: column; gap: 10px;
-  padding: 18px 18px 16px; text-align: left;
-  border: 1px solid var(--hairline); border-radius: var(--r-5);
-  background: var(--paper); color: var(--ink-2);
-  box-shadow: var(--lift-1);
-  transition: border-color var(--d-hover) var(--ease-out),
-              box-shadow var(--d-hover) var(--ease-out),
-              background var(--d-hover) var(--ease-out),
-              transform var(--d-tap) var(--ease-out);
-}
-@media (hover: hover) { .pick:hover { border-color: var(--ink-2); } }
-.pick:active { transform: scale(0.985); }
-.pick[aria-checked="true"] {
-  border-color: var(--ink);
-  background: var(--paper);
-  box-shadow: var(--lift-2), inset 0 0 0 1px var(--ink);
-}
-.pick-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.pick-mark {
-  width: 18px; height: 18px; flex: none; border-radius: 50%;
-  border: 1.5px solid var(--edge);
-  display: grid; place-items: center;
-  transition: border-color var(--d-hover) var(--ease-out), background var(--d-hover) var(--ease-out);
-}
-.pick-mark::after {
-  content: ""; width: 8px; height: 8px; border-radius: 50%;
-  background: var(--paper); transform: scale(0);
-  transition: transform var(--d-hover) var(--ease-out);
-}
-.pick[aria-checked="true"] .pick-mark { border-color: var(--ink); background: var(--ink); }
-.pick[aria-checked="true"] .pick-mark::after { transform: scale(1); }
-.pick-name { font-size: var(--t-body); font-weight: 500; color: var(--ink); letter-spacing: var(--ls-body); }
-.pick-desc { font-size: var(--t-ui); color: var(--ink-2); }
-.pick-foot { margin-top: auto; padding-top: 4px; display: block; }
-
 /* Segment (pill qatori) — DSS ning imzo geometriyasi */
 .segment { display: inline-flex; gap: 6px; flex-wrap: wrap; }
 .seg-btn {
