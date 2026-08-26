@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="uz" class="no-js">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>«Kim oladi?» — yechim variantlari</title>
+<meta name="description" content="Auditoriya qamrovini tanlashning sakkizta mustaqil yondashuvi, yonma-yon." />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+<script>
+  /* Mavzu birinchi bo'yoqdan OLDIN — `motion.js` `defer` bilan keladi. */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem("om-theme"); } catch (e) { /* private rejim */ }
+    if (!t) {
+      t = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark" : "light";
+    }
+    document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="assets/system.css" />
+<link rel="stylesheet" href="assets/components.css" />
+<link rel="stylesheet" href="assets/variants.css" />
+</head>
+<body>
+
+<a class="skip" href="#vxList">Variantlarga o‘tish</a>
+
+<header class="nav" id="nav">
+  <div class="shell nav-inner">
+    <a class="brand" href="./landing.html" aria-label="Onlayn Mahalla — bosh sahifa">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <g fill="currentColor">
+          <rect x="10" y="10" width="4" height="4"/>
+          <rect x="5" y="10" width="4" height="4" opacity=".62"/><rect x="15" y="10" width="4" height="4" opacity=".62"/>
+          <rect x="10" y="5" width="4" height="4" opacity=".62"/><rect x="10" y="15" width="4" height="4" opacity=".62"/>
+          <rect x="5" y="5" width="4" height="4" opacity=".26"/><rect x="15" y="5" width="4" height="4" opacity=".26"/>
+          <rect x="5" y="15" width="4" height="4" opacity=".26"/><rect x="15" y="15" width="4" height="4" opacity=".26"/>
+        </g>
+      </svg>
+      <span class="brand-text">
+        <span class="brand-name">Onlayn Mahalla</span>
+        <span class="brand-sub">Variantlar</span>
+      </span>
+    </a>
+
+    <nav class="nav-links" id="navLinks" data-open="false" aria-label="Sahifalar">
+      <a class="nav-link" href="./composer.html">Kompozitor</a>
+      <a class="nav-link" href="./landing.html">Bosh sahifa</a>
+    </nav>
+
+    <span class="nav-spacer"></span>
+
+    <button class="icon-btn nav-toggle" type="button" id="navToggle"
+            aria-expanded="false" aria-controls="navLinks" aria-label="Menyuni ochish">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false">
+        <path d="M3 6h14M3 10h14M3 14h14"/>
+      </svg>
+    </button>
+    <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Qorong‘i mavzuga o‘tish" title="Qorong‘i mavzuga o‘tish">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+        <circle cx="10" cy="10" r="3.6"/><path d="M10 1.6v2M10 16.4v2M18.4 10h-2M3.6 10h-2M15.9 4.1l-1.4 1.4M5.5 14.5l-1.4 1.4M15.9 15.9l-1.4-1.4M5.5 5.5 4.1 4.1"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main class="shell">
+
+  <section class="vx-head">
+    <div class="rule-head">
+      <p class="eyebrow">Ishchi sahifa</p>
+      <span class="chip chip-mono" id="vxStatus" style="margin-inline-start:auto">yuklanmoqda…</span>
+    </div>
+
+    <h1 class="d2" style="margin-top:26px">«Kim oladi?» — sakkizta yechim</h1>
+    <p class="lead" style="margin-top:12px;max-width:62ch">
+      Bir xil vazifa, sakkizta boshqa interaktsiya modeli. Har biri mustaqil
+      qurilgan va uchta linzadan — klaviatura, halollik, dizayn tizimi —
+      o‘tkazilgan. Pastdagi «Natija» qatori har variant chiqargan hodisani
+      ko‘rsatadi: ekranda ko‘ringan narsa bilan qaytgan qiymat bir xilmi,
+      shu yerda tekshiriladi.
+    </p>
+
+    <div class="vx-meta">
+      <span class="chip chip-mono">Bir xil dizayn tizimi</span>
+      <span class="chip chip-mono">Bir xil ma’lumot · 14 · 35 · 76</span>
+      <span class="chip chip-mono">Aholi soni taxminiy</span>
+    </div>
+
+    <div class="note" style="margin-top:24px">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+        <circle cx="10" cy="10" r="7.5"/><path d="M10 6.5v4.2M10 13.5h.01"/>
+      </svg>
+      <span>
+        Bu solishtirish uchun ishchi sahifa, mahsulot emas. Hech bir variant
+        xabar yubormaydi — server ulanmagan. Taqqoslash xulosasi:
+        <code style="font-family:var(--mono);font-size:var(--t-sm)">design/variants/TAQQOSLASH.md</code>
+      </span>
+    </div>
+  </section>
+
+  <nav class="vx-index" id="vxIndex" aria-label="Variantlar ro‘yxati"></nav>
+
+  <div id="vxList"></div>
+
+</main>
+
+<footer class="footer">
+  <div class="shell footer-bottom" style="margin-top:0;border-top:0;padding-top:0">
+    <p class="hint">© 2026 Onlayn Mahalla</p>
+    <p class="eyebrow eyebrow-sm">Dizayn tizimi — designsystems.surf o‘lchovi bo‘yicha</p>
+  </div>
+</footer>
+
+<script src="assets/motion.js" defer></script>
+<script src="assets/composer-data.js" defer></script>
+<script src="assets/variants.js" defer></script>
+</body>
+</html>
