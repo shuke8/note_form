@@ -20,7 +20,13 @@
     region: "", district: "", mahalla: "",
     dataFailed: false,    // `composer-data.js` yuklanmadi
     when: "now",
-    days: [],
+    days: [],           // "0".."6" — JS getDay() konvensiyasi
+    span: "always",     // always | months | range — takrorlanish QAYSI DAVRDA amal qiladi
+    months: [],         // 1..12, faqat span === "months" da ma'noga ega
+    /* Rejim almashganda `false` ga tushadi: endi ochilgan panel qizil bo'lib
+       qarshi olmasin, o'q tugma bilan segmentdan o'tayotganda oraliq
+       rejimning xatolari chaqnab o'tmasin. */
+    whenTouched: false,
     files: [],
     previewLang: "uz",
     submitted: false      // tekshiruv xatolari faqat urinishdan keyin ko'rinadi
@@ -56,6 +62,8 @@
     items.forEach(function (item, i) {
       item.addEventListener("click", function () { select(item); });
       item.addEventListener("keydown", function (e) {
+        if (e.key === "Home") { e.preventDefault(); return focusIndex(0); }
+        if (e.key === "End") { e.preventDefault(); return focusIndex(items.length - 1); }
         if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); focusIndex(i + 1); }
         else if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); focusIndex(i - 1); }
         else if (e.key === " " || e.key === "Enter") { e.preventDefault(); select(item); }
@@ -542,37 +550,160 @@
   /* ---------------------------------------------------------------------------
      03 VAQT
   ------------------------------------------------------------------------- */
-  function initWhen() {
-    wireRadioGroup($("whenGroup"), function (el) {
-      state.when = el.getAttribute("data-when");
-      $("whenLater").hidden = state.when !== "later";
-      $("whenRepeat").hidden = state.when !== "repeat";
-      refresh();
-    });
+  /* ---------------------------------------------------------------------------
+     03 QACHON — takrorlanish va uning DAVRI
+     Ekrandagi jumla, keyingi yuborish sanalari va so'rov tanasi BITTA
+     manbadan chiqadi: `schedulePayload()` va `runs()`. Ular ajralib
+     qololmaydi, chunki ekran ham, tana ham o'sha bitta hisobni o'qiydi.
+  ------------------------------------------------------------------------- */
+  /* 03-bo'limga tegishli xato qutilari — ular faqat bo'limga teginilgandan
+     keyin ko'rsatiladi. */
+  var WHEN_BOXES = ["errDate", "errTime", "errDays", "errRepeatTime", "errMonths", "errFrom", "errTo", "errRuns"];
+  var ORDER = ["1", "2", "3", "4", "5", "6", "0"];          // Du..Ya — ekranda ham, tanada ham shu tartib
+  var DAY_CODE = { "0": "SU", "1": "MO", "2": "TU", "3": "WE", "4": "TH", "5": "FR", "6": "SA" };
+  var DAY_SHORT = { "1": "Du", "2": "Se", "3": "Ch", "4": "Pa", "5": "Ju", "6": "Sh", "0": "Ya" };
+  var DAY_FULL = { "1": "dushanba", "2": "seshanba", "3": "chorshanba", "4": "payshanba",
+                   "5": "juma", "6": "shanba", "0": "yakshanba" };
+  var MONTH_SHORT = ["Yan", "Fev", "Mar", "Apr", "May", "Iyun", "Iyul", "Avg", "Sen", "Okt", "Noy", "Dek"];
+  var TZID = "Asia/Tashkent";
+  var TZ_OFFSET_MIN = 300;      // Asia/Tashkent butun yil qat'iy +05:00, yozgi vaqt yo'q
+  var MAX_SCAN_DAYS = 4000;
+  var MAX_RUNS = 500;
 
-    $("dayRow").querySelectorAll("[data-day]").forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        var day = chip.getAttribute("data-day");
-        var on = chip.getAttribute("aria-pressed") === "true";
-        // `aria-pressed` — `aria-checked` EMAS: bir nechta kun birga
-        // tanlanadi, bu radiogroup emas. `role=button` da `aria-checked`
-        // umuman ruxsat etilmaydi, u faqat CSS ilgagi bo'lib qolgandi.
-        chip.setAttribute("aria-pressed", on ? "false" : "true");
-        state.days = on ? state.days.filter(function (d) { return d !== day; }) : state.days.concat(day);
-        refresh();
-      });
-    });
+  /* Brauzer boshqa mintaqada bo'lsa ham hisob TOSHKENT devor soatida yuradi:
+     bo'lim sarlavhasi «Toshkent vaqti · UTC+5» deb turibdi, demak ekrandagi
+     har sana shu vaqtda o'qilishi kerak. Berlin yoki Tokioda ochilgan sahifa
+     boshqa kunni ko'rsatsa, sarlavha yolg'on bo'lardi. */
+  function tashNow() {
+    var n = new Date();
+    return new Date(n.getTime() + (n.getTimezoneOffset() + TZ_OFFSET_MIN) * 60000);
+  }
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+  /* `toISOString()` bu bo'limda TAQIQ: u UTC ga o'tkazadi va Toshkentda
+     soat 05:00 gacha bir kun ORQAGA beradi. */
+  function isoOf(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+  /* ISO satr HECH QACHON `new Date(str)` ga berilmaydi — u UTC deb o'qiladi va
+     hafta kunini siljitadi. Komponentlar bo'yicha, soat 12:00 da quriladi:
+     hech qanday ofset sanani boshqa kunga o'tkaza olmaydi. */
+  function ymd(str) {
+    var p = String(str).split("-");
+    if (p.length !== 3) return null;
+    var d = new Date(+p[0], +p[1] - 1, +p[2], 12, 0, 0);
+    return isNaN(d) ? null : d;
+  }
 
-    ["fDate", "fTime", "fRepeatTime"].forEach(function (id) {
-      $(id).addEventListener("change", refresh);
-    });
+  /* Takrorlanish qoidasining SOF ko'rinishi — ekran ham, tana ham shundan
+     oziqlanadi. Faol bo'lmagan tarmoq bu yerga tushmaydi. */
+  function scheduleRule() {
+    var days = ORDER.filter(function (d) { return state.days.indexOf(d) > -1; });
+    var w;
+    switch (state.span) {
+      case "months": w = { kind: "months", months: state.months.slice().sort(function (a, b) { return a - b; }) }; break;
+      case "range":  w = { kind: "range", from: $("fFrom").value || null, to: $("fTo").value || null }; break;
+      default:       w = { kind: "always" };
+    }
+    // Ikki tarmoq birga chiqsa tana bilan ekran ajralgan bo'lardi — bu holat
+    // tuzilish darajasida imkonsiz, lekin jimgina o'tib ketmasin.
+    if (w.months && (w.from || w.to)) throw new Error("window ikki tarmoq");
+    return { days: days, time: $("fRepeatTime").value || null, window: w };
+  }
 
-    // Eng erta sana — bugun: o'tgan kunga xabar rejalashtirib bo'lmaydi.
-    var today = new Date();
-    var iso = today.getFullYear() + "-" +
-      String(today.getMonth() + 1).padStart(2, "0") + "-" +
-      String(today.getDate()).padStart(2, "0");
-    $("fDate").min = iso;
+  /* Keyingi yuborish vaqtlari. Kalendar bo'ylab KUN-KUN yuriladi
+     (`setDate(+1)`): millisekund qo'shish yozgi vaqtli mintaqada soatni
+     siljitadi, `setMonth(+1)` esa 31-kunda oyni sakrab o'tadi. */
+  function computeRuns(limit) {
+    var rule = scheduleRule();
+    if (!rule.days.length || !rule.time) return { list: [], capped: false };
+    var w = rule.window;
+    if (w.kind === "range" && (!w.from || !w.to)) return { list: [], capped: false };
+
+    var hm = rule.time.split(":");
+    var hh = +hm[0], mm = +hm[1];
+    if (!isFinite(hh) || !isFinite(mm)) return { list: [], capped: false };
+
+    var now = tashNow(), nowTs = now.getTime();
+    var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0);
+    var stop = null;
+    if (w.kind === "range") {
+      var from = ymd(w.from), to = ymd(w.to);
+      if (!from || !to) return { list: [], capped: false };
+      if (from.getTime() > start.getTime()) start = from;
+      stop = to;
+    }
+    var out = [], cursor = new Date(start.getTime()), scanned = 0;
+    while (out.length < limit && scanned < MAX_SCAN_DAYS) {
+      if (stop && cursor.getTime() > stop.getTime()) break;
+      var dow = String(cursor.getDay());
+      var monthOk = w.kind !== "months" || w.months.indexOf(cursor.getMonth() + 1) > -1;
+      if (monthOk && rule.days.indexOf(dow) > -1) {
+        var at = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate(), hh, mm, 0);
+        // Chegara holati (aynan hozir) o'tgan deb hisoblanadi.
+        if (at.getTime() > nowTs) out.push(at);
+      }
+      cursor.setDate(cursor.getDate() + 1);
+      scanned++;
+    }
+    return { list: out, capped: scanned >= MAX_SCAN_DAYS && out.length < limit };
+  }
+
+  /* Hisob natijasi qoida + bugungi sana bo'yicha keshlanadi: matn yozilganda
+     `refresh()` o'nlab marta chaqiriladi, ekspander esa qayta yurmasligi kerak. */
+  var runsCache = { key: null, value: null };
+  function runs(limit) {
+    var key = JSON.stringify(scheduleRule()) + "|" + isoOf(tashNow()) + "|" + limit;
+    if (runsCache.key !== key) runsCache = { key: key, value: computeRuns(limit) };
+    return runsCache.value;
+  }
+  /* Faqat XATO MATNINI tanlash uchun: oraliqda umuman mos kun bormi, yoki
+     bor-u hammasi o'tib ketganmi. Ikki sabab — ikki xil tuzatish. */
+  function rangeHasAnyDay() {
+    var rule = scheduleRule(), w = rule.window;
+    if (w.kind !== "range" || !w.from || !w.to || !rule.days.length) return false;
+    var from = ymd(w.from), to = ymd(w.to);
+    if (!from || !to) return false;
+    var cursor = new Date(from.getTime()), scanned = 0;
+    while (cursor.getTime() <= to.getTime() && scanned < MAX_SCAN_DAYS) {
+      if (rule.days.indexOf(String(cursor.getDay())) > -1) return true;
+      cursor.setDate(cursor.getDate() + 1);
+      scanned++;
+    }
+    return false;
+  }
+
+  /* Oraliqning O'ZI buzuq bo'lsa (teskari yoki mavjud bo'lmagan sana) hisob
+     natijasi bo'sh chiqadi — lekin sabab «bu kun uchramaydi» EMAS. O'sha
+     sababni aytish foydalanuvchini to'g'ri kun chipini almashtirishga
+     majburlardi. Shuning uchun bunday holatda nol-natija tahlili umuman
+     ishga tushmaydi. */
+  function rangeBroken() {
+    if (state.when !== "repeat" || state.span !== "range") return null;
+    var from = $("fFrom"), to = $("fTo");
+    if (from.validity.badInput || to.validity.badInput) return "badInput";
+    if (from.value && to.value && to.value < from.value) return "inverted";
+    return null;
+  }
+
+  function dayListText() {
+    var picked = ORDER.filter(function (d) { return state.days.indexOf(d) > -1; });
+    return picked.length ? picked.map(function (d) { return DAY_SHORT[d]; }).join(", ") : null;
+  }
+  function monthListText() {
+    var m = state.months.slice().sort(function (a, b) { return a - b; });
+    return m.length ? m.map(function (n) { return MONTH_SHORT[n - 1]; }).join(", ") : null;
+  }
+  /* Davr bo'lagi — o'z holicha. Kunlar tanlanmagan bo'lsa ham TUSHIB
+     QOLMAYDI: ekranda ikki oy chipi bosilib turib, xulosada ular yo'q
+     bo'lsa, ekran o'z tanlovini yashirgan bo'lardi. */
+  function spanText() {
+    if (state.span === "months") {
+      var m = monthListText();
+      return m ? "har yili " + m : "oylar tanlanmagan";
+    }
+    if (state.span === "range") {
+      var f = $("fFrom").value, t = $("fTo").value;
+      return (f && t) ? f + " — " + t : "oraliq tanlanmagan";
+    }
+    return "har hafta";
   }
 
   function whenText() {
@@ -583,13 +714,234 @@
       if (!t) return d + " · vaqt tanlanmagan";
       return d + " · " + t;
     }
-    var names = { "1": "Du", "2": "Se", "3": "Ch", "4": "Pa", "5": "Ju", "6": "Sh", "0": "Ya" };
-    if (!state.days.length) return "Kunlar tanlanmagan";
-    var order = ["1", "2", "3", "4", "5", "6", "0"];
-    var picked = order.filter(function (d) { return state.days.indexOf(d) > -1; });
-    var rt = $("fRepeatTime").value;
-    // Osilib qolgan ajratkich («Du · ») chiqmasin.
-    return picked.map(function (d) { return names[d]; }).join(", ") + (rt ? " · " + rt : " · vaqt tanlanmagan");
+    /* Uch mustaqil bo'lak, erta `return` YO'Q: ilgari kunlar bo'sh bo'lsa
+       funksiya shu yerda chiqib ketib, ekranda turgan davr tanlovini
+       xulosadan butunlay yutib yuborardi. */
+    var parts = [dayListText() || "Kunlar tanlanmagan"];
+    parts.push($("fRepeatTime").value || "vaqt tanlanmagan");
+    parts.push(spanText());
+    if (scheduleReady() && !rangeBroken()) {
+      var r = runs(1);
+      if (!r.capped && !r.list.length) parts.push("hech qachon yuborilmaydi");
+    }
+    return parts.join(" · ");
+  }
+
+  /* Jadval bo'lagining o'zi to'liqmi — `#rcWhen` ning `data-empty` si va
+     status matni shundan hal bo'ladi. */
+  function scheduleReady() {
+    if (state.when !== "repeat") return true;
+    if (!state.days.length || !$("fRepeatTime").value) return false;
+    if (state.span === "months") return state.months.length > 0;
+    if (state.span === "range") return !!($("fFrom").value && $("fTo").value);
+    return true;
+  }
+
+  /* So'rov tanasidagi `schedule` obyekti. `days` o'rniga `byday`: qiymat
+     formati o'zgardi, demak NOM ham o'zgaradi — bir xil nom ostida boshqa
+     format jim noto'g'ri o'qishga olib boradi. */
+  function schedulePayload() {
+    if (state.when === "now") return { mode: "now" };
+    if (state.when === "later") {
+      return { mode: "at", date: $("fDate").value || null, time: $("fTime").value || null, tzid: TZID };
+    }
+    var rule = scheduleRule();
+    var first = runs(1).list[0] || null;
+    var body = {
+      mode: "weekly",
+      tzid: TZID,
+      byday: rule.days.map(function (d) { return DAY_CODE[d]; }),
+      time: rule.time,
+      window: rule.window,
+      // `dtstart` TAXMIN emas: u ekrandagi BIRINCHI chipning aynan o'zi.
+      dtstart: first ? isoOf(first) + "T" + pad2(first.getHours()) + ":" + pad2(first.getMinutes()) + ":00" : null,
+      until: null
+    };
+    if (rule.window.kind === "range" && rule.window.to) {
+      /* Sof SATR arifmetikasi: mahalliy 23:59:59 − 5 soat = O'SHA kunning
+         18:59:59Z si. `Date` bilan hisoblash yil chegarasida kunni surib
+         yuborardi. RFC 5545: DTSTART — TZID bilan, UNTIL — UTC. */
+      body.until = rule.window.to.replace(/-/g, "") + "T185959Z";
+    }
+    body.rrule = buildRrule(body);
+    return body;
+  }
+
+  function buildRrule(body) {
+    if (!body.dtstart || !body.byday.length) return null;
+    var parts = ["FREQ=WEEKLY", "BYDAY=" + body.byday.join(",")];
+    if (body.window.kind === "months" && body.window.months.length) {
+      parts.push("BYMONTH=" + body.window.months.join(","));
+    }
+    if (body.until) parts.push("UNTIL=" + body.until);
+    return "DTSTART;TZID=" + TZID + ":" + body.dtstart.replace(/[-:]/g, "") + "\n" +
+      "RRULE:" + parts.join(";");
+  }
+
+  /* ---------------------------------------------------------------------------
+     KEYINGI YUBORISHLAR — ekranning eng halol qismi.
+     `refresh()` da HAR SAFAR to'liq qayta chiziladi: avval hammasi yopiladi,
+     keyin joriy holatga mos BITTASI ochiladi. Erta `return` bo'lsa rejim
+     almashgach eski ogohlantirish qotib qolardi.
+  ------------------------------------------------------------------------- */
+  function renderRuns() {
+    var chips = $("runsChips"), empty = $("runsEmpty"), sum = $("runsSum"), box = $("runs");
+    chips.innerHTML = ""; chips.hidden = true;
+    empty.hidden = true;
+    sum.textContent = ""; sum.removeAttribute("data-tone");
+    box.hidden = state.when !== "repeat";
+    if (state.when !== "repeat") return;
+
+    if (!scheduleReady()) {
+      sum.textContent = "Kunlar, vaqt va davr tanlangach keyingi yuborish sanalari shu yerda chiqadi.";
+      return;
+    }
+    var broken = rangeBroken();
+    if (broken) {
+      sum.textContent = broken === "inverted"
+        ? "Oraliq teskari — sanalar to‘g‘rilangach keyingi yuborishlar shu yerda chiqadi."
+        : "Sana to‘liq emas — to‘g‘rilangach keyingi yuborishlar shu yerda chiqadi.";
+      return;
+    }
+    var r = runs(3);
+    if (r.capped) {
+      // Chegara urilgani «hech qachon» DEGANI EMAS — bilmaganimizni aytamiz.
+      sum.textContent = "Hisoblash chegarasi: birinchi yuborish juda uzoqda, sanalar ko‘rsatilmadi.";
+      return;
+    }
+    if (!r.list.length) {
+      empty.hidden = false;
+      $("runsEmptyBody").textContent = rangeHasAnyDay()
+        ? "Bu oraliqdagi barcha yuborish vaqtlari allaqachon o‘tib ketgan."
+        : "Tanlangan oraliqda " + (dayListText() || "tanlangan kun") + " kuni umuman uchramaydi.";
+      return;
+    }
+    chips.hidden = false;
+    chips.innerHTML = r.list.map(function (d) {
+      return '<span class="run-chip" role="listitem"><b>' + isoOf(d) + "</b><span>" +
+        DAY_FULL[String(d.getDay())] + ", " + pad2(d.getHours()) + ":" + pad2(d.getMinutes()) + "</span></span>";
+    }).join("");
+
+    var first = r.list[0];
+    var days = Math.round((first.getTime() - tashNow().getTime()) / 86400000);
+    if (state.span === "months" && state.months.length === 12) {
+      sum.textContent = "12 oyning hammasi tanlangan — bu «Doimiy» bilan bir xil natija beradi.";
+      sum.setAttribute("data-tone", "warn");
+    } else if (days > 60) {
+      sum.textContent = "Birinchi yuborish " + isoOf(first) + ", " + DAY_FULL[String(first.getDay())] +
+        " — taxminan " + Math.round(days / 30) + " oydan keyin. Shu yil kerak bo‘lsa, bugundan keyingi oylardan birini ham belgilang.";
+      sum.setAttribute("data-tone", "warn");
+    } else if (state.span === "range") {
+      var all = runs(MAX_RUNS);
+      // Son FORMULA bilan chiqarilmaydi — u chiplarni bergan ekspanderning o'zi.
+      var n = all.list.length;
+      sum.textContent = n === 1
+        ? "Bu oraliqda atigi bir marta yuboriladi — «Belgilangan vaqtda» rejimi shunga mos keladi."
+        : "Bu oraliqda jami " + n + (all.capped ? "+" : "") + " marta yuboriladi.";
+      if (n === 1) sum.setAttribute("data-tone", "warn");
+    } else {
+      sum.textContent = "Birinchi yuborish " + isoOf(first) + ", " + DAY_FULL[String(first.getDay())] + ".";
+    }
+  }
+
+  /* Jonli soha: bir xil satrni qayta yozish ham e'lon qo'zg'atadi, shuning
+     uchun faqat HAQIQATAN o'zgargan matn yoziladi. */
+  var liveLast = {};
+  function setLive(id, text) {
+    if (liveLast[id] === text) return;
+    liveLast[id] = text;
+    $(id).textContent = text;
+  }
+
+  /* Ikkala chip qatori (kunlar va oylar) BIR XIL klaviatura modeli:
+     ←/→ faqat fokusni ko'chiradi, Space/Enter tanlaydi, Home/End chekkaga.
+     Ilgari 7 ta kun chipi 7 ta alohida Tab to'xtashi edi. */
+  function wireToggleRow(row, attr, onToggle) {
+    var items = Array.prototype.slice.call(row.querySelectorAll("[" + attr + "]"));
+    function syncStops() {
+      var on = items.filter(function (i) { return i.getAttribute("aria-pressed") === "true"; })[0];
+      items.forEach(function (i) { i.tabIndex = i === (on || items[0]) ? 0 : -1; });
+    }
+    row.addEventListener("click", function (e) {
+      var btn = e.target.closest ? e.target.closest("[" + attr + "]") : null;
+      if (!btn || !row.contains(btn)) return;
+      var on = btn.getAttribute("aria-pressed") === "true";
+      btn.setAttribute("aria-pressed", on ? "false" : "true");
+      onToggle(btn.getAttribute(attr), !on);
+      syncStops();
+    });
+    row.addEventListener("keydown", function (e) {
+      var btn = e.target.closest ? e.target.closest("[" + attr + "]") : null;
+      if (!btn) return;
+      var i = items.indexOf(btn), to = -1;
+      if (e.key === "ArrowRight") to = Math.min(i + 1, items.length - 1);
+      else if (e.key === "ArrowLeft") to = Math.max(i - 1, 0);
+      else if (e.key === "Home") to = 0;
+      else if (e.key === "End") to = items.length - 1;
+      else return;
+      e.preventDefault();
+      items[to].focus();
+    });
+    syncStops();
+  }
+
+  function initWhen() {
+    wireRadioGroup($("whenGroup"), function (el) {
+      state.when = el.getAttribute("data-when");
+      $("whenLater").hidden = state.when !== "later";
+      $("whenRepeat").hidden = state.when !== "repeat";
+      // Rejim almashdi — endi ochilgan panel qizil bo'lib qarshi olmasin.
+      state.whenTouched = false;
+      refresh();
+    });
+
+    wireRadioGroup($("spanGroup"), function (el) {
+      state.span = el.getAttribute("data-span");
+      $("spanMonths").hidden = state.span !== "months";
+      $("spanRange").hidden = state.span !== "range";
+      $("spanHint").textContent = state.span === "months"
+        ? "Har yili faqat tanlangan oylarda qaytadi. Faqat shu yilgi bo‘lsa, «Sana oralig‘i» ni tanlang."
+        : state.span === "range"
+          ? "Oraliq tugagach butunlay to‘xtaydi. Har yili qaytarish uchun «Tanlangan oylar» ni tanlang."
+          : "To‘xtatilmaguncha har hafta takrorlanadi.";
+      state.whenTouched = false;
+      refresh();
+    });
+
+    wireToggleRow($("dayRow"), "data-day", function (day, on) {
+      state.days = on ? state.days.concat(day) : state.days.filter(function (d) { return d !== day; });
+      state.whenTouched = true;
+      refresh();
+    });
+    wireToggleRow($("monthRow"), "data-month", function (month, on) {
+      var n = +month;
+      state.months = on ? state.months.concat(n) : state.months.filter(function (m) { return m !== n; });
+      state.whenTouched = true;
+      refresh();
+    });
+
+    /* Maydonlar qo'lda sanalmaydi: 03-bo'limga kelajakda qo'shiladigan har
+       qanday input avtomatik ulanadi. `input` ham, `change` ham kerak —
+       `type=date` klaviaturadan yozilganda `change` kech keladi. */
+    document.querySelectorAll("#whenLater input, #whenRepeat input").forEach(function (el) {
+      ["input", "change"].forEach(function (ev) {
+        el.addEventListener(ev, function () { state.whenTouched = true; refresh(); });
+      });
+    });
+
+    syncDateBounds();
+    /* Sahifa yarim tundan oshib ochiq qolsa «bugun» eskirib qoladi.
+       Ko'rinishga qaytilganda va kun almashganda qayta hisoblanadi. */
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
+  }
+
+  /* `min` FAQAT qulaylik: qo'lda yozilgan sanani u to'xtatmaydi, shuning
+     uchun tekshiruv qoidalari unga umuman tayanmaydi. */
+  function syncDateBounds() {
+    var today = isoOf(tashNow());
+    $("fDate").min = today;
+    $("fFrom").min = today;
+    $("fTo").min = $("fFrom").value || today;
   }
 
   /* ---------------------------------------------------------------------------
@@ -744,13 +1096,61 @@
     }
     if (state.when === "repeat") {
       if (!state.days.length) {
-        errors.push({ el: $("dayRow").querySelector("[data-day]"), box: $("errDays"), msg: "Kamida bitta kunni tanlang." });
+        errors.push({ el: $("dayRow").querySelector("[data-day]"), invalid: $("dayRow"),
+          box: $("errDays"), msg: "Kamida bitta kunni tanlang." });
       }
       // Maydon yulduzcha bilan majburiy deb belgilangan edi, lekin hech
       // qayerda tekshirilmasdi: bo'sh qoldirilsa ekran «Hammasi
       // to'ldirilgan» deb turardi va ko'rinishda 09:00 paydo bo'lardi.
       if (!$("fRepeatTime").value) {
         errors.push({ el: $("fRepeatTime"), box: $("errRepeatTime"), msg: "Takroriy yuborish vaqtini tanlang." });
+      }
+
+      if (state.span === "months" && !state.months.length) {
+        errors.push({ el: $("monthRow").querySelector("[data-month]"), invalid: $("monthRow"),
+          box: $("errMonths"), msg: "Kamida bitta oyni tanlang — masalan Sen va Okt." });
+      }
+
+      if (state.span === "range") {
+        var from = $("fFrom"), to = $("fTo");
+        var today = isoOf(tashNow());
+        /* `badInput` — mavjud bo'lmagan sana (29.02.2027): brauzer `.value` ni
+           BO'SH qaytaradi, lekin maydonda raqamlar ko'rinib turadi. «Sanani
+           tanlang» deyish foydalanuvchini adashtirardi — u sanani ko'rib turibdi. */
+        if (from.validity.badInput) {
+          errors.push({ el: from, box: $("errFrom"), kind: "rule", msg: "Bu sana mavjud emas — mavjud sanani tanlang (masalan 2027-02-28)." });
+        } else if (!from.value) {
+          errors.push({ el: from, box: $("errFrom"), msg: "Boshlanish sanasini tanlang." });
+        } else if (from.value < today) {
+          errors.push({ el: from, box: $("errFrom"), kind: "rule", msg: "Boshlanish sanasi o‘tib ketgan — bugungi yoki kelgusi sanani tanlang." });
+        }
+
+        if (to.validity.badInput) {
+          errors.push({ el: to, box: $("errTo"), kind: "rule", msg: "Bu sana mavjud emas — mavjud sanani tanlang." });
+        } else if (!to.value) {
+          errors.push({ el: to, box: $("errTo"), msg: "Tugash sanasini tanlang yoki «Doimiy» ni belgilang." });
+        } else if (from.value && to.value < from.value) {
+          /* Teskari oraliqda nol-natija tahlili UMUMAN ishga tushmaydi:
+             «bu kun uchramaydi» deyish YOLG'ON sabab bo'lardi va foydalanuvchini
+             to'g'ri kun chipini almashtirishga majburlardi. */
+          errors.push({ el: to, box: $("errTo"), kind: "rule",
+            msg: "Tugash sanasini boshlanish sanasidan keyinga qo‘ying — " + from.value + " dan keyingi sanani tanlang." });
+        }
+      }
+
+      /* Nol natija — MAYDON bo'sh emas, QOIDA ishlamaydi. Shuning uchun
+         `kind: "rule"`: status qatori «N ta maydon to'ldirilishi kerak»
+         deb yozsa, u ochiq yolg'on bo'lardi. */
+      if (!errors.length && scheduleReady() && !rangeBroken()) {
+        var r = runs(1);
+        if (!r.capped && !r.list.length) {
+          errors.push({ el: state.span === "range" ? $("fTo") : $("dayRow").querySelector("[data-day]"),
+            box: $("errRuns"), kind: "rule",
+            msg: rangeHasAnyDay()
+              ? "Bu oraliqdagi barcha yuborish vaqtlari o‘tib ketgan — tugash sanasini uzaytiring yoki kechroq vaqt qo‘ying."
+              : ($("fFrom").value + " — " + $("fTo").value + " oralig‘ida " + (dayListText() || "tanlangan kun") +
+                 " kuni uchramaydi — tugash sanasini uzaytiring yoki boshqa kun tanlang.") });
+        }
       }
     }
     return errors;
@@ -779,7 +1179,11 @@
         }
         e.box.hidden = false;
       }
-      if (e.el && e.el.tagName !== "BUTTON") e.el.setAttribute("aria-invalid", "true");
+      /* Chip qatorlarida nishon — `role="toolbar"` konteyner: chipning o'ziga
+         `aria-invalid` qo'yib bo'lmaydi, konteynersiz esa fokus chipga
+         qaytganda xato holati butunlay yo'qolardi. */
+      var invalidTarget = e.invalid || (e.el && e.el.tagName !== "BUTTON" ? e.el : null);
+      if (invalidTarget) invalidTarget.setAttribute("aria-invalid", "true");
     });
   }
 
@@ -796,6 +1200,12 @@
     // o'chirmasligi kerak, shuning uchun imzo bo'yicha solishtiriladi.
     var slot = $("resultSlot");
     if (slot.firstChild && payloadSignature() !== renderedSignature) slot.innerHTML = "";
+
+    // --- jadval ---
+    // `min` HAR SAFAR qayta yoziladi: sahifa yarim tundan oshib ochiq qolsa
+    // boot da bir marta yozilgan «bugun» eskirib qolardi.
+    syncDateBounds();
+    renderRuns();
 
     // --- qamrov ---
     renderScope();
@@ -855,7 +1265,10 @@
     setRecap("rcReach", reach ? "~" + reach : "", "—");
     setRecap("rcUz", $("uzTitle").value.trim(), "yozilmagan");
     setRecap("rcRu", $("ruTitle").value.trim(), "yozilmagan");
-    $("rcWhen").textContent = whenText();
+    /* To'liq bo'lmagan yoki nol natijali jadval matni KO'RINIB turadi, lekin
+       `data-empty="true"` bilan bo'zaradi va qolgan besh qator bilan bir xil
+       qoidaga bo'ysunadi. */
+    setRecap("rcWhen", scheduleReady() ? whenText() : "", whenText());
     setRecap("rcFiles", state.files.length ? state.files.length + " ta fayl" : "", "yo‘q");
 
     // --- holat qatori ---
@@ -866,9 +1279,20 @@
       text.textContent = "Hammasi to‘ldirilgan";
     } else {
       status.setAttribute("data-tone", state.submitted ? "crit" : "");
-      text.textContent = errors.length + " ta maydon to‘ldirilishi kerak";
+      /* Nol natijali jadval xatosi «1 ta maydon to'ldirilishi kerak» deb
+         yozilardi, holbuki BIRORTA maydon bo'sh emas edi. */
+      var hasRule = errors.some(function (e) { return e.kind === "rule"; });
+      text.textContent = hasRule
+        ? errors.length + " ta muammo bor — 03-bo‘limni tekshiring"
+        : errors.length + " ta maydon to‘ldirilishi kerak";
     }
-    if (state.submitted) showErrors(errors);
+    /* 03-bo'limga tegishli xatolar faqat foydalanuvchi o'sha bo'limga
+       TEGGANDAN keyin (yoki «Navbatga qo'yish» bosilgandan keyin) ko'rsatiladi:
+       rejim almashtirilgan zahoti panel qip-qizil ochilib qarshi olardi. */
+    var shown = state.whenTouched ? errors : errors.filter(function (e) {
+      return !e.box || WHEN_BOXES.indexOf(e.box.id) < 0;
+    });
+    if (state.submitted) showErrors(shown);
     return errors;
   }
 
@@ -879,8 +1303,15 @@
     return [
       state.scope, state.region, state.district, state.mahalla,
       $("uzTitle").value, $("uzBody").value, $("ruTitle").value, $("ruBody").value,
-      state.when, $("fDate").value, $("fTime").value, $("fRepeatTime").value,
-      state.days.slice().sort().join(","),
+      /* Jadval qismi tananing O'ZIDAN olinadi — yangi maydonni imzoga
+         qo'shishni unutib bo'lmaydi. Qolgan qismlar (qamrov, matn, fayl)
+         SAQLANADI: ularni tashlab yuborish sarlavha tahrirlanganda panelni
+         eskirtirib qo'yardi. */
+      JSON.stringify(schedulePayload()),
+      /* `badInput` da `.value` bo'sh bo'lib qoladi, ya'ni imzo o'zgarmasdi
+         va eski JSON paneli ekranda qolib ketardi. */
+      $("fDate").validity.badInput, $("fFrom").validity.badInput, $("fTo").validity.badInput,
+      isoOf(tashNow()),
       state.files.map(function (f) { return f.name + ":" + f.size; }).join(",")
     ].join("|");
   }
@@ -891,6 +1322,7 @@
   function initSubmit() {
     $("submitBtn").addEventListener("click", function () {
       state.submitted = true;
+      state.whenTouched = true;   // yuborishga urinildi — endi 03 xatolari ham ko'rinadi
       var errors = refresh();
       if (errors.length) {
         var first = errors[0].el;
@@ -934,9 +1366,7 @@
         uz: { title: $("uzTitle").value.trim(), text: $("uzBody").value.trim() },
         ru: { title: $("ruTitle").value.trim(), text: $("ruBody").value.trim() }
       },
-      schedule: state.when === "now" ? { mode: "now" }
-        : state.when === "later" ? { mode: "at", date: $("fDate").value, time: $("fTime").value }
-        : { mode: "weekly", days: state.days.slice().sort(), time: $("fRepeatTime").value },
+      schedule: schedulePayload(),
       attachments: state.files.map(function (f) { return f.name; })
     };
 

@@ -198,6 +198,9 @@
    tasma ostida qolib ketardi. */
 .step-sec .input, .step-sec .select, .step-sec .textarea,
 .step-sec .seg-btn, .step-sec .scope-all, .step-sec .scope-row, .step-sec .tpl { scroll-margin-top: 110px; }
+/* Yuqoridagi qoida faqat TEPANI qoplardi; pastda yopishqoq .actions paneli turadi. */
+.step-sec .input, .step-sec .select, .step-sec .textarea,
+.step-sec .seg-btn, .step-sec .tpl { scroll-margin-bottom: 140px; }
 /* Bir xil aniqlikdagi qoidalarda oxirgisi yutadi — shuning uchun
    matn ustuni qoidasi yuqoridagidan KEYIN turishi shart. */
 .lang-col .input, .lang-col .textarea { scroll-margin-top: 300px; }
@@ -226,8 +229,38 @@
 
 /* --- 03 VAQT -------------------------------------------------------------- */
 .when-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; max-width: 560px; }
-.day-row { display: flex; gap: 8px; flex-wrap: wrap; }
+/* #whenRepeat ichida oraliq yo'q edi — .step-body ning gap: 22px i faqat
+   BEVOSITA bolalariga tegadi, ichkaridagi bloklar yopishib qolardi. */
+.when-stack { display: flex; flex-direction: column; gap: 22px; }
+.when-time { max-width: 260px; }
+
+.chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
 .day-chip { min-width: 52px; justify-content: center; }
+/* 12 oy: 6x2 — yarim yil bitta qatorda. Sen va Okt repeat(6) da ham,
+   repeat(4) da ham YONMA-YON qoladi; `flex-wrap` esa 8+4 bo'lib yorilardi.
+   `.chip-row` dan KEYIN turishi shart: bir xil aniqlikda oxirgisi yutadi. */
+.month-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; max-width: 468px; }
+.month-chip { min-width: 0; padding-inline: 10px; justify-content: center; }
+/* Bosilmagan chip chegarasi `--hairline` (1.1:1) 1.4.11 (3:1) dan o'tmasdi.
+   `--edge` — tizimning boshqaruv-chegarasi tokeni. Bu BAZA qoidasi:
+   `[aria-pressed="true"]` (0,2,0) baribir yutadi va tanlangan chip
+   `--ink` chegara + `--ink` fon bilan qoladi. */
+.day-chip, .month-chip { border-color: var(--edge); }
+
+/* Hisoblangan haqiqat: uchta sana chipi + bitta xulosa qatori. */
+.runs { display: flex; flex-direction: column; gap: 10px; max-width: 720px; }
+/* `flex-wrap` uchta chipni 2+1 qilib yorib, ikkinchi qatorda yetim chip
+   qoldirardi. Uchta teng ustun — naqsh bir qarashda o'qiladi. */
+.runs-chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.run-chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px;
+            border-radius: var(--r-pill); background: var(--paper-sunk);
+            box-shadow: inset 0 0 0 1px var(--hairline); font-size: var(--t-sm);
+            letter-spacing: var(--ls-sm); color: var(--ink); }
+.run-chip b { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+              font-weight: 500; font-variant-numeric: tabular-nums; }
+.run-chip span { color: var(--ink-2); }
+/* Ogohlantirish uchun YANGI komponent emas — mavjud token bilan rang va og'irlik. */
+.runs-sum[data-tone="warn"] { color: var(--warn); font-weight: 500; }
 
 /* --- 04 ILOVA ------------------------------------------------------------- */
 .drop {
@@ -312,6 +345,10 @@
 }
 @media (max-width: 620px) {
   .tpl-grid { grid-template-columns: 1fr; }
+  /* 320px da katak ~66px — «Iyun» sig'adi, nishon 44px dan pastga tushmaydi. */
+  .month-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  /* Tor ekranda uchta ustun sana matnini sindiradi — chiplar ustma-ust turadi. */
+  .runs-chips { grid-template-columns: 1fr; }
   .scope-row { gap: 8px; padding-inline: 8px; }
   .scope-idx { width: 20px; }
   .when-grid { grid-template-columns: 1fr; }

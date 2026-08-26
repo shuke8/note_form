@@ -783,3 +783,160 @@ emas.
 Kadrlar: `.screenshots/qamrov-xarita-*.png`
 Generator: `scratchpad/mkmap.py` (Natural Earth → path; qayta ishlatish
 uchun repoga ko'chirilmagan — chiqishi `composer.js` ichida qotgan).
+
+---
+
+## Takroriy jadvalga davr cheklovi
+
+Talab: «Takroriy tanlansa oylarni yoki haftalarni ham tanlash mumkin bo‘lsin —
+masalan faqat sentyabr va oktyabrda qayta-qayta yuborilsin».
+
+Yechim 34 agentli workflow bilan tanlandi: 4 recon → 6 mustaqil dizayn taklifi →
+har taklif 3 linzadan (halollik / a11y / dizayn-murakkablik) → 4 adversarial
+yo‘nalish (41 ta buzuq stsenariy) → sintez → spetsifikatsiya. G‘olib —
+**«Davr darchasi»** (o‘rtacha 6,8/10).
+
+### Model
+
+Takroriy jadval ikki mustaqil savolga bo‘linadi:
+
+1. **Nima takrorlanadi** — hafta kunlari + vaqt (o‘zgarmadi).
+2. **Qaysi davrda amal qiladi** — yangi segment: `Doimiy` | `Tanlangan oylar` |
+   `Sana oralig‘i`.
+
+Sukut `Doimiy`, ya‘ni hozirgi cheksiz haftalik xulqning AYNAN o‘zi — eng ko‘p
+uchraydigan «har dushanba» holati hech qanday qo‘shimcha bosish talab qilmaydi.
+Foydalanuvchining misoli 6 bosishda bajariladi: Takroriy + Du + Pa +
+«Tanlangan oylar» + Sen + Okt.
+
+`Tanlangan oylar` va `Sana oralig‘i` — bir xil narsaning ikki xil aytilishi
+emas: birinchisi **har yili** qaytadigan mavsum (BYMONTH yilni bilmaydi),
+ikkinchisi **faqat shu yilgi** darcha (UNTIL). «Sentyabr–oktyabr» iborasidagi
+«shu yilmi yoki har yilmi?» noaniqligi savol bermasdan shu bilan yopiladi;
+har radioning sr-only tavsifi ikkinchisiga ochiq havola qiladi.
+
+### Nega «har 2 haftada» va «N martadan keyin» YO‘Q
+
+- **INTERVAL** — ataylab kesildi. `INTERVAL>1` oy cheklovi bilan qo‘shilsa
+  ikki haftalik sanoq butun yil bo‘ylab uzluksiz yuradi va kunlar yildan
+  yilga siljiydi (2026: 3, 14, 17, 28 sen; 2027: 2, 13, 16, 27 sen).
+  Siljish «keyingi 3» oynasidan tashqarida qoladi — ko‘rinmas xato.
+- **COUNT** — RFC 5545 uni UNTIL bilan bitta qoidada taqiqlaydi, ya‘ni yana
+  bitta o‘zaro istisno tarmoq va yana bitta raqam maydoni (`1e3`, `3.7`
+  kabi kirish tuzoqlari bilan). Sana oralig‘i ayni ehtiyojni bosish sonini
+  oshirmasdan qoplaydi.
+
+Shu ikki qaror tufayli takroriy rejimda birorta `type=number` maydon yo‘q va
+RFC ning taqiqlangan kombinatsiyalaridan birortasi hosil bo‘la olmaydi.
+
+### «Keyingi yuborishlar» — ekranning eng halol qismi
+
+Blok ostida brauzerda HAQIQATAN hisoblangan uchta sana turadi. U bir vaqtda
+uch ish qiladi: naqshni ko‘rsatadi, tanadagi `dtstart` ni beradi (u chiplarni
+bergan ekspanderning aynan birinchi natijasi — RFC ning «DTSTART qoidaga mos
+kelmasa natija aniqlanmagan» tuzog‘i tug‘ilmaydi), va hech qachon ishlamaydigan
+kombinatsiyani «Navbatga qo‘yish» bosilishidan OLDIN fosh qiladi.
+
+Nol natija — bo‘sh MAYDON emas, buzilgan QOIDA. Shuning uchun xatoga
+`kind: "rule"` qo‘yiladi va status qatori «1 ta maydon to‘ldirilishi kerak»
+o‘rniga «1 ta muammo bor — 03-bo‘limni tekshiring» deydi: ilgari birorta
+maydon bo‘sh bo‘lmasa ham shunday yozilardi.
+
+**Teskari oraliqda nol-natija tahlili UMUMAN ishga tushmaydi.** 01.09 → 01.08
+uchun «bu kun uchramaydi» deyish YOLG‘ON sabab bo‘lardi va foydalanuvchini
+to‘g‘ri kun chipini almashtirishga majburlardi. `rangeBroken()` shu holatni
+oldindan kesadi va matn oraliqning o‘zini ko‘rsatadi. Bu kamchilik
+brauzerda ishga tushirilgandagina topildi.
+
+### Vaqt mintaqasi
+
+Bo‘lim sarlavhasi «Toshkent vaqti · UTC+5» deb turibdi, demak ekrandagi har
+sana shu vaqtda o‘qilishi kerak. Butun hisob `tashNow()` dan boshlanadi:
+`new Date(n.getTime() + (n.getTimezoneOffset() + 300) * 60000)`.
+
+Uch qat‘iy qoida shu bo‘limda:
+
+- `toISOString()` TAQIQ — u UTC ga o‘tkazadi va Toshkentda soat 05:00 gacha
+  bir kun ORQAGA beradi.
+- ISO satr hech qachon `new Date(str)` ga berilmaydi — u UTC deb o‘qiladi va
+  hafta kunini siljitadi. `ymd()` komponentlar bo‘yicha, soat 12:00 da quradi.
+- Kalendar bo‘ylab yurishda millisekund QO‘SHILMAYDI (`setDate(+1)`), oy
+  bo‘yicha sakrash esa umuman yo‘q — oy FILTR sifatida ishlaydi, aks holda
+  `setMonth(+1)` 31-kunda oyni sakrab o‘tardi.
+
+`UNTIL` sof satr arifmetikasi bilan quriladi: `to.replace(/-/g,"") + "T185959Z"`
+(mahalliy 23:59:59 − 5 soat). `Date` bilan hisoblash yil chegarasida kunni
+surib yuborardi. RFC 5545 talabi: DTSTART — TZID bilan, UNTIL — UTC.
+
+### So‘rov tanasi
+
+`days` → **`byday`**: qiymat formati o‘zgardi, demak NOM ham o‘zgaradi — bir xil
+nom ostida boshqa format jim noto‘g‘ri o‘qishga olib boradi. Yo‘l-yo‘lakay
+hozirgi `state.days.slice().sort()` dagi leksikografik saralash tuzatildi: u
+`"0"` (Yakshanba) ni BIRINCHI qo‘yardi, ekran esa Du dan boshlardi.
+Yagona tartib manbai — `ORDER = ["1".."6","0"]`.
+
+```
+"schedule": {
+  "mode": "weekly", "tzid": "Asia/Tashkent",
+  "byday": ["MO","TH"], "time": "09:00",
+  "window": { "kind": "months", "months": [9,10] },
+  "dtstart": "2026-09-03T09:00:00", "until": null,
+  "rrule": "DTSTART;TZID=Asia/Tashkent:20260903T090000\nRRULE:FREQ=WEEKLY;BYDAY=MO,TH;BYMONTH=9,10"
+}
+```
+
+`window` — o‘zaro istisno obyekt: `schedule()` `switch(state.span)` bilan FAQAT
+bitta tarmoqni yozadi, `months` va `from/to` hech qachon birga chiqmaydi
+(assert ham qo‘yilgan). Faol bo‘lmagan tarmoqning DOM qiymati HECH QACHON
+tozalanmaydi — o‘q tugma bilan segmentdan o‘tib ketish yozilgan sanani
+jimgina o‘chirib yuborardi; tanaga tushmasligini `switch` yolg‘iz o‘zi
+kafolatlaydi.
+
+`payloadSignature()` endi jadval qismini **tananing o‘zidan** oladi
+(`JSON.stringify(schedulePayload())`) — yangi maydonni imzoga qo‘shishni unutib
+bo‘lmaydi. `badInput` bayroqlari ham imzoda: mavjud bo‘lmagan sana yozilganda
+`.value` bo‘sh qoladi, ya‘ni imzo o‘zgarmay eski JSON paneli ekranda qolardi.
+
+### Klaviatura
+
+`#dayRow` va `#monthRow` — ikkalasi ham `role="toolbar"` + roving tabindex:
+←/→ faqat fokusni ko‘chiradi, Space/Enter tanlaydi, Home/End chekkaga.
+03-bo‘limdagi Tab to‘xtashlari 22 dan 8 ga tushdi va ikki qator bir xil
+ko‘rinib bir xil ishlaydi. `wireRadioGroup()` ga Home/End qo‘shildi (APG
+talabi, ilgari yo‘q edi).
+
+Yangi xato qutilariga `role="alert"` QO‘YILMADI va mavjud ikkitasidan ham
+olib tashlandi: bitta submit‘da beshtagacha assertiv e‘lon bir-birini uzib,
+foydalanuvchi parcha eshitardi. Xato matni `aria-describedby` orqali maydonda
+o‘qiladi, umumiy e‘lon esa yagona `#whenLive` dan chiqadi.
+
+03-bo‘lim xatolari faqat `submitted && whenTouched` bo‘lganda ko‘rsatiladi —
+o‘q tugma bilan Hoziroq→Belgilangan→Takroriy yo‘lida oraliq rejimning
+xatolari chaqnab o‘tmaydi va endi ochilgan panel qizil bo‘lib qarshi olmaydi.
+
+### Verify (real brauzer)
+
+- **To‘rt vaqt mintaqasida** (Toshkent, Nyu-York, Tokio, Berlin) bir xil
+  bosishlar AYNAN bir xil chiplar, recap, `dtstart` va `rrule` beradi.
+- Foydalanuvchining misoli: `Du, Pa · 09:00 · har yili Sen, Okt`, birinchi
+  yuborish 2026-09-03 — payshanba (kalendar bilan tekshirildi).
+- Sana oralig‘i 01.09–31.10.2026, Du+Pa → **jami 17 marta** (qo‘lda sanalgan
+  javob bilan mos). Son formula bilan emas, ekspanderning `list.length` idan.
+- Nol natija (01.09–02.09, Du+Pa): `.empty` bloki + `errRuns` + submit bloklandi
+  + status «1 ta muammo bor».
+- Teskari oraliq: sabab oraliqning o‘zini ko‘rsatadi, «uchramaydi» so‘zi
+  ekranda YO‘Q.
+- 12 oyning hammasi: tana jimgina `always` ga aylanmaydi, ekran «Doimiy bilan
+  bir xil natija beradi» deb ogohlantiradi.
+- Uzoq sana (faqat Mart): «Birinchi yuborish 2027-03-01, dushanba — taxminan
+  6 oydan keyin», `data-tone="warn"`.
+- 12 oy chipining HAR BIRI bosilib tekshirildi; imzo har bosishda o‘zgaradi
+  (JSON paneli eskirmaydi).
+- Faqat klaviatura bilan misol boshdan oxirigacha bajarildi.
+- 8 viewport × 2 tema: 0 kontrast xatosi, overflow yo‘q, `pageerror` yo‘q,
+  19 chipning hammasi ≥24×24 (320px da ham).
+- Regressiya: qamrov xaritasi va «Belgilangan vaqtda» oqimi buzilmadi
+  (`mode: "at"` endi `tzid` ham olib yuradi).
+
+Kadrlar: `.screenshots/jadval-davr-*.png`

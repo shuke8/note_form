@@ -308,25 +308,128 @@
         </div>
       </div>
 
-      <div id="whenRepeat" hidden>
+      <!-- 03-bo‘limning YAGONA jonli sohasi. #whenRepeat ICHIDA EMAS: yashirin
+           konteyner ichidagi live region ochilgandan keyingi birinchi o‘zgarishni
+           yutib yuboradi. Matn faqat HAQIQATAN o‘zgarganda yoziladi. -->
+      <p class="sr-only" id="whenLive" role="status"></p>
+
+      <!-- Takroriy jadval ikki mustaqil savolga bo‘linadi: NIMA takrorlanadi
+           (kunlar + vaqt) va QAYSI DAVRDA amal qiladi (Doimiy | Tanlangan oylar |
+           Sana oralig‘i). Sukut «Doimiy» — eng ko‘p uchraydigan «har dushanba,
+           doimiy» holati hech qanday qo‘shimcha bosish talab qilmaydi. -->
+      <div class="when-stack" id="whenRepeat" hidden>
+
+        <!-- Kunlar: role="toolbar" + roving tabindex — 7 ta Tab to‘xtashi 1 taga
+             tushadi va oy qatori bilan AYNAN bir xil klaviatura modeli bo‘ladi.
+             `aria-pressed` saqlanadi (ko‘p tanlov), `aria-checked` QO‘YILMAYDI. -->
         <div class="field">
-          <span class="label" id="dayLabel">Qaysi kunlari <span class="req" aria-hidden="true">*</span></span>
-          <div class="day-row segment" role="group" aria-labelledby="dayLabel" id="dayRow">
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="1">Du</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="2">Se</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="3">Ch</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="4">Pa</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="5">Ju</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="6">Sh</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="0">Ya</button>
+          <span class="label" id="dayLabel">Qaysi kunlari <span class="req" aria-hidden="true">*</span>
+            <span class="opt">— bir nechtasi</span></span>
+          <div class="chip-row" role="toolbar" aria-orientation="horizontal"
+               aria-labelledby="dayLabel" aria-describedby="dayHint errDays" id="dayRow">
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="1" aria-label="Dushanba">Du</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="2" aria-label="Seshanba">Se</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="3" aria-label="Chorshanba">Ch</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="4" aria-label="Payshanba">Pa</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="5" aria-label="Juma">Ju</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="6" aria-label="Shanba">Sh</button>
+            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="0" aria-label="Yakshanba">Ya</button>
           </div>
-          <p class="field-error" id="errDays" role="alert" hidden></p>
+          <p class="hint" id="dayHint">O‘q tugmalari bilan yuring, Space bilan tanlang.</p>
+          <p class="field-error" id="errDays" hidden></p>
         </div>
-        <div class="field" style="max-width:260px;margin-top:16px">
+
+        <!-- value="09:00" QOLADI: u yashirin taxmin emas — tahrirlanadigan maydonda
+             KO‘RINIB turgan sukut qiymat va tanaga aynan shunday tushadi. -->
+        <div class="field when-time">
           <label class="label" for="fRepeatTime">Vaqt <span class="req" aria-hidden="true">*</span></label>
           <input class="input" id="fRepeatTime" type="time" value="09:00" aria-describedby="errRepeatTime" />
-          <p class="field-error" id="errRepeatTime" role="alert" hidden></p>
+          <p class="field-error" id="errRepeatTime" hidden></p>
         </div>
+
+        <!-- Har radioning O‘Z STATIK tavsifi bor: o‘zgaruvchan bitta hint browse
+             rejimida boshqa rejimning tavsifini o‘qib yuborardi. Ko‘rinadigan
+             #spanHint jonli, lekin unda aria YO‘Q. -->
+        <div class="field">
+          <span class="label" id="spanLabel">Qaysi davrda amal qiladi? <span class="req" aria-hidden="true">*</span></span>
+          <div class="segment" role="radiogroup" aria-labelledby="spanLabel" id="spanGroup">
+            <button type="button" class="seg-btn" role="radio" aria-checked="true" data-span="always" aria-describedby="spanDescAlways">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.5 8a5.5 5.5 0 0 1 9.4-3.9M13.5 8a5.5 5.5 0 0 1-9.4 3.9M11.5 1.6v2.6H8.9M4.5 14.4v-2.6h2.6"/></svg>
+              Doimiy
+            </button>
+            <button type="button" class="seg-btn" role="radio" aria-checked="false" data-span="months" aria-describedby="spanDescMonths">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2" y="3" width="12" height="11" rx="2"/><path d="M2 6.5h12"/><path d="M5 9.4h2.4M8.6 11.9H11"/></svg>
+              Tanlangan oylar
+            </button>
+            <button type="button" class="seg-btn" role="radio" aria-checked="false" data-span="range" aria-describedby="spanDescRange">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.5 8h11M2.5 5v6M13.5 5v6"/></svg>
+              Sana oralig‘i
+            </button>
+          </div>
+          <span class="sr-only" id="spanDescAlways">To‘xtatilmaguncha har hafta qaytadi, muddat chegarasi yo‘q.</span>
+          <span class="sr-only" id="spanDescMonths">Har yili faqat tanlangan oylarda qaytadi. Faqat shu yilgi bo‘lsa, Sana oralig‘i variantini tanlang.</span>
+          <span class="sr-only" id="spanDescRange">Tanlangan oraliq tugagach butunlay to‘xtaydi. Har yili qaytarish uchun Tanlangan oylar variantini tanlang.</span>
+          <p class="hint" id="spanHint">To‘xtatilmaguncha har hafta takrorlanadi.</p>
+        </div>
+
+        <!-- 6×2 grid: yarim yil bir qator. Sen va Okt HAR IKKI breakpointda
+             yonma-yon qoladi — foydalanuvchining misoli hech qayerda uzilmaydi.
+             «Iyun»/«Iyul» TO‘LIQ yoziladi: «Iyn»/«Iyl» ko‘zda ham, ovozda ham
+             farq qilmaydi. Qisqartmalarda aria-label to‘liq nom beradi va
+             ko‘rinadigan matn uning prefiksi bo‘lib qoladi (WCAG 2.5.3). -->
+        <div class="field" id="spanMonths" hidden>
+          <span class="label" id="monthLabel">Qaysi oylarda <span class="req" aria-hidden="true">*</span>
+            <span class="opt">— bir nechtasi</span></span>
+          <div class="chip-row month-row" role="toolbar" aria-orientation="horizontal"
+               aria-labelledby="monthLabel" aria-describedby="monthHint errMonths" id="monthRow">
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="1" aria-label="Yanvar">Yan</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="2" aria-label="Fevral">Fev</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="3" aria-label="Mart">Mar</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="4" aria-label="Aprel">Apr</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="5">May</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="6">Iyun</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="7">Iyul</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="8" aria-label="Avgust">Avg</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="9" aria-label="Sentyabr">Sen</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="10" aria-label="Oktyabr">Okt</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="11" aria-label="Noyabr">Noy</button>
+            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="12" aria-label="Dekabr">Dek</button>
+          </div>
+          <p class="hint" id="monthHint">O‘q tugmalari bilan yuring, Space bilan tanlang. Har yili shu oylarda qaytadi.</p>
+          <p class="field-error" id="errMonths" hidden></p>
+        </div>
+
+        <div class="when-grid" id="spanRange" hidden>
+          <div class="field">
+            <label class="label" for="fFrom">Boshlanish <span class="req" aria-hidden="true">*</span></label>
+            <input class="input" id="fFrom" type="date" aria-describedby="errFrom" />
+            <p class="field-error" id="errFrom" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="fTo">Tugash <span class="req" aria-hidden="true">*</span></label>
+            <!-- errRuns AYNAN shu maydonga bog‘lanadi: nol-natija xatosi fokus
+                 tushgan maydonda o‘qilmasa, u faqat ko‘zga tegishli bo‘lib qolardi. -->
+            <input class="input" id="fTo" type="date" aria-describedby="untilHint errTo errRuns" />
+            <p class="hint" id="untilHint">Shu kun ham kiradi (Toshkent bo‘yicha 23:59).</p>
+            <p class="field-error" id="errTo" hidden></p>
+            <p class="field-error" id="errRuns" hidden></p>
+          </div>
+        </div>
+
+        <!-- Hisoblangan haqiqat. Markupda BO‘SH keladi — hech qanday sana HTML ga
+             qattiq yozilmaydi, aks holda JS yiqilganda ekran o‘zi to‘qigan sanalarni
+             fakt sifatida ko‘rsatardi. `aria-live` bu yerda YO‘Q: e‘lon #whenLive da. -->
+        <div class="runs" id="runs" role="group" aria-labelledby="runsLabel">
+          <span class="eyebrow eyebrow-sm" id="runsLabel">Keyingi yuborishlar</span>
+          <div class="runs-chips" id="runsChips" role="list" hidden></div>
+          <div class="empty" id="runsEmpty" hidden>
+            <span class="empty-icon" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" focusable="false"><rect x="2.5" y="4" width="15" height="13.5" rx="2"/><path d="M2.5 8h15M6.5 2v3M13.5 2v3M7.5 12.5l5 3M12.5 12.5l-5 3"/></svg></span>
+            <p class="empty-title">Hech qachon yuborilmaydi</p>
+            <p id="runsEmptyBody"></p>
+          </div>
+          <p class="hint runs-sum" id="runsSum"></p>
+        </div>
+      </div>
       </div>
     </div>
   </section>
