@@ -487,3 +487,48 @@ sizmaydi.
 | Konsol | 0 | 0 |
 | Boot chidamliligi (3 ta buzilish birga) | 4/4 element ko'rinadi | — |
 | Ma'lumot yo'q holati | — | bloklanadi, sabab aytiladi |
+
+## Uchinchi tekshiruv: tuzatishlarning o'zi (2026-08-26)
+
+Yana bir toza kontekstli agent 13 ta tuzatishni qayta ko'rdi. 9 tasi
+to'g'ri deb tasdiqlandi, **tuzatishlarning o'zida 4 ta yangi kamchilik**
+topildi — ular ham tuzatildi.
+
+**A. Ma'lumot yo'q xabari submit'da o'chib ketardi.** `#scopeError` ham
+`.field-error`; `clearErrors()` har `.field-error` ni yashiradi. Xato
+`box: null` bilan qo'yilgani uchun `showErrors()` uni qayta chizmasdi.
+Natija: foydalanuvchi «Navbatga qo'yish» ni bosishi bilan sahifadagi
+yagona tushuntirish yo'qolardi, toast esa mavjud bo'lmagan maydonlarni
+ko'rsatardi. Endi xato haqiqiy `box` va `msg` bilan qo'yiladi, toast
+alohida matn beradi.
+
+**B. «N tasi rad etildi» xabarlarni sanardi, fayllarni emas.** 8 ta PDF
+tashlansa 5 tasi qabul, 3 tasi rad etilardi — lekin uchalasining sababi
+bir xil bo'lgani uchun dedup ularni bittaga aylantirardi va ekran
+«1 tasi rad etildi» derdi. Endi `rejected` alohida sanaladi
+(`problems` faqat sabablar ro'yxati). O'lchov: «5 ta qo'shildi,
+**3 tasi** rad etildi».
+
+**C. `onMedia` shim ikkinchi chaqiruv joyida qo'llanmagandi.**
+`initTheme` moslashtirildi, `initMenu` esa hali ham to'g'ridan-to'g'ri
+`addEventListener` chaqirardi — ya'ni tuzatish o'zi tavsiflagan
+brauzerda otilardi. `try/catch` sahifani saqlab qolardi, lekin menyu
+ekran kengayganda yopilmay qolardi. O'lchov: 320px da menyu ochilib,
+1440px ga kengaytirilgach `data-open="false"`.
+
+**D. Sarlavha kengligi bir marta o'lchanardi.** Kegl 56 → 40 → 32px ga
+tushadi; 56px da olingan zaxira 320px ekranda sahifani ~75px gorizontal
+scroll qilib yuborardi. Shrift ham `display=swap` bilan keyin keladi,
+ya'ni birinchi o'lchov zaxira shriftni o'lchagandi. Endi o'lchov
+`document.fonts.ready` da va `resize` da (150ms debounce) qaytariladi.
+O'lchov: 1440px da 326px → 320px ga siljitilganda 189px, overflow yo'q;
+qaytib kengaytirilganda yana 326px.
+
+Shuningdek: `no-js` endi FAQAT `initReveal` muvaffaqiyatli tugagandagina
+olib tashlanadi (shartsiz olib tashlash «kontent yashirin turganda
+olinmasin» kafolatini yo'qotardi); demo panel endi faqat **so'rov
+tanasiga kiradigan** holat o'zgarganda tozalanadi (ko'rinish tilini
+almashtirish uni o'chirmaydi); o'lik `.spinner` CSS olib tashlandi.
+
+Verify: ikkala sahifa, ikkala temada 0 kontrast xatosi, 1440 va 320 da
+overflow yo'q (resize'dan keyin ham).

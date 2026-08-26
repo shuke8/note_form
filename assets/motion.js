@@ -110,17 +110,47 @@
       widest = Math.max(widest, probe.getBoundingClientRect().width);
     });
     probe.remove();
-    // O'lchov QO'LLANADI. Ilgari u hisoblanib tashlab yuborilardi va
-    // sarlavha har so'z almashganda qayta o'ralardi.
-    // Kursor kengligi ham qo'shiladi: u ham shu qutining ichida turadi,
-    // hisobga olinmasa quti eng uzun so'zda baribir kengayib ketadi.
     var tail = slot.parentNode;
-    var caretW = 0;
-    if (caret) {
-      var cs = getComputedStyle(caret);
-      caretW = caret.getBoundingClientRect().width + (parseFloat(cs.marginInlineStart) || 0);
+
+    /* O'lchov QO'LLANADI — va QAYTA o'lchanadi.
+       Bir martalik o'lchov ikki joyda yolg'on chiqadi:
+       (1) kegl breakpoint'da 56 → 40 → 32px ga tushadi, 56px da olingan
+           zaxira 320px ekranda sahifani gorizontal scroll qilib yuboradi;
+       (2) shrift `display=swap` bilan keyin keladi, ya'ni birinchi
+           o'lchov zaxira shriftni o'lchaydi.
+       Kursor kengligi ham qo'shiladi — u ham shu qutining ichida. */
+    function measure() {
+      if (!tail) return;
+      tail.style.minWidth = "";           // eski zaxira o'lchovni cheklamasin
+      var pr = document.createElement("span");
+      pr.setAttribute("aria-hidden", "true");
+      pr.style.cssText = "position:absolute;visibility:hidden;white-space:pre";
+      tail.appendChild(pr);
+      var w = 0;
+      words.forEach(function (word) {
+        pr.textContent = word;
+        w = Math.max(w, pr.getBoundingClientRect().width);
+      });
+      pr.remove();
+      var cw = 0;
+      if (caret) {
+        var cs = getComputedStyle(caret);
+        cw = caret.getBoundingClientRect().width + (parseFloat(cs.marginInlineStart) || 0);
+      }
+      if (w > 0) tail.style.minWidth = Math.ceil(w + cw) + "px";
     }
-    if (widest > 0 && tail) tail.style.minWidth = Math.ceil(widest + caretW) + "px";
+    measure();
+    void widest;
+
+    // Shrift almashgach va ekran kengligi o'zgargach qayta o'lchaymiz.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(measure).catch(function () {});
+    }
+    var resizeTimer = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(measure, 150);
+    }, { passive: true });
 
     slot.textContent = words[0];
     // Ekran o'quvchi almashinuvni o'qib turmasin — u statik matnni oladi.
@@ -230,7 +260,7 @@
     // Ekran kengaysa panel desktop qatoriga qaytadi; holat "yopiq" ga
     // qaytarilmasa, keyin torayganda menyu o'z-o'zidan ochiq chiqadi.
     var wide = window.matchMedia("(min-width: 881px)");
-    wide.addEventListener("change", function (e) { if (e.matches) setOpen(false); });
+    onMedia(wide, function (e) { if (e.matches) setOpen(false); });
   }
 
   /* ---------------------------------------------------------------------------
@@ -329,13 +359,21 @@
   /* Har qadam alohida o'raladi: ilgari `initTheme` dagi bitta xato
      `initReveal` ni ham olib ketardi va sahifa bo'm-bo'sh qolardi. */
   function boot() {
+    var revealOk = false;
     [initTheme, initStagger, initReveal, initTypewriter, initNav, initMenu]
       .forEach(function (step) {
-        try { step(); }
-        catch (e) { console.error("[motion] " + (step.name || "step") + " ishlamadi", e); }
+        try {
+          step();
+          if (step === initReveal) revealOk = true;
+        } catch (e) {
+          console.error("[motion] " + (step.name || "step") + " ishlamadi", e);
+        }
       });
-    // Qaysi qadam yiqilishidan qat'i nazar kontent ko'rinadigan qolsin.
-    document.documentElement.classList.remove("no-js");
+    /* `no-js` ni FAQAT reveal muvaffaqiyatli tugagandagina olamiz.
+       Shartsiz olib tashlash «hech qachon qolib ketmasin» ni beradi-yu,
+       «kontent yashirin turganda olinmasin» ni yo'qotadi: `initReveal`
+       otilsa CSS zaxirasi ham ketib, sahifa bo'm-bo'sh qolardi. */
+    if (revealOk) document.documentElement.classList.remove("no-js");
   }
 
   if (document.readyState === "loading") {

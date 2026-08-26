@@ -412,15 +412,6 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 }
 @keyframes skeleton-slide { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
 
-/* Spinner */
-.spinner {
-  width: 16px; height: 16px; flex: none; border-radius: 50%;
-  border: 2px solid color-mix(in srgb, currentColor 28%, transparent);
-  border-top-color: currentColor;
-  animation: spin 720ms linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
 /* -----------------------------------------------------------------------------
    MARQUEE — o'lchangan: sekin gorizontal siljish, will-change: transform.
    Ikki nusxa yonma-yon, biri tugagach ikkinchisi o'rnini oladi.

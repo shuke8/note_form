@@ -410,8 +410,14 @@
   }
 
   function addFiles(list) {
-    var problems = [], added = 0;
-    function pushProblem(msg) { if (problems.indexOf(msg) === -1) problems.push(msg); }
+    var problems = [], added = 0, rejected = 0;
+    // `problems` — sabablar RO'YXATI (takrorlanmaydi), `rejected` — rad
+    // etilgan FAYLLAR soni. Ikkisi bir xil emas: 3 ta fayl bitta sabab
+    // bilan rad etilsa, ro'yxatda bitta qator, lekin fayl uchta.
+    function pushProblem(msg) {
+      rejected++;
+      if (problems.indexOf(msg) === -1) problems.push(msg);
+    }
     $("errFiles").hidden = true;      // eski xabar yangi urinishga qolib ketmasin
     Array.prototype.forEach.call(list, function (file) {
       // Bir xil sabab takrorlanmasin: 3 ta fayl chegaradan oshsa,
@@ -436,7 +442,7 @@
       icon.innerHTML = '<circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.6M8 11h.01" stroke-linecap="round"/>';
       err.appendChild(icon);
       err.appendChild(document.createTextNode(
-        added + " ta qo‘shildi, " + problems.length + " tasi rad etildi: " + problems.join(" · ")));
+        added + " ta qo‘shildi, " + rejected + " tasi rad etildi: " + problems.join(" · ")));
       err.hidden = false;
     } else {
       err.hidden = true;
@@ -499,7 +505,12 @@
 
     // Ma'lumot yo'q bo'lsa forma umuman yuborilmaydi; xabar `scopeError`
     // da allaqachon turibdi, uni bosib ketmaymiz.
-    if (state.dataFailed) errors.push({ el: null, box: null, msg: null });
+    if (state.dataFailed) {
+      errors.push({
+        el: null, box: $("scopeError"),
+        msg: "Hudud ma’lumotlari yuklanmadi. Sahifani yangilang; muammo qolsa administratorga xabar bering."
+      });
+    }
     else if (!state.scope) errors.push({ el: document.querySelector(".rung-radio"), box: $("scopeError"), msg: null });
 
     if (state.scope && state.scope !== "republic") {
@@ -583,8 +594,10 @@
     // Forma o'zgardi — pastdagi so'rov tanasi endi ekranga mos emas.
     // Uni qoldirish sahifani bir vaqtda «to'ldirilmagan» va «mana
     // tayyor tanangiz» deb turishga majbur qilardi.
+    // Lekin TANAGA kirmaydigan o'zgarish (ko'rinish tili) panelni
+    // o'chirmasligi kerak, shuning uchun imzo bo'yicha solishtiriladi.
     var slot = $("resultSlot");
-    if (slot.firstChild) slot.innerHTML = "";
+    if (slot.firstChild && payloadSignature() !== renderedSignature) slot.innerHTML = "";
 
     // --- qamrov ---
     renderLadder();
@@ -661,6 +674,19 @@
     return errors;
   }
 
+  /* So'rov tanasiga KIRADIGAN holatning imzosi. Ko'rinish tili, fokus,
+     ochiq-yopiq bo'limlar bu yerga kirmaydi. */
+  var renderedSignature = null;
+  function payloadSignature() {
+    return [
+      state.scope, state.region, state.district, state.mahalla,
+      $("uzTitle").value, $("uzBody").value, $("ruTitle").value, $("ruBody").value,
+      state.when, $("fDate").value, $("fTime").value, $("fRepeatTime").value,
+      state.days.slice().sort().join(","),
+      state.files.map(function (f) { return f.name + ":" + f.size; }).join(",")
+    ].join("|");
+  }
+
   /* ---------------------------------------------------------------------------
      YUBORISH — server yo'q, shuning uchun MUVAFFAQIYAT DA'VO QILINMAYDI.
   ------------------------------------------------------------------------- */
@@ -671,7 +697,11 @@
       if (errors.length) {
         var first = errors[0].el;
         if (first) { first.focus(); first.scrollIntoView({ block: "center", behavior: "smooth" }); }
-        if (window.omToast) window.omToast(errors.length + " ta maydon to‘ldirilmagan");
+        if (window.omToast) {
+          window.omToast(state.dataFailed
+            ? "Hudud ma’lumotlari yuklanmadi — yuborib bo‘lmaydi"
+            : errors.length + " ta maydon to‘ldirilmagan");
+        }
         return;
       }
       runSubmit();
@@ -730,6 +760,7 @@
       '<div class="result-payload"><pre></pre></div>';
     box.querySelector("pre").textContent = JSON.stringify(payload, null, 2);
     host.appendChild(box);
+    renderedSignature = payloadSignature();
     if (window.omToast) window.omToast("Demo: so‘rov tanasi yig‘ildi, yuborilmadi");
   }
 
