@@ -15,11 +15,11 @@
 /* Har bo'lim O'Z KARTASI. Ilgari ular faqat bo'shliq va hairline bilan
    ajralardi va uzun sahifada bir-biriga qo'shilib ketardi — qaysi
    boshqaruv qaysi savolga tegishli ekani ko'rinmasdi. */
+/* Halqa + yumshoq ko'tarilish: sahifa ham, karta ham oq bo'lgani uchun
+   yolg'iz hairline chegarani zo'rg'a ko'rsatardi. */
 .step-sec { scroll-margin-top: 88px;
             padding: 28px; border-radius: var(--r-6);
             background: var(--paper);
-            /* Halqa + yumshoq ko'tarilish: sahifa ham, karta ham oq bo'lgani
-               uchun yolg'iz hairline chegarani zo'rg'a ko'rsatardi. */
             box-shadow: inset 0 0 0 1px var(--hairline), var(--lift-1); }
 .step-sec + .step-sec { margin-top: 24px; }
 
@@ -230,8 +230,9 @@
 .step-sec .input, .step-sec .select, .step-sec .textarea,
 .step-sec .seg-btn, .step-sec .scope-all, .step-sec .scope-row, .step-sec .tpl { scroll-margin-top: 110px; }
 /* Yuqoridagi qoida faqat TEPANI qoplardi; pastda yopishqoq .actions paneli turadi. */
+/* Fokuslangan maydon panel ostida qolmasin — o'lchangan balandlik + zaxira. */
 .step-sec .input, .step-sec .select, .step-sec .textarea,
-.step-sec .seg-btn, .step-sec .tpl { scroll-margin-bottom: 140px; }
+.step-sec .seg-btn, .step-sec .tpl { scroll-margin-bottom: calc(var(--actions-h, 96px) + 24px); }
 /* Bir xil aniqlikdagi qoidalarda oxirgisi yutadi — shuning uchun
    matn ustuni qoidasi yuqoridagidan KEYIN turishi shart. */
 .lang-col .input, .lang-col .textarea { scroll-margin-top: 300px; }
@@ -410,18 +411,24 @@
 .sum-todo-arrow { flex: none; width: 15px; height: 15px; color: var(--ink-2); }
 @media (hover: hover) { .sum-todo-btn:hover .sum-todo-arrow { color: var(--ink); } }
 
-             padding: 12px 0; border-bottom: 1px solid var(--hairline); }
-             text-transform: uppercase; color: var(--ink-2); flex: none; }
 
+/* `fixed`, `sticky` EMAS: `sticky` panelni sahifa oxirida oqimga qaytarardi
+   va u pastga yetganda ekrandan chiqib ketardi. Endi u har doim ko'rinadi.
+   Panel oqimdan chiqqani uchun `main` uning balandligicha pastdan bo'shliq
+   oladi — balandlik `motion.js` da o'lchanadi (matn o'ralganda o'zgaradi). */
 .actions {
-  position: sticky; bottom: 0; z-index: 30;
-  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
-  margin-top: 48px; padding: 14px 0 calc(14px + env(safe-area-inset-bottom, 0px));
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  padding-block: 14px calc(14px + env(safe-area-inset-bottom, 0px));
   background: color-mix(in srgb, var(--paper) 88%, transparent);
   backdrop-filter: saturate(180%) blur(14px);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
   border-top: 1px solid var(--hairline);
 }
+.actions-inner { display: flex; align-items: center; justify-content: space-between;
+                 gap: 20px; flex-wrap: wrap; }
+/* Oxirgi karta panel ostida qolib ketmasin. Zaxira qiymat JS ishlamasa ham
+   ishlaydi; aniq balandlikni `--actions-h` beradi. */
+.doc { padding-bottom: var(--actions-h, 96px); }
 .actions-status { display: flex; align-items: center; gap: 10px; font-size: var(--t-ui); color: var(--ink-2); }
 .actions-status[data-tone="ok"]   { color: var(--ok); }
 .actions-status[data-tone="crit"] { color: var(--crit); }
@@ -520,7 +527,7 @@
   .scope-row { gap: 8px; padding-inline: 8px; }
   .scope-idx { width: 20px; }
   .when-grid { grid-template-columns: 1fr; }
-  .actions { flex-direction: column; align-items: stretch; }
+  .actions-inner { flex-direction: column; align-items: stretch; }
   .actions-buttons { width: 100%; }
   .actions-buttons .btn { flex: 1 1 auto; }
   .step-sec { padding: 18px; }

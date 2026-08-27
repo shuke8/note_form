@@ -1478,3 +1478,57 @@ olmaydi.
   (doimiy · oylar · oraliq · hech qachon · teskari) buzilmadi.
 
 Kadrlar: `.screenshots/kartalar-*.png`
+
+---
+
+## Amal paneli — pastda mixlangan
+
+`position: sticky` panelni sahifa OXIRIDA oqimga qaytarardi: pastga
+yetganingizda u kontent bilan birga yuqoriga chiqib ketardi. Endi
+`position: fixed` — u har doim ekran pastida.
+
+Buning uchta natijasi bor va uchalasi ham hal qilingan:
+
+- **Panel `main` dan tashqariga chiqdi.** `fixed` element ota-onasining
+  kengligini olmaydi; fon butun ekranni qoplashi, ichki qism esa kontent
+  ustuniga tekislanishi kerak — shuning uchun `.actions` ichida `.shell`.
+- **Oxirgi karta panel ostida qolmasin.** `main` pastdan panel
+  balandligicha bo'shliq oladi. Balandlik QO'LDA yozilmaydi: holat matni
+  o'ralsa yoki tor ekranda tugmalar ustma-ust tushsa u o'zgaradi
+  (1440 da 77px · 390 da 118px · 320 da 176px). `motion.js` uni
+  `ResizeObserver` bilan o'lchab `--actions-h` ga yozadi; CSS da zaxira
+  qiymat bor, ya'ni JS ishlamasa ham karta yopilmaydi.
+- **Fokuslangan maydon panel ostida qolmasin.** `scroll-margin-bottom`
+  endi o'sha o'lchangan balandlikdan hisoblanadi.
+
+### Yo'l-yo'lakay topilgan jiddiy kamchilik
+
+Panelni `fixed` qilganda u `static` bo'lib qolaverdi. Sabab: bir necha
+commit oldin `.recap-*` qoidalarini "sinf nomi bilan boshlangan qatorni
+o'chir" usuli bilan olib tashlaganman. Qoidalar ko'p qatorli edi va
+davomi yetim qolgan:
+
+    padding: 12px 0; border-bottom: 1px solid var(--hairline); }
+    text-transform: uppercase; color: var(--ink-2); flex: none; }
+
+Juftsiz `}` CSS parseridan **keyingi qoidani butunlay yutgan** — u
+`.actions` edi. Xato yo'q, konsolda log yo'q, sahifa ishlayveradi.
+Buni `getComputedStyle` ham ko'rsatmaydi (u qoida yo'qligini emas, boshqa
+qiymatni ko'radi); `document.styleSheets` ni aylanib qidirgandagina
+`.actions` selektori UMUMAN yo'qligi chiqdi.
+
+Endi mexanik qorovul bor: `python3 ~/.claude/scripts/css-balance.py
+assets/*.css` — ortiqcha `}` va yopilmagan `{` ni fayl:qator bilan
+ko'rsatadi. Loyihaning barcha CSS fayllari balansda.
+
+### Verify (real brauzer)
+
+- 4 viewport/tema: panel `fixed`, ekran pastida (`bottom == innerHeight`),
+  kengligi viewport ga teng — sahifa tepasida ham, oxirida ham.
+- Sahifa oxiriga skroll qilinganda oxirgi karta panel ostida QOLMAYDI.
+- `--actions-h` va `main` ning pastki bo'shlig'i har kenglikda mos
+  (77 / 118 / 176px).
+- Regressiya: kartalar (4/4), demo paneli (4/4), jadval oqimi,
+  composer+landing auditi (8/8) — hammasi toza.
+
+Kadrlar: `.screenshots/panel-tepada-*.png`, `panel-pastda-*.png`

@@ -357,6 +357,24 @@
   };
 
   /* ---------------------------------------------------------------------------
+     AMAL PANELI — pastda mixlangan
+     Panel `position: fixed` bo'lgani uchun oqimdan chiqadi va oxirgi kartani
+     yopib qo'yishi mumkin. Balandligi o'zgaruvchan: holat matni o'ralsa yoki
+     tor ekranda tugmalar ustma-ust tushsa boshqacha bo'ladi — shuning uchun
+     u O'LCHANADI, qo'lda yozilmaydi.
+  ------------------------------------------------------------------------- */
+  function initActions() {
+    var bar = document.getElementById("actions");
+    if (!bar) return;
+    function sync() {
+      document.documentElement.style.setProperty("--actions-h", bar.offsetHeight + "px");
+    }
+    sync();
+    if (window.ResizeObserver) new ResizeObserver(sync).observe(bar);
+    else window.addEventListener("resize", sync);
+  }
+
+  /* ---------------------------------------------------------------------------
      SO'NGGI YUBORILGANLAR — ochiladigan karta
      Karta bosilganda boshqa sahifaga O'TILMAYDI: xabarning o'zi shu yerda
      ochiladi. Havola bo'lganida foydalanuvchi ro'yxatdagi joyini yo'qotib,
@@ -385,7 +403,7 @@
      `initReveal` ni ham olib ketardi va sahifa bo'm-bo'sh qolardi. */
   function boot() {
     var revealOk = false;
-    [initTheme, initStagger, initReveal, initTypewriter, initNav, initMenu, initFeed]
+    [initTheme, initStagger, initReveal, initTypewriter, initNav, initMenu, initFeed, initActions]
       .forEach(function (step) {
         try {
           step();

@@ -623,21 +623,27 @@
     </div>
   </section>
 
-  <div class="actions">
-    <p class="actions-status" id="status" role="status">
-      <span class="dot" aria-hidden="true"></span>
-      <span id="statusText">Qamrov va matn to‘ldirilishi kerak</span>
-    </p>
-    <div class="actions-buttons">
-      <button type="button" class="btn btn-ghost" id="resetBtn">Tozalash</button>
-      <button type="button" class="btn btn-accent" id="submitBtn">
-        <span id="submitLabel">Navbatga qo‘yish</span>
-        <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
-      </button>
-    </div>
-  </div>
 
 </main>
+
+<!-- Amal paneli `main` dan TASHQARIDA: `position: fixed` element ota-onasining
+     kengligini olmaydi, shuning uchun fon butun ekranni qoplaydi, ichki qism esa
+     `.shell` bilan kontent ustuniga tekislanadi. -->
+<div class="actions" id="actions">
+  <div class="shell actions-inner">
+      <p class="actions-status" id="status" role="status">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="statusText">Qamrov va matn to‘ldirilishi kerak</span>
+      </p>
+      <div class="actions-buttons">
+        <button type="button" class="btn btn-ghost" id="resetBtn">Tozalash</button>
+        <button type="button" class="btn btn-accent" id="submitBtn">
+          <span id="submitLabel">Navbatga qo‘yish</span>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+        </button>
+      </div>
+  </div>
+</div>
 
 <script src="assets/motion.js" defer></script>
 <script src="assets/composer-data.js" defer></script>
