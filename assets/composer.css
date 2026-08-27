@@ -12,17 +12,39 @@
 .doc-meta { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-top: 22px; }
 
 /* Bosqich bo'limi */
-.step-sec { padding-top: 56px; scroll-margin-top: 88px; }
-.step-sec + .step-sec { border-top: 1px solid var(--hairline); margin-top: 56px; }
-.step-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+/* Har bo'lim O'Z KARTASI. Ilgari ular faqat bo'shliq va hairline bilan
+   ajralardi va uzun sahifada bir-biriga qo'shilib ketardi — qaysi
+   boshqaruv qaysi savolga tegishli ekani ko'rinmasdi. */
+.step-sec { scroll-margin-top: 88px;
+            padding: 28px; border-radius: var(--r-6);
+            background: var(--paper);
+            /* Halqa + yumshoq ko'tarilish: sahifa ham, karta ham oq bo'lgani
+               uchun yolg'iz hairline chegarani zo'rg'a ko'rsatardi. */
+            box-shadow: inset 0 0 0 1px var(--hairline), var(--lift-1); }
+.step-sec + .step-sec { margin-top: 24px; }
+
+.step-head { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap;
+             padding-bottom: 20px; border-bottom: 1px solid var(--hairline); }
+.step-title { flex: 1 1 auto; min-width: 0; }
+
+/* Holat belgisi — bo'limning QIYMATI, hukm emas: «tanlanmagan» yoki
+   «O'zbekiston Respublikasi». Kartadan o'tayotganda ham bo'lim nima
+   deganini shu qator aytadi. */
+.step-state { flex: none; display: inline-flex; align-items: center; gap: 8px;
+              max-width: 100%; padding: 6px 12px; border-radius: var(--r-pill);
+              background: var(--ghost); color: var(--ink-2);
+              font-size: var(--t-sm); letter-spacing: var(--ls-sm); }
+.step-state .dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: currentColor; }
+.step-state-text { min-width: 0; overflow-wrap: anywhere; }
+.step-state[data-tone="ok"] { background: var(--ok-soft); color: var(--ok); }
 .step-index {
   font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
   color: var(--ink-2); flex: none;
 }
-.step-sec .d3 { flex: 1 1 auto; min-width: 0; }
-.step-aside { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
-              text-transform: uppercase; color: var(--ink-2); flex: none; }
-.step-body { margin-top: 28px; display: flex; flex-direction: column; gap: 22px; }
+.step-sec .d3 { min-width: 0; }
+.step-aside { margin-top: 6px; font-family: var(--mono); font-size: var(--t-mono-sm);
+              letter-spacing: var(--ls-mono); text-transform: uppercase; color: var(--ink-2); }
+.step-body { margin-top: 24px; display: flex; flex-direction: column; gap: 22px; }
 
 /* --- 01 QAMROV: XARITA --------------------------------------------------
    Qamrov = TURGAN JOYING. Alohida «daraja» tanlagichi yo'q: xaritada yoki
@@ -501,6 +523,7 @@
   .actions { flex-direction: column; align-items: stretch; }
   .actions-buttons { width: 100%; }
   .actions-buttons .btn { flex: 1 1 auto; }
-  .step-head { gap: 8px; }
-  .step-aside { width: 100%; }
+  .step-sec { padding: 18px; }
+  .step-head { gap: 10px; }
+  .step-state { width: 100%; }
 }

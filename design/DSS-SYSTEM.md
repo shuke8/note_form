@@ -1429,3 +1429,52 @@ xil narsani ikki xil aytardi.
 **Verify:** sonlar brauzerda O‘QILIB qo‘shildi va jami bilan solishtirildi
 — 4 viewport/temada 3 holatning uchtasi ham `35 100 000`. Bu tekshiruvni
 ko‘z bilan qilib bo‘lmaydi.
+
+---
+
+## Bo‘limlar — har biri o‘z kartasi
+
+Ilgari beshta bo‘lim faqat bo‘shliq va bitta hairline bilan ajralardi.
+Uzun sahifada ular bir-biriga qo‘shilib ketardi: skroll qilib borayotganda
+qaysi boshqaruv qaysi savolga tegishli ekani ko‘rinmasdi.
+
+Endi har bo‘lim — **karta**: o‘z yuzasi, halqasi, yumshoq ko‘tarilishi va
+sarlavha ostidagi ajratkich chizig‘i. Sahifa ham, karta ham oq bo‘lgani
+uchun yolg‘iz hairline chegarani zo‘rg‘a ko‘rsatardi — shuning uchun
+`inset` halqa yoniga `--lift-1` qo‘shildi.
+
+### Sarlavhadagi holat — QIYMAT, hukm emas
+
+Har karta sarlavhasida holat qatori bor va u bo‘limning **qiymatini**
+aytadi, «bajarildi/bajarilmadi» degan hukmni emas:
+
+| bo‘lim | bo‘sh holatda | to‘ldirilganda |
+|---|---|---|
+| 01 Kim oladi | `tanlanmagan` | `O‘zbekiston Respublikasi` |
+| 02 Nima yoziladi | `0/4 to‘ldirildi` | `4/4 to‘ldirildi` |
+| 03 Qachon ketadi | `Hoziroq` | `Du · 09:00 · har hafta` |
+| 04 Ilova | `yo‘q` | `2 ta fayl` |
+| 05 Yakuniy | `tayyor emas` | `yuborishga tayyor` |
+
+Ikkita qaror shu yerda muhim:
+
+- **03 sukut holatda ham yashil.** «Hoziroq» — haqiqiy va to‘liq qiymat,
+  shuning uchun uni «to‘ldirilmagan» deb ko‘rsatish yolg‘on bo‘lardi.
+- **04 hech qachon yashil bo‘lmaydi.** Ilova ixtiyoriy: yashil belgi
+  «ish qildingiz» degan yolg‘on bo‘lardi. U faqat qiymatini aytadi.
+
+Manba — `validate()` ning O‘SHA natijasi, ya‘ni karta sarlavhasi bilan
+pastdagi holat qatori va yakuniy ko‘rinishdagi ro‘yxat ikki xil gap ayta
+olmaydi.
+
+### Verify (real brahuzer)
+
+- 4 viewport/tema (1440 light va dark, 390, 320 dark): 5 karta,
+  0 kontrast xatosi, overflow yo‘q, `pageerror` yo‘q.
+- Holat qatorlari besh bosqichda kuzatildi: bo‘sh → qamrov tanlangach →
+  matn yozilgach → takroriy tanlangach (03 «to‘ldirilmagan» ga tushadi) →
+  kun tanlangach (yana yashil). Har bosqichda beshtasi ham to‘g‘ri.
+- Regressiya: yakuniy ko‘rinish oqimi, demo paneli (4/4) va jadval oqimi
+  (doimiy · oylar · oraliq · hech qachon · teskari) buzilmadi.
+
+Kadrlar: `.screenshots/kartalar-*.png`

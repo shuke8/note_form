@@ -1361,7 +1361,37 @@
     });
   }
 
+  /* Har karta sarlavhasidagi holat. U bo'limning QIYMATINI aytadi, hukmni
+     emas — «tanlanmagan» va «O'zbekiston Respublikasi» ikkovi ham fakt.
+     Manba `validate()` ning O'SHA natijasi, ya'ni karta bilan pastdagi
+     holat qatori ikki xil gap ayta olmaydi. */
+  function renderStepStates(errors) {
+    var broken = {};
+    errors.forEach(function (e) {
+      var sec = e.box ? SECTION_OF[e.box.id] : 0;
+      if (sec) broken[sec] = (broken[sec] || 0) + 1;
+    });
+    var filled = TEXT_FIELDS.filter(function (f) { return $(f.id).value.trim(); }).length;
+
+    function set(id, text, ok) {
+      var el = $(id);
+      el.querySelector(".step-state-text").textContent = text;
+      el.setAttribute("data-tone", ok ? "ok" : "todo");
+    }
+    var path = scopePath();
+    set("st1", path ? path[path.length - 1] : "tanlanmagan", !broken[1]);
+    set("st2", filled + "/4 to‘ldirildi", !broken[2]);
+    /* 03 sukut holatda ham TO'LIQ: «Hoziroq» — bu haqiqiy qiymat, shuning
+       uchun u yashil bo'ladi va bu yolg'on emas. */
+    set("st3", scheduleReady() && !broken[3] ? whenText() : "to‘ldirilmagan", !broken[3]);
+    /* 04 ixtiyoriy: u hech qachon «bajarilmagan» bo'lmaydi, faqat qiymatini
+       aytadi. Yashil belgi «ish qildingiz» degan yolg'on bo'lardi. */
+    set("st4", state.files.length ? state.files.length + " ta fayl" : "yo‘q", false);
+    set("st5", errors.length ? "tayyor emas" : "yuborishga tayyor", !errors.length);
+  }
+
   function renderSummary(errors, path, reach) {
+    renderStepStates(errors);
     var line = $("rcLine"), todo = $("rcTodo"), list = $("rcTodoList");
 
     /* Yo'l ko'rsatkich ro'yxati. Xato obyektining matni yo'q bo'lsa (qamrov
