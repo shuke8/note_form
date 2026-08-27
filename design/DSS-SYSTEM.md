@@ -1353,3 +1353,54 @@ vaqt. Har birida tekshirildi:
 - 0 kontrast xatosi, overflow yo‘q, `pageerror` yo‘q (1440 light/dark, 390).
 
 Kadrlar: `.screenshots/natija-*.png`
+
+---
+
+## `natija.html` — «yuborilganda qanday ko‘rinadi»
+
+Savol o‘rinli: kompozitor «yuborildi» ekranini KO‘RSATMAYDI va
+ko‘rsatmasligi ham kerak — server yo‘q ekan, u ekran yolg‘on bo‘lardi.
+Dizayn esa kerak: backend ulanganda nima quriladigani oldindan kelishib
+olinsin. Shuning uchun u ALOHIDA sahifada, doimiy banner ostida.
+
+### To‘rt holat
+
+Yuborish bir zumda tugamaydi, shuning uchun bitta «yuborildi» ekrani
+yetarli emas:
+
+1. **Navbatda** — reestr raqami shu daqiqada beriladi.
+2. **Yuborilmoqda** — ko‘rsatkich va haqiqiy sonlar. «Yaqinda tugaydi»
+   kabi taxminiy vaqt YOZILMAYDI: uni server ham aniq bilmaydi.
+3. **Yuborildi** — yakuniy sonlar. Bu yerda **`~` belgisi YO‘Q**: son
+   serverdan keladi, taxmin emas — farq ko‘rinib tursin.
+   Yetkazilmaganlar alohida, sababi bilan; ularni yashirish jamini
+   haqiqatdan kattaroq qilib ko‘rsatardi.
+4. **Xatolik** — u ham natija. Ko‘rsatmaslik operatorni xabar ketgan deb
+   o‘ylashga majbur qilardi. Matn nima qilish kerakligini aytadi va
+   qisman yetkazilgan qismni yashirmaydi.
+
+### Sahifa spetsimen ekanini uchta narsa aytadi
+
+- **doimiy banner** — sahifadan olingan har ekran nusxasi u bilan birga
+  ketadi, «yuborildi» ekrani kontekstsiz tarqalmasin;
+- **reestr raqami o‘rnida FORMAT** (`NF-YYYY-NNNNNN`), soxta raqam emas —
+  o‘ylab topilgan raqam haqiqiy bo‘lib o‘qilardi;
+- **tugmalar o‘chirilgan**, sababi yonidagi ko‘rinadigan qatorda
+  (o‘chirilgan tugmada tooltip TAQIQ).
+
+Rang ham cheklangan: chegara rangi holatni tashiydi, ichkarida esa rang
+faqat belgi va raqamlarda. To‘rtta karta yonma-yon turganda butun kartani
+bo‘yash sahifani svetoforga aylantirardi.
+
+Demo panelidan sahifaga havola bor.
+
+### Verify (real brauzer)
+
+- 4 viewport/tema (1440 light va dark, 390, 320 dark): to‘rt holat ham
+  o‘z tartibida, banner joyida, **soxta reestr raqami yo‘q** (to‘rtala
+  joyda `NF-YYYY-NNNNNN`), 6 ta o‘chirilgan tugma, 12–13 ikonka —
+  **buzuq 0**.
+- 0 kontrast xatosi, overflow yo‘q, 4xx yo‘q, `pageerror` yo‘q.
+- Demo paneli va composer/landing auditi buzilmadi (4/4 va 8/8 toza).
+
+Kadrlar: `.screenshots/natija-holat-*.png`

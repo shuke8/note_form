@@ -1608,6 +1608,10 @@
            uni bor deb o'ylashga olib borardi. */
         '<p class="receipt-id"><span>Reestr raqami</span><b>—</b>' +
           '<span class="receipt-id-why">faqat server beradi</span></p>' +
+        /* To'liq natija ekranlari alohida sahifada: kompozitorning o'zi
+           «yuborildi» ni ko'rsatmaydi va ko'rsatmasligi ham kerak. */
+        '<a class="receipt-link" href="./natija.html">Yuborilganda qanday ko‘rinadi' +
+          '<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg></a>' +
       "</div>" +
 
       '<details class="result-more">' +

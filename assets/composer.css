@@ -439,6 +439,10 @@
               text-transform: uppercase; color: var(--ink-2); }
 .receipt-id b { font-size: var(--t-lead); font-weight: 500; color: var(--warn); line-height: 1; }
 .receipt-id-why { text-transform: none; letter-spacing: var(--ls-sm); font-family: var(--sans); }
+.receipt-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
+                margin-top: 8px; font-size: var(--t-ui); color: var(--accent-ink); }
+.receipt-link .ico { width: 15px; height: 15px; transition: transform var(--d-hover) var(--ease-out); }
+@media (hover: hover) { .receipt-link:hover .ico { transform: translateX(3px); } }
 
 /* JSON yopiq keladi: u dasturchi uchun, operator uchun emas — ochiq turganda
    panelning eng katta bo'lagi bo'lib qolardi. */
