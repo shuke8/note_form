@@ -38,13 +38,17 @@
   --ghost-hover:  rgba(0, 0, 0, 0.07);
   --ghost-quiet:  rgba(0, 0, 0, 0.02);
 
-  /* --- Aksent: DSS ning issiq gradienti (o'lchangan, 1:1) ------------------ */
-  --flame:        radial-gradient(75% 150% at 100% 114.2%, #ffb70f 0%, #ff5400 100%);
-  --flame-solid:  #ff5400;
-  --flame-warm:   #ffae00;                 /* o'lchangan to'ldirish rangi */
-  --flame-ink:    #8a2b00;                 /* oq ustida 6.4:1 — matn/link uchun */
-  --flame-soft:   #fff4e8;
-  --flame-line:   rgba(255, 84, 0, 0.28);
+  /* --- Aksent -------------------------------------------------------------
+     Gradientning GEOMETRIYASI DSS dan o'lchangan holicha qoladi (radius,
+     markaz, to'xtash nuqtalari) — faqat rang ko'kka almashdi.
+     Yorug' to'xtash nuqtasi ATAYLAB to'q: ustidagi oq matn gradientning eng
+     ochiq joyida ham 4.5:1 dan past tushmasin. Issiq #ffb70f da bu 1.9:1 edi. */
+  --accent:       radial-gradient(75% 150% at 100% 114.2%, #2563eb 0%, #1e3a8a 100%);
+  --accent-solid: #1d4ed8;                 /* oq ustida 7.0:1 — kontur va to'ldirish */
+  --accent-warm:  #93c5fd;                 /* ::selection — QORA matn ustida turadi */
+  --accent-ink:   #1e40af;                 /* oq ustida 8.6:1 — matn/link uchun */
+  --accent-soft:  #eff6ff;
+  --accent-line:  rgba(37, 99, 235, 0.28);
 
   /* --- Holat: DSS da semantik palitra YO'Q (marketing sayti).
          Asbob sahifasiga kerak — issiq aksentga hue jihatdan qo'shni
@@ -152,9 +156,12 @@
   --ghost-hover:  rgba(255, 255, 255, 0.11);
   --ghost-quiet:  rgba(255, 255, 255, 0.04);
 
-  --flame-ink:    #ffb057;                   /* qora ustida 9.4:1 */
-  --flame-soft:   rgba(255, 132, 20, 0.12);
-  --flame-line:   rgba(255, 132, 20, 0.34);
+  --accent-ink:   #93c5fd;                   /* qora ustida 10.4:1 */
+  /* Yorug' temadagi #1d4ed8 qora yuzada 3.3:1 ga tushib, 1.4.11 chegarasiga
+     yopishib qolardi — qorong'i temada aksent yorug'roq bo'ladi. */
+  --accent-solid: #60a5fa;
+  --accent-soft:  rgba(59, 130, 246, 0.14);
+  --accent-line:  rgba(96, 165, 250, 0.36);
 
   --ok:        #37d39b;
   --ok-soft:   rgba(55, 211, 155, 0.13);
@@ -225,7 +232,7 @@ table { border-collapse: collapse; }
   outline-offset: 2px;
 }
 
-::selection { background: var(--flame-warm); color: #000; }
+::selection { background: var(--accent-warm); color: #000; }
 
 /* -----------------------------------------------------------------------------
    3. TIPOGRAFIKA

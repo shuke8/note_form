@@ -42,9 +42,9 @@
   .v4 .v4-rg { fill: var(--paper-sunk); stroke: var(--edge); stroke-width: 1.5; }
   .v4 .v4-num { fill: var(--ink-2); font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); text-anchor: middle; dominant-baseline: central; }
   /* So'ngan hudud ham BOSILADI, demak chegarasi ham, raqami ham o'qilishi shart: `opacity` o'rniga bo'sh yuza + och kontur (3.5:1). */
-  .v4 .v4-cell[data-state="dim"] .v4-rg { fill: var(--paper); stroke: var(--ink-3); } .v4 .v4-cell[data-hot="true"] { transform: translateY(-2px); } .v4 .v4-cell[data-hot="true"] .v4-rg { stroke: var(--flame-solid); stroke-width: 2.5; }
-  /* Tanlangan katak — issiq to'ldirish + qalin kontur; gradient ustidagi OQ raqam 1.9:1 berardi, `--flame-ink` esa 8:1. */
-  .v4 .v4-cell[data-state="on"] .v4-rg { fill: var(--flame-soft); stroke: var(--flame-solid); stroke-width: 2.5; } .v4 .v4-cell[data-state="on"] .v4-num { fill: var(--flame-ink); }
+  .v4 .v4-cell[data-state="dim"] .v4-rg { fill: var(--paper); stroke: var(--ink-3); } .v4 .v4-cell[data-hot="true"] { transform: translateY(-2px); } .v4 .v4-cell[data-hot="true"] .v4-rg { stroke: var(--accent-solid); stroke-width: 2.5; }
+  /* Tanlangan katak — issiq to'ldirish + qalin kontur; gradient ustidagi OQ raqam 1.9:1 berardi, `--accent-ink` esa 8:1. */
+  .v4 .v4-cell[data-state="on"] .v4-rg { fill: var(--accent-soft); stroke: var(--accent-solid); stroke-width: 2.5; } .v4 .v4-cell[data-state="on"] .v4-num { fill: var(--accent-ink); }
   /* Xarita FAQAT O'Z USTUNI 504px dan keng bo'lganda bosiladi: eng past katak (300 birlikdan 42 tasi) shunda 44px ga chiqadi.
      Viewport eni yolg'on o'lchov edi — ikki ustunli maketda xarita undan ikki barobar tor bo'ladi. Tor holatda raqam 11px dan kichik chiqadi: o'qib bo'lmaydigan belgidan ko'ra yo'qligi halolroq. */
   @container (min-width: 504px) { .v4 .v4-map { pointer-events: auto; } .v4 .v4-cell { cursor: pointer; } .v4 .v4-cap-narrow { display: none; } .v4 .v4-cap-wide { display: inline; } }
@@ -54,7 +54,7 @@
   .v4 .v4-maphint { position: absolute; left: 20px; top: 20px; z-index: 1; padding: 5px 11px; border-radius: var(--r-pill); background: var(--ink); color: var(--paper); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); text-transform: uppercase; opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity var(--d-hover) var(--ease-out), transform var(--d-hover) var(--ease-out); }
   .v4[data-allhot="true"] .v4-maphint { opacity: 1; transform: none; }
   /* `:not([data-state="on"])` — tanlangan katak kuchini YO‘QOTMASIN; respublika tanlanganida hamma katak «on», demak bu qoida umuman ishlamaydi. */
-  .v4[data-allhot="true"] .v4-cell:not([data-state="on"]) .v4-rg { fill: var(--flame-soft); stroke: var(--flame-line); }
+  .v4[data-allhot="true"] .v4-cell:not([data-state="on"]) .v4-rg { fill: var(--accent-soft); stroke: var(--accent-line); }
   /* Tanlangan tugma xaritadagi «on» katak bilan AYNAN bir xil gapiradi (yumshoq alanga + qalin kontur) — ko‘z ikkisini bitta holat deb o‘qiydi. */
   .v4 .v4-all-btn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: var(--r-5); text-align: left; color: var(--ink); background: var(--paper-sunk); box-shadow: inset 0 0 0 1px var(--hairline); transition: background var(--d-hover) var(--ease-out), box-shadow var(--d-hover) var(--ease-out), transform var(--d-tap) var(--ease-out); }
   .v4 .v4-all-ring { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: var(--r-pill); background: var(--paper); box-shadow: inset 0 0 0 1px var(--hairline); color: var(--ink-2); }
@@ -65,10 +65,10 @@
   .v4 .v4-all-pop { flex: none; font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); color: var(--ink-2); font-variant-numeric: tabular-nums; }
   @media (hover: hover) { .v4 .v4-all-btn:hover { background: var(--ghost); } }
   .v4 .v4-all-btn:active { transform: scale(.99); }
-  .v4 .v4-all-btn[data-hot="true"] { box-shadow: inset 0 0 0 1.5px var(--flame-line); }
-  .v4 .v4-all-btn[aria-current="true"] { background: var(--flame-soft); box-shadow: inset 0 0 0 2px var(--flame-solid); }
-  .v4 .v4-all-btn[aria-current="true"] :is(.v4-all-name, .v4-all-sub, .v4-all-pop) { color: var(--flame-ink); }
-  .v4 .v4-all-btn[aria-current="true"] .v4-all-ring { background: var(--paper); color: var(--flame-ink); box-shadow: inset 0 0 0 1px var(--flame-line); }
+  .v4 .v4-all-btn[data-hot="true"] { box-shadow: inset 0 0 0 1.5px var(--accent-line); }
+  .v4 .v4-all-btn[aria-current="true"] { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent-solid); }
+  .v4 .v4-all-btn[aria-current="true"] :is(.v4-all-name, .v4-all-sub, .v4-all-pop) { color: var(--accent-ink); }
+  .v4 .v4-all-btn[aria-current="true"] .v4-all-ring { background: var(--paper); color: var(--accent-ink); box-shadow: inset 0 0 0 1px var(--accent-line); }
   .v4 .v4-panel { display: flex; flex-direction: column; gap: 10px; min-width: 0; } .v4 .v4-crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; min-height: 30px; }
   .v4 .v4-crumb { display: inline-flex; align-items: center; min-height: 26px; padding: 4px 7px; border-radius: var(--r-2); font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink); }
   @media (pointer: coarse) { .v4 .v4-crumb { min-height: 44px; } }  /* sensorli ekranda «yuqoriga chiqish» yagona yo'l shu — nishon to'liq 44px (2.5.5) */
@@ -76,7 +76,7 @@
   .v4 .v4-list { display: flex; flex-direction: column; gap: 2px; padding: 5px; margin: 0; max-height: 430px; overflow-y: auto; overscroll-behavior: contain; } .v4 .v4-empty { padding: 10px 6px; }
   .v4 .v4-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 10px; border-radius: var(--r-3); text-align: left; color: var(--ink); transition: transform var(--d-tap) var(--ease-out); }
   @media (hover: hover) { .v4 .v4-crumb-btn:hover { background: var(--ghost); color: var(--ink); } .v4 .v4-row:hover { background: var(--ghost); } }
-  .v4 .v4-row:active { transform: scale(.985); } .v4 .v4-row[data-hot="true"] { background: var(--flame-soft); } .v4 .v4-row[aria-current="true"] { background: var(--ink); color: var(--paper); }
+  .v4 .v4-row:active { transform: scale(.985); } .v4 .v4-row[data-hot="true"] { background: var(--accent-soft); } .v4 .v4-row[aria-current="true"] { background: var(--ink); color: var(--paper); }
   .v4 .v4-idx { flex: none; width: 22px; }
   .v4 .v4-idx, .v4 .v4-pop { font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); } .v4 .v4-idx { color: var(--ink-2); } /* --ink-3 dekorativ: oq ustida 3.5:1, matn uchun AA dan o‘tmaydi */ .v4 .v4-pop { flex: none; color: var(--ink-2); } .v4 .v4-sub { color: var(--ink-2); }
   .v4 .v4-name { flex: 1 1 auto; min-width: 0; font-size: var(--t-ui); overflow-wrap: anywhere; } .v4 .v4-chev { flex: none; width: 14px; height: 14px; color: var(--ink-3); }

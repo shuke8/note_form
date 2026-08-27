@@ -156,7 +156,7 @@
           c.dataset.open = up ? "true" : "false";   c.querySelector(".v5-tog").setAttribute("aria-expanded", up ? "true" : "false");
           var v = c.querySelector(".v5-tog-val");   v.textContent = chosen || "Tanlanmagan";   v.className = up ? "v5-tog-val sr-only" : "v5-tog-val";
         });
-        var lvl = root.querySelector("#v5-lvl");   lvl.className = state.level ? "chip chip-mono chip-flame" : "chip chip-mono";
+        var lvl = root.querySelector("#v5-lvl");   lvl.className = state.level ? "chip chip-mono chip-accent" : "chip chip-mono";
         lvl.textContent = state.level ? LABEL[state.level] : "Daraja tanlanmagan";
         rootBtn.setAttribute("aria-pressed", state.level === "republic" ? "true" : "false");
         root.querySelector("#v5-reach").textContent = approx(reach());

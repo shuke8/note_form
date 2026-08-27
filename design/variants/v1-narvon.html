@@ -57,7 +57,7 @@
   .v1-leader { height: 0; border-bottom: 1px dotted var(--hairline-2); align-self: center; }
   /* Faol qator faqat rang bilan ajratilmaydi — chap chetdagi chiziq shakl beradi. Fon ALOHIDA qatlamda
      ochiladi: kontrakt faqat transform/opacity ga ruxsat beradi, shuning uchun rang sakramaydi — ikkala yarim bir tezlikda keladi. */
-  .v1-rung::before { content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; width: 3px; background-image: var(--flame); transform: scaleY(0); transition: transform var(--d-pane) var(--ease-out); }
+  .v1-rung::before { content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; width: 3px; background-image: var(--accent); transform: scaleY(0); transition: transform var(--d-pane) var(--ease-out); }
   .v1-rung::after { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--paper-raise); opacity: 0; transition: opacity var(--d-pane) var(--ease-out); }
   .v1-rung[data-active="true"]::before { transform: scaleY(1); } .v1-rung[data-active="true"]::after { opacity: 1; }
   .v1-rung[data-active="true"] .v1-level { color: var(--ink); font-weight: 600; } .v1-rung[data-active="true"] .v1-reach { color: var(--ink); }
@@ -81,8 +81,8 @@
   .v1-foot { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-top: 1px solid var(--hairline); background: var(--paper-alt); }
   .v1-track { position: relative; flex: 1 1 auto; height: 4px; min-width: 80px; border-radius: var(--r-pill); background: var(--hairline-2); overflow: hidden; }
   /* Ulushi 0.004% bo'lgan mahalla ham iz qoldirsin — «nol emas» degani rost qolsin. */
-  .v1-track::after { content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; width: 3px; background-image: var(--flame); opacity: 0; transition: opacity var(--d-hover) var(--ease-out); } .v1-track[data-on="true"]::after { opacity: 1; }
-  .v1-fill { position: absolute; inset: 0; background-image: var(--flame); transform: scaleX(0); transform-origin: left center; transition: transform var(--d-pane) var(--ease-out); }
+  .v1-track::after { content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; width: 3px; background-image: var(--accent); opacity: 0; transition: opacity var(--d-hover) var(--ease-out); } .v1-track[data-on="true"]::after { opacity: 1; }
+  .v1-fill { position: absolute; inset: 0; background-image: var(--accent); transform: scaleX(0); transform-origin: left center; transition: transform var(--d-pane) var(--ease-out); }
   .v1-caption { flex: none; font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); color: var(--ink-2); font-variant-numeric: tabular-nums; }
   .v1-hint { display: flex; gap: 8px; align-items: flex-start; padding-inline: 2px; } .v1-hint svg { width: 15px; height: 15px; flex: none; margin-top: 1px; }
   .v1-fine { padding-inline: 2px; font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); color: var(--ink-2); }

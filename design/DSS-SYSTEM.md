@@ -62,9 +62,16 @@ Referens monoxrom: `#FFFFFF` sahifa · `#FAFAFA` bo‘lim · `#F5F5F5` ikkinchi
 yuza · `#000000` matn · `rgba(0,0,0,.6)` ikkilamchi · `rgba(0,0,0,.45)`
 uchinchi · `rgba(0,0,0,.08)` hairline · `rgba(0,0,0,.04)` ghost.
 
-Aksent — **aynan o‘lchangan gradient**:
+Aksent gradientining **geometriyasi** designsystems.surf dan aynan
+o‘lchangan (radius, markaz, to‘xtash nuqtalari), **rangi** esa 2026-08-27 da
+foydalanuvchi qarori bilan ko‘kka almashtirildi:
 
-    radial-gradient(75% 150% at 100% 114.2%, #ffb70f 0%, #ff5400 100%)
+    /* o‘lchangan manba */  radial-gradient(75% 150% at 100% 114.2%, #ffb70f 0%, #ff5400 100%)
+    /* hozirgi holat   */  radial-gradient(75% 150% at 100% 114.2%, #2563eb 0%, #1e3a8a 100%)
+
+Tokenlar `--flame-*` emas, `--accent-*` deb nomlanadi: ko‘k rangni «flame»
+deb atash nomni qiymatdan uzib qo‘yardi. Sinflar ham shunga mos —
+`.btn-accent`, `.chip-accent`, `.note-accent`.
 
 Uchinchi matn qadami (`rgba(0,0,0,.45)` = `#8C8C8C`) **matn uchun
 ishlatilmaydi**: oq ustida 3.5:1, AA 4.5 talab qiladi. U `--ink-3` nomi
@@ -654,10 +661,10 @@ mahallani tanlang» tekshiruvi o‘lik kodga aylandi va o‘chirildi.
    kichkina yo‘l tugmasi edi: eng ko‘p ishlatiladigan qamrov eng chuqur
    ko‘milgani bo‘lardi. Endi eng chuqur pog‘onadan ham **bir bosish**.
    Tanlanganda u xaritadagi «on» katak bilan aynan bir xil gapiradi
-   (yumshoq alanga + qalin kontur), demak ko‘z ikkisini bitta holat deb
+   (yumshoq aksent + qalin kontur), demak ko‘z ikkisini bitta holat deb
    o‘qiydi.
 2. **Xarita foni.** Hududlar tashqarisidagi bo‘sh joy bosiladi. Kursor
-   ustiga kelganda butun xarita yumshoq alangaga bo‘yaladi va yuqorida
+   ustiga kelganda butun xarita yumshoq aksentga bo‘yaladi va yuqorida
    «BUTUN RESPUBLIKA» yorlig‘i chiqadi — gesture ko‘rinmas emas.
    Fon `pointer-events` ni `.scope-map` dan meros qiladi, ya‘ni xarita
    bosilmaydigan kenglikda (katak 44px dan kichik) u ham bosilmaydi va
@@ -1013,3 +1020,52 @@ tuzilish darajasida kafolatlangan.
   yozilgandi — `--ink-2` ga o‘tkazildi.
 
 Kadrlar: `.screenshots/yakun-*.png`, `.screenshots/feed-ochilgan-1440.png`
+
+---
+
+## Aksent: to‘q sariqdan ko‘kka
+
+Foydalanuvchi qarori. Gradientning **geometriyasi** (radius, markaz,
+to‘xtash nuqtalari) o‘lchangan holicha qoldi — faqat rang almashdi.
+
+### Tokenlar
+
+| token | avval | hozir | o‘lchangan |
+|---|---|---|---|
+| `--accent` | `#ffb70f → #ff5400` | `#2563eb → #1e3a8a` | oq matn: eng ochiq nuqtada **5,17:1**, eng to‘qida **10,36:1** |
+| `--accent-solid` | `#ff5400` | `#1d4ed8` (yorug‘) / `#60a5fa` (qorong‘i) | oq ustida **6,7:1**, cho‘kkan yuzada **5,62:1** |
+| `--accent-ink` | `#8a2b00` / `#ffb057` | `#1e40af` / `#93c5fd` | oq ustida **8,72:1**, `--accent-soft` ustida **8,01:1**; qorong‘ida **11,65:1** |
+| `--accent-warm` | `#ffae00` | `#93c5fd` | `::selection` — qora matn ustida **11,65:1** |
+| `--accent-soft` | `#fff4e8` | `#eff6ff` | fon toni |
+| `--accent-line` | `rgba(255,84,0,.28)` | `rgba(37,99,235,.28)` | dekorativ hairline |
+
+### Nima uchun shunchaki hue almashtirilmadi
+
+- **Gradientning yorug‘ to‘xtash nuqtasi ataylab to‘qroq olindi.** Eski
+  `#ffb70f` ustidagi oq matn atigi **1,9:1** edi — ya‘ni asosiy CTA tugmasi
+  gradientning eng ochiq burchagida o‘qilmasdi. `#2563eb` bilan bu **5,17:1**.
+  Bu rang almashtirish emas, allaqachon mavjud bo‘lgan kamchilikning
+  tuzatilishi.
+- **Qorong‘i temada `--accent-solid` alohida beriladi.** Yorug‘ temadagi
+  `#1d4ed8` qora yuzada **3,3:1** ga tushib, 1.4.11 chegarasiga yopishib
+  qolardi; `#60a5fa` esa **6,7:1** beradi. Issiq palitrada bu override
+  kerak emas edi, ko‘kda kerak.
+- **Tokenlar qayta nomlandi.** `--flame-*` ko‘k rangni ushlab turishi
+  nomni qiymatdan uzardi — bu loyihaning «ekran yolg‘on gapirmasin»
+  qoidasining kod tomonidagi ko‘rinishi. `--accent-*`, `.btn-accent`,
+  `.chip-accent`, `.note-accent`.
+- **Mesh yuzalar ham ko‘chdi.** `.media` va `.media-cool` ning to‘rt qatlamli
+  radial gradientlari issiq qumtosh edi; ular ko‘k-tunga o‘tkazildi, aks
+  holda sahifada ikki xil aksent oilasi qolardi.
+
+### Verify (real brauzer)
+
+- Har bir aksent juftligi o‘lchandi (yuqoridagi jadval) — ikkala temada.
+- `composer` va `landing`: 4 viewport × 2 tema — 0 kontrast xatosi,
+  overflow yo‘q, `pageerror` yo‘q.
+- `variants` sahifasi (sakkiz fragment ham aksent tokenlaridan foydalanadi):
+  1440 va 390, light va dark — toza.
+- Kod bo‘ylab `flame`, `#ff5400`, `#ffb70f` va boshqa qattiq yozilgan issiq
+  qiymatlar qolmadi (grep bilan tekshirildi).
+
+Kadrlar: `.screenshots/kok-*.png`

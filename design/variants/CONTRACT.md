@@ -33,7 +33,7 @@ Ular `variants.html` sahifasiga qo'yiladi va yonma-yon solishtiriladi.
 ## Majburiy qoidalar
 
 1. **Tokenlarni QAYTA E'LON QILMANG.** Host sahifa `assets/system.css` va
-   `assets/components.css` ni yuklaydi. `--ink`, `--paper`, `--flame`,
+   `assets/components.css` ni yuklaydi. `--ink`, `--paper`, `--accent`,
    `--hairline`, `--r-pill`, `--t-ui`, `--mono`, `--ease-out`, `--d-hover`
    va h.k. tayyor. Yangi rang O'YLAB TOPMANG.
 2. **Ma'lumot** — `window.OM_GEO`. Tuzilishi:

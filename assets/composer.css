@@ -64,17 +64,17 @@
    Toshkent shahri chiqdi?» degan savol tug'dirardi — endi nishon ko'rinib turadi. */
 .scope-mark { fill: none; stroke: var(--ink-2); stroke-width: 1.5; pointer-events: none; }
 .scope-tap { fill: transparent; stroke: none; }
-.scope-cell[data-state="on"] .scope-mark { stroke: var(--flame-solid); stroke-width: 2.5; }
-.scope-cell[data-hot="true"] .scope-mark { stroke: var(--flame-solid); }
+.scope-cell[data-state="on"] .scope-mark { stroke: var(--accent-solid); stroke-width: 2.5; }
+.scope-cell[data-hot="true"] .scope-mark { stroke: var(--accent-solid); }
 /* So'ngan hudud ham BOSILADI, demak chegarasi ham, raqami ham o'qilishi shart:
    `opacity` o'rniga bo'sh yuza + och kontur (3.5:1). */
 .scope-cell[data-state="dim"] .scope-rg { fill: var(--paper); stroke: var(--ink-3); }
 .scope-cell[data-hot="true"] { transform: translateY(-2px); }
-.scope-cell[data-hot="true"] .scope-rg { stroke: var(--flame-solid); stroke-width: 2.5; }
+.scope-cell[data-hot="true"] .scope-rg { stroke: var(--accent-solid); stroke-width: 2.5; }
 /* Tanlangan katak — issiq to'ldirish + qalin kontur; gradient ustidagi OQ raqam
-   1.9:1 berardi, `--flame-ink` esa 8:1. */
-.scope-cell[data-state="on"] .scope-rg { fill: var(--flame-soft); stroke: var(--flame-solid); stroke-width: 2.5; }
-.scope-cell[data-state="on"] .scope-num { fill: var(--flame-ink); }
+   1.9:1 berardi, `--accent-ink` esa 8:1. */
+.scope-cell[data-state="on"] .scope-rg { fill: var(--accent-soft); stroke: var(--accent-solid); stroke-width: 2.5; }
+.scope-cell[data-state="on"] .scope-num { fill: var(--accent-ink); }
 
 /* Bosiladigan fon: kataklardan TASHQARIDAGI bo'sh joy — «hammasi».
    Ko'rinmas, lekin ustidagi yorliq va butun xaritaning yonishi uni aytib turadi.
@@ -92,7 +92,7 @@
 /* `:not([data-state="on"])` — tanlangan katak kuchini YO'QOTMASIN; respublika
    tanlanganida hamma katak «on», demak bu qoida umuman ishlamaydi. */
 .scope[data-allhot="true"] .scope-cell:not([data-state="on"]) .scope-rg {
-  fill: var(--flame-soft); stroke: var(--flame-line);
+  fill: var(--accent-soft); stroke: var(--accent-line);
 }
 
 .scope-panel { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
@@ -121,11 +121,11 @@
                  letter-spacing: var(--ls-mono); color: var(--ink-2); font-variant-numeric: tabular-nums; }
 @media (hover: hover) { .scope-all:hover { background: var(--ghost); } }
 .scope-all:active { transform: scale(.99); }
-.scope-all[data-hot="true"] { box-shadow: inset 0 0 0 1.5px var(--flame-line); }
-.scope-all[aria-current="true"] { background: var(--flame-soft); box-shadow: inset 0 0 0 2px var(--flame-solid); }
-.scope-all[aria-current="true"] :is(.scope-all-name, .scope-all-sub, .scope-all-pop) { color: var(--flame-ink); }
-.scope-all[aria-current="true"] .scope-all-ring { background: var(--paper); color: var(--flame-ink);
-                                                  box-shadow: inset 0 0 0 1px var(--flame-line); }
+.scope-all[data-hot="true"] { box-shadow: inset 0 0 0 1.5px var(--accent-line); }
+.scope-all[aria-current="true"] { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent-solid); }
+.scope-all[aria-current="true"] :is(.scope-all-name, .scope-all-sub, .scope-all-pop) { color: var(--accent-ink); }
+.scope-all[aria-current="true"] .scope-all-ring { background: var(--paper); color: var(--accent-ink);
+                                                  box-shadow: inset 0 0 0 1px var(--accent-line); }
 
 .scope-crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; min-height: 30px; }
 .scope-crumb { display: inline-flex; align-items: center; min-height: 26px; padding: 4px 7px;
@@ -148,7 +148,7 @@
   .scope-row:hover { background: var(--ghost); }
 }
 .scope-row:active { transform: scale(.985); }
-.scope-row[data-hot="true"] { background: var(--flame-soft); }
+.scope-row[data-hot="true"] { background: var(--accent-soft); }
 .scope-row[aria-current="true"] { background: var(--ink); color: var(--paper); }
 .scope-idx { flex: none; width: 22px; }
 .scope-idx, .scope-pop { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); }

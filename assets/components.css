@@ -102,8 +102,8 @@
    turganini bilmaydi. */
 label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 
-.btn-flame { background-image: var(--flame); color: #fff; }
-@media (hover: hover) { .btn-flame:hover { box-shadow: 0 6px 20px rgba(255, 84, 0, 0.28); } }
+.btn-accent { background-image: var(--accent); color: #fff; }
+@media (hover: hover) { .btn-accent:hover { box-shadow: 0 6px 20px rgba(29, 78, 216, 0.32); } }
 
 .btn-ink { background: var(--ink); color: var(--paper); }
 @media (hover: hover) { .btn-ink:hover { background: var(--ink-2); } }
@@ -146,7 +146,7 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 }
 .chip-mono { font-family: var(--mono); font-weight: 400; letter-spacing: var(--ls-mono);
              text-transform: uppercase; font-size: var(--t-mono-sm); color: var(--ink-2); }
-.chip-flame { background: var(--flame-soft); color: var(--flame-ink); }
+.chip-accent { background: var(--accent-soft); color: var(--accent-ink); }
 .chip-ok    { background: var(--ok-soft);    color: var(--ok); }
 .chip-warn  { background: var(--warn-soft);  color: var(--warn); }
 .chip-crit  { background: var(--crit-soft);  color: var(--crit); }
@@ -185,13 +185,13 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
   position: relative;
   border-radius: var(--r-2);
   overflow: hidden;
-  background-color: #2a1b12;
+  background-color: #0e1730;
   background-image:
-    radial-gradient(58% 74% at 12% 18%,  #ff9d2e 0%, rgba(255, 157, 46, 0) 62%),
-    radial-gradient(52% 68% at 86% 24%,  #c8452a 0%, rgba(200, 69, 42, 0) 60%),
-    radial-gradient(64% 82% at 74% 88%,  #7d5a2a 0%, rgba(125, 90, 42, 0) 66%),
-    radial-gradient(48% 60% at 34% 92%,  #b23a1c 0%, rgba(178, 58, 28, 0) 58%),
-    linear-gradient(148deg, #3a2416 0%, #6b3a1d 46%, #2c1c14 100%);
+    radial-gradient(58% 74% at 12% 18%,  #3b82f6 0%, rgba(59, 130, 246, 0) 62%),
+    radial-gradient(52% 68% at 86% 24%,  #1e40af 0%, rgba(30, 64, 175, 0) 60%),
+    radial-gradient(64% 82% at 74% 88%,  #2a4a7a 0%, rgba(42, 74, 122, 0) 66%),
+    radial-gradient(48% 60% at 34% 92%,  #1d4ed8 0%, rgba(29, 78, 216, 0) 58%),
+    linear-gradient(148deg, #142348 0%, #1b3a76 46%, #0c1428 100%);
   isolation: isolate;
 }
 /* Yuzaga mayin don — sof gradient plastik ko'rinadi */
@@ -204,9 +204,9 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 .media-cool {
   background-color: #101010;
   background-image:
-    radial-gradient(60% 78% at 84% 14%, #ff6a12 0%, rgba(255, 106, 18, 0) 58%),
+    radial-gradient(60% 78% at 84% 14%, #2563eb 0%, rgba(37, 99, 235, 0) 58%),
     radial-gradient(54% 70% at 12% 26%, #4a4a4a 0%, rgba(74, 74, 74, 0) 62%),
-    radial-gradient(70% 86% at 30% 96%, #2e2115 0%, rgba(46, 33, 21, 0) 68%),
+    radial-gradient(70% 86% at 30% 96%, #16233d 0%, rgba(22, 35, 61, 0) 68%),
     linear-gradient(150deg, #1a1a1a 0%, #262626 46%, #0d0d0d 100%);
 }
 .media-pad { padding: 72px 24px; display: grid; place-items: center; }
@@ -319,7 +319,7 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 .field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .label { font-size: var(--t-ui); font-weight: 500; color: var(--ink); }
 .label .opt { color: var(--ink-2); font-weight: 400; }
-.req { color: var(--flame-ink); }
+.req { color: var(--accent-ink); }
 .hint { font-size: var(--t-sm); line-height: var(--lh-sm); color: var(--ink-2); }
 
 .input, .select, .textarea {
@@ -418,7 +418,7 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
   border: 1px solid var(--hairline);
 }
 .note svg { width: 18px; height: 18px; flex: none; margin-top: 1px; }
-.note-flame { background: var(--flame-soft); border-color: var(--flame-line); color: var(--flame-ink); }
+.note-accent { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent-ink); }
 .note-warn  { background: var(--warn-soft);  border-color: color-mix(in srgb, var(--warn) 30%, transparent); color: var(--warn); }
 .note-crit  { background: var(--crit-soft);  border-color: color-mix(in srgb, var(--crit) 30%, transparent); color: var(--crit); }
 .note-ok    { background: var(--ok-soft);    border-color: color-mix(in srgb, var(--ok) 30%, transparent);   color: var(--ok); }
