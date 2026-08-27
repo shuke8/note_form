@@ -67,7 +67,7 @@ o‘lchangan (radius, markaz, to‘xtash nuqtalari), **rangi** esa 2026-08-27 da
 foydalanuvchi qarori bilan ko‘kka almashtirildi:
 
     /* o‘lchangan manba */  radial-gradient(75% 150% at 100% 114.2%, #ffb70f 0%, #ff5400 100%)
-    /* hozirgi holat   */  radial-gradient(75% 150% at 100% 114.2%, #2563eb 0%, #1e3a8a 100%)
+    /* hozirgi holat   */  radial-gradient(75% 150% at 100% 114.2%, #2563eb 0%, #0137d0 100%)
 
 Tokenlar `--flame-*` emas, `--accent-*` deb nomlanadi: ko‘k rangni «flame»
 deb atash nomni qiymatdan uzib qo‘yardi. Sinflar ham shunga mos —
@@ -1032,7 +1032,7 @@ to‘xtash nuqtalari) o‘lchangan holicha qoldi — faqat rang almashdi.
 
 | token | avval | hozir | o‘lchangan |
 |---|---|---|---|
-| `--accent` | `#ffb70f → #ff5400` | `#2563eb → #1e3a8a` | oq matn: eng ochiq nuqtada **5,17:1**, eng to‘qida **10,36:1** |
+| `--accent` | `#ffb70f → #ff5400` | `#2563eb → #0137d0` | oq matn: eng ochiq nuqtada **5,17:1**, eng to‘qida **8,54:1** |
 | `--accent-solid` | `#ff5400` | `#1d4ed8` (yorug‘) / `#60a5fa` (qorong‘i) | oq ustida **6,7:1**, cho‘kkan yuzada **5,62:1** |
 | `--accent-ink` | `#8a2b00` / `#ffb057` | `#1e40af` / `#93c5fd` | oq ustida **8,72:1**, `--accent-soft` ustida **8,01:1**; qorong‘ida **11,65:1** |
 | `--accent-warm` | `#ffae00` | `#93c5fd` | `::selection` — qora matn ustida **11,65:1** |
@@ -1043,7 +1043,8 @@ to‘xtash nuqtalari) o‘lchangan holicha qoldi — faqat rang almashdi.
 
 - **Gradientning yorug‘ to‘xtash nuqtasi ataylab to‘qroq olindi.** Eski
   `#ffb70f` ustidagi oq matn atigi **1,9:1** edi — ya‘ni asosiy CTA tugmasi
-  gradientning eng ochiq burchagida o‘qilmasdi. `#2563eb` bilan bu **5,17:1**.
+  gradientning eng ochiq burchagida o‘qilmasdi. `#2563eb` bilan bu **5,17:1**,
+  to‘q nuqtada (`#0137d0`) esa **8,54:1**.
   Bu rang almashtirish emas, allaqachon mavjud bo‘lgan kamchilikning
   tuzatilishi.
 - **Qorong‘i temada `--accent-solid` alohida beriladi.** Yorug‘ temadagi
