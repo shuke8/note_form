@@ -1298,3 +1298,58 @@ O‘lchangan: yorug‘da 4,75 va 7,85 · qorong‘ida 10,38 va 7,36.
 - Sahifa auditi: 2 viewport × 2 tema — 0 kontrast xatosi, overflow yo‘q.
 
 Kadrlar: `.screenshots/yakun-*.png`
+
+---
+
+## «Navbatga qo‘yish» bosilgandagi ko‘rinish
+
+Panel ilgari ikki bo‘lakdan iborat edi: ogohlantirish sarlavhasi va JSON.
+Ogohlantirish to‘g‘ri edi, lekin panel operatorga «nima bo‘lardi» degan
+savolga javob bermasdi — JSON dasturchi uchun.
+
+Endi uch qatlam:
+
+1. **Ogohlantirish sarlavhasi** — o‘zgarmadi: «Xabar YUBORILMADI — bu demo».
+2. **Kvitansiya namunasi** — server ulanganda operator nimani ko‘rishini
+   ko‘rsatadi: holat, qamrov, taxminiy qamrov, birinchi yuborish, tillar,
+   ilova.
+3. **So‘rov tanasi** — endi YOPIQ `<details>` ichida, yonida «Nusxa olish».
+
+### Namuna HAQIQIY kvitansiyaga o‘xshamasligi kerak
+
+Bu loyihaning eng qattiq qoidasi: ish bajarilmagan bo‘lsa, ekran bajarilgan
+demasin. Shuning uchun namunaning uchta ajratuvchi belgisi bor:
+
+- **uzuq chegara** — tizimning barcha kartalari qattiq chegarali;
+- **«Namuna» chipi** — ogohlantirish rangida, blokning o‘z sarlavhasi bilan
+  («server ulanganda kvitansiya shunday ko‘rinadi»);
+- **reestr raqami turadigan joy KO‘RINIB turadi va bo‘sh**: `—` va yonida
+  «faqat server beradi». Uni butunlay yashirish yo‘qligini bildirmasdi;
+  raqam generatsiya qilish esa ochiq yolg‘on bo‘lardi.
+
+«Navbatda» so‘zi ham shu blok ichida turadi va blokning sarlavhasi uni
+kelasi zamonga qo‘yadi.
+
+### Yo‘l-yo‘lakay
+
+- **Fokus panelga ko‘chadi** (`tabindex="-1"` + `focus()`): `aria-live`
+  matnni o‘qiydi, lekin klaviatura foydalanuvchisi tugmada qolib panelni
+  topa olmasdi.
+- **«Nusxa olish» muvaffaqiyat DEB YOZILMAYDI, agar u bo‘lmasa.**
+  `navigator.clipboard` HTTPS talab qiladi va rad etilishi mumkin; rad
+  etilsa tugma «Nusxa olinmadi — matnni qo‘lda belgilang» deydi.
+
+### Verify (real brauzer)
+
+To‘rt holat: takroriy+oylar (light va dark), hoziroq (390px), belgilangan
+vaqt. Har birida tekshirildi:
+
+- sarlavha «YUBORILMADI» deydi · kvitansiyada reestr raqami `—` ·
+  «Namuna» chipi turibdi · JSON YOPIQ kelgan · fokus panelda;
+- «Birinchi yuborish» qatori rejimga mos: `2026-09-03 · 09:00` (takroriy),
+  `Navbatga qo‘yilgach darhol` (hoziroq), `2026-09-01 · 12:00` (belgilangan);
+- nusxa olish haqiqatan ishlaydi — bufer o‘qib tekshirildi, JSON boshlanishi
+  mos;
+- 0 kontrast xatosi, overflow yo‘q, `pageerror` yo‘q (1440 light/dark, 390).
+
+Kadrlar: `.screenshots/natija-*.png`

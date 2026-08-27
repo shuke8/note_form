@@ -1537,6 +1537,32 @@
     $("resultSlot").scrollIntoView({ block: "center", behavior: "smooth" });
   }
 
+  /* Navbat kvitansiyasining «server ulanganda shunday ko'rinadi» ko'rinishi.
+     Bu HAQIQIY kvitansiya emas va shunday ko'rinmasligi ham kerak: uzuq
+     chegara, «NAMUNA» chipi, va reestr raqami turadigan joy KO'RINIB
+     turgan holda bo'sh — yonida sababi bilan. Serverdan kelmagan raqam
+     hech qachon generatsiya qilinmaydi. */
+  function receiptRows() {
+    var reach = currentReach();
+    var first;
+    if (state.when === "now") first = "Navbatga qo‘yilgach darhol";
+    else if (state.when === "later") first = $("fDate").value + " · " + $("fTime").value;
+    else {
+      var r = runs(1);
+      first = r.list.length ? isoOf(r.list[0]) + " · " + pad2(r.list[0].getHours()) + ":" + pad2(r.list[0].getMinutes())
+        : "—";
+    }
+    var path = scopePath();
+    return [
+      ["Holat", "Navbatda"],
+      ["Qamrov", path ? path.join(" / ") : "—"],
+      ["Taxminiy qamrov", reach == null ? "—" : "~" + formatPop(reach) + " kishi"],
+      ["Birinchi yuborish", first],
+      ["Tillar", "O‘zbekcha va ruscha"],
+      ["Ilova", state.files.length ? state.files.length + " ta" : "yo‘q"]
+    ];
+  }
+
   function renderDemoResult() {
     // Daraja bo'yicha kesish — `goScope` bilan birga ikkinchi himoya.
     // Tana HECH QACHON o'z `scope_level` idan chuqurroq hudud ko'rsatmasin.
@@ -1558,21 +1584,74 @@
     host.innerHTML = "";
     var box = document.createElement("div");
     box.className = "result";
+    box.setAttribute("tabindex", "-1");
+    box.setAttribute("role", "group");
+    box.setAttribute("aria-labelledby", "resultTitle");
+
     box.innerHTML =
       '<div class="result-head">' +
         '<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-triangle-alert"/></svg>' +
         '<div>' +
-          '<p class="result-title">Xabar YUBORILMADI — bu demo</p>' +
-          '<p class="result-body">Bu sahifada server ulanmagan. Forma to‘g‘ri to‘ldirildi va quyidagi ' +
-          'so‘rov tanasi yig‘ildi, lekin u hech qayerga ketmadi. Reestr raqami ham berilmadi — ' +
-          'uni faqat server beradi.</p>' +
+          '<p class="result-title" id="resultTitle">Xabar YUBORILMADI — bu demo</p>' +
+          '<p class="result-body">Bu sahifada server ulanmagan. Forma to‘g‘ri to‘ldirildi va so‘rov ' +
+          'tanasi yig‘ildi, lekin u hech qayerga ketmadi.</p>' +
         "</div>" +
       "</div>" +
-      '<div class="result-payload"><pre></pre></div>';
-    box.querySelector("pre").textContent = JSON.stringify(payload, null, 2);
+
+      '<div class="receipt">' +
+        '<div class="receipt-head">' +
+          '<p class="eyebrow eyebrow-sm">Server ulanganda kvitansiya shunday ko‘rinadi</p>' +
+          '<span class="chip chip-mono chip-warn">Namuna</span>' +
+        "</div>" +
+        '<dl class="receipt-grid"></dl>' +
+        /* Raqam turadigan joy KO'RINIB turadi va bo'sh: yo'qligini yashirish
+           uni bor deb o'ylashga olib borardi. */
+        '<p class="receipt-id"><span>Reestr raqami</span><b>—</b>' +
+          '<span class="receipt-id-why">faqat server beradi</span></p>' +
+      "</div>" +
+
+      '<details class="result-more">' +
+        '<summary><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>' +
+          "So‘rov tanasi (JSON)</summary>" +
+        '<div class="result-payload"><pre></pre></div>' +
+        '<button type="button" class="btn btn-ghost btn-sm result-copy">' +
+          '<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-file-text"/></svg>' +
+          "<span>Nusxa olish</span></button>" +
+      "</details>";
+
+    var dl = box.querySelector(".receipt-grid");
+    receiptRows().forEach(function (row) {
+      var wrap = document.createElement("div");
+      var dt = document.createElement("dt"); dt.textContent = row[0];
+      var dd = document.createElement("dd"); dd.textContent = row[1];
+      if (row[1] === "—") dd.setAttribute("data-empty", "true");
+      wrap.appendChild(dt); wrap.appendChild(dd); dl.appendChild(wrap);
+    });
+
+    var json = JSON.stringify(payload, null, 2);
+    box.querySelector("pre").textContent = json;
+
+    var copy = box.querySelector(".result-copy");
+    copy.addEventListener("click", function () {
+      var label = copy.querySelector("span");
+      /* Nusxa olish MUVAFFAQIYAT DEB YOZILMAYDI, agar u haqiqatan bo'lmasa:
+         `clipboard` HTTPS talab qiladi va ruxsatsiz rad etiladi. */
+      function ok() { label.textContent = "Nusxa olindi"; setTimeout(function () { label.textContent = "Nusxa olish"; }, 2000); }
+      function fail() {
+        label.textContent = "Nusxa olinmadi — matnni qo‘lda belgilang";
+        setTimeout(function () { label.textContent = "Nusxa olish"; }, 4000);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(json).then(ok, fail);
+      } else fail();
+    });
+
     host.appendChild(box);
     renderedSignature = payloadSignature();
     if (window.omToast) window.omToast("Demo: so‘rov tanasi yig‘ildi, yuborilmadi");
+    /* Fokus panelga ko'chadi: `aria-live` matnni o'qiydi, lekin klaviatura
+       foydalanuvchisi tugmada qolib, panelni topa olmasdi. */
+    box.focus({ preventScroll: true });
   }
 
   /* ------------------------------------------------------------------------ */

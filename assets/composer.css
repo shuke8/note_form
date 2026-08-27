@@ -417,6 +417,42 @@
 .result-title { font-family: var(--display); font-size: var(--t-lead); font-weight: 500;
                 letter-spacing: var(--ls-lead); color: var(--warn); }
 .result-body { font-size: var(--t-ui); line-height: 1.6; color: var(--ink-2); }
+.result:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+/* «Server ulanganda shunday ko'rinadi» — HAQIQIY kvitansiya EMAS va shunday
+   ko'rinmasligi ham kerak: uzuq chegara + «Namuna» chipi uni tizimning
+   qattiq chegarali kartalaridan ajratib turadi. */
+.receipt { padding: 18px; border-radius: var(--r-5); background: var(--paper);
+           border: 1px dashed var(--warn); }
+.receipt-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.receipt-grid { margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 20px; }
+.receipt-grid > div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.receipt-grid dt { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+                   text-transform: uppercase; color: var(--ink-2); }
+.receipt-grid dd { margin: 0; font-size: var(--t-ui); color: var(--ink); overflow-wrap: anywhere; }
+.receipt-grid dd[data-empty="true"] { color: var(--ink-2); }
+/* Raqam turadigan joy KO'RINIB turadi va bo'sh — yo'qligini yashirish uni
+   bor deb o'ylashga olib borardi. */
+.receipt-id { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--hairline-2);
+              display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+              font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+              text-transform: uppercase; color: var(--ink-2); }
+.receipt-id b { font-size: var(--t-lead); font-weight: 500; color: var(--warn); line-height: 1; }
+.receipt-id-why { text-transform: none; letter-spacing: var(--ls-sm); font-family: var(--sans); }
+
+/* JSON yopiq keladi: u dasturchi uchun, operator uchun emas — ochiq turganda
+   panelning eng katta bo'lagi bo'lib qolardi. */
+.result-more > summary { display: flex; align-items: center; gap: 8px; cursor: pointer;
+                         list-style: none; font-size: var(--t-ui); color: var(--ink);
+                         padding: 10px 0; min-height: 44px; }
+.result-more > summary::-webkit-details-marker { display: none; }
+.result-more > summary .ico { width: 15px; height: 15px; color: var(--ink-2);
+                              transition: transform var(--d-hover) var(--ease-out); }
+.result-more[open] > summary .ico { transform: rotate(90deg); }
+.result-more > summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: var(--r-2); }
+.result-copy { margin-top: 12px; }
+.result-copy .ico { width: 15px; height: 15px; }
+
 .result-payload { padding: 16px; border-radius: var(--r-5); background: var(--paper);
                   border: 1px solid var(--hairline); overflow-x: auto; }
 .result-payload pre { font-family: var(--mono); font-size: var(--t-sm); line-height: 1.6;
@@ -453,6 +489,8 @@
   .month-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   /* Tor ekranda uchta ustun sana matnini sindiradi — chiplar ustma-ust turadi. */
   .runs-chips { grid-template-columns: 1fr; }
+  /* Uch ustun kvitansiya qiymatlarini sindiradi. */
+  .receipt-grid { grid-template-columns: 1fr 1fr; }
   .scope-row { gap: 8px; padding-inline: 8px; }
   .scope-idx { width: 20px; }
   .when-grid { grid-template-columns: 1fr; }
