@@ -183,13 +183,22 @@
    qoladi, tasma faqat shu bo'lim ekranda turganda ilashadi. */
 .preview-dock { position: sticky; top: 76px; z-index: 20; }
 .preview-strip { padding: 18px; display: flex; align-items: center; gap: 18px; }
-.preview-card { width: min(420px, 100%); border-radius: var(--r-dock); background: var(--paper);
+/* `.media::after` don qoplamasi psevdo-element bo'lgani uchun BOLALARDAN
+   KEYIN chiziladi va kartani ham qoplaydi: qorong'i temada u kartaning fonini
+   yoritib, ustidagi matn kontrastini 3,9:1 ga tushirardi. `z-index` karta
+   qoplamadan yuqoriga chiqaradi. */
+.preview-card { position: relative; z-index: 1;
+                width: min(420px, 100%); border-radius: var(--r-dock); background: var(--paper);
                 box-shadow: var(--lift-2); overflow: hidden; }
-.preview-side { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
-.preview-side .eyebrow { color: rgba(255, 255, 255, 0.74); }
+/* `z-index` — don qoplamasi (`.media::after`) ustunning fonini yoritmasin.
+   Parda QO'YILMADI: o'lchov bo'yicha yetishmovchilik kichik edi (4,34:1),
+   uni matn alfasi qoplaydi. Qorong'i parda gradientning o'zini yo'qotardi. */
+.preview-side { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 10px;
+                position: relative; z-index: 1; }
+.preview-side .eyebrow { color: rgba(255, 255, 255, 0.88); }
 .preview-facts { display: flex; flex-direction: column; gap: 4px; }
 .preview-fact { display: flex; gap: 10px; font-family: var(--mono); font-size: var(--t-mono-sm);
-                letter-spacing: var(--ls-mono); color: rgba(255, 255, 255, 0.62); }
+                letter-spacing: var(--ls-mono); color: rgba(255, 255, 255, 0.9); }
 .preview-fact b { color: #fff; font-weight: 500; }
 
 

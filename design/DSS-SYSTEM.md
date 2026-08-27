@@ -1114,3 +1114,66 @@ Yangi komponent ixtiro qilinmadi: `.notif`, `.tile`, `.run-chip`, `.eyebrow`
 - 4 viewport × 2 tema: 0 kontrast xatosi, overflow yo‘q, `pageerror` yo‘q.
 
 Kadrlar: `.screenshots/yakun-*.png`
+
+---
+
+## `.media` gradienti va gradient ustidagi matnni o‘lchash
+
+Foydalanuvchi `.media` ning `background-image` ini berdi; oxirgi qatlam
+ancha yorug‘ bo‘ldi (`linear-gradient(148deg, #4a7eff, #1b3a76, #0149ff)`).
+Panel ustida oq matn turadi, shuning uchun uni **o‘lchash** kerak bo‘ldi.
+
+### Nega oddiy audit buni ko‘rmaydi
+
+Sahifa auditi (`__lite`) fon rangini ota-onalar zanjiri bo‘ylab yig‘adi va
+gradientga duch kelsa `null` qaytarib, elementni **jimgina o‘tkazib
+yuboradi**. Ya‘ni gradient ustidagi HAR QANDAY matn o‘nlab audit yurishida
+bir marta ham tekshirilmagan. Bu auditning ko‘r nuqtasi — kamchilik emas,
+lekin uni bilmaslik kamchilik.
+
+Gradient ustidagi matn uchun yagona to‘g‘ri usul — **piksel**: elementning
+ekran nusxasi olinadi va matnning fonidagi rang canvas’dan o‘qiladi.
+
+### Usulning uchta tuzog‘i (uchalasi ham yolg‘on natija berdi)
+
+1. **Bitta piksel yetarli emas.** `.media::after` don qoplamasi 3px to‘rda
+   oq nuqta qo‘yadi; namuna aynan nuqtaga tushsa fon oq bo‘lib o‘qiladi
+   (`4,29:1` o‘rniga `1,04:1`). Yechim: 5×5 o‘rtacha.
+2. **Matn qatorining ICHIDAN namuna olish HARFLARNI o‘lchaydi.** Oq matn
+   ustida namuna oq chiqadi va «fon yorug‘» degan xulosa beradi
+   (`3,81:1` — soxta). Yechim: namuna qator USTIDAN va OSTIDAN olinadi.
+3. **Yamoq element chegarasidan chiqib ketadi.** Chetdan olingan 5×5
+   namuna qo‘shni yuzani ilib oladi. Yechim: namuna nuqtalari matn
+   qutisining ichida, 15–85% oralig‘ida.
+
+Shu uch tuzatishdan oldin usul **14 ta** «yiqilgan» ko‘rsatgandi; tuzatilgach
+haqiqiy raqam **2 ta** bo‘lib chiqdi (`YUBORISH` 4,34:1 va 4,45:1 — AA 4,5
+talab qiladi). Ikkalasi ham YANGI gradientdan OLDIN ham mavjud edi.
+
+### Tuzatish
+
+Yetishmovchilik kichik bo‘lgani uchun **parda (scrim) qo‘yilmadi** — qorong‘i
+parda foydalanuvchi tanlagan gradientning o‘zini yo‘qotardi. O‘rniga matn
+alfasi ko‘tarildi:
+
+| element | avval | hozir | o‘lchangan |
+|---|---|---|---|
+| `.preview-fact` | `rgba(255,255,255,.62)` | `.9` | 4,5 dan yuqori |
+| `.preview-side .eyebrow` | `.74` | `.88` | — |
+| `.cta .eyebrow` | inline `.72` | CSS `.9` | 4,29 → o‘tdi |
+
+Ikkinchi kamchilik: don qoplamasi psevdo-element bo‘lgani uchun **bolalardan
+keyin** chiziladi va kartani ham qoplaydi. `.dock`, `.preview-card` va
+`.cta-inner` ga `position: relative; z-index: 1` berildi. Yo‘l-yo‘lakay
+`landing.html` dagi inline `style="color:rgba(255,255,255,.72)"` olib
+tashlandi — u CSS tuzatishini yengib turardi.
+
+### Verify
+
+- Gradient ustidagi 32 ta matn elementi (composer 1440 va 390, landing
+  light va dark): **0 yiqilgan**. Usul tuzatishdan oldin o‘sha ikki
+  kamchilikni ko‘rsatgan edi, ya‘ni u har doim «o‘tdi» demaydi.
+- `.dock` fonining shaffofmasligi alohida tekshirildi (`rgb(0,0,0)` /
+  `rgb(255,255,255)`): kartadagi matn 21:1 va 8,86:1 — piksel usuli u yerda
+  kerak emas, aniq hisob yetarli.
+- Sahifa auditi: 2 viewport × 2 tema — 0 kontrast xatosi, overflow yo‘q.

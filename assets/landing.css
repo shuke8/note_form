@@ -71,6 +71,11 @@
 .cta .d2 { color: #fff; max-width: 20ch; }
 .cta-sub { color: rgba(255, 255, 255, 0.78); max-width: 46ch; font-size: var(--t-body);
            line-height: var(--lh-body); letter-spacing: var(--ls-body); }
+/* O'lchandi: 0,72 alfa mesh yuzaning eng yorug' nuqtasida 4,29:1 berardi.
+   Kichik mono yorliq uchun AA 4,5 talab qiladi. */
+.cta .eyebrow { color: rgba(255, 255, 255, 0.9); }
+/* Karta va matn don qoplamasidan YUQORIDA — u ularning fonini yoritmasin. */
+.cta-inner { position: relative; z-index: 1; }
 .cta .btn-ink { background: #fff; color: #000; }
 @media (hover: hover) { .cta .btn-ink:hover { background: rgba(255, 255, 255, 0.86); } }
 .cta :focus-visible { outline-color: #fff; }
