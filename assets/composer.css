@@ -301,11 +301,24 @@
    halqasi yonadi: bu «shu tayyor» degan YAGONA vizual signal, matnda
    takrorlanmaydi. */
 .dispatch { border-radius: var(--r-6); padding: 26px;
+            background: var(--paper-sunk);
             box-shadow: inset 0 0 0 1px var(--hairline);
-            transition: box-shadow var(--d-pane) var(--ease-out); }
-.dispatch[data-ready="true"] { box-shadow: inset 0 0 0 1.5px var(--accent-line); }
+            transition: background var(--d-pane) var(--ease-out),
+                        box-shadow var(--d-pane) var(--ease-out); }
+/* Tayyor holat butun kartani aksent tomon suradi — «shu tayyor» degan
+   signal MATNDA takrorlanmaydi, u rangda turadi. */
+.dispatch[data-ready="true"] { background: var(--accent-soft);
+                               box-shadow: inset 0 0 0 1.5px var(--accent-line); }
 
-.dispatch-head { max-width: 62ch; }
+.dispatch-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.dispatch-badge { flex: none; background: var(--ghost); color: var(--ink-2); }
+.dispatch-badge .dot { background: currentColor; }
+.dispatch[data-ready="true"] .dispatch-badge { background: var(--ok-soft); color: var(--ok); }
+
+/* Cheklov MATNNING o'zida: sarlavha qatorida turganda chip jumlaning
+   yoniga yopishib, gapni bo'lib turganday ko'rinardi. Qator endi
+   kartaning butun enini oladi va chip o'ng chekkaga boradi. */
+.dispatch-line, .dispatch-when { max-width: 62ch; }
 .sum-line { font-size: var(--t-lead); line-height: var(--lh-lead); letter-spacing: var(--ls-lead);
             color: var(--ink-2); }
 /* Tayyor holat OG'IRROQ va TO'Q: bo'lim ochilganda ko'z birinchi shu jumlaga
@@ -325,8 +338,16 @@
    «bu — artefakt, uni shu yerda ko'rib turibsiz». */
 .dispatch-phones { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
                    gap: 20px; padding: 22px; }
-.dispatch-phone { margin: 0; min-width: 0; }
-.dispatch-phone .eyebrow { display: block; margin-bottom: 10px; }
+.dispatch-phone { margin: 0; min-width: 0; position: relative; z-index: 1; }
+/* Mesh ustidagi yorliq O'Z YUZASIDA turadi. O'lchandi: mesh'ning eng yorug'
+   burchagi `rgb(65,135,244)` va oq matn u yerda 3,14:1 berardi — alfa bilan
+   tuzatib bo'lmasdi (sof oq ham 3,5:1). Gradientni qorayтirish esa uni
+   yo'qotardi, shuning uchun yorliqning o'zi kichik pilyulaga o'tdi.
+   `.media::after` don qoplamasi bolalardan KEYIN chiziladi — `z-index`
+   yorliqni ham, kartani ham uning ustiga ko'taradi. */
+.dispatch-phone .eyebrow { display: inline-block; margin-bottom: 10px;
+                           padding: 4px 9px; border-radius: var(--r-pill);
+                           background: rgba(0, 0, 0, 0.46); color: #fff; }
 .phone-card { border-radius: var(--r-dock); background: var(--paper); box-shadow: var(--lift-2);
               overflow: hidden; }
 
@@ -334,16 +355,24 @@
 .dispatch-block { display: flex; flex-direction: column; gap: 6px; }
 /* Qamrov raqami — bo'limning eng katta soni. `tabular-nums` bilan: raqam
    o'zgarganda blok qimirlamaydi. */
+/* Bo‘limning yagona katta soni — yagona aksent nuqtasi ham shu.
+   `background-clip: text` qo‘llab-quvvatlanmasa `color` zaxira bo‘lib qoladi. */
 .dispatch-reach { font-family: var(--mono); font-weight: 500; font-size: var(--t-d3); line-height: 1.05;
-                  color: var(--ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.dispatch-reach[data-empty="true"] { color: var(--ink-2); }
+                  color: var(--accent-ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .dispatch-reach[data-empty="false"] {
+    background-image: var(--accent-text); -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
+}
+.dispatch-reach[data-empty="true"] { color: var(--ink-2); background-image: none; }
 .dispatch-scope { font-size: var(--t-ui); color: var(--ink-2); overflow-wrap: anywhere; }
 .dispatch-dates { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
 .dispatch-files { font-size: var(--t-ui); color: var(--ink); overflow-wrap: anywhere; }
 .dispatch-files[data-empty="true"] { color: var(--ink-2); }
 
 .sum-todo { margin-top: 22px; padding: 16px; border-radius: var(--r-5);
-            background: var(--paper-sunk); box-shadow: inset 0 0 0 1px var(--hairline); }
+            background: var(--paper); box-shadow: inset 0 0 0 1px var(--hairline); }
 .sum-todo-list { list-style: none; margin: 10px 0 0; padding: 0;
                  display: flex; flex-direction: column; gap: 2px; }
 .sum-todo-btn { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px;
@@ -351,8 +380,10 @@
                 transition: background var(--d-hover) var(--ease-out), transform var(--d-tap) var(--ease-out); }
 @media (hover: hover) { .sum-todo-btn:hover { background: var(--ghost); } }
 .sum-todo-btn:active { transform: scale(.99); }
+/* Bo‘lim raqami — yo‘l ko‘rsatkichning yagona rangli bo‘lagi: ko‘z «qayerga
+   borish kerak» ni matndan oldin oladi. */
 .sum-todo-sec { flex: none; font-family: var(--mono); font-size: var(--t-mono-sm);
-                letter-spacing: var(--ls-mono); color: var(--ink-2); }
+                letter-spacing: var(--ls-mono); color: var(--accent-ink); }
 .sum-todo-text { flex: 1 1 auto; min-width: 0; font-size: var(--t-ui); overflow-wrap: anywhere; }
 .sum-todo-arrow { flex: none; width: 15px; height: 15px; color: var(--ink-2); }
 @media (hover: hover) { .sum-todo-btn:hover .sum-todo-arrow { color: var(--ink); } }

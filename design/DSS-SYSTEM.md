@@ -1240,3 +1240,61 @@ shuning uchun har ikonkaning `getBBox()` i o‘lchandi:
 - Sahifa auditi: 2 viewport × 2 tema — 0 kontrast xatosi, overflow yo‘q.
 
 Kadrlar: `.screenshots/ikonka-galereya.png`, `ikonka-nav.png`, `ikonka-jadval.png`
+
+---
+
+## 05-bo‘limga rang: rang HOLATNI tashiydi, bezamaydi
+
+Bo‘lim monoxrom edi. Rang qo‘shildi, lekin har qo‘shilgan rangning
+VAZIFASI bor — tizimning «bitta aksent» qoidasi buzilmaydi:
+
+- **Karta yuzasi** tayyor holatda `--accent-soft` ga o‘tadi. «Shu tayyor»
+  degan signal endi matnda takrorlanmaydi, u rangda turadi.
+- **Holat chipi** — yagona semantik rang (`--ok`). Matni `validate()` ning
+  AYNAN o‘sha natijasidan chiqadi, ya‘ni pastdagi holat qatori bilan ikki
+  xil gap aytishi mumkin emas.
+- **Telefon sahnasi** landing dagi `.media` mesh yuzasining o‘zi — «bu
+  telefon ekrani» degan tayyor til takrorlanadi, yangi til ixtiro
+  qilinmaydi. Oq kartalar unda ko‘tarilib turadi.
+- **Qamrov soni** aksent gradienti bilan to‘ldiriladi — bo‘limning yagona
+  katta soni va yagona aksent nuqtasi.
+- **Yo‘l ko‘rsatkichdagi bo‘lim raqami** `--accent-ink`: ko‘z «qayerga
+  borish kerak» ni matndan oldin oladi.
+
+### O‘lchov ikkita narsani ko‘rsatdi
+
+**1. Mesh ustidagi yorliqni alfa bilan tuzatib bo‘lmadi.** Mesh’ning eng
+yorug‘ burchagi `rgb(65,135,244)`; oq matn u yerda 3,14:1, sof oq ham
+atigi ~3,5:1 berardi (12px uchun 4,5 kerak). Gradientni qorayтirish uni
+yo‘qotardi, shuning uchun **yorliqning o‘zi kichik pilyulaga** o‘tdi —
+o‘z yuzasi bilan.
+
+**2. Gradient matn qorong‘i temada yiqilardi.** `--accent` oq matn
+ULARNING USTIDA turishi uchun mo‘ljallangan; uni matnning O‘ZIGA
+to‘ldirganda qorong‘i kartada to‘q stop **2,19:1** chiqdi (katta matn
+uchun 3:1 kerak). Yechim — matn uchun ALOHIDA token:
+
+    --accent-text: linear-gradient(100deg, #2563eb, #0137d0);   /* yorug' */
+    --accent-text: linear-gradient(100deg, #93c5fd, #60a5fa);   /* qorong'i */
+
+O‘lchangan: yorug‘da 4,75 va 7,85 · qorong‘ida 10,38 va 7,36.
+
+### O‘lchov usuliga qo‘shilgan ikki tuzatish
+
+- **Elementning O‘Z foni hisobga olinadi.** Pilyula/chip ustidagi matn
+  uchun qator ustidan/ostidan olingan namuna uning ORTIDAGI yuzani
+  o‘lchaydi va yolg‘on past natija beradi (3,43:1 — aslida o‘tadi).
+  Endi element foni gradient namunasi ustiga kompozit qilinadi.
+- **Gradient matn piksel bilan o‘lchanmaydi.** Anti-aliasing chekka
+  piksellari natijani boshqarib yuboradi. To‘xtash nuqtalari MA‘LUM —
+  ular fon ustida aniq hisoblanadi.
+
+### Verify
+
+- Mesh ustidagi 36 ta matn elementi (composer 1440/390, light va dark,
+  landing): **0 yiqilgan**.
+- Gradient matn: yorug‘ 4,75/7,85 · qorong‘i 10,38/7,36 — 3:1 dan yuqori.
+- Chip 4,66 (yorug‘) / 7,74 (qorong‘i), yorliq 5,60 / 8,45.
+- Sahifa auditi: 2 viewport × 2 tema — 0 kontrast xatosi, overflow yo‘q.
+
+Kadrlar: `.screenshots/yakun-*.png`

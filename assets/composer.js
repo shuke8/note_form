@@ -1410,6 +1410,10 @@
     /* Karta butunligicha holat oladi: tayyor bo'lganda aksent halqasi yonadi
        va u yagona vizual «shu tayyor» signali bo'ladi. */
     $("rcCard").setAttribute("data-ready", ready ? "true" : "false");
+    /* Chip matni ham `validate()` dan chiqadi — pastdagi holat qatori bilan
+       ikki xil gap aytishi mumkin emas. */
+    $("rcBadgeText").textContent = ready ? "Yuborishga tayyor"
+      : items.length ? items.length + " ta narsa qoldi" : "To‘ldirilmoqda";
     if (!ready) {
       line.textContent = "Xabar hali yuborishga tayyor emas.";
       $("rcWhenLine").textContent = "Quyidagilar to‘ldirilgach, bu yerda kimga va qachon ketishi yoziladi.";

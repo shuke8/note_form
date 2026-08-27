@@ -507,7 +507,13 @@
            o‘qish uchun ham, tekshirish uchun ham og‘ir edi. -->
       <div class="dispatch" id="rcCard" data-ready="false">
         <div class="dispatch-head">
-          <p class="dispatch-line" id="rcLine"></p>
+          <div class="dispatch-title">
+            <p class="dispatch-line" id="rcLine"></p>
+            <!-- Rang HOLATNI tashiydi, bezak emas: yashil chip faqat kartaning
+                 `data-ready` si bilan birga yonadi va pastdagi holat qatori bilan
+                 bir xil manbadan (`validate()`) oziqlanadi. -->
+            <span class="chip dispatch-badge" id="rcBadge"><span class="dot" aria-hidden="true"></span><span id="rcBadgeText"></span></span>
+          </div>
           <p class="dispatch-when" id="rcWhenLine"></p>
         </div>
 
@@ -520,7 +526,10 @@
           <!-- Ikkala til BIR VAQTDA: 02-bo‘limdagi ko‘rinish bir tilni
                almashtirib ko‘rsatadi (yozayotganda shu to‘g‘ri), yakuniy
                tekshiruvda esa ikkovini yonma-yon solishtirish kerak. -->
-          <div class="dispatch-phones tile">
+          <!-- `media` — landing dagi telefon sahnasining AYNAN o‘zi: ko‘k mesh
+               yuza «bu telefon ekrani» degan tayyor tilni takrorlaydi, oq kartalar
+               esa unda ko‘tarilib turadi. -->
+          <div class="dispatch-phones media">
           <figure class="dispatch-phone">
             <figcaption class="eyebrow eyebrow-sm">O‘zbekcha</figcaption>
             <div class="phone-card">

@@ -49,6 +49,10 @@
   --accent-ink:   #1e40af;                 /* oq ustida 8.6:1 — matn/link uchun */
   --accent-soft:  #eff6ff;
   --accent-line:  rgba(37, 99, 235, 0.28);
+  /* MATN uchun alohida gradient: `--accent` oq matn ULARNING USTIDA turishi
+     uchun mo'ljallangan. Uni matnning O'ZIGA to'ldirish qorong'i temada
+     ishlamaydi — o'sha yerda o'lchandi va 2,19:1 chiqdi (katta matn 3:1). */
+  --accent-text:  linear-gradient(100deg, #2563eb 0%, #0137d0 100%);
 
   /* --- Holat: DSS da semantik palitra YO'Q (marketing sayti).
          Asbob sahifasiga kerak — issiq aksentga hue jihatdan qo'shni
@@ -162,6 +166,7 @@
   --accent-solid: #60a5fa;
   --accent-soft:  rgba(59, 130, 246, 0.14);
   --accent-line:  rgba(96, 165, 250, 0.36);
+  --accent-text:  linear-gradient(100deg, #93c5fd 0%, #60a5fa 100%);
 
   --ok:        #37d39b;
   --ok-soft:   rgba(55, 211, 155, 0.13);
