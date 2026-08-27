@@ -1373,8 +1373,6 @@ yetarli emas:
    kabi taxminiy vaqt YOZILMAYDI: uni server ham aniq bilmaydi.
 3. **Yuborildi** — yakuniy sonlar. Bu yerda **`~` belgisi YO‘Q**: son
    serverdan keladi, taxmin emas — farq ko‘rinib tursin.
-   Yetkazilmaganlar alohida, sababi bilan; ularni yashirish jamini
-   haqiqatdan kattaroq qilib ko‘rsatardi.
 4. **Xatolik** — u ham natija. Ko‘rsatmaslik operatorni xabar ketgan deb
    o‘ylashga majbur qilardi. Matn nima qilish kerakligini aytadi va
    qisman yetkazilgan qismni yashirmaydi.
@@ -1404,3 +1402,30 @@ Demo panelidan sahifaga havola bor.
 - Demo paneli va composer/landing auditi buzilmadi (4/4 va 8/8 toza).
 
 Kadrlar: `.screenshots/natija-holat-*.png`
+
+### Uchta son, uchala holatda bir xil
+
+**Yetkazildi · Yetkazilmadi · Qoldi** — boshqa ko‘rsatkich yo‘q.
+«Ochildi» olib tashlandi: u yetkazishning o‘lchovi emas va operatorga
+qaror uchun kerak bo‘lmaydi.
+
+Uchala son **qo‘shilganda jami qamrovni beradi** — ekran o‘zi bilan
+ziddiyatga tushmasin:
+
+| holat | yetkazildi | yetkazilmadi | qoldi | jami |
+|---|---|---|---|---|
+| Yuborilmoqda | 14 720 000 | 121 400 | 20 258 600 | 35 100 000 |
+| Yuborildi | 34 812 640 | 287 360 | 0 | 35 100 000 |
+| Xatolik | 6 108 220 | 42 100 | 28 949 680 | 35 100 000 |
+
+«Yuborildi» da `Qoldi` nolga tushadi va shunday KO‘RSATILADI — qatorni
+olib tashlash uchlikni buzardi va holatlar orasidagi solishtirishni
+yo‘qotardi.
+
+Ko‘rsatkich chizig‘i **ishlangan** ulushni beradi (yetkazildi +
+yetkazilmadi), «yetkazildi» ni emas: aks holda chiziq bilan sonlar bir
+xil narsani ikki xil aytardi.
+
+**Verify:** sonlar brauzerda O‘QILIB qo‘shildi va jami bilan solishtirildi
+— 4 viewport/temada 3 holatning uchtasi ham `35 100 000`. Bu tekshiruvni
+ko‘z bilan qilib bo‘lmaydi.

@@ -158,9 +158,9 @@
   <!-- ── 2) YUBORILMOQDA ─────────────────────────────────────────── -->
   <section class="shell section" aria-labelledby="s-sending">
     <div class="rule-head"><p class="eyebrow" id="s-sending">02 · Yuborilmoqda</p></div>
-    <p class="state-note">Tarqatish davom etayotgan payt. Ko‘rsatkich <b>haqiqiy</b> sonlarni
-      ko‘rsatadi — «yaqinda tugaydi» kabi taxminiy vaqt YOZILMAYDI, chunki uni server
-      ham aniq bilmaydi.</p>
+    <p class="state-note">Tarqatish davom etayotgan payt. Sonlar <b>haqiqiy</b> —
+      «yaqinda tugaydi» kabi taxminiy vaqt YOZILMAYDI, chunki uni server ham aniq
+      bilmaydi.</p>
 
     <div class="result-real" data-state="sending">
       <div class="real-head">
@@ -173,9 +173,20 @@
       </div>
 
       <div class="real-progress">
-        <div class="real-bar"><span style="width:42%"></span></div>
-        <p class="real-counts"><b>14 720 000</b> / ~35.1M yetkazildi <span class="real-sep">·</span>
-          <b>0</b> xatolik</p>
+        <!-- Ko'rsatkich ishlangan ulushni ko'rsatadi: yetkazilgan + yetkazilmagan.
+             (14 720 000 + 121 400) / 35 100 000 = 42,3%. -->
+        <div class="real-bar"><span style="width:42.3%"></span></div>
+        <p class="real-counts"><b>14 841 400</b> / 35 100 000 ishlandi</p>
+      </div>
+
+      <!-- Uchta son uchala holatda BIR XIL: yetkazildi · yetkazilmadi · qoldi.
+           Ular qo'shilganda jami qamrovni beradi — ekran o'zi bilan
+           ziddiyatga tushmasin. -->
+      <div class="real-figures">
+        <div class="real-figure"><p class="eyebrow eyebrow-sm">Yetkazildi</p><p class="real-num">14 720 000</p></div>
+        <div class="real-figure"><p class="eyebrow eyebrow-sm">Yetkazilmadi</p><p class="real-num real-num-warn">121 400</p>
+          <p class="real-why">qurilma o‘chiq yoki bildirishnoma yopiq</p></div>
+        <div class="real-figure"><p class="eyebrow eyebrow-sm">Qoldi</p><p class="real-num">20 258 600</p></div>
       </div>
 
       <dl class="real-grid">
@@ -190,9 +201,10 @@
   <!-- ── 3) YUBORILDI ────────────────────────────────────────────── -->
   <section class="shell section" aria-labelledby="s-sent">
     <div class="rule-head"><p class="eyebrow" id="s-sent">03 · Yuborildi</p></div>
-    <p class="state-note">Yakuniy holat. Yetkazilganlar soni endi taxmin emas — u serverdan
-      keladi, shuning uchun <b>«~» belgisi yo‘q</b>. Yetkazilmaganlar alohida ko‘rsatiladi:
-      ularni yashirish jami sonni haqiqatdan kattaroq qilib ko‘rsatardi.</p>
+    <p class="state-note">Yakuniy holat. Sonlar endi taxmin emas — ular serverdan keladi,
+      shuning uchun <b>«~» belgisi yo‘q</b>. Uchta son uchala holatda bir xil va ular
+      <b>qo‘shilganda jami qamrovni beradi</b>; yetkazilmaganlarni yashirish jamini
+      haqiqatdan kattaroq qilib ko‘rsatardi.</p>
 
     <div class="result-real" data-state="sent">
       <div class="real-head">
@@ -208,8 +220,8 @@
         <div class="real-figure"><p class="eyebrow eyebrow-sm">Yetkazildi</p><p class="real-num">34 812 640</p></div>
         <div class="real-figure"><p class="eyebrow eyebrow-sm">Yetkazilmadi</p><p class="real-num real-num-warn">287 360</p>
           <p class="real-why">qurilma o‘chiq yoki bildirishnoma yopiq</p></div>
-        <div class="real-figure"><p class="eyebrow eyebrow-sm">Ochildi</p><p class="real-num">12 044 118</p>
-          <p class="real-why">yetkazilganlarning 34,6% i</p></div>
+        <div class="real-figure"><p class="eyebrow eyebrow-sm">Qoldi</p><p class="real-num">0</p>
+          <p class="real-why">tarqatish yakunlandi</p></div>
       </div>
 
       <dl class="real-grid">
@@ -249,12 +261,15 @@
 
       <div class="real-figures">
         <div class="real-figure"><p class="eyebrow eyebrow-sm">Yetkazildi</p><p class="real-num">6 108 220</p></div>
-        <div class="real-figure"><p class="eyebrow eyebrow-sm">Qolgan</p><p class="real-num real-num-warn">28 991 780</p></div>
-        <div class="real-figure"><p class="eyebrow eyebrow-sm">To‘xtagan vaqt</p><p class="real-num">09:06</p></div>
+        <div class="real-figure"><p class="eyebrow eyebrow-sm">Yetkazilmadi</p><p class="real-num real-num-warn">42 100</p>
+          <p class="real-why">qurilma o‘chiq yoki bildirishnoma yopiq</p></div>
+        <div class="real-figure"><p class="eyebrow eyebrow-sm">Qoldi</p><p class="real-num">28 949 680</p>
+          <p class="real-why">umuman urinilmadi</p></div>
       </div>
 
       <dl class="real-grid">
         <div><dt>Reestr raqami</dt><dd class="real-id">NF-YYYY-NNNNNN <span class="real-id-note">— format; raqamni server beradi</span></dd></div>
+        <div><dt>To‘xtagan vaqt</dt><dd>09:06</dd></div>
         <div><dt>Sabab kodi</dt><dd>PUSH_GATEWAY_TIMEOUT</dd></div>
       </dl>
 
