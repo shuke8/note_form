@@ -33,6 +33,44 @@
 <link rel="stylesheet" href="assets/landing.css" />
 </head>
 <body>
+<!-- Ikonka sprayti — Lucide (ISC litsenziya, lucide.dev). Qalinlik, uch shakli
+     va o‘lcham `.ico` sinfida BIR JOYDA beriladi: ilgari har inline SVG da
+     `stroke-width` qo‘lda yozilgan va 1.6 bilan 1.7 ga ajralib ketgandi.
+     Faqat ISHLATILADIGAN belgilar turadi — ro‘yxat generatordan chiqadi. -->
+<svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0" /> <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v3" /> <path d="M16 2v3" /> <rect x="3" y="3" width="18" height="18" rx="2" /> <path d="M3 9h18" /></symbol>
+  <symbol id="i-calendar-days" viewBox="0 0 24 24"><path d="M8 2v3" /> <path d="M16 2v3" /> <rect x="3" y="3" width="18" height="18" rx="2" /> <path d="M3 9h18" /> <path d="M8 13h.01" /> <path d="M12 13h.01" /> <path d="M16 13h.01" /> <path d="M8 17h.01" /> <path d="M12 17h.01" /> <path d="M16 17h.01" /></symbol>
+  <symbol id="i-calendar-x" viewBox="0 0 24 24"><path d="M8 2v3" /> <path d="M16 2v3" /> <rect x="3" y="3" width="18" height="18" rx="2" /> <path d="M3 9h18" /> <path d="m14 13-4 4" /> <path d="m10 13 4 4" /></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol>
+  <symbol id="i-circle-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <line x1="12" x2="12" y1="8" y2="12" /> <line x1="12" x2="12.01" y1="16" y2="16" /></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 6v6l4 2" /></symbol>
+  <symbol id="i-droplet" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></symbol>
+  <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /> <path d="M14 2v5a1 1 0 0 0 1 1h5" /> <path d="M10 9H8" /> <path d="M16 13H8" /> <path d="M16 17H8" /></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /></symbol>
+  <symbol id="i-infinity" viewBox="0 0 24 24"><path d="M6 16c5 0 7-8 12-8a4 4 0 0 1 0 8c-5 0-7-8-12-8a4 4 0 1 0 0 8" /></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></symbol>
+  <symbol id="i-languages" viewBox="0 0 24 24"><path d="m5 8 6 6" /> <path d="m4 14 6-6 2-3" /> <path d="M2 5h12" /> <path d="M7 2h1" /> <path d="m22 22-5-10-5 10" /> <path d="M14 18h6" /></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M3 5h.01" /> <path d="M3 12h.01" /> <path d="M3 19h.01" /> <path d="M8 5h13" /> <path d="M8 12h13" /> <path d="M8 19h13" /></symbol>
+  <symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /> <circle cx="12" cy="10" r="3" /></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 5h16" /> <path d="M4 12h16" /> <path d="M4 19h16" /></symbol>
+  <symbol id="i-move-horizontal" viewBox="0 0 24 24"><path d="m18 8 4 4-4 4" /> <path d="M2 12h20" /> <path d="m6 8-4 4 4 4" /></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="M12 5v14" /></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4" /> <path d="M3 11v-1a4 4 0 0 1 4-4h14" /> <path d="m7 22-4-4 4-4" /> <path d="M21 13v1a4 4 0 0 1-4 4H3" /></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34" /> <circle cx="11" cy="11" r="8" /></symbol>
+  <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></symbol>
+  <symbol id="i-shopping-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1" /> <circle cx="19" cy="21" r="1" /> <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /> <path d="M12 2v2" /> <path d="M12 20v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="m17.66 17.66 1.41 1.41" /> <path d="M2 12h2" /> <path d="M20 12h2" /> <path d="m6.34 17.66-1.41 1.41" /> <path d="m19.07 4.93-1.41 1.41" /></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <circle cx="12" cy="12" r="6" /> <circle cx="12" cy="12" r="2" /></symbol>
+  <symbol id="i-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /> <path d="M12 9v4" /> <path d="M12 17h.01" /></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 3v12" /> <path d="m17 8-5-5-5 5" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <path d="M16 3.128a4 4 0 0 1 0 7.744" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <circle cx="9" cy="7" r="4" /></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" /></symbol>
+</svg>
 
 <a class="skip" href="#main">Asosiy kontentga o‘tish</a>
 
@@ -57,14 +95,10 @@
 
     <button class="icon-btn nav-toggle" type="button" id="navToggle"
             aria-expanded="false" aria-controls="navLinks" aria-label="Menyuni ochish">
-      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false">
-        <path d="M3 6h14M3 10h14M3 14h14"/>
-      </svg>
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-menu"/></svg>
     </button>
     <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Qorong‘i mavzuga o‘tish" title="Qorong‘i mavzuga o‘tish">
-      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
-        <circle cx="10" cy="10" r="3.6"/><path d="M10 1.6v2M10 16.4v2M18.4 10h-2M3.6 10h-2M15.9 4.1l-1.4 1.4M5.5 14.5l-1.4 1.4M15.9 15.9l-1.4-1.4M5.5 5.5 4.1 4.1"/>
-      </svg>
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
     </button>
     <a class="btn btn-ink btn-sm nav-desktop-only" href="./composer.html">Xabar yozish</a>
   </div>
@@ -83,7 +117,7 @@
       <div class="hero-actions" data-reveal="rise" style="--reveal-delay:80ms">
         <a class="btn btn-accent" href="./composer.html">
           Kompozitorni ochish
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
         </a>
         <a class="btn btn-ghost" href="#bosqich">Qanday ishlaydi</a>
       </div>
@@ -146,9 +180,7 @@
       <div class="dock">
         <div class="notif">
           <span class="notif-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>
-            </svg>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-bell"/></svg>
           </span>
           <div class="notif-body">
             <div class="notif-top">
@@ -189,28 +221,28 @@
       <div class="tile-grid" data-stagger="70">
       <div class="tile" data-reveal="rise">
         <span class="tile-ico" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-globe"/></svg>
         </span>
         <p class="tile-name">To‘rt daraja qamrov</p>
         <p class="tile-note">Respublika, viloyat, tuman yoki bitta mahalla</p>
       </div>
       <div class="tile" data-reveal="rise">
         <span class="tile-ico" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4 5h7M7.5 5v3M9.5 8c-.6 4-2.8 6.6-5.5 8M6 12.5c1.2 2.3 3.1 3.5 5 4M13 19l3.6-9 3.4 9M14.4 16h5"/></svg>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-languages"/></svg>
         </span>
         <p class="tile-name">Ikkala til bir joyda</p>
         <p class="tile-note">O‘zbekcha va ruscha matn yonma-yon tekshiriladi</p>
       </div>
       <div class="tile" data-reveal="rise">
         <span class="tile-ico" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-clock"/></svg>
         </span>
         <p class="tile-name">Hoziroq yoki rejaga ko‘ra</p>
         <p class="tile-note">Darhol, belgilangan vaqtda yoki har hafta takroran</p>
       </div>
       <div class="tile" data-reveal="rise">
         <span class="tile-ico" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 3 4 6.5v5c0 4.4 3.2 8.3 8 9.5 4.8-1.2 8-5.1 8-9.5v-5L12 3Z"/><path d="m8.8 11.8 2.2 2.2 4.2-4.4"/></svg>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-shield-check"/></svg>
         </span>
         <p class="tile-name">Yuborishdan oldin tekshiruv</p>
         <p class="tile-note">Bo‘sh maydon, uzun matn va yetishmayotgan tarjima ushlanadi</p>
@@ -277,13 +309,13 @@
         <h3 class="feed-h">
           <button type="button" class="feed-open" aria-expanded="false" aria-controls="feed-suv">
             <span class="feed-thumb" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 3.5s5.5 5.2 5.5 9a5.5 5.5 0 0 1-11 0c0-3.8 5.5-9 5.5-9Z"/></svg>
+              <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-droplet"/></svg>
             </span>
             <span class="feed-head">
               <span class="feed-title">Suv ta’minoti 09:00–15:00 oralig‘ida to‘xtatiladi</span>
               <span class="feed-meta"><span>8-mahalla</span><span class="sep">·</span><span>2 soat oldin</span></span>
             </span>
-            <svg class="feed-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+            <svg class="ico feed-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
           </button>
         </h3>
         <div class="feed-body" id="feed-suv" hidden>
@@ -309,13 +341,13 @@
         <h3 class="feed-h">
           <button type="button" class="feed-open" aria-expanded="false" aria-controls="feed-elektr">
             <span class="feed-thumb" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M13 2 4.5 13H11l-1 9 8.5-11H12l1-9Z"/></svg>
+              <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg>
             </span>
             <span class="feed-head">
               <span class="feed-title">Elektr tarmog‘ida ta’mirlash ishlari boshlanadi</span>
               <span class="feed-meta"><span>Qo‘shko‘pir tumani</span><span class="sep">·</span><span>kecha</span></span>
             </span>
-            <svg class="feed-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+            <svg class="ico feed-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
           </button>
         </h3>
         <div class="feed-body" id="feed-elektr" hidden>
@@ -341,13 +373,13 @@
         <h3 class="feed-h">
           <button type="button" class="feed-open" aria-expanded="false" aria-controls="feed-yigin">
             <span class="feed-thumb" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4M15.5 4.7a3.5 3.5 0 0 1 0 6.6"/></svg>
+              <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-users"/></svg>
             </span>
             <span class="feed-head">
               <span class="feed-title">Mahalla umumiy yig‘ini shanba kuni o‘tkaziladi</span>
               <span class="feed-meta"><span>8-mahalla</span><span class="sep">·</span><span>3 kun oldin</span></span>
             </span>
-            <svg class="feed-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+            <svg class="ico feed-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
           </button>
         </h3>
         <div class="feed-body" id="feed-yigin" hidden>
@@ -373,13 +405,13 @@
         <h3 class="feed-h">
           <button type="button" class="feed-open" aria-expanded="false" aria-controls="feed-korik">
             <span class="feed-thumb" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 4v16M4 12h16"/></svg>
+              <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>
             </span>
             <span class="feed-head">
               <span class="feed-title">Bepul tibbiy ko‘rik jadvali e’lon qilindi</span>
               <span class="feed-meta"><span>Xorazm viloyati</span><span class="sep">·</span><span>1 hafta oldin</span></span>
             </span>
-            <svg class="feed-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6.5 8 10.5 12 6.5"></path></svg>
+            <svg class="ico feed-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
           </button>
         </h3>
         <div class="feed-body" id="feed-korik" hidden>
@@ -403,7 +435,7 @@
       </article>
       <article class="feed-item" data-reveal="rise">
         <span class="feed-thumb" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M13 2 4.5 13H11l-1 9 8.5-11H12l1-9Z"/></svg>
+          <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg>
         </span>
         <div>
           <h3 class="feed-title">Elektr tarmog‘ida ta’mirlash ishlari boshlanadi</h3>
@@ -412,7 +444,7 @@
       </article>
       <article class="feed-item" data-reveal="rise">
         <span class="feed-thumb" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20M10 11.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4M15.5 4.7a3.5 3.5 0 0 1 0 6.6"/></svg>
+          <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-users"/></svg>
         </span>
         <div>
           <h3 class="feed-title">Mahalla umumiy yig‘ini shanba kuni o‘tkaziladi</h3>
@@ -421,7 +453,7 @@
       </article>
       <article class="feed-item" data-reveal="rise">
         <span class="feed-thumb" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 4v16M4 12h16"/></svg>
+          <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>
         </span>
         <div>
           <h3 class="feed-title">Bepul tibbiy ko‘rik jadvali e’lon qilindi</h3>
@@ -446,7 +478,7 @@
           push chegarasini o‘zi hisoblaydi. Sizga faqat aytiladigan gap qoladi.</p>
         <a class="btn btn-ink" href="./composer.html">
           Kompozitorni ochish
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
         </a>
       </div>
     </div>

@@ -6,16 +6,16 @@
 <section class="v2" data-variant="2" aria-labelledby="v2-title">
   <h3 class="v2-title" id="v2-title" hidden>Qidiruv-birinchi</h3>
   <div class="note note-crit v2-blocked" id="v2-blocked" hidden>
-    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8"/><path d="M10 6v4.6M10 13.4h.01"/></svg><span><b>Hudud reestri yuklanmadi yoki to‘liq kelmadi.</b> Qidiruv o‘chirildi. Qamrov «0» deb ko‘rsatilmaydi — bu «hech kim» degani bo‘lardi, holbuki ro‘yxatning o‘zi yo‘q.</span>
+    <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg><span><b>Hudud reestri yuklanmadi yoki to‘liq kelmadi.</b> Qidiruv o‘chirildi. Qamrov «0» deb ko‘rsatilmaydi — bu «hech kim» degani bo‘lardi, holbuki ro‘yxatning o‘zi yo‘q.</span>
   </div>
   <div class="v2-main" id="v2-main">
     <label class="label" for="v2-q">Hudud, tuman yoki mahalla nomi</label>
     <p class="hint" id="v2-hint">Nomning bir qismini yozing — hudud, tuman va mahalla nomlari bo‘ylab qidiriladi, apostrof yozish shart emas. Namunada <span id="v2-count">—</span> ta nom bor, bu to‘liq reestr emas.</p>
     <div class="v2-combo" id="v2-combo">
-      <span class="v2-ico" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" focusable="false"><circle cx="8.6" cy="8.6" r="5.4"/><path d="m12.6 12.6 4 4"/></svg></span>
+      <span class="v2-ico" aria-hidden="true"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-search"/></svg></span>
       <input class="input v2-input" id="v2-q" type="text" role="combobox" aria-expanded="false" aria-controls="v2-list" aria-autocomplete="list"
              aria-describedby="v2-hint" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Masalan: Dostlik" />
-      <button type="button" class="icon-btn v2-clear" id="v2-clear" aria-label="Qidiruv va tanlovni tozalash" hidden><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="m6 6 8 8M14 6l-8 8"/></svg></button>
+      <button type="button" class="icon-btn v2-clear" id="v2-clear" aria-label="Qidiruv va tanlovni tozalash" hidden><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-x"/></svg></button>
       <div class="v2-pop" id="v2-pop" hidden>
         <p class="eyebrow eyebrow-sm v2-head" id="v2-head"></p>
         <ul class="v2-list" id="v2-list" role="listbox" aria-label="Topilgan hududlar"></ul>
@@ -27,7 +27,7 @@
     <p class="sr-only" id="v2-status" role="status"></p>
     <div class="v2-out">
       <div class="empty v2-empty" id="v2-empty">
-        <span class="empty-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 21s6.5-6.1 6.5-10.5a6.5 6.5 0 1 0-13 0C5.5 14.9 12 21 12 21Z"/><circle cx="12" cy="10.4" r="2.4"/></svg></span>
+        <span class="empty-icon" aria-hidden="true"><svg class="ico" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-map-pin"/></svg></span>
         <p class="empty-title">Hudud tanlanmagan</p>
         <p>Xabar hozircha hech kimga bog‘lanmagan. Yuqoridagi maydonga nom yozing — daraja tanlangan natijaning turidan o‘zi aniqlanadi.</p>
       </div>

@@ -1177,3 +1177,66 @@ tashlandi — u CSS tuzatishini yengib turardi.
   `rgb(255,255,255)`): kartadagi matn 21:1 va 8,86:1 — piksel usuli u yerda
   kerak emas, aniq hisob yetarli.
 - Sahifa auditi: 2 viewport × 2 tema — 0 kontrast xatosi, overflow yo‘q.
+
+---
+
+## Ikonka to‘plami: qo‘lda chizilgan SVG → Lucide sprayti
+
+Loyihada 48 ta noyob ikonka qo‘lda chizilgan holda, har biri o‘z inline SVG
+si bilan turardi. Ular bir to‘plamdan chiqmagani ko‘rinib turardi:
+
+- `stroke-width` har ikonkada QO‘LDA yozilgan va fayl bo‘ylab **1.6 bilan
+  1.7 ga ajralib ketgan** (36 va 10 marta);
+- to‘r o‘lchami uch xil: `24`, `20`, `16` — ya‘ni bir xil chizilgan chiziq
+  uch xil qalinlikda chiqardi;
+- bir xil ma’noli ikonka turli joyda turlicha chizilgan (uchta xil
+  «ogohlantirish uchburchagi», uchta xil «doira ichida undov»).
+
+Endi bitta manba: **Lucide** (ISC, lucide.dev), 24px to‘r, bitta uslub.
+
+### Tuzilish
+
+Sprayt har sahifaga inline qo‘yiladi (`<symbol>` + `<use>`), tashqi so‘rov
+yo‘q. Faqat ISHLATILADIGAN belgilar turadi — ro‘yxat generatordan chiqadi,
+qo‘lda yuritilmaydi: **32 ta symbol, 5,9 KB**.
+
+Qalinlik, uch shakli va sukut o‘lcham `.ico` sinfida, BIR JOYDA:
+
+    .ico { width: 1em; height: 1em; fill: none; stroke: currentColor;
+           stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+`1.75` tanlandi: Lucide 2 qalinlikka mo‘ljallangan, lekin bu tizimning
+hairline tili uchun og‘ir chiqadi. Endi butun to‘plamning og‘irligi bitta
+qiymat bilan boshqariladi.
+
+### Almashtirish `d` imzosi bo‘yicha
+
+Moslik sinf nomi yoki kontekst bo‘yicha emas, `d` atributining imzosi
+bo‘yicha topildi: bir xil ikonka turli joyda turli sinf bilan ishlatilgan,
+`d` esa aynan bir xil. 75 ta inline SVG shu yo‘l bilan almashdi; qolgan
+uchtasi JS ichida qurilardi va qo‘lda o‘tkazildi.
+
+Xarita chizmasi (`#scopeSvg`, `.v4-map`) va logotip TEGILMADI — ular
+ikonka emas.
+
+### Yo‘l-yo‘lakay tuzatilgan ikkita narsa
+
+- `showErrors()` / `reportDataFailure()` xato ikonkasini JS da QO‘LDA
+  qurardi (`createElementNS` + o‘z `stroke-width` atributi) — uchta joyda,
+  qolgan ikonkalardan mustaqil. Endi ular ham spraytdan.
+- «Doimiy» va «Takroriy» bitta bo‘limda BIR XIL `repeat` belgisi bilan
+  turardi. «Doimiy» endi `infinity` oladi.
+
+### Verify (real brauzer)
+
+Nom xato bo‘lsa `<use>` jimgina BO‘SH chiqadi va hech qanday xato bermaydi —
+shuning uchun har ikonkaning `getBBox()` i o‘lchandi:
+
+- landing 20 · composer 45 · variants 56 ta ikonka — **buzuq 0**.
+  Yashirin holatdagilar alohida ajratildi: ular bbox bermaydi, bu buzuqlik
+  emas.
+- Butun loyihada `stroke-width` yagona qiymat: **1.75px**.
+- Sprayt va xarita tashqarisida bitta ham eski inline SVG qolmadi.
+- Sahifa auditi: 2 viewport × 2 tema — 0 kontrast xatosi, overflow yo‘q.
+
+Kadrlar: `.screenshots/ikonka-galereya.png`, `ikonka-nav.png`, `ikonka-jadval.png`

@@ -271,6 +271,18 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 /* Karta — ochiladigan (disclosure), havola EMAS: bosilganda boshqa sahifaga
    o'tilmaydi, xabarning o'zi shu yerda ochiladi. Butun karta bitta nishon,
    shuning uchun kichik ilinadigan joy qidirish kerak emas. */
+/* Ikonka to'plami — Lucide sprayti. Qalinlik, uch shakli va sukut o'lcham
+   SHU YERDA, bir joyda: ilgari har inline SVG da `stroke-width` qo'lda
+   yozilgan va fayl bo'ylab 1.6 bilan 1.7 ga ajralib ketgandi.
+   1.75 tanlandi: Lucide 2 qalinlikka mo'ljallangan, lekin bu tizimning
+   hairline tili uchun og'ir chiqadi. */
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.ico {
+  width: 1em; height: 1em; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.75;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
 .feed-item { display: flex; flex-direction: column; padding-block: 4px; }
 .feed-h { margin: 0; font: inherit; font-weight: inherit; }
 .feed-open {

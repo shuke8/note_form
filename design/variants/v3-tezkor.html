@@ -9,13 +9,13 @@
   <div class="v3-head"><span class="eyebrow eyebrow-sm">Qamrov</span><span class="small ink-2">Aholi soni taxminiy — reestrdan emas</span></div>
   <!-- Ma'lumot yuklanmasa yoki yaroqsiz bo'lsa ro'yxat «0» bilan to'ldirilmaydi, bloklanadi. -->
   <p class="note note-crit" id="v3-blocked" role="alert" hidden>
-    <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 3.5 18 17H2z"/><path d="M10 8.4v3.6"/><path d="M10 14.4v.1"/></svg>
+    <svg class="ico" width="18" height="18" aria-hidden="true" focusable="false"><use href="#i-triangle-alert"/></svg>
     <span>Hudud ma'lumoti yuklanmadi yoki yaroqsiz (<span class="mono">composer-data.js</span>). Qamrovni tanlab bo'lmaydi — bo'sh ro'yxat «hech kim» degani emas, shuning uchun bu yerda raqam ko'rsatilmayapti.</span>
   </p>
   <div class="v3-picks" id="v3-picks" role="group" aria-label="Tayyor qamrovlar"></div>
   <p class="hint" id="v3-storage" hidden>So‘nggi tanlovlar faqat shu qurilmada saqlanadi — serverga yozilmaydi.</p>
   <button class="v3-more" id="v3-more" type="button" aria-expanded="false" aria-controls="v3-panel">
-    <svg class="v3-caret" viewBox="0 0 14 14" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 5.5 7 9.5l4-4"/></svg>Boshqa hudud tanlash
+    <svg class="ico v3-caret" width="14" height="14" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Boshqa hudud tanlash
   </button>
   <div class="v3-panel" id="v3-panel" hidden>
     <div class="v3-grid">
@@ -32,7 +32,7 @@
        «daraja yo'q» qiymati yo'q. `role=status`: natijani JS qayta quradi, ekran o'quvchi eshitmasa tanlov jimgina o'tardi. -->
   <div class="v3-out" id="v3-out" role="status">
     <div class="empty">
-      <span class="empty-icon" aria-hidden="true"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M10 17s6-5.2 6-9.4A6 6 0 0 0 4 7.6C4 11.8 10 17 10 17Z"/><circle cx="10" cy="7.6" r="2.1"/></svg></span>
+      <span class="empty-icon" aria-hidden="true"><svg class="ico" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-map-pin"/></svg></span>
       <p class="empty-title">Qamrov tanlanmagan</p>
       <p class="small">Yuqoridagi tugmalardan birini bosing yoki «Boshqa hudud tanlash» ni oching. Tanlanmaguncha xabar hech kimga biriktirilmaydi.</p>
     </div>
@@ -93,7 +93,7 @@
     /* Profil ulanmagan bo'lsa karta o'zini operatorning mahallasi deb
        KO'RSATMAYDI — nomi ham, yorlig'i ham buni ochiq aytadi. */
     var HOME_LABEL = PROFILE ? "Mening mahallam" : "Namuna profil";
-    var TICK = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M3 8.4 6.4 12 13 4.6"/></svg>';
+    var TICK = '<svg class="ico" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>';
     var id = function (s) { return document.getElementById(s); };
     var picks = id("v3-picks"), moreBtn = id("v3-more"), panel = id("v3-panel"), out = id("v3-out");
     var reg = id("v3-region"), dis = id("v3-district"), mah = id("v3-mahalla");

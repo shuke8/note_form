@@ -170,7 +170,7 @@
     ["Andijon viloyati", "M450.9 164.3 452.8 166.0 455.2 166.3 455.3 167.6 457.1 168.0 459.3 170.6 460.4 170.9 466.2 170.5 466.4 172.1 469.8 169.9 471.3 171.0 473.8 170.8 474.0 171.6 472.1 173.6 464.6 177.7 463.9 181.3 461.6 181.4 460.8 183.9 459.7 184.1 455.7 182.6 453.7 180.9 453.0 181.3 453.6 184.5 455.5 186.3 455.3 188.1 454.2 189.1 451.3 187.9 449.7 188.0 451.0 186.9 450.0 186.7 449.1 182.8 447.3 182.5 446.1 181.4 445.1 182.1 439.9 181.7 437.9 179.6 436.1 179.1 433.5 178.8 433.4 179.6 431.4 176.9 432.1 176.0 431.2 174.5 432.7 172.6 437.8 171.2 443.9 171.6 446.6 171.0 447.4 167.1 449.9 166.2Z", 452.6, 173.9, 24.8],
     ["Toshkent shahri", "M366.5 158.4 369.0 159.5 368.8 160.8 369.6 162.1 366.5 165.1 365.7 165.0 365.4 163.9 365.0 164.3 364.0 162.8 363.4 163.0 364.2 160.0 365.6 158.5Z", 366.4, 161.5, 6.2]
   ];
-  var CHEV = '<svg class="scope-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3.5 10.5 8 6 12.5"></path></svg>';
+  var CHEV = '<svg class="ico scope-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>';
   var SVG_NS = "http://www.w3.org/2000/svg";
   var cells = {};
   var scopeSig = null;      // oxirgi chizilgan qamrov holati
@@ -228,7 +228,7 @@
     if (noCell.length) gaps.push("xaritada ko‘rsatilmagan — " + noCell.join(", "));
     if (!gaps.length) return;
     $("scopeCrumbs").insertAdjacentHTML("beforebegin",
-      '<p class="note note-warn"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 2.9 18.6 17.4H1.4Z"></path><path d="M10 8.4v3.6M10 14.6h.01"></path></svg>' +
+      '<p class="note note-warn"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-triangle-alert"/></svg>' +
       '<span>Reestr to‘liq emas: ' + esc(gaps.join("; ")) + '. Bu hududlar uchun taxminiy raqam ham, respublika yig‘indisi ham ko‘rsatilmaydi.</span></p>');
   }
 
@@ -285,7 +285,7 @@
   function renderScopeSum() {
     var sum = $("scopeSum");
     if (!state.scope) {
-      sum.innerHTML = '<div class="empty"><span class="empty-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17.6S15.4 12.9 15.4 8.7A5.4 5.4 0 0 0 4.6 8.7C4.6 12.9 10 17.6 10 17.6Z"></path><circle cx="10" cy="8.6" r="2"></circle></svg></span>' +
+      sum.innerHTML = '<div class="empty"><span class="empty-icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-map-pin"/></svg></span>' +
         '<p class="empty-title">Qamrov tanlanmagan</p><p>Butun respublika uchun yuqoridagi tugmani bosing; tor qamrov uchun xaritadan hududni yoki ro‘yxatdan qatorni tanlang. Xabar kimga ketishini tizim o‘zi taxmin qilmaydi.</p></div>';
       return;
     }
@@ -410,13 +410,14 @@
     state.dataFailed = true;
     var box = $("scopeError");
     box.textContent = "";
+    /* Ikonka spraytdan: qalinlik va uch shakli `.ico` sinfida bir joyda.
+       Ilgari SVG shu yerda qo'lda qurilib, atributlari qolgan
+       ikonkalardan mustaqil ravishda yozilardi. */
     var icon = document.createElementNS(SVG_NS, "svg");
-    icon.setAttribute("viewBox", "0 0 16 16");
-    icon.setAttribute("fill", "none");
-    icon.setAttribute("stroke", "currentColor");
-    icon.setAttribute("stroke-width", "1.6");
+    icon.setAttribute("class", "ico");
     icon.setAttribute("aria-hidden", "true");
-    icon.innerHTML = '<circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.6M8 11h.01" stroke-linecap="round"/>';
+    icon.setAttribute("focusable", "false");
+    icon.innerHTML = '<use href="#i-circle-alert"/>';
     box.appendChild(icon);
     box.appendChild(document.createTextNode(
       "Hudud ma’lumotlari yuklanmadi. Sahifani yangilang; muammo qolsa administratorga xabar bering."));
@@ -991,13 +992,14 @@
       // Ilgari faqat BIRINCHI muammo ko'rsatilardi: 6 ta fayl tashlansa
       // qaysilari rad etilgani bilinmasdi.
       err.textContent = "";
-      var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      icon.setAttribute("viewBox", "0 0 16 16");
-      icon.setAttribute("fill", "none");
-      icon.setAttribute("stroke", "currentColor");
-      icon.setAttribute("stroke-width", "1.6");
+      /* Ikonka spraytdan: qalinlik va uch shakli `.ico` sinfida bir joyda.
+         Ilgari SVG shu yerda qo'lda qurilib, atributlari qolgan
+         ikonkalardan mustaqil ravishda yozilardi. */
+      var icon = document.createElementNS(SVG_NS, "svg");
+      icon.setAttribute("class", "ico");
       icon.setAttribute("aria-hidden", "true");
-      icon.innerHTML = '<circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.6M8 11h.01" stroke-linecap="round"/>';
+      icon.setAttribute("focusable", "false");
+      icon.innerHTML = '<use href="#i-circle-alert"/>';
       err.appendChild(icon);
       err.appendChild(document.createTextNode(
         added + " ta qo‘shildi, " + rejected + " tasi rad etildi: " + problems.join(" · ")));
@@ -1024,8 +1026,7 @@
       row.className = "file-row";
       row.innerHTML =
         '<span class="file-ico" aria-hidden="true">' +
-          '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
-          '<path d="M11.5 2H5.5A1.5 1.5 0 0 0 4 3.5v13A1.5 1.5 0 0 0 5.5 18h9a1.5 1.5 0 0 0 1.5-1.5V6.5L11.5 2Z"/><path d="M11.5 2v4.5H16"/></svg>' +
+          '<svg class="ico" width="16" height="16" aria-hidden="true" focusable="false"><use href="#i-file-text"/></svg>' +
         "</span>" +
         '<span class="file-name"></span>' +
         '<span class="file-size"></span>';
@@ -1036,7 +1037,7 @@
       del.type = "button";
       del.className = "icon-btn";
       del.setAttribute("aria-label", "“" + f.name + "” faylini olib tashlash");
-      del.innerHTML = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l8 8M14 6l-8 8"/></svg>';
+      del.innerHTML = '<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>';
       del.addEventListener("click", function () {
         // «5 tadan ortiq» xabari o'chirishdan keyin ham turib qolardi —
         // ya'ni u endi mavjud bo'lmagan chegarani da'vo qilardi.
@@ -1169,13 +1170,14 @@
       if (e.box) {
         if (e.msg) {
           e.box.textContent = "";
-          var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-          icon.setAttribute("viewBox", "0 0 16 16");
-          icon.setAttribute("fill", "none");
-          icon.setAttribute("stroke", "currentColor");
-          icon.setAttribute("stroke-width", "1.6");
+          /* Ikonka spraytdan: qalinlik va uch shakli `.ico` sinfida bir joyda.
+             Ilgari SVG shu yerda qo'lda qurilib, atributlari qolgan
+             ikonkalardan mustaqil ravishda yozilardi. */
+          var icon = document.createElementNS(SVG_NS, "svg");
+          icon.setAttribute("class", "ico");
           icon.setAttribute("aria-hidden", "true");
-          icon.innerHTML = '<circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.6M8 11h.01" stroke-linecap="round"/>';
+          icon.setAttribute("focusable", "false");
+          icon.innerHTML = '<use href="#i-circle-alert"/>';
           e.box.appendChild(icon);
           e.box.appendChild(document.createTextNode(e.msg));
         }
@@ -1388,7 +1390,7 @@
         btn.setAttribute("data-idx", String(i));
         btn.innerHTML = '<span class="sum-todo-sec">' + pad(it.section) + "</span>" +
           '<span class="sum-todo-text"></span>' +
-          '<svg class="sum-todo-arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
+          '<svg class="ico sum-todo-arrow" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>';
         btn.querySelector(".sum-todo-text").textContent = it.text;
         /* Nishonning to'liq nomi harakatni ham aytadi: «... — 02-bo'limga o'tish».
            Yolg'iz xato matni tugma nima qilishini aytmasdi. */
@@ -1554,8 +1556,7 @@
     box.className = "result";
     box.innerHTML =
       '<div class="result-head">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-          '<path d="M10.3 3.6 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.6a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>' +
+        '<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-triangle-alert"/></svg>' +
         '<div>' +
           '<p class="result-title">Xabar YUBORILMADI — bu demo</p>' +
           '<p class="result-body">Bu sahifada server ulanmagan. Forma to‘g‘ri to‘ldirildi va quyidagi ' +

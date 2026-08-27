@@ -18,7 +18,7 @@
       <!-- Butun respublika ro‘yxat qatori EMAS, doimiy tugma. Qator bo‘lganida u tumanga kirilishi bilan yo‘qolardi
            va qaytish yo‘li faqat kichkina yo‘l tugmasi edi — eng ko‘p ishlatiladigan qamrov eng chuqur ko‘milgani. -->
       <button type="button" class="v4-all-btn" id="v4-all">
-        <span class="v4-all-ring" aria-hidden="true"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6" focusable="false"><circle cx="11" cy="11" r="7.6"></circle><path d="M3.4 11h15.2M11 3.4c2.1 2.5 2.1 12.7 0 15.2c-2.1-2.5-2.1-12.7 0-15.2Z"></path></svg></span>
+        <span class="v4-all-ring" aria-hidden="true"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-globe"/></svg></span>
         <span class="v4-all-txt"><span class="v4-all-name">Butun respublika</span><span class="v4-all-sub" id="v4-all-sub"></span></span>
         <span class="v4-all-pop mono" id="v4-all-pop">—</span>
       </button>
@@ -29,7 +29,7 @@
       <p class="sr-only" role="status" id="v4-live"></p>
     </div>
   </div>
-  <p class="note v4-note"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8"></circle><path d="M10 9.2v4.4M10 6.6h.01"></path></svg>
+  <p class="note v4-note"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg>
     <span>Bu — ko‘rinish namunasi: server yo‘q, hech narsa yuborilmaydi. Aholi raqamlari namuna reestridan olingan <b>taxminiy</b> qiymatlar.</span></p>
 </section>
 <style>
@@ -98,7 +98,7 @@
   var q = function (n) { return root.querySelector("#v4-" + n); };
   var svg = q("svg"), listEl = q("list"), crumbEl = q("crumbs"), sumEl = q("sum"), lvlEl = q("lvl"), liveEl = q("live");
   var allBtn = q("all"), allSub = q("all-sub"), allPop = q("all-pop");
-  var WARN = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 2.9 18.6 17.4H1.4Z"></path><path d="M10 8.4v3.6M10 14.6h.01"></path></svg>';
+  var WARN = '<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-triangle-alert"/></svg>';
   /* Reestr yuklanmasa qamrov TANLANMAYDI. «0 kishi» yolg'on bo'lardi: nol «hech kim» degani, bu yerda esa «bilmaymiz». */
   if (!NAMES.length) {
     crumbEl.hidden = lvlEl.hidden = listEl.hidden = allBtn.hidden = true; root.querySelector(".v4-mapwrap").hidden = true;
@@ -112,7 +112,7 @@
     ["Jizzax", "M296 80 332 66 352 104 336 142 302 118 292 94Z", 322, 104], ["Qashqadaryo", "M244 208 296 202 338 222 330 262 272 266 240 238Z", 288, 236], ["Surxondaryo", "M342 232 378 216 408 246 398 292 352 288 338 262Z", 372, 258], ["Toshkent viloyati", "M344 16 440 12 464 56 440 100 398 94 390 58 346 54Z", 424, 48],
     ["Toshkent shahri", "M352 58 394 60 398 96 360 100 344 80Z", 372, 82], ["Sirdaryo", "M352 108 396 100 410 130 378 150 352 138Z", 378, 126], ["Namangan", "M414 106 462 100 472 136 432 148 410 132Z", 440, 126], ["Farg", "M398 152 432 158 436 186 406 200 384 176Z", 412, 176], ["Andijon", "M440 152 474 146 478 180 444 190 434 172Z", 456, 172]
   ];
-  var CHEV = '<svg class="v4-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3.5 10.5 8 6 12.5"></path></svg>';
+  var CHEV = '<svg class="ico v4-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>';
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function pad(n) { return (n < 10 ? "0" : "") + n; }
   /* Yaxlitlash composer bilan bir xil — 2 400 kishini «~2K» ga aylantirib yubormaydi. */
@@ -184,7 +184,7 @@
     }).join("");
   }
   function renderSum() {
-    if (!st.level) return void (sumEl.innerHTML = '<div class="empty"><span class="empty-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 17.6S15.4 12.9 15.4 8.7A5.4 5.4 0 0 0 4.6 8.7C4.6 12.9 10 17.6 10 17.6Z"></path><circle cx="10" cy="8.6" r="2"></circle></svg></span><p class="empty-title">Qamrov tanlanmagan</p><p>Butun respublika uchun yuqoridagi tugmani bosing; tor qamrov uchun xaritadan hududni yoki ro‘yxatdan qatorni tanlang. Xabar kimga ketishini tizim o‘zi taxmin qilmaydi.</p></div>');
+    if (!st.level) return void (sumEl.innerHTML = '<div class="empty"><span class="empty-icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-map-pin"/></svg></span><p class="empty-title">Qamrov tanlanmagan</p><p>Butun respublika uchun yuqoridagi tugmani bosing; tor qamrov uchun xaritadan hududni yoki ro‘yxatdan qatorni tanlang. Xabar kimga ketishini tizim o‘zi taxmin qilmaydi.</p></div>');
     var r = reach(), share = r == null || TOTAL == null ? null : (r / TOTAL) * 100;
     sumEl.innerHTML = '<p class="eyebrow eyebrow-sm">Taxminiy qamrov</p><p class="v4-reach"><b>' + num(r) + "</b><span>" +
       (r == null ? "reestrda bu pog‘ona uchun son yo‘q" : "kishi" + (st.level === "republic" ? " · reestrdagi barcha hududlar" : share == null ? "" : " · reestrdagi jami aholining " + (share < 0.1 ? "0,1% dan kam" : "~" + share.toFixed(1).replace(".", ",") + "%"))) +

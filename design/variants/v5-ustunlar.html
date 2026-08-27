@@ -4,7 +4,7 @@
      @cost:  Uch ustun tik ekranda akkordeonga siqiladi; ro‘yxat uzaysa qidiruv yo‘qligi biladi. -->
 <section class="v5" data-variant="5" aria-labelledby="v5-title">
   <h3 class="v5-title" id="v5-title" hidden>Kim oladi? — ustunli drill-down</h3>
-  <p class="note note-crit v5-fail" id="v5-fail" hidden><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8"/><path d="M10 6v4.6M10 13.4h.01"/></svg><span><b>Hudud reestri yuklanmadi.</b> Ustunlar bo‘sh — bu «hech kim» degani EMAS. Sahifani yangilang yoki ma’lumot manbasini tekshiring.</span></p>
+  <p class="note note-crit v5-fail" id="v5-fail" hidden><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg><span><b>Hudud reestri yuklanmadi.</b> Ustunlar bo‘sh — bu «hech kim» degani EMAS. Sahifani yangilang yoki ma’lumot manbasini tekshiring.</span></p>
   <div class="v5-shell" id="v5-shell">
     <!-- Ustunlarning otasi: respublika darajasi shu qatorda to‘xtaydi. -->
     <button type="button" class="v5-root" id="v5-root" aria-pressed="false"><span class="v5-root-tick" aria-hidden="true"></span><span class="v5-root-name">O‘zbekiston Respublikasi</span><span class="v5-root-meta mono">—</span></button>
@@ -79,7 +79,7 @@
       var ORDER = ["republic", "region", "district", "mahalla"];
       var LABEL = { republic: "Respublika darajasi", region: "Viloyat darajasi", district: "Tuman darajasi", mahalla: "Mahalla darajasi" };
       var SVG = 'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"';
-      var CHEV = '<svg class="v5-chev" viewBox="0 0 16 16" ' + SVG + '><path d="M6 3.5 10.5 8 6 12.5"/></svg>';
+      var CHEV = '<svg class="ico v5-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>';
       var COLS = [
         ["Viloyat", "Viloyatlar", "Ro‘yxat bo‘sh", "Reestrdan birorta hudud kelmadi."],
         ["Tuman", "Tumanlar", "Viloyat tanlanmagan", "Avval viloyatni tanlang — tumanlar shu yerda chiqadi."],
@@ -87,7 +87,7 @@
       /* Uch ustun bir xil — nusxa emas, bitta qolipdan. */
       root.querySelector("#v5-cols").innerHTML = COLS.map(function (c, i) {
         return '<div class="v5-col" data-open="' + (i === 0) + '"><p class="v5-head"><span class="eyebrow eyebrow-sm">' + c[0] + '</span><span class="v5-n mono">—</span></p>'
-          + '<button type="button" class="v5-tog" aria-expanded="' + (i === 0) + '" aria-controls="v5-b' + i + '"><span class="eyebrow eyebrow-sm">' + c[0] + '</span><span class="v5-n mono v5-tog-n">—</span><span class="v5-tog-val">Tanlanmagan</span><svg class="v5-chev-t" viewBox="0 0 16 16" ' + SVG + '><path d="M3.5 6 8 10.5 12.5 6"/></svg></button>'
+          + '<button type="button" class="v5-tog" aria-expanded="' + (i === 0) + '" aria-controls="v5-b' + i + '"><span class="eyebrow eyebrow-sm">' + c[0] + '</span><span class="v5-n mono v5-tog-n">—</span><span class="v5-tog-val">Tanlanmagan</span><svg class="ico v5-chev-t" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg></button>'
           + '<div class="v5-body" id="v5-b' + i + '"><ul class="v5-list" role="listbox" aria-label="' + c[1] + '" hidden></ul>'
           + '<div class="empty v5-none"><p class="empty-title">' + c[2] + '</p><p class="small">' + c[3] + '</p></div></div></div>';
       }).join("");
