@@ -981,26 +981,26 @@ qachon va nima deb ketadi?» — javob bermasdi:
 - qiymatlar o‘ngga tekislangani uchun uzun yo‘l kaliti bilan to‘qnashardi;
 - nima yetishmayotgani faqat pastdagi status qatorida RAQAM bo‘lib turardi.
 
-Endi to‘rt qatlam:
+Endi bo‘lim BITTA obyekt — **jo‘natma kartasi**:
 
 1. **Ikki jumla.** «Bu xabar O‘zbekiston Respublikasi bo‘yicha taxminan
    ~35.1M kishiga ketadi.» / «Dushanba va payshanba kunlari soat 09:00 da,
-   har yili sentyabr va oktyabr oylarida yuboriladi.» Har biri bitta savolga
-   javob beradi — bitta uzun jumla o‘qilmasdi. Jumla FAQAT hamma bo‘lak
-   ma’lum bo‘lganda quriladi; yarim ma’lumot bilan yozilgan jumla ekranni
-   bilmagan narsasini biladi deb ko‘rsatardi.
-2. **Nima qolgani** — har biri tegishli bo‘limga olib boradigan tugma
-   (`01 Qamrovni tanlang…  →`). Bu XATO EMAS, yo‘l ko‘rsatkich: qizil yo‘q,
-   ogohlantirish ikonkasi yo‘q, va u «Navbatga qo‘yish» ni kutmaydi.
-   Qizil holat avvalgidek faqat urinishdan keyin, o‘z maydonida chiqadi.
-   Tugmaning to‘liq nomi harakatni ham aytadi: «… — 02-bo‘lim, Nima yoziladi,
-   bo‘limga o‘tish».
-3. **Matnning o‘zi** — ikki til yonma-yon, sarlavha va matn to‘liq.
-   Qabul qiluvchi telefonida aynan shu o‘qiladi.
-4. **Faktlar** — chapga tekislangan `<dl>`: qamrov, taxminiy qamrov, jadval,
-   ilova. «Aholi» → «Taxminiy qamrov»: raqam qamrovning kattaligi, yetkazilgan
-   xabarlar soni EMAS. Fayl qatori endi nomlarni ham ko‘rsatadi — «2 ta fayl»
-   to‘g‘ri fayllar ekanini tasdiqlamaydi.
+   har yili sentyabr va oktyabr oylarida yuboriladi.» Jumla FAQAT hamma
+   bo‘lak ma’lum bo‘lganda quriladi.
+2. **Nima qolgani** — har biri tegishli boshqaruvga olib boradigan tugma.
+3. **Artefaktning O‘ZI** — qabul qiluvchining telefonida ikkala til qanday
+   chiqishi, yonma-yon, nuqtali yuzada. 02-bo‘limdagi ko‘rinish bir tilni
+   almashtirib ko‘rsatadi (yozayotganda shu to‘g‘ri); yakuniy tekshiruvda
+   esa ikkovini SOLISHTIRISH kerak.
+4. **Yetkazish ustuni** — taxminiy qamrov (bo‘limning eng katta soni),
+   qamrov yo‘li, keyingi uchta yuborish sanasi va ilova nomlari.
+
+Karta tayyor bo‘lganda aksent halqasi yonadi — bu «shu tayyor» degan
+YAGONA vizual signal, matnda takrorlanmaydi.
+
+Sanalar 03-bo‘limdagi AYNAN o‘sha ekspanderdan olinadi: ikki joyda ikki xil
+sana chiqishi mumkin emas. Telefondagi vaqt tamg‘asi ham jadvaldan keladi va
+tanlanmagan vaqt o‘rniga 09:00 QO‘YILMAYDI.
 
 Yo‘l ko‘rsatkich ro‘yxati `validate()` ning O‘SHA natijasidan quriladi, ya‘ni
 ro‘yxatda turgan narsa bilan yuborishni bloklaydigan narsa bir xil bo‘lishi
@@ -1069,3 +1069,47 @@ to‘xtash nuqtalari) o‘lchangan holicha qoldi — faqat rang almashdi.
   qiymatlar qolmadi (grep bilan tekshirildi).
 
 Kadrlar: `.screenshots/kok-*.png`
+
+---
+
+## 05 — matndan artefaktga
+
+Birinchi qayta ishlashda 05-bo‘lim jadval o‘rniga **matn** bo‘ldi: ikki jumla,
+ro‘yxat, ikki matn qutisi, faktlar. U aniqroq edi-yu, baribir «o‘qiladigan
+narsa» bo‘lib qoldi — foydalanuvchi «faqat text qo‘yilgan» dedi va haq edi.
+
+Bo‘limning ishi — **yuborishdan oldingi tekshiruv**. Tekshirish esa matnni
+qayta o‘qish emas, ARTEFAKTNI ko‘rish: xabar telefonda qanday chiqadi.
+Shuning uchun 05 endi ma’lumotni takrorlab yozmaydi, uni **ko‘rsatadi**:
+
+- ikkita haqiqiy push kartasi (mavjud `.notif` komponenti qayta ishlatildi),
+  ikkala til bir vaqtda, oq kartalar nuqtali `.tile` yuzasida — xarita bilan
+  bir oila: «bu artefakt, uni shu yerda ko‘rib turibsiz»;
+- yonida yetkazish ustuni: `--t-d3` o‘lchamdagi qamrov soni, qamrov yo‘li,
+  keyingi uchta sana chipi, ilova nomlari;
+- tepasida ikki jumla, tagida esa (agar kerak bo‘lsa) nima qolgani.
+
+Yangi komponent ixtiro qilinmadi: `.notif`, `.tile`, `.run-chip`, `.eyebrow`
+— hammasi mavjud. Yangi narsa faqat ularning JOYLASHUVI.
+
+### Tuzatilgan kamchiliklar
+
+- Markupda `.dispatch-when`, CSS da esa `.sum-when` yozilgandi — ikkinchi
+  jumla umuman uslubsiz qolib, birinchisining davomi bo‘lib ko‘rinardi.
+  Sinf nomi to‘g‘rilandi va jumla o‘z qatoriga, hairline ostiga chiqdi.
+- `~35.1M` yolg‘iz turardi — birlik («kishi») raqamdan ajralib qolgandi.
+- Bo‘sh matn joyiga «Sarlavha yozilmagan» YOZILMAYDI: push kartasida u
+  haqiqiy sarlavha bo‘lib ko‘rinardi. `.notif-title:empty::before` ning
+  o‘z joy egallovchisi ishlatiladi.
+- O‘lik `.sum-texts` / `.sum-facts` qoidalari olib tashlandi.
+
+### Verify (real brauzer)
+
+- Olti holat: bo‘sh · hoziroq · takroriy+oylar · takroriy+oraliq ·
+  belgilangan vaqt · yarim to‘ldirilgan. Har birida `data-ready`, push
+  kartalari, vaqt tamg‘asi, qamrov, sanalar va ilova tekshirildi.
+- Sanalar 03-bo‘lim bilan bir xil manbadan: `2026-09-03 · 09-07 · 09-10`.
+- Beshta yo‘l ko‘rsatkich tugmasi 5/5 to‘g‘ri boshqaruvga fokus beradi.
+- 4 viewport × 2 tema: 0 kontrast xatosi, overflow yo‘q, `pageerror` yo‘q.
+
+Kadrlar: `.screenshots/yakun-*.png`

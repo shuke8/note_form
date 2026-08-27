@@ -474,40 +474,80 @@
            ko‘rinardi-yu, MATN ko‘rinmasdi; «Aholi» ustuni hududning aholisimi
            yoki qabul qiluvchilar sonimi — noaniq edi; nima yetishmayotgani esa
            faqat pastdagi status qatorida raqam bo‘lib turardi. -->
-      <p class="sum-line" id="rcLine"></p>
-      <p class="sum-when" id="rcWhenLine"></p>
-
-      <!-- Nima qolgani — XATO emas, yo‘l ko‘rsatkich: neytral ohang, qizil yo‘q,
-           har biri tegishli bo‘limga olib boradi. Xato holati (qizil) faqat
-           «Navbatga qo‘yish» bosilgandan keyin, o‘z maydonida chiqadi. -->
-      <div class="sum-todo" id="rcTodo" hidden>
-        <p class="eyebrow eyebrow-sm" id="rcTodoLabel"></p>
-        <ul class="sum-todo-list" id="rcTodoList" aria-labelledby="rcTodoLabel"></ul>
-      </div>
-
-      <!-- Matnning O‘ZI: qabul qiluvchi telefonida aynan shu o‘qiladi.
-           Sarlavhaning yolg‘iz o‘zi tekshirish uchun yetarli emas edi. -->
-      <div class="sum-texts">
-        <div class="sum-text">
-          <p class="eyebrow eyebrow-sm">O‘zbekcha</p>
-          <p class="sum-title" id="rcUzTitle" data-empty="true">Sarlavha yozilmagan</p>
-          <p class="sum-body" id="rcUzBody" data-empty="true">Matn yozilmagan</p>
+      <!-- Bu bo‘limning ishi — YUBORISHDAN OLDINGI TEKSHIRUV. Shuning uchun u
+           ma’lumotni qayta yozib bermaydi, ARTEFAKTNING O‘ZINI ko‘rsatadi:
+           qabul qiluvchining telefonida ikkala til qanday chiqishi, va yonida
+           yetkazish faktlari. Ilgari bu yerda faqat matn qatorlari turardi —
+           o‘qish uchun ham, tekshirish uchun ham og‘ir edi. -->
+      <div class="dispatch" id="rcCard" data-ready="false">
+        <div class="dispatch-head">
+          <p class="dispatch-line" id="rcLine"></p>
+          <p class="dispatch-when" id="rcWhenLine"></p>
         </div>
-        <div class="sum-text">
-          <p class="eyebrow eyebrow-sm">Ruscha</p>
-          <p class="sum-title" id="rcRuTitle" data-empty="true">Sarlavha yozilmagan</p>
-          <p class="sum-body" id="rcRuBody" data-empty="true">Matn yozilmagan</p>
+
+        <div class="sum-todo" id="rcTodo" hidden>
+          <p class="eyebrow eyebrow-sm" id="rcTodoLabel"></p>
+          <ul class="sum-todo-list" id="rcTodoList" aria-labelledby="rcTodoLabel"></ul>
+        </div>
+
+        <div class="dispatch-grid">
+          <!-- Ikkala til BIR VAQTDA: 02-bo‘limdagi ko‘rinish bir tilni
+               almashtirib ko‘rsatadi (yozayotganda shu to‘g‘ri), yakuniy
+               tekshiruvda esa ikkovini yonma-yon solishtirish kerak. -->
+          <div class="dispatch-phones tile">
+          <figure class="dispatch-phone">
+            <figcaption class="eyebrow eyebrow-sm">O‘zbekcha</figcaption>
+            <div class="phone-card">
+              <div class="notif">
+                <span class="notif-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+                <div class="notif-body">
+                  <div class="notif-top">
+                    <span class="notif-src">Onlayn Mahalla</span>
+                    <span class="notif-time" id="rcUzTime">—</span>
+                  </div>
+                  <p class="notif-title" id="rcUzTitle" data-placeholder="Sarlavha kiritilmagan"></p>
+                  <p class="notif-text" id="rcUzBody" data-placeholder="Xabar matni shu yerda ko‘rinadi"></p>
+                </div>
+              </div>
+            </div>
+          </figure>
+          <figure class="dispatch-phone">
+            <figcaption class="eyebrow eyebrow-sm">Ruscha</figcaption>
+            <div class="phone-card">
+              <div class="notif">
+                <span class="notif-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+                <div class="notif-body">
+                  <div class="notif-top">
+                    <span class="notif-src">Onlayn Mahalla</span>
+                    <span class="notif-time" id="rcRuTime">—</span>
+                  </div>
+                  <p class="notif-title" id="rcRuTitle" data-placeholder="Sarlavha kiritilmagan"></p>
+                  <p class="notif-text" id="rcRuBody" data-placeholder="Xabar matni shu yerda ko‘rinadi"></p>
+                </div>
+              </div>
+            </div>
+          </figure>
+          </div>
+
+          <aside class="dispatch-meta" aria-label="Yetkazish ma’lumotlari">
+            <div class="dispatch-block">
+              <p class="eyebrow eyebrow-sm">Taxminiy qamrov</p>
+              <p class="dispatch-reach" id="rcReach" data-empty="true">—</p>
+              <p class="dispatch-scope" id="rcScope" data-empty="true">Qamrov tanlanmagan</p>
+            </div>
+            <div class="dispatch-block">
+              <p class="eyebrow eyebrow-sm">Keyingi yuborish</p>
+              <!-- Markupda BO‘SH keladi: sana HTML ga qattiq yozilsa, JS
+                   yiqilganda ekran o‘zi to‘qigan vaqtni fakt sifatida ko‘rsatardi. -->
+              <div class="dispatch-dates" id="rcDates"></div>
+            </div>
+            <div class="dispatch-block">
+              <p class="eyebrow eyebrow-sm">Ilova</p>
+              <p class="dispatch-files" id="rcFiles" data-empty="true">yo‘q</p>
+            </div>
+          </aside>
         </div>
       </div>
-
-      <dl class="sum-facts">
-        <div><dt>Qamrov</dt><dd id="rcScope" data-empty="true">tanlanmagan</dd></div>
-        <!-- «Aholi» emas: raqam hududning aholisi, ya‘ni qamrovning TAXMINIY
-             kattaligi — yetkazilganlar soni emas, uni faqat server biladi. -->
-        <div><dt>Taxminiy qamrov</dt><dd id="rcReach" data-empty="true">—</dd></div>
-        <div><dt>Jadval</dt><dd id="rcWhen">Hoziroq</dd></div>
-        <div><dt>Ilova</dt><dd id="rcFiles" data-empty="true">yo‘q</dd></div>
-      </dl>
 
       <div id="resultSlot" aria-live="polite"></div>
     </div>

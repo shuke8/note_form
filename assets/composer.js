@@ -1263,21 +1263,27 @@
       el.textContent = value || fallback;
       el.setAttribute("data-empty", value ? "false" : "true");
     }
-    setRecap("rcScope", path ? path.join(" · ") : "", "tanlanmagan");
+    setRecap("rcScope", path ? path.join(" / ") : "", "Qamrov tanlanmagan");
+    /* Birlik raqamdan AJRALMAYDI: yolg'iz «~35.1M» nimaning soni ekanini
+       aytmasdi — yorliq «TAXMINIY QAMROV» deydi, o'lchov birligi esa yo'q edi. */
     setRecap("rcReach", reach ? "~" + reach + " kishi" : "", "—");
-    setRecap("rcUzTitle", $("uzTitle").value.trim(), "Sarlavha yozilmagan");
-    setRecap("rcUzBody", $("uzBody").value.trim(), "Matn yozilmagan");
-    setRecap("rcRuTitle", $("ruTitle").value.trim(), "Sarlavha yozilmagan");
-    setRecap("rcRuBody", $("ruBody").value.trim(), "Matn yozilmagan");
-    /* To'liq bo'lmagan yoki nol natijali jadval matni KO'RINIB turadi, lekin
-       `data-empty="true"` bilan bo'zaradi va qolgan qatorlar bilan bir xil
-       qoidaga bo'ysunadi. */
-    setRecap("rcWhen", scheduleReady() ? whenText() : "", whenText());
+    /* Telefondagi ko'rinishda bo'sh matn `:empty::before` bilan o'z joy
+       egallovchisini chiqaradi — bu yerga «yozilmagan» so'zi YOZILMAYDI,
+       aks holda u haqiqiy sarlavha bo'lib ko'rinardi. */
+    $("rcUzTitle").textContent = $("uzTitle").value.trim();
+    $("rcUzBody").textContent = $("uzBody").value.trim();
+    $("rcRuTitle").textContent = $("ruTitle").value.trim();
+    $("rcRuBody").textContent = $("ruBody").value.trim();
+    /* Tanlanmagan vaqt o'rniga 09:00 QO'YILMAYDI — ekran operator
+       kiritmagan vaqtni ko'rsatib turardi. */
+    var stamp = state.when === "now" ? "hozir"
+      : state.when === "repeat" ? $("fRepeatTime").value : $("fTime").value;
+    $("rcUzTime").textContent = stamp || "—";
+    $("rcRuTime").textContent = stamp || "—";
     /* Fayl SONI o'zi hech narsa demaydi — «2 ta fayl» to'g'ri fayllar
        ekanini tasdiqlamaydi. Nomlar ko'rinib tursin. */
-    setRecap("rcFiles", state.files.length
-      ? state.files.length + " ta · " + state.files.map(function (f) { return f.name; }).join(", ")
-      : "", "yo‘q");
+    setRecap("rcFiles", state.files.map(function (f) { return f.name; }).join(", "), "yo‘q");
+    renderDispatchDates();
 
     // --- holat qatori ---
     var errors = validate();
@@ -1325,6 +1331,34 @@
   };
   var SECTION_NAME = { 1: "Kim oladi", 2: "Nima yoziladi", 3: "Qachon ketadi", 4: "Ilova" };
 
+  /* «Keyingi yuborish» — hisoblangan sanalar, jadval bo'limidagi AYNAN
+     o'sha ekspanderdan. Ikki joyda ikki xil sana chiqishi mumkin emas. */
+  function renderDispatchDates() {
+    var box = $("rcDates");
+    box.innerHTML = "";
+    function chip(strong, quiet) {
+      var el = document.createElement("span");
+      el.className = "run-chip";
+      var b = document.createElement("b"); b.textContent = strong;
+      el.appendChild(b);
+      if (quiet) { var q = document.createElement("span"); q.textContent = quiet; el.appendChild(q); }
+      box.appendChild(el);
+    }
+    if (state.when === "now") return chip("Hoziroq", "navbatga qo‘yilgach");
+    if (state.when === "later") {
+      var d = $("fDate").value, t = $("fTime").value;
+      if (!d || !t) return chip("—", "sana yoki vaqt tanlanmagan");
+      return chip(d, t);
+    }
+    if (!scheduleReady() || rangeBroken()) return chip("—", "jadval to‘liq emas");
+    var r = runs(3);
+    if (r.capped) return chip("—", "birinchi yuborish juda uzoqda");
+    if (!r.list.length) return chip("—", "hech qachon yuborilmaydi");
+    r.list.forEach(function (d) {
+      chip(isoOf(d), DAY_FULL[String(d.getDay())] + ", " + pad2(d.getHours()) + ":" + pad2(d.getMinutes()));
+    });
+  }
+
   function renderSummary(errors, path, reach) {
     var line = $("rcLine"), todo = $("rcTodo"), list = $("rcTodoList");
 
@@ -1371,6 +1405,9 @@
        narsasini biladi deb ko'rsatardi. */
     var ready = !errors.length;
     line.setAttribute("data-ready", ready ? "true" : "false");
+    /* Karta butunligicha holat oladi: tayyor bo'lganda aksent halqasi yonadi
+       va u yagona vizual «shu tayyor» signali bo'ladi. */
+    $("rcCard").setAttribute("data-ready", ready ? "true" : "false");
     if (!ready) {
       line.textContent = "Xabar hali yuborishga tayyor emas.";
       $("rcWhenLine").textContent = "Quyidagilar to‘ldirilgach, bu yerda kimga va qachon ketishi yoziladi.";

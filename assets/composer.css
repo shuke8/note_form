@@ -288,18 +288,51 @@
    tekislangani uchun uzun yo'l kaliti bilan to'qnashardi, matn esa umuman
    ko'rinmasdi — faqat sarlavha.
    ---------------------------------------------------------------------- */
+/* Jo'natma kartasi — bo'limning yagona obyekti. Tayyor bo'lganda aksent
+   halqasi yonadi: bu «shu tayyor» degan YAGONA vizual signal, matnda
+   takrorlanmaydi. */
+.dispatch { border-radius: var(--r-6); padding: 26px;
+            box-shadow: inset 0 0 0 1px var(--hairline);
+            transition: box-shadow var(--d-pane) var(--ease-out); }
+.dispatch[data-ready="true"] { box-shadow: inset 0 0 0 1.5px var(--accent-line); }
+
+.dispatch-head { max-width: 62ch; }
 .sum-line { font-size: var(--t-lead); line-height: var(--lh-lead); letter-spacing: var(--ls-lead);
-            color: var(--ink-2); max-width: 62ch; }
+            color: var(--ink-2); }
 /* Tayyor holat OG'IRROQ va TO'Q: bo'lim ochilganda ko'z birinchi shu jumlaga
    tushadi va bir qarashda «tayyormi yoki yo'qmi» degan javobni oladi. */
 .sum-line[data-ready="true"] { color: var(--ink); font-weight: 500; }
-/* Ikkinchi jumla — vaqt. Birinchisidan bir pog'ona past: ko'z avval «kimga»
-   ni, keyin «qachon» ni oladi. */
-.sum-when { margin-top: 6px; font-size: var(--t-body); line-height: var(--lh-body);
-            letter-spacing: var(--ls-body); color: var(--ink-2); max-width: 62ch; }
+/* Ikkinchi jumla — vaqt. Birinchisidan bir pog'ona past va o'z qatorida:
+   ko'z avval «kimga» ni, keyin «qachon» ni oladi. */
+.dispatch-when { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--hairline);
+                 font-size: var(--t-ui); line-height: var(--lh-ui); color: var(--ink-2); }
 
 /* Yo'l ko'rsatkich — XATO EMAS: qizil yo'q, ogohlantirish ikonkasi yo'q.
    Qizil holat faqat «Navbatga qo'yish» bosilgandan keyin, o'z maydonida. */
+.dispatch-grid { margin-top: 24px; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+                 gap: 24px; align-items: start; }
+
+/* Telefon kartalari NUQTALI yuzada turadi — xaritadagi bilan bir oila:
+   «bu — artefakt, uni shu yerda ko'rib turibsiz». */
+.dispatch-phones { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+                   gap: 20px; padding: 22px; }
+.dispatch-phone { margin: 0; min-width: 0; }
+.dispatch-phone .eyebrow { display: block; margin-bottom: 10px; }
+.phone-card { border-radius: var(--r-dock); background: var(--paper); box-shadow: var(--lift-2);
+              overflow: hidden; }
+
+.dispatch-meta { display: flex; flex-direction: column; gap: 20px; }
+.dispatch-block { display: flex; flex-direction: column; gap: 6px; }
+/* Qamrov raqami — bo'limning eng katta soni. `tabular-nums` bilan: raqam
+   o'zgarganda blok qimirlamaydi. */
+.dispatch-reach { font-family: var(--mono); font-weight: 500; font-size: var(--t-d3); line-height: 1.05;
+                  color: var(--ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.dispatch-reach[data-empty="true"] { color: var(--ink-2); }
+.dispatch-scope { font-size: var(--t-ui); color: var(--ink-2); overflow-wrap: anywhere; }
+.dispatch-dates { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.dispatch-files { font-size: var(--t-ui); color: var(--ink); overflow-wrap: anywhere; }
+.dispatch-files[data-empty="true"] { color: var(--ink-2); }
+
 .sum-todo { margin-top: 22px; padding: 16px; border-radius: var(--r-5);
             background: var(--paper-sunk); box-shadow: inset 0 0 0 1px var(--hairline); }
 .sum-todo-list { list-style: none; margin: 10px 0 0; padding: 0;
@@ -315,27 +348,6 @@
 .sum-todo-arrow { flex: none; width: 15px; height: 15px; color: var(--ink-2); }
 @media (hover: hover) { .sum-todo-btn:hover .sum-todo-arrow { color: var(--ink); } }
 
-/* Xabarning o'zi — ikki til yonma-yon, telefonda o'qiladigan ko'rinishda. */
-.sum-texts { margin-top: 22px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-.sum-text { padding: 18px; border-radius: var(--r-5); box-shadow: inset 0 0 0 1px var(--hairline); }
-.sum-title { margin-top: 10px; font-size: var(--t-ui); font-weight: 600; color: var(--ink);
-             overflow-wrap: anywhere; }
-.sum-body { margin-top: 6px; font-size: var(--t-ui); line-height: 1.55; color: var(--ink-2);
-            overflow-wrap: anywhere; }
-/* `--ink-3` DEKORATIV: oq ustida 3.5:1 va matn uchun AA dan o'tmaydi.
-   Bo'sh holat ham O'QILADIGAN matn — u ham `--ink-2` oladi. */
-.sum-title[data-empty="true"], .sum-body[data-empty="true"] { color: var(--ink-2); font-weight: 400; }
-
-/* Faktlar CHAPGA tekislangan: o'ngga tekislangan uzun yo'l («O'zbekiston /
-   Farg'ona viloyati / Farg'ona shahri») kalit bilan to'qnashardi. */
-.sum-facts { margin-top: 22px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-             gap: 16px 32px; }
-.sum-facts > div { display: flex; flex-direction: column; gap: 4px;
-                   padding-top: 12px; border-top: 1px solid var(--hairline); }
-.sum-facts dt { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
-                text-transform: uppercase; color: var(--ink-2); }
-.sum-facts dd { margin: 0; font-size: var(--t-ui); color: var(--ink); overflow-wrap: anywhere; }
-.sum-facts dd[data-empty="true"] { color: var(--ink-2); }
              padding: 12px 0; border-bottom: 1px solid var(--hairline); }
              text-transform: uppercase; color: var(--ink-2); flex: none; }
 
@@ -384,7 +396,10 @@
   .scope-panel { order: 1; }
   .scope-mapwrap { order: 2; }
   .scope-list { max-height: none; }
-  .sum-texts, .sum-facts { grid-template-columns: 1fr; }
+  /* Tor ekranda telefon kartalari ustma-ust, faktlar esa ularning ostida. */
+  .dispatch-grid, .dispatch-phones { grid-template-columns: 1fr; }
+  .dispatch { padding: 18px; }
+  .dispatch-phones { padding: 16px; }
   /* Tor ekranda yopishqoq tasma ekranning yarmini yeydi — u oddiy blokka
      aylanadi va matn maydonlari ustida qoladi. */
   .preview-dock { position: static; }
