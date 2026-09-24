@@ -64,14 +64,14 @@
   .v8-scale { overflow:hidden; }
   .v8-track { position:relative; height:48px; margin-inline:10px; }
   /* Yo'lak — masshtab YUZASI: ko'rinmasa «qayerdaman?» savoliga fon yo'q. `--paper-sunk` (1.2:1) o'rniga dekorativ `--ink-3` (3.5:1); tik chiziqlar undan yengilroq. */
-  .v8-rail { position:absolute; left:0; right:0; top:12px; height:3px; z-index:1; border-radius:var(--r-pill); background:var(--ink-3); overflow:hidden; }
+  .v8-rail { position:absolute; left:0; right:0; top:12px; height:3px; z-index:1; border-radius:var(--r-full); background:var(--ink-3); overflow:hidden; }
   .v8-fill { position:absolute; inset:0; background-image:var(--accent); transform:scaleX(var(--v8-pos,0)); transform-origin:left center; transition:transform var(--d-pane) var(--ease-out); }
   .v8-tick { position:absolute; top:8px; z-index:0; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px; }
   .v8-tick-line { width:1px; height:11px; background:var(--hairline-2); }
   .v8-tick-num, .v8-end { font-family:var(--mono); font-size:var(--t-mono-sm); letter-spacing:var(--ls-mono); color:var(--ink-2); font-variant-numeric:tabular-nums; }
   /* Siljitgich yo'lak KENGLIGIDA turadi — translateX(pos*100%) aynan pos ulushiga teng masofa beradi, JS da kenglik o'lchash kerak emas. */
   .v8-shift { position:absolute; left:0; top:0; bottom:0; width:100%; z-index:2; transform:translateX(calc(var(--v8-pos,0) * 100%)); transition:transform var(--d-pane) var(--ease-out); }
-  .v8-marker { position:absolute; left:0; top:4px; width:2px; height:20px; transform:translateX(-50%); border-radius:var(--r-pill); background:var(--ink); opacity:0; transition:opacity var(--d-hover) var(--ease-out); }
+  .v8-marker { position:absolute; left:0; top:4px; width:2px; height:20px; transform:translateX(-50%); border-radius:var(--r-full); background:var(--ink); opacity:0; transition:opacity var(--d-hover) var(--ease-out); }
   .v8-marker::after { content:""; position:absolute; left:50%; top:-4px; width:10px; height:10px; border-radius:50%; background:var(--ink); transform:translateX(-50%); }
   .v8[data-state="ready"] .v8-marker { opacity:1; }
   .v8-ends { display:flex; justify-content:space-between; gap:12px; margin:6px 10px 0; text-transform:uppercase; }

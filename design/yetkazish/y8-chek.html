@@ -1,0 +1,140 @@
+<!-- @name: Chek va uzmasi
+     @idea: Karta ikkiga bo‘linadi: tepasi — KIMGA (qamrov, eng katta son),
+            pastki uzmasi — qachon va nima bilan, mono matnda. Ikkovini
+            punktir va ikkita o‘yiq ajratadi, ya’ni «bu bitta hujjat, lekin
+            ikki qismi ikki xil ish qiladi» degan gap shakl bilan aytiladi.
+     @best: Qamrovni ajratib ko‘rsatish kerak bo‘lganda — u o‘z maydonida
+            yolg‘iz turadi va hech nima u bilan raqobatlashmaydi.
+     @cost: O‘yiqlar `mask` bilan kesiladi; qo‘llab-quvvatlanmagan
+            brauzerda ular yo‘qoladi (punktir qoladi, buzilish yo‘q).
+            Bosma metaforasi kompozitorning neytral ohangidan chetga chiqadi. -->
+<section class="y8" data-variant="8" aria-label="Yetkazish ma’lumotlari">
+  <div class="y8-card">
+    <div class="y8-top">
+      <p class="y8-kicker">Kimga ketadi</p>
+      <div id="y8-to"></div>
+    </div>
+    <div class="y8-stub">
+      <dl class="y8-rows" id="y8-rows"></dl>
+      <p class="y8-note">Yuborilgach reestr raqami shu yerda chiqadi</p>
+    </div>
+  </div>
+</section>
+
+<style>
+.y8-card { border-radius: var(--r-container); }
+.y8-top { padding: 18px; background: var(--paper); border-radius: var(--r-container) var(--r-container) 0 0;
+          box-shadow: inset 1px 1px 0 0 var(--hairline), inset -1px 0 0 0 var(--hairline); }
+.y8-kicker { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+             text-transform: uppercase; color: var(--ink-2); }
+.y8-big { margin-top: 9px; font-family: var(--mono); font-weight: 500; font-size: 30px;
+          line-height: 1.05; letter-spacing: -0.01em; color: var(--ink);
+          font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.y8-top[data-empty="true"] .y8-big { font-family: var(--sans); font-weight: 400;
+                                     font-size: var(--t-body); line-height: 1.4; color: var(--ink-2); }
+.y8-path { margin-top: 6px; font-size: var(--t-ui); line-height: 1.45; color: var(--ink-2);
+           overflow-wrap: anywhere; }
+
+/* O'yiqlar KARTADAN kesiladi (`mask`), ustiga fon rangidagi doira
+   QO'YILMAYDI: qo'yilgan doira ota-onaning rangini bilishi kerak edi va
+   kompozitorda u holatga qarab ikki xil bo'ladi. */
+.y8-stub {
+  padding: 16px 18px 15px; background: var(--paper-alt);
+  border-top: 1px dashed var(--hairline-2); border-radius: 0 0 var(--r-container) var(--r-container);
+  box-shadow: inset -1px -1px 0 0 var(--hairline), inset 1px 0 0 0 var(--hairline);
+  -webkit-mask-image: radial-gradient(circle 9px at 0 0, transparent 98%, #000 100%),
+                      radial-gradient(circle 9px at 100% 0, transparent 98%, #000 100%);
+          mask-image: radial-gradient(circle 9px at 0 0, transparent 98%, #000 100%),
+                      radial-gradient(circle 9px at 100% 0, transparent 98%, #000 100%);
+  -webkit-mask-composite: source-in;
+          mask-composite: intersect;
+}
+
+.y8-rows { margin: 0; padding: 0; }
+.y8-pair { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 10px; }
+.y8-pair + .y8-pair { margin-top: 11px; padding-top: 11px; border-top: 1px solid var(--hairline); }
+.y8-pair dt { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+              text-transform: uppercase; color: var(--ink-2); padding-top: 2px; }
+.y8-pair dd { margin: 0; min-width: 0; }
+.y8-val { font-family: var(--mono); font-size: var(--t-mono); letter-spacing: var(--ls-mono);
+          line-height: 1.45; color: var(--ink); font-variant-numeric: tabular-nums;
+          overflow-wrap: anywhere; }
+.y8-pair[data-empty="true"] .y8-val { font-family: var(--sans); font-size: var(--t-sm);
+                                      letter-spacing: var(--ls-sm); color: var(--ink-2); }
+.y8-runs { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+/* Uch ustun: sana · kun · soat. Ikki ustunda kun nomi bilan soat bitta
+   yacheykaga tiqilib, ellipsis SANANI kesib tashlardi — real 340px da
+   `09:…` bo'lib chiqqan edi. */
+.y8-run { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: baseline;
+          font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+          font-variant-numeric: tabular-nums; }
+.y8-run b { font-weight: 500; color: var(--ink); }
+.y8-run span { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.y8-run i { font-style: normal; color: var(--ink-2); }
+.y8-sub { margin-top: 3px; font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink-2); }
+
+.y8-note { margin-top: 14px; padding-top: 11px; border-top: 1px dashed var(--hairline-2);
+           font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+           text-transform: uppercase; color: var(--ink-2); }
+</style>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.querySelector('[data-variant="8"]');
+  if (!root) return;
+  var top = root.querySelector(".y8-top");
+  var to = root.querySelector("#y8-to");
+  var rows = root.querySelector("#y8-rows");
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function pair(term, val, sub, empty) {
+    return '<div class="y8-pair" data-empty="' + (empty ? "true" : "false") + '">' +
+           '<dt>' + esc(term) + '</dt><dd>' + val +
+           (sub ? '<p class="y8-sub">' + esc(sub) + '</p>' : "") + '</dd></div>';
+  }
+
+  function render(d) {
+    d = d || { reach: null, path: null, when: "none", runs: [], files: [] };
+
+    top.setAttribute("data-empty", d.reach ? "false" : "true");
+    to.innerHTML = d.reach
+      ? '<p class="y8-big">~' + esc(d.reach) + '</p>' +
+        '<p class="y8-path">kishi · ' + esc((d.path || []).join(" / ")) + ' · taxminiy</p>'
+      : '<p class="y8-big">Qamrov tanlanmagan</p>' +
+        '<p class="y8-path">01-bo‘limdan hududni tanlang — son shu yerda chiqadi</p>';
+
+    var whenVal;
+    if (d.when === "now") {
+      whenVal = '<p class="y8-val">Hoziroq</p>';
+    } else if (d.when === "repeat" && d.runs.length) {
+      whenVal = '<ul class="y8-runs">' + d.runs.map(function (r) {
+        return '<li class="y8-run"><b>' + esc(r.iso) + '</b><span>' + esc(r.day) +
+               '</span><i>' + esc(r.time) + '</i></li>';
+      }).join("") + '</ul>';
+    } else {
+      whenVal = '<p class="y8-val">Vaqt tanlanmagan</p>';
+    }
+    var html = pair("Qachon", whenVal,
+      d.when === "now" ? "Navbatga qo‘yilgan zahoti"
+        : d.when === "repeat" ? (d.whenLine || null)
+        : "03-bo‘limda sana va soatni belgilang",
+      d.when === "none");
+
+    html += pair("Ilova",
+      d.files.length
+        ? '<p class="y8-val">' + esc(d.files.join(", ")) + '</p>'
+        : '<p class="y8-val">Fayl biriktirilmagan</p>',
+      d.files.length ? null : "Ixtiyoriy", !d.files.length);
+
+    rows.innerHTML = html;
+  }
+
+  root.addEventListener("om:data", function (e) { render(e.detail); });
+  render(null);
+})();
+</script>

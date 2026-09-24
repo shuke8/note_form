@@ -1,0 +1,163 @@
+<!-- @name: Bitta jumla + tafsilot
+     @idea: Uch fakt avval BITTA o‘qiladigan jumlaga yig‘iladi, tafsilot esa
+            ochiladigan panelda turadi. Ekran normal holatda jim: tekshirish
+            uchun jumla yetadi, aniqlik kerak bo‘lganda panel ochiladi.
+     @best: Ko‘p yuboradigan operator uchun — u har safar uch blokni
+            skanerlamaydi, bitta jumlani o‘qiydi va davom etadi.
+     @cost: Sanalar sukut holatda KO‘RINMAYDI, ya’ni «03-sentabrmi yoki
+            04-mi?» degan savol qo‘shimcha bosishni talab qiladi. Jumla
+            uzun qamrov yo‘lida uch qatorga cho‘ziladi. -->
+<section class="y7" data-variant="7" aria-label="Yetkazish ma’lumotlari">
+  <div class="y7-card">
+    <p class="y7-kicker">Yetkazish</p>
+    <p class="y7-line" id="y7-line"></p>
+    <button class="y7-toggle" type="button" id="y7-toggle" aria-expanded="false" aria-controls="y7-detail">
+      <svg class="ico y7-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
+      <span id="y7-toggle-text">Tafsilotni ochish</span>
+    </button>
+    <div class="y7-detail" id="y7-detail" hidden>
+      <ul class="y7-rows" id="y7-rows"></ul>
+    </div>
+  </div>
+</section>
+
+<style>
+.y7-card { background: var(--paper); border-radius: var(--r-container); padding: 18px;
+           box-shadow: inset 0 0 0 1px var(--hairline); }
+.y7-kicker { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+             text-transform: uppercase; color: var(--ink-2); }
+.y7-line { margin-top: 10px; font-size: var(--t-body); line-height: 1.5; letter-spacing: var(--ls-body);
+           color: var(--ink); text-wrap: pretty; }
+.y7-line b { font-family: var(--mono); font-weight: 500; letter-spacing: var(--ls-mono);
+             font-variant-numeric: tabular-nums; }
+.y7-line[data-empty="true"] { color: var(--ink-2); font-size: var(--t-ui); }
+
+.y7-toggle { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+             min-height: 32px; padding: 5px 11px 5px 8px; border-radius: var(--r-control);
+             border: 1px solid var(--hairline-2); background: transparent; color: var(--ink-2);
+             font-size: var(--t-sm); letter-spacing: var(--ls-sm);
+             transition: border-color var(--d-hover) var(--ease-out), color var(--d-hover) var(--ease-out); }
+@media (hover: hover) { .y7-toggle:hover { border-color: var(--edge); color: var(--ink); } }
+.y7-chev { width: 15px; height: 15px; transition: transform var(--d-pane) var(--ease-out); }
+.y7-toggle[aria-expanded="true"] .y7-chev { transform: rotate(180deg); }
+
+/* `hidden` bilan boshqariladi, balandlik animatsiyasi bilan emas: nol
+   balandlikdagi konteyner ekran o'quvchi uchun HALI HAM mavjud bo'lardi.
+   Ochilishda tizimning reveal imzosi — opacity + kichik translateY. */
+.y7-detail { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--hairline);
+             opacity: 0; transform: translateY(-6px);
+             transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out); }
+.y7-detail[data-open="true"] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .y7-detail { transition: none; transform: none; }
+  .y7-chev { transition: none; }
+}
+
+.y7-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.y7-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; }
+.y7-row .ico { width: 15px; height: 15px; color: var(--ink-3); margin-top: 3px; }
+.y7-term { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+           text-transform: uppercase; color: var(--ink-2); }
+.y7-val { margin-top: 3px; font-size: var(--t-ui); line-height: 1.45; color: var(--ink);
+          overflow-wrap: anywhere; }
+.y7-row[data-empty="true"] .y7-val { color: var(--ink-2); }
+.y7-runs { list-style: none; margin: 5px 0 0; padding: 0; display: grid; gap: 4px; }
+.y7-run { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: baseline;
+          font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink-2); }
+.y7-run b, .y7-run i { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+                       font-variant-numeric: tabular-nums; font-style: normal; }
+.y7-run b { font-weight: 500; color: var(--ink); }
+.y7-run span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+</style>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.querySelector('[data-variant="7"]');
+  if (!root) return;
+  var lineEl = root.querySelector("#y7-line");
+  var rows = root.querySelector("#y7-rows");
+  var btn = root.querySelector("#y7-toggle");
+  var btnText = root.querySelector("#y7-toggle-text");
+  var panel = root.querySelector("#y7-detail");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var closeTimer = null;
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  function setOpen(open) {
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    btnText.textContent = open ? "Tafsilotni yopish" : "Tafsilotni ochish";
+    if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+    if (open) {
+      panel.hidden = false;
+      if (reduce) { panel.setAttribute("data-open", "true"); return; }
+      requestAnimationFrame(function () { panel.setAttribute("data-open", "true"); });
+    } else {
+      panel.setAttribute("data-open", "false");
+      if (reduce) { panel.hidden = true; return; }
+      closeTimer = setTimeout(function () { panel.hidden = true; closeTimer = null; }, 200);
+    }
+  }
+  btn.addEventListener("click", function () {
+    setOpen(btn.getAttribute("aria-expanded") !== "true");
+  });
+
+  function row(icon, term, val, empty, extra) {
+    return '<li class="y7-row" data-empty="' + (empty ? "true" : "false") + '">' +
+           '<svg class="ico" aria-hidden="true" focusable="false"><use href="#i-' + icon + '"/></svg>' +
+           '<div><p class="y7-term">' + esc(term) + '</p><p class="y7-val">' + val + '</p>' +
+           (extra || "") + '</div></li>';
+  }
+
+  function render(d) {
+    d = d || { reach: null, path: null, when: "none", runs: [], files: [] };
+
+    /* Jumla FAQAT hamma bo'lak ma'lum bo'lganda quriladi — yarim ma'lumotdan
+       yasalgan gap («… kishiga … da ketadi») yolg'on ravon o'qilardi. */
+    var ready = d.reach && d.when !== "none";
+    var whenPart = d.when === "now" ? "navbatga qo‘yilgan zahoti"
+      : (d.whenLine || "").replace(/^Har /, "har ");
+    var filePart = d.files.length ? d.files.length + " ta ilova bilan" : "ilovasiz";
+    lineEl.setAttribute("data-empty", ready ? "false" : "true");
+    lineEl.innerHTML = ready
+      ? "Bu xabar <b>~" + esc(d.reach) + "</b> kishiga — " + esc((d.path || []).join(" / ")) +
+        " — " + esc(whenPart) + ", " + esc(filePart) + " ketadi."
+      : (!d.reach && d.when === "none"
+          ? "Qamrov ham, vaqt ham tanlanmagan — bu xabar hozircha hech kimga ketmaydi."
+          : !d.reach ? "Vaqt tanlangan, lekin qamrov yo‘q — xabar hech kimga ketmaydi."
+                     : "Qamrov tanlangan, lekin vaqt yo‘q — xabar hech qachon ketmaydi.");
+
+    var html = d.reach
+      ? row("users", "Qamrov", "~" + esc(d.reach) + " kishi · " +
+            esc((d.path || []).join(" / ")) + " · taxminiy", false)
+      : row("users", "Qamrov", "Tanlanmagan — 01-bo‘limdan hududni tanlang", true);
+
+    if (d.when === "now") {
+      html += row("calendar-days", "Keyingi yuborish", "Hoziroq — navbatga qo‘yilgan zahoti", false);
+    } else if (d.when === "repeat" && d.runs.length) {
+      html += row("calendar-days", "Keyingi yuborish", esc(d.whenLine || "Takroriy jadval"), false,
+        '<ul class="y7-runs">' + d.runs.map(function (r) {
+          return '<li class="y7-run"><b>' + esc(r.iso) + '</b><span>' + esc(r.day) +
+                 '</span><i>' + esc(r.time) + '</i></li>';
+        }).join("") + '</ul>');
+    } else {
+      html += row("calendar-days", "Keyingi yuborish",
+                  "Tanlanmagan — 03-bo‘limda sana va soatni belgilang", true);
+    }
+
+    html += d.files.length
+      ? row("file-text", "Ilova", esc(d.files.join(", ")), false)
+      : row("file-text", "Ilova", "Fayl biriktirilmagan — ixtiyoriy", true);
+
+    rows.innerHTML = html;
+  }
+
+  root.addEventListener("om:data", function (e) { render(e.detail); });
+  render(null);
+})();
+</script>

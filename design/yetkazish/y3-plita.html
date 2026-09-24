@@ -1,0 +1,123 @@
+<!-- @name: Fakt plitalari
+     @idea: Har fakt o‘z chegarali plitasida. Qamrov plitasi butun enni oladi
+            va bo‘limning eng katta soni bo‘lib qoladi, qolgan ikkisi joy
+            bo‘lsa yonma-yon, tor ustunda ustma-ust turadi.
+     @best: Ustun kengaygan holatda (mobil taxlanish, 1920px) — plitalar
+            gorizontal joyni to‘ldiradi, ekran bo‘shab qolmaydi.
+     @cost: Chegara ustiga chegara: kompozitorda plitalar allaqachon
+            halqali kartaning ichida turadi, ya’ni uch qavat quti hosil
+            bo‘ladi. Fayl nomlari uzun bo‘lsa plita cho‘ziladi. -->
+<section class="y3" data-variant="3" aria-label="Yetkazish ma’lumotlari">
+  <div class="y3-grid" id="y3-grid"></div>
+</section>
+
+<style>
+.y3-grid { display: grid; gap: 10px; }
+/* Konteyner so'rovi — media emas: ustunning O'Z kengligi hal qiladi.
+   `min-width` media so'rovi 1440px da ham ikki ustun deb hisoblardi,
+   holbuki ustunning o'zi 340px edi. */
+@container (min-width: 460px) {
+  .y3-grid { grid-template-columns: 1fr 1fr; }
+  .y3-tile[data-wide="true"] { grid-column: 1 / -1; }
+}
+
+.y3-tile { position: relative; padding: 15px 16px 16px; border-radius: var(--r-card);
+           background: var(--paper); box-shadow: inset 0 0 0 1px var(--hairline); }
+.y3-ico { position: absolute; top: 14px; inset-inline-end: 14px; color: var(--ink-3); }
+.y3-ico .ico { width: 16px; height: 16px; }
+.y3-label { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+            text-transform: uppercase; color: var(--ink-2); padding-inline-end: 26px; }
+
+/* Qamrov — bo'limning YAGONA katta soni, shuning uchun yagona aksent ham shu.
+
+   `background-clip: text` OLIB TASHLANDI (2026-08-27): u `--accent-text`
+   GRADIENT bo'lganida kerak edi. Yangi tizimda aksent tekis `#0060fe` va
+   gradient umuman yo'q, ya'ni hiyla bir xil natija berib, matnni
+   `color: transparent` holatida qoldirardi — kontrast tekshiruvi ham,
+   ba'zi ekran o'quvchilari ham uni «ko'rinmas matn» deb hisoblaydi. */
+.y3-big { margin-top: 8px; font-weight: 500; font-size: 30px;
+          line-height: 1.05; letter-spacing: normal; color: var(--accent-ink);
+          font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.y3-tile[data-empty="true"] .y3-big { font-weight: 400;
+                                      font-size: var(--t-ui); line-height: 1.45; color: var(--ink-2); }
+.y3-unit { margin-top: 4px; font-size: var(--t-ui); color: var(--ink-2); overflow-wrap: anywhere; }
+
+.y3-value { margin-top: 7px; font-size: var(--t-body); line-height: 1.3; color: var(--ink); }
+.y3-tile[data-empty="true"] .y3-value { font-size: var(--t-ui); line-height: 1.45; color: var(--ink-2); }
+
+.y3-runs { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
+.y3-run { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.y3-run b { font-family: var(--mono); font-weight: 500; font-size: var(--t-mono-sm);
+            letter-spacing: var(--ls-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.y3-run span { font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink-2);
+               overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.y3-files { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
+.y3-files li { font-size: var(--t-ui); line-height: 1.4; color: var(--ink); overflow-wrap: anywhere; }
+.y3-hint { margin-top: 6px; font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink-2); }
+</style>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.querySelector('[data-variant="3"]');
+  if (!root) return;
+  var grid = root.querySelector("#y3-grid");
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function tile(opt) {
+    return '<div class="y3-tile" data-empty="' + (opt.empty ? "true" : "false") +
+           '" data-wide="' + (opt.wide ? "true" : "false") + '">' +
+           '<span class="y3-ico"><svg class="ico" aria-hidden="true" focusable="false">' +
+           '<use href="#i-' + opt.icon + '"/></svg></span>' +
+           '<p class="y3-label">' + esc(opt.label) + '</p>' + opt.body + '</div>';
+  }
+
+  function render(d) {
+    d = d || { reach: null, path: null, when: "none", runs: [], files: [] };
+    var html = "";
+
+    html += tile({
+      label: "Taxminiy qamrov", icon: "users", wide: true, empty: !d.reach,
+      body: d.reach
+        ? '<p class="y3-big">~' + esc(d.reach) + '</p>' +
+          '<p class="y3-unit">kishi · ' + esc((d.path || []).join(" / ")) + '</p>'
+        : '<p class="y3-big">Qamrov tanlanmagan</p>' +
+          '<p class="y3-unit">01-bo‘limdan hududni tanlang</p>'
+    });
+
+    var whenBody;
+    if (d.when === "now") {
+      whenBody = '<p class="y3-value">Hoziroq</p><p class="y3-hint">Navbatga qo‘yilgan zahoti</p>';
+    } else if (d.when === "repeat" && d.runs.length) {
+      whenBody = '<ul class="y3-runs">' + d.runs.map(function (r) {
+        return '<li class="y3-run"><b>' + esc(r.iso) + '</b><span>' + esc(r.day) + ", " +
+               esc(r.time) + '</span></li>';
+      }).join("") + '</ul>';
+    } else {
+      whenBody = '<p class="y3-value">Vaqt tanlanmagan</p>' +
+                 '<p class="y3-hint">03-bo‘limda sana va soatni belgilang</p>';
+    }
+    html += tile({
+      label: "Keyingi yuborish", icon: "calendar-days",
+      empty: d.when === "none", body: whenBody
+    });
+
+    html += tile({
+      label: "Ilova", icon: "file-text", empty: !d.files.length,
+      body: d.files.length
+        ? '<ul class="y3-files">' + d.files.map(function (f) { return "<li>" + esc(f) + "</li>"; }).join("") + '</ul>'
+        : '<p class="y3-value">Fayl yo‘q</p><p class="y3-hint">Ixtiyoriy</p>'
+    });
+
+    grid.innerHTML = html;
+  }
+
+  root.addEventListener("om:data", function (e) { render(e.detail); });
+  render(null);
+})();
+</script>

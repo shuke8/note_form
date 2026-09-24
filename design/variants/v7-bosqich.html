@@ -18,7 +18,7 @@
 
   /* Yig'ilgan javoblar — tinch qatorlar, ayni paytda «orqaga» boshqaruvi: har biri o'z savolini qayta ochadi. */
   .v7-trail { display:flex; flex-direction:column; gap:6px; }  .v7-trail:empty { display:none; }
-  .v7-crumb { width:100%; display:flex; flex-wrap:wrap; align-items:baseline; gap:3px 10px; min-height:44px; padding:9px 14px; text-align:left; color:var(--ink-2); border:1px solid var(--hairline); border-radius:var(--r-5); background:var(--ghost-quiet); }
+  .v7-crumb { width:100%; display:flex; flex-wrap:wrap; align-items:baseline; gap:3px 10px; min-height:44px; padding:9px 14px; text-align:left; color:var(--ink-2); border:1px solid var(--hairline); border-radius:var(--r-card); background:var(--ghost-quiet); }
   /* `transition` shorthand ikki qoidada yozilsa keyingisi oldingisini QO'SHMAYDI, o'chiradi — crumb ikkala sinfni oladi, o'tishi shu yerda birlashtirilgan. */
   .v7-crumb.v7-anim { transition:background var(--d-hover) var(--ease-out), opacity var(--d-pane) var(--ease-out), transform var(--d-tap) var(--ease-out); }
   @media (hover:hover) { .v7-crumb:hover { background:var(--ghost); } }  .v7-crumb:active { transform:scale(0.99); }
@@ -31,14 +31,14 @@
   .v7-opt { width:100%; justify-content:space-between; text-align:left; }
   .v7-opt-name { min-width:0; overflow-wrap:anywhere; }  .v7-opt-reach { flex:none; font-size:var(--t-mono-sm); color:var(--ink-2); }
   /* Grid qatori kartalarni o'zi tenglashtiradi; `justify-content` tiklanadi — `.v7-opt` dagi `space-between` ustunda izohni karta tagiga itarardi. */
-  .v7-lvl { flex-direction:column; align-items:flex-start; justify-content:flex-start; gap:4px; padding:15px 16px; border-radius:var(--r-5); }
+  .v7-lvl { flex-direction:column; align-items:flex-start; justify-content:flex-start; gap:4px; padding:15px 16px; border-radius:var(--r-card); }
   .v7-lvl-name { font-size:var(--t-body); font-weight:500; color:var(--ink); letter-spacing:var(--ls-body); }  .v7-lvl-note { font-size:var(--t-sm); line-height:1.4; color:var(--ink-2); }
   .v7 .seg-btn[disabled] { opacity:0.45; }  /* `.btn[disabled]` bilan bir xil — `.seg-btn` da bunday qoida yo'q */
   /* Tanlanganda `.seg-btn` matnni `--paper` ga o'tkazadi — bolalari ergashsin. */
   .v7 .seg-btn[aria-checked="true"] .v7-lvl-name { color:var(--paper); }
   .v7 .seg-btn[aria-checked="true"] .v7-lvl-note, .v7 .seg-btn[aria-checked="true"] .v7-opt-reach { color:var(--paper); opacity:0.72; }
 
-  .v7-res { padding:18px; border:1px solid var(--hairline); border-radius:var(--r-5); background:var(--paper-alt); }  .v7-res[data-state="empty"] { padding:0; border:0; background:none; }
+  .v7-res { padding:18px; border:1px solid var(--hairline); border-radius:var(--r-card); background:var(--paper-alt); }  .v7-res[data-state="empty"] { padding:0; border:0; background:none; }
   .v7-num { margin-top:6px; font-size:var(--t-d3); line-height:1.15; font-weight:500; color:var(--ink); }  .v7-num-u { margin-inline-start:2px; font-family:var(--sans); font-size:var(--t-ui); letter-spacing:0; color:var(--ink-2); }
   .v7-path { margin-top:8px; font-size:var(--t-body); line-height:var(--lh-body); letter-spacing:var(--ls-body); color:var(--ink); overflow-wrap:anywhere; }  .v7-sep { padding-inline:4px; color:var(--ink-2); }
   .v7-res .hint, .v7-res .note { margin-top:8px; }  .v7-res .btn { margin-top:14px; }

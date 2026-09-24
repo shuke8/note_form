@@ -1,0 +1,122 @@
+<!-- @name: Marshrut
+     @idea: Faktlar ro‘yxat emas, YO‘L: kimga → qachon → nima bilan → ketadi.
+            Vertikal chiziq ularni bitta harakatga bog‘laydi va oxirgi
+            tugun «hali ketmagan» ekanini ochiq aytadi.
+     @best: Yuborishdan oldingi oxirgi qarash uchun — ekran «bu xabar hali
+            yo‘lda emas» degan gapni tuzilishning O‘ZI bilan aytadi.
+     @cost: Ilova ixtiyoriy bo‘lsa ham yo‘lning majburiy bo‘g‘ini bo‘lib
+            ko‘rinadi. To‘rt tugun 340px ustunda balandlikni oshiradi. -->
+<section class="y2" data-variant="2" aria-label="Yetkazish ma’lumotlari">
+  <div class="y2-card">
+    <p class="y2-kicker">Yetkazish yo‘li</p>
+    <ol class="y2-line" id="y2-line"></ol>
+  </div>
+</section>
+
+<style>
+.y2-card { background: var(--paper); border-radius: var(--r-container); padding: 18px 18px 20px;
+           box-shadow: inset 0 0 0 1px var(--hairline); }
+.y2-kicker { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+             text-transform: uppercase; color: var(--ink-2); margin-bottom: 16px; }
+
+.y2-line { list-style: none; margin: 0; padding: 0; }
+/* Chiziq — `border-left`, alohida element emas: qo'shimcha `div` bo'lsa
+   tugun matni uzun bo'lganda chiziq undan qisqa qolib ketardi. */
+.y2-node { position: relative; padding: 0 0 20px 24px; border-left: 1px solid var(--hairline-2); }
+.y2-node:last-child { padding-bottom: 0; border-left-color: transparent; }
+/* Tugun nuqtasi chiziq USTIDA turadi; halqa karta foni bilan bir xil,
+   shuning uchun chiziq nuqtaning ostidan o'tib ketmaydi. */
+.y2-node::before {
+  content: ""; position: absolute; left: -4.5px; top: 4px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--ink); box-shadow: 0 0 0 3px var(--paper);
+}
+.y2-node[data-empty="true"]::before { background: var(--ink-3); }
+/* Oxirgi tugun — HALI bo'lmagan hodisa, shuning uchun to'ldirilmagan halqa. */
+.y2-node.y2-end::before {
+  background: var(--paper);
+  box-shadow: 0 0 0 3px var(--paper), inset 0 0 0 1.5px var(--edge);
+}
+
+.y2-label { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+            text-transform: uppercase; color: var(--ink-2); }
+.y2-value { margin-top: 3px; font-size: var(--t-body); line-height: 1.35; color: var(--ink);
+            overflow-wrap: anywhere; }
+.y2-value b { font-family: var(--mono); font-weight: 500; letter-spacing: var(--ls-mono);
+              font-variant-numeric: tabular-nums; }
+.y2-node[data-empty="true"] .y2-value { font-size: var(--t-ui); color: var(--ink-2); }
+.y2-sub { margin-top: 2px; font-size: var(--t-ui); line-height: 1.45; color: var(--ink-2);
+          overflow-wrap: anywhere; }
+
+.y2-runs { list-style: none; margin: 7px 0 0; padding: 0; display: grid; gap: 4px; }
+.y2-run { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: baseline;
+          font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink-2); }
+.y2-run b, .y2-run i { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+                       font-variant-numeric: tabular-nums; font-style: normal; }
+.y2-run b { font-weight: 500; color: var(--ink); }
+.y2-run span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.y2-files { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 3px; }
+.y2-files li { font-size: var(--t-ui); color: var(--ink-2); overflow-wrap: anywhere; }
+.y2-end .y2-value { color: var(--ink-2); font-size: var(--t-ui); }
+</style>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.querySelector('[data-variant="2"]');
+  if (!root) return;
+  var line = root.querySelector("#y2-line");
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function node(label, value, sub, empty, extra, cls) {
+    return '<li class="y2-node' + (cls ? " " + cls : "") + '" data-empty="' + (empty ? "true" : "false") + '">' +
+           '<p class="y2-label">' + esc(label) + '</p>' +
+           '<p class="y2-value">' + value + '</p>' +
+           (sub ? '<p class="y2-sub">' + esc(sub) + '</p>' : "") +
+           (extra || "") + '</li>';
+  }
+
+  function render(d) {
+    d = d || { reach: null, path: null, when: "none", runs: [], files: [] };
+    var html = "";
+
+    html += d.reach
+      ? node("Kimga", '<b>~' + esc(d.reach) + '</b> kishi',
+             (d.path || []).join(" / ") + " · taxminiy", false)
+      : node("Kimga", "Qamrov tanlanmagan", "01-bo‘limdan hududni tanlang", true);
+
+    if (d.when === "now") {
+      html += node("Qachon", "Hoziroq", "Navbatga qo‘yilgan zahoti", false);
+    } else if (d.when === "repeat" && d.runs.length) {
+      var runs = '<ul class="y2-runs">' + d.runs.map(function (r) {
+        return '<li class="y2-run"><b>' + esc(r.iso) + '</b><span>' + esc(r.day) +
+               '</span><i>' + esc(r.time) + '</i></li>';
+      }).join("") + '</ul>';
+      html += node("Qachon", esc(d.whenLine || "Takroriy jadval"), "Eng yaqin uchtasi:", false, runs);
+    } else {
+      html += node("Qachon", "Vaqt tanlanmagan", "03-bo‘limda sana va soatni belgilang", true);
+    }
+
+    html += d.files.length
+      ? node("Nima bilan", d.files.length + " ta ilova", null, false,
+             '<ul class="y2-files">' + d.files.map(function (f) {
+               return "<li>" + esc(f) + "</li>";
+             }).join("") + '</ul>')
+      : node("Nima bilan", "Ilovasiz", "Ixtiyoriy — xabar ilovasiz ham ketadi", true);
+
+    /* Oxirgi tugun HAR DOIM turadi va u yagona halol da'vo: ekran «yuborildi»
+       demaydi, chunki hech narsa yuborilmagan. */
+    html += node("Yuborish", "«Navbatga qo‘yish» bosilgach yo‘lga chiqadi", null, false, "", "y2-end");
+
+    line.innerHTML = html;
+  }
+
+  root.addEventListener("om:data", function (e) { render(e.detail); });
+  render(null);
+})();
+</script>

@@ -74,24 +74,3 @@ window.OM_GEO = {
     "Mirobod tumani":   { pop: 145000, mahallas: { "Mirobod MFY": 2300, "Salar MFY": 1900 } } } }
 };
 
-/* Tayyor ssenariylar — matn ikkala tilda, bo'shliqlari bilan. */
-window.OM_TEMPLATES = {
-  water: {
-    uzTitle: "Suv ta’minoti vaqtincha to‘xtatiladi",
-    uzBody:  "25-avgust kuni soat 09:00 dan 15:00 gacha suv ta’minoti to‘xtatiladi. Sabab — tarmoqda ta’mirlash ishlari.",
-    ruTitle: "Водоснабжение будет временно отключено",
-    ruBody:  "25 августа с 09:00 до 15:00 водоснабжение будет отключено. Причина — ремонтные работы на сети."
-  },
-  power: {
-    uzTitle: "Elektr tarmog‘ida ta’mirlash ishlari",
-    uzBody:  "26-avgust kuni 08:00–13:00 oralig‘ida elektr uzatiladi. Ishlar tugagach ta’minot tiklanadi.",
-    ruTitle: "Ремонтные работы на электросети",
-    ruBody:  "26 августа с 08:00 до 13:00 электроснабжение будет отключено. После работ подача восстановится."
-  },
-  meeting: {
-    uzTitle: "Mahalla umumiy yig‘ini o‘tkaziladi",
-    uzBody:  "Shanba kuni soat 10:00 da mahalla binosida umumiy yig‘in bo‘ladi. Barcha xonadon vakillari taklif etiladi.",
-    ruTitle: "Состоится общее собрание махалли",
-    ruBody:  "В субботу в 10:00 в здании махалли пройдёт общее собрание. Приглашаются представители всех домов."
-  }
-};

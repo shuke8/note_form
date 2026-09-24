@@ -1,0 +1,137 @@
+<!-- @name: Pochta yorlig‘i
+     @idea: Ustun jo‘natmaning O‘ZIGA aylanadi: qalin kontur, mono katta
+            harflar, punktir ajratkichlar, pastda shtrix-kod chizig‘i.
+            «Kimga» maydoni yorliqdagidek eng katta blok.
+     @best: Ohangni bir zumda uzatadi — bu ekran xabar YUBORISH haqida.
+            Mono tipografiya raqamlarni tabiiy ravishda tekislaydi.
+     @cost: Neytral mahsulot UI oilasidan chiqadi — kompozitorning qolgan
+            qismi hairline va yumshoq radiusda qurilgan, bu blok esa
+            «bosma» tilida gapiradi. Uzun mahalla nomi katta harfda
+            ikki qatorga tushadi. -->
+<section class="y5" data-variant="5" aria-label="Yetkazish ma’lumotlari">
+  <div class="y5-label">
+    <div class="y5-strip">
+      <span>Onlayn Mahalla</span>
+      <span>Yetkazish yorlig‘i</span>
+    </div>
+    <div id="y5-body"></div>
+    <div class="y5-foot">
+      <span class="y5-bars" aria-hidden="true"></span>
+      <p class="y5-note">Reestr raqami server tasdiqlagach qo‘yiladi</p>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Kontur QALIN (1.5px `--edge`): yorliq metaforasi hairline bilan
+   ishlamaydi — u yerda chegara qog'ozning kesilgan cheti. */
+.y5-label { background: var(--paper); border: 1.5px solid var(--edge); border-radius: var(--r-panel);
+            overflow: hidden; }
+.y5-strip { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            padding: 8px 12px; background: var(--ink); color: var(--paper);
+            font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+            text-transform: uppercase; }
+.y5-strip span:last-child { color: var(--paper); opacity: 0.72; }
+
+.y5-block { padding: 13px 14px; }
+.y5-block + .y5-block { border-top: 1px dashed var(--hairline-2); }
+.y5-term { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: 0.08em;
+           text-transform: uppercase; color: var(--ink-2); }
+/* Yorliqning eng katta maydoni. `text-transform` YO'Q: mahalla nomlari
+   katta harfda o'qish tezligini pasaytiradi va uzun nom ikki qatorga
+   tushib blokni buzadi. */
+.y5-to { margin-top: 6px; font-family: var(--mono); font-weight: 500; font-size: 21px;
+         line-height: 1.15; letter-spacing: -0.01em; color: var(--ink);
+         font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.y5-sub { margin-top: 4px; font-size: var(--t-ui); line-height: 1.4; color: var(--ink-2);
+          overflow-wrap: anywhere; }
+.y5-block[data-empty="true"] .y5-to { font-family: var(--sans); font-weight: 400;
+                                      font-size: var(--t-ui); line-height: 1.45; color: var(--ink-2); }
+/* Ilova IXTIYORIY — 21px mono unga qamrov bilan teng og'irlik berardi. */
+.y5-quiet { font-size: var(--t-body); letter-spacing: var(--ls-body); }
+
+.y5-runs { list-style: none; margin: 7px 0 0; padding: 0; display: grid; gap: 4px; }
+.y5-run { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px;
+          align-items: baseline; font-family: var(--mono); font-size: var(--t-mono-sm);
+          letter-spacing: var(--ls-mono); font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.y5-run b { font-weight: 500; color: var(--ink); }
+.y5-run i { font-style: normal; }
+.y5-run span { text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.y5-files { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 3px; }
+.y5-files li { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+               color: var(--ink); overflow-wrap: anywhere; }
+
+.y5-foot { padding: 12px 14px 13px; border-top: 1.5px solid var(--edge); background: var(--paper-alt); }
+/* Shtrix-kod — DEKORATIV va shuni ochiq aytadi: hech qanday raqamni
+   kodlamaydi, shuning uchun `aria-hidden` va ostida izoh turadi. */
+.y5-bars { display: block; height: 26px; border-radius: 2px;
+           background: repeating-linear-gradient(90deg,
+             var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 9px,
+             var(--ink) 9px 12px, transparent 12px 13px, var(--ink) 13px 14px, transparent 14px 18px);
+           opacity: 0.34; }
+.y5-note { margin-top: 8px; font-family: var(--mono); font-size: var(--t-mono-sm);
+           letter-spacing: var(--ls-mono); text-transform: uppercase; color: var(--ink-2); }
+</style>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.querySelector('[data-variant="5"]');
+  if (!root) return;
+  var body = root.querySelector("#y5-body");
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function block(term, big, sub, empty, extra) {
+    return '<div class="y5-block" data-empty="' + (empty ? "true" : "false") + '">' +
+           '<p class="y5-term">' + esc(term) + '</p>' +
+           '<p class="y5-to">' + big + '</p>' +
+           (sub ? '<p class="y5-sub">' + esc(sub) + '</p>' : "") + (extra || "") + '</div>';
+  }
+
+  function render(d) {
+    d = d || { reach: null, path: null, when: "none", runs: [], files: [] };
+    var html = "";
+
+    html += d.reach
+      ? block("Kimga", "~" + esc(d.reach) + " kishi",
+              (d.path || []).join(" / ") + " · taxminiy", false)
+      : block("Kimga", "Qamrov tanlanmagan", "01-bo‘limdan hududni tanlang", true);
+
+    if (d.when === "now") {
+      html += block("Qachon", "Hoziroq", "Navbatga qo‘yilgan zahoti", false);
+    } else if (d.when === "repeat" && d.runs.length) {
+      /* Sarlavhada SANANING O'ZI turadi: «3 ta yaqin sana» pastdagi
+         ro'yxatning uzunligini takrorlardi, savolga esa javob bermasdi. */
+      var rest = d.runs.slice(1);
+      html += block("Qachon", esc(d.runs[0].iso),
+        d.runs[0].day + ", " + d.runs[0].time + (d.whenLine ? " · " + d.whenLine : ""), false,
+        rest.length
+          ? '<p class="y5-term" style="margin-top:9px">Keyin</p><ul class="y5-runs">' +
+            rest.map(function (r) {
+              return '<li class="y5-run"><b>' + esc(r.iso) + '</b><span>' + esc(r.day) +
+                     '</span><i>' + esc(r.time) + '</i></li>';
+            }).join("") + '</ul>'
+          : "");
+    } else {
+      html += block("Qachon", "Vaqt tanlanmagan", "03-bo‘limda sana va soatni belgilang", true);
+    }
+
+    html += d.files.length
+      ? block("Ilova", '<span class="y5-quiet">' + d.files.length + " ta fayl</span>", null, false,
+              '<ul class="y5-files">' + d.files.map(function (f) {
+                return "<li>" + esc(f) + "</li>";
+              }).join("") + '</ul>')
+      : block("Ilova", "Yo‘q", "Ixtiyoriy — xabar ilovasiz ham ketadi", true);
+
+    body.innerHTML = html;
+  }
+
+  root.addEventListener("om:data", function (e) { render(e.detail); });
+  render(null);
+})();
+</script>

@@ -27,7 +27,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" />
 <link rel="stylesheet" href="assets/system.css" />
 <link rel="stylesheet" href="assets/components.css" />
 <link rel="stylesheet" href="assets/landing.css" />
@@ -51,7 +51,6 @@
   <symbol id="i-droplet" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></symbol>
   <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /> <path d="M14 2v5a1 1 0 0 0 1 1h5" /> <path d="M10 9H8" /> <path d="M16 13H8" /> <path d="M16 17H8" /></symbol>
   <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /></symbol>
-  <symbol id="i-infinity" viewBox="0 0 24 24"><path d="M6 16c5 0 7-8 12-8a4 4 0 0 1 0 8c-5 0-7-8-12-8a4 4 0 1 0 0 8" /></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></symbol>
   <symbol id="i-languages" viewBox="0 0 24 24"><path d="m5 8 6 6" /> <path d="m4 14 6-6 2-3" /> <path d="M2 5h12" /> <path d="M7 2h1" /> <path d="m22 22-5-10-5 10" /> <path d="M14 18h6" /></symbol>
   <symbol id="i-list" viewBox="0 0 24 24"><path d="M3 5h.01" /> <path d="M3 12h.01" /> <path d="M3 19h.01" /> <path d="M8 5h13" /> <path d="M8 12h13" /> <path d="M8 19h13" /></symbol>
@@ -87,7 +86,7 @@
     <nav class="nav-links" id="navLinks" data-open="false" aria-label="Asosiy">
       <a class="nav-link" href="#imkoniyat">Imkoniyatlar</a>
       <a class="nav-link" href="#bosqich">Qanday ishlaydi</a>
-      <a class="nav-link" href="#tarix">Yuborilganlar</a>
+      <a class="nav-link" href="./yuborilganlar.html">Yuborilganlar</a>
       <a class="btn btn-ink nav-mobile-only" href="./composer.html" style="margin-top:10px">Xabar yozish</a>
     </nav>
 
@@ -296,176 +295,39 @@
   </section>
 
   <!-- ====================== YUBORILGANLAR ====================== -->
+  <!-- Ro‘yxatning O‘ZI endi alohida sahifada (`yuborilganlar.html`): u yerda
+       qidiruv, filtr, tartib va har yozuv ustidagi amallar bor. Landingda
+       to‘rtta kartani takrorlash ikki joyda ikki xil ro‘yxat bo‘lish xavfini
+       tug‘dirardi — bu yerda faqat KIRISH qoladi. -->
   <section class="shell section" id="tarix">
     <div class="rule-head" data-reveal="rise">
       <p class="eyebrow">So‘nggi yuborilganlar</p>
       <span class="chip chip-mono" style="margin-inline-start:auto">Namuna</span>
     </div>
 
-    <div class="feed-grid" style="margin-top:32px" data-stagger="60">
-      <article class="feed-item" data-reveal="rise" data-open="false">
-        <!-- Butun karta bitta tugma: sarlavhaning yonidagi vaqt ham, ikonka ham
-             ayni bitta nishonning bo‘lagi — kichik ilinadigan joy qidirilmasin. -->
-        <h3 class="feed-h">
-          <button type="button" class="feed-open" aria-expanded="false" aria-controls="feed-suv">
-            <span class="feed-thumb" aria-hidden="true">
-              <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-droplet"/></svg>
-            </span>
-            <span class="feed-head">
-              <span class="feed-title">Suv ta’minoti 09:00–15:00 oralig‘ida to‘xtatiladi</span>
-              <span class="feed-meta"><span>8-mahalla</span><span class="sep">·</span><span>2 soat oldin</span></span>
-            </span>
-            <svg class="ico feed-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
-          </button>
-        </h3>
-        <div class="feed-body" id="feed-suv" hidden>
-          <p class="eyebrow eyebrow-sm">O‘zbekcha</p>
-          <p class="feed-strong">Suv ta’minoti vaqtincha to‘xtatiladi</p>
-          <p class="feed-text">Ertaga soat 09:00 dan 15:00 gacha suv bo‘lmaydi. Zaxira suv g‘amlab qo‘ying.</p>
-          <p class="eyebrow eyebrow-sm feed-gap">Ruscha</p>
-          <p class="feed-strong">Временное отключение воды</p>
-          <p class="feed-text">Завтра с 09:00 до 15:00 воды не будет. Запаситесь водой заранее.</p>
-          <dl class="feed-facts">
-            <div><dt>Qamrov</dt><dd>Xorazm viloyati / Qo‘shko‘pir tumani / 8-mahalla</dd></div>
-            <div><dt>Yuborilgan</dt><dd>2026-08-26 · 07:10</dd></div>
-            <div><dt>Jadval</dt><dd>Hoziroq</dd></div>
-          </dl>
-          <!-- Yetkazilganlar soni ATAYLAB yo‘q: uni faqat server biladi,
-               o‘ylab topilgan raqam esa fakt bo‘lib ko‘rinardi. -->
-          <p class="hint">Namuna yozuv. Yetkazilganlar soni va real tarix serverdan keladi.</p>
-        </div>
-      </article>
-      <article class="feed-item" data-reveal="rise" data-open="false">
-        <!-- Butun karta bitta tugma: sarlavhaning yonidagi vaqt ham, ikonka ham
-             ayni bitta nishonning bo‘lagi — kichik ilinadigan joy qidirilmasin. -->
-        <h3 class="feed-h">
-          <button type="button" class="feed-open" aria-expanded="false" aria-controls="feed-elektr">
-            <span class="feed-thumb" aria-hidden="true">
-              <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg>
-            </span>
-            <span class="feed-head">
-              <span class="feed-title">Elektr tarmog‘ida ta’mirlash ishlari boshlanadi</span>
-              <span class="feed-meta"><span>Qo‘shko‘pir tumani</span><span class="sep">·</span><span>kecha</span></span>
-            </span>
-            <svg class="ico feed-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
-          </button>
-        </h3>
-        <div class="feed-body" id="feed-elektr" hidden>
-          <p class="eyebrow eyebrow-sm">O‘zbekcha</p>
-          <p class="feed-strong">Elektr tarmog‘ida ta’mirlash</p>
-          <p class="feed-text">Chorshanba kuni 10:00–16:00 oralig‘ida elektr uziladi. Ish tugagach darhol ulanadi.</p>
-          <p class="eyebrow eyebrow-sm feed-gap">Ruscha</p>
-          <p class="feed-strong">Ремонт электросети</p>
-          <p class="feed-text">В среду с 10:00 до 16:00 электричество будет отключено. Подключение сразу после работ.</p>
-          <dl class="feed-facts">
-            <div><dt>Qamrov</dt><dd>Xorazm viloyati / Qo‘shko‘pir tumani</dd></div>
-            <div><dt>Yuborilgan</dt><dd>2026-08-25 · 16:40</dd></div>
-            <div><dt>Jadval</dt><dd>2026-08-25 · 16:40 (belgilangan vaqtda)</dd></div>
-          </dl>
-          <!-- Yetkazilganlar soni ATAYLAB yo‘q: uni faqat server biladi,
-               o‘ylab topilgan raqam esa fakt bo‘lib ko‘rinardi. -->
-          <p class="hint">Namuna yozuv. Yetkazilganlar soni va real tarix serverdan keladi.</p>
-        </div>
-      </article>
-      <article class="feed-item" data-reveal="rise" data-open="false">
-        <!-- Butun karta bitta tugma: sarlavhaning yonidagi vaqt ham, ikonka ham
-             ayni bitta nishonning bo‘lagi — kichik ilinadigan joy qidirilmasin. -->
-        <h3 class="feed-h">
-          <button type="button" class="feed-open" aria-expanded="false" aria-controls="feed-yigin">
-            <span class="feed-thumb" aria-hidden="true">
-              <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-users"/></svg>
-            </span>
-            <span class="feed-head">
-              <span class="feed-title">Mahalla umumiy yig‘ini shanba kuni o‘tkaziladi</span>
-              <span class="feed-meta"><span>8-mahalla</span><span class="sep">·</span><span>3 kun oldin</span></span>
-            </span>
-            <svg class="ico feed-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
-          </button>
-        </h3>
-        <div class="feed-body" id="feed-yigin" hidden>
-          <p class="eyebrow eyebrow-sm">O‘zbekcha</p>
-          <p class="feed-strong">Umumiy yig‘in — shanba, 15:00</p>
-          <p class="feed-text">Mahalla markazida umumiy yig‘in bo‘ladi. Kun tartibi: obodonlashtirish va qish tayyorgarligi.</p>
-          <p class="eyebrow eyebrow-sm feed-gap">Ruscha</p>
-          <p class="feed-strong">Общее собрание — суббота, 15:00</p>
-          <p class="feed-text">В центре махалли состоится общее собрание. Повестка: благоустройство и подготовка к зиме.</p>
-          <dl class="feed-facts">
-            <div><dt>Qamrov</dt><dd>Xorazm viloyati / Qo‘shko‘pir tumani / 8-mahalla</dd></div>
-            <div><dt>Yuborilgan</dt><dd>2026-08-23 · 09:00</dd></div>
-            <div><dt>Jadval</dt><dd>Takroriy · Sh · 09:00 · har hafta</dd></div>
-          </dl>
-          <!-- Yetkazilganlar soni ATAYLAB yo‘q: uni faqat server biladi,
-               o‘ylab topilgan raqam esa fakt bo‘lib ko‘rinardi. -->
-          <p class="hint">Namuna yozuv. Yetkazilganlar soni va real tarix serverdan keladi.</p>
-        </div>
-      </article>
-      <article class="feed-item" data-reveal="rise" data-open="false">
-        <!-- Butun karta bitta tugma: sarlavhaning yonidagi vaqt ham, ikonka ham
-             ayni bitta nishonning bo‘lagi — kichik ilinadigan joy qidirilmasin. -->
-        <h3 class="feed-h">
-          <button type="button" class="feed-open" aria-expanded="false" aria-controls="feed-korik">
-            <span class="feed-thumb" aria-hidden="true">
-              <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>
-            </span>
-            <span class="feed-head">
-              <span class="feed-title">Bepul tibbiy ko‘rik jadvali e’lon qilindi</span>
-              <span class="feed-meta"><span>Xorazm viloyati</span><span class="sep">·</span><span>1 hafta oldin</span></span>
-            </span>
-            <svg class="ico feed-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-down"/></svg>
-          </button>
-        </h3>
-        <div class="feed-body" id="feed-korik" hidden>
-          <p class="eyebrow eyebrow-sm">O‘zbekcha</p>
-          <p class="feed-strong">Bepul tibbiy ko‘rik</p>
-          <p class="feed-text">Sentyabr oyi davomida tumanlar bo‘ylab bepul ko‘rik o‘tkaziladi. Jadval mahalla punktlarida.</p>
-          <p class="eyebrow eyebrow-sm feed-gap">Ruscha</p>
-          <p class="feed-strong">Бесплатный медосмотр</p>
-          <p class="feed-text">В течение сентября в районах пройдёт бесплатный медосмотр. Расписание — в пунктах махалли.</p>
-          <dl class="feed-facts">
-            <div><dt>Qamrov</dt><dd>Xorazm viloyati</dd></div>
-            <div><dt>Yuborilgan</dt><dd>2026-08-19 · 08:30</dd></div>
-            <div><dt>Jadval</dt><dd>Takroriy · Du, Pa · 09:00 · har yili Sen, Okt</dd></div>
-          </dl>
-          <!-- Yetkazilganlar soni ATAYLAB yo‘q: uni faqat server biladi,
-               o‘ylab topilgan raqam esa fakt bo‘lib ko‘rinardi. -->
-          <p class="hint">Namuna yozuv. Yetkazilganlar soni va real tarix serverdan keladi.</p>
-        </div>
-      </article>
+    <div class="tarix-cta" data-reveal="rise">
+      <div class="tarix-copy">
+        <h2 class="d3">Yuborilgan va davom etayotgan xabarlar bitta ro‘yxatda</h2>
+        <p class="lead" style="margin-top:12px;max-width:56ch">
+          Bir martalik xabarlar yuborilib bo‘lgan — ular qaytmaydi. Davomiy
+          xabarlar jadval bo‘yicha qaytadi va ularni to‘xtatish mumkin.
+          Ro‘yxatda qidiruv, turi va holati bo‘yicha filtr, yetkazish hisobi
+          va har yozuv ustidagi amallar bor.
+        </p>
+        <a class="btn btn-accent" href="./yuborilganlar.html" style="margin-top:22px">
+          Ro‘yxatni ochish
+          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+        </a>
+      </div>
+      <ul class="tarix-facts">
+        <li><span class="kind-tag" data-kind="repeat">
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-repeat"/></svg>Davomiy</span>
+          <span>jadval bo‘yicha qaytadi — to‘xtatilmaguncha yoki belgilangan sanagacha</span></li>
+        <li><span class="kind-tag" data-kind="once">
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>Bir martalik</span>
+          <span>yuborilib bo‘lgan, qaytmaydi</span></li>
+      </ul>
     </div>
-      </article>
-      <article class="feed-item" data-reveal="rise">
-        <span class="feed-thumb" aria-hidden="true">
-          <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg>
-        </span>
-        <div>
-          <h3 class="feed-title">Elektr tarmog‘ida ta’mirlash ishlari boshlanadi</h3>
-          <p class="feed-meta"><span>Qo‘shko‘pir tumani</span><span class="sep">·</span><span>kecha</span></p>
-        </div>
-      </article>
-      <article class="feed-item" data-reveal="rise">
-        <span class="feed-thumb" aria-hidden="true">
-          <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-users"/></svg>
-        </span>
-        <div>
-          <h3 class="feed-title">Mahalla umumiy yig‘ini shanba kuni o‘tkaziladi</h3>
-          <p class="feed-meta"><span>8-mahalla</span><span class="sep">·</span><span>3 kun oldin</span></p>
-        </div>
-      </article>
-      <article class="feed-item" data-reveal="rise">
-        <span class="feed-thumb" aria-hidden="true">
-          <svg class="ico" width="22" height="22" aria-hidden="true" focusable="false"><use href="#i-plus"/></svg>
-        </span>
-        <div>
-          <h3 class="feed-title">Bepul tibbiy ko‘rik jadvali e’lon qilindi</h3>
-          <p class="feed-meta"><span>Xorazm viloyati</span><span class="sep">·</span><span>1 hafta oldin</span></p>
-        </div>
-      </article>
-    </div>
-
-    <p class="hint" style="margin-top:24px">
-      Yuqoridagi to‘rttasi — interfeys ko‘rinishini ko‘rsatuvchi namuna yozuvlar.
-      Real tarix serverdan keladi.
-    </p>
   </section>
 
   <!-- ========================= YAKUNIY CTA ========================= -->
@@ -507,6 +369,16 @@
         <a class="footer-link" href="#imkoniyat">Imkoniyatlar</a>
         <a class="footer-link" href="#bosqich">Qanday ishlaydi</a>
       </div>
+      <!-- `natija.html` va `variants.html` OQIMDA hech qayerdan ochilmasdi —
+           ikkalasi ham tupik sahifa edi. Ular mahsulot ekrani emas, dizayn
+           namunasi, shuning uchun navigatsiyaga emas, footerdagi o'z
+           ustuniga chiqadi. -->
+      <div class="footer-col">
+        <p class="eyebrow eyebrow-sm">Dizayn namunalari</p>
+        <a class="footer-link" href="./natija.html">Yuborish natijasi</a>
+        <a class="footer-link" href="./variants.html">«Kim oladi?» — 8 variant</a>
+        <a class="footer-link" href="./yetkazish.html">«Yetkazish» — 8 variant</a>
+      </div>
       <div class="footer-col">
         <p class="eyebrow eyebrow-sm">Qamrov</p>
         <a class="footer-link" href="#tarix">Yuborilganlar</a>
@@ -522,7 +394,7 @@
     </div>
     <div class="footer-bottom">
       <p class="hint">© 2026 Onlayn Mahalla</p>
-      <p class="eyebrow eyebrow-sm">Dizayn tizimi — designsystems.surf o‘lchovi bo‘yicha</p>
+      <p class="eyebrow eyebrow-sm">Dizayn tizimi — online-mahalla.uz o‘lchovi bo‘yicha</p>
     </div>
   </div>
 </footer>

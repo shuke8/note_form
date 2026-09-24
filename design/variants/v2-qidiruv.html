@@ -52,7 +52,7 @@
   .v2 .v2-input { padding-inline: 44px 48px; }
   .v2 .v2-clear { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); }
   /* Panel absolut turadi: ochilganda pastdagi yakun joyidan siljimasin. z-index tizim narvonida (nav 40 · toast 60) — host yopishqoq tasmasi 20 dan yuqori. */
-  .v2-pop { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 30; overflow: hidden; border-radius: var(--r-5); background: var(--paper); box-shadow: var(--lift-2); animation: v2-in var(--d-hover) var(--ease-out); }
+  .v2-pop { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 30; overflow: hidden; border-radius: var(--r-card); background: var(--paper); box-shadow: var(--lift-2); animation: v2-in var(--d-hover) var(--ease-out); }
   @keyframes v2-in { from { opacity: 0; transform: translateY(-6px); } }
   .v2-head { padding: 12px 16px 6px; }   .v2-list { position: relative; max-height: 312px; overflow-y: auto; overscroll-behavior: contain; }
   .v2-opt { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; cursor: pointer; min-height: 56px; padding: 9px 16px 9px 14px; border-left: 2px solid transparent; }
@@ -61,11 +61,11 @@
   .v2-side { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
   .v2-rc { font-size: var(--t-ui); color: var(--ink); font-variant-numeric: tabular-nums; }
   /* 600 — sahifa yuklaydigan eng og'ir Inter face; 700 yozilsa brauzer zaxira shriftda haqiqiy bold ko'rsatib, Inter kelgach 600 ga qaytardi. */
-  .v2 mark { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; border-radius: var(--r-1); padding: 0 1px; }
+  .v2 mark { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; border-radius: var(--r-control); padding: 0 1px; }
   @media (hover: hover) { .v2-opt:hover { background: var(--ghost-quiet); } }
   .v2-opt[aria-selected="true"] { background: var(--ghost); border-left-color: var(--accent-solid); }
   .v2-none { padding: 4px 16px 16px; }   .v2-none-t { font-size: var(--t-body); color: var(--ink); font-weight: 500; margin-bottom: 4px; overflow-wrap: anywhere; }
-  .v2-out { margin-top: 14px; }   .v2-sel { display: flex; flex-direction: column; gap: 8px; padding: 18px; border: 1px solid var(--hairline); border-radius: var(--r-5); background: var(--paper-alt); }
+  .v2-out { margin-top: 14px; }   .v2-sel { display: flex; flex-direction: column; gap: 8px; padding: 18px; border: 1px solid var(--hairline); border-radius: var(--r-card); background: var(--paper-alt); }
   .v2-sel-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .v2-name { font-family: var(--display); font-size: var(--t-lead); line-height: 1.3; letter-spacing: var(--ls-lead); color: var(--ink); font-weight: 500; overflow-wrap: anywhere; }
   .v2-path { font-size: var(--t-ui); color: var(--ink-2); }

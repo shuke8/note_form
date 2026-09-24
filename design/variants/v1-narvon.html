@@ -79,7 +79,7 @@
   .v1-ladder[data-failed="true"] { background: var(--paper-alt); }
   .v1-ladder[data-failed="true"] .v1-pick, .v1-ladder[data-failed="true"] .v1-radio { cursor: not-allowed; } .v1-ladder[data-failed="true"] .v1-radio { border-color: var(--ink-3); } .v1-ladder[data-failed="true"] .v1-rung:hover { background: transparent; }
   .v1-foot { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-top: 1px solid var(--hairline); background: var(--paper-alt); }
-  .v1-track { position: relative; flex: 1 1 auto; height: 4px; min-width: 80px; border-radius: var(--r-pill); background: var(--hairline-2); overflow: hidden; }
+  .v1-track { position: relative; flex: 1 1 auto; height: 4px; min-width: 80px; border-radius: var(--r-full); background: var(--hairline-2); overflow: hidden; }
   /* Ulushi 0.004% bo'lgan mahalla ham iz qoldirsin — «nol emas» degani rost qolsin. */
   .v1-track::after { content: ""; position: absolute; inset-block: 0; inset-inline-start: 0; width: 3px; background-image: var(--accent); opacity: 0; transition: opacity var(--d-hover) var(--ease-out); } .v1-track[data-on="true"]::after { opacity: 1; }
   .v1-fill { position: absolute; inset: 0; background-image: var(--accent); transform: scaleX(0); transform-origin: left center; transition: transform var(--d-pane) var(--ease-out); }

@@ -137,7 +137,21 @@
         var cs = getComputedStyle(caret);
         cw = caret.getBoundingClientRect().width + (parseFloat(cs.marginInlineStart) || 0);
       }
-      if (w > 0) tail.style.minWidth = Math.ceil(w + cw) + "px";
+      /* ZAXIRA O'CHIRILDI (2026-08-27, sarlavha markazlashgandan keyin).
+         Chapdan tekislangan sarlavhada eng uzun so'z bo'yicha olingan
+         zaxira qator OXIRIDA ko'rinmay turardi. Markazlashgan sarlavhada
+         esa u qatorning bir qismiga aylanadi: qisqa so'z 406px lik
+         qutining o'rtasida qolib, tire bilan so'z orasida 70px bo'shliq
+         paydo bo'ldi — o'quvchiga qo'sh probel bo'lib ko'rinardi
+         (o'lchandi: quti 406px, so'z 265px).
+
+         Endi qator har harfda qaytadan markazlashadi. Bu — yozuv
+         mashinkasining tabiiy xulqi: matn markazdan o'sib boradi. Vertikal
+         sakrash YO'Q, chunki qatorlar soni o'zgarmaydi (`nowrap` + 22ch).
+         O'lchov funksiyasining o'zi qoldirildi: u kegl va shrift
+         almashganini kuzatadi va kelajakda zaxira yana kerak bo'lsa
+         tayyor turadi. */
+      void w; void cw;
     }
     measure();
     void widest;
@@ -325,7 +339,7 @@
           // deb o'ylaydi.
           if (!storageWarned) {
             storageWarned = true;
-            if (window.omToast) window.omToast("Mavzu tanlovi bu brauzerda saqlanmaydi");
+            if (window.omToast) window.omToast("Mavzu tanlovi bu brauzerda saqlanmaydi", "warn");
           }
         }
       });
@@ -374,36 +388,18 @@
     else window.addEventListener("resize", sync);
   }
 
-  /* ---------------------------------------------------------------------------
-     SO'NGGI YUBORILGANLAR — ochiladigan karta
-     Karta bosilganda boshqa sahifaga O'TILMAYDI: xabarning o'zi shu yerda
-     ochiladi. Havola bo'lganida foydalanuvchi ro'yxatdagi joyini yo'qotib,
-     bir xabarni ko'rish uchun orqaga qaytishga majbur bo'lardi.
-  ------------------------------------------------------------------------- */
-  function initFeed() {
-    var items = document.querySelectorAll(".feed-item .feed-open");
-    if (!items.length) return;
-    items.forEach(function (btn) {
-      var card = btn.closest(".feed-item");
-      var body = document.getElementById(btn.getAttribute("aria-controls"));
-      if (!card || !body) return;
-      btn.addEventListener("click", function () {
-        var open = btn.getAttribute("aria-expanded") === "true";
-        btn.setAttribute("aria-expanded", open ? "false" : "true");
-        card.setAttribute("data-open", open ? "false" : "true");
-        /* `hidden` — balandlik animatsiyasi emas: nol balandlikdagi konteyner
-           ekran o'quvchi uchun hali ham mavjud bo'lib qolardi va yopiq
-           kartaning matni ro'yxatga qo'shilib ketardi. */
-        body.hidden = open;
-      });
-    });
-  }
+  /* «So'nggi yuborilganlar» ochiladigan kartasi va filtri bu yerdan OLIB
+     TASHLANDI: ro'yxat `landing.html` dan `yuborilganlar.html` ga ko'chdi va
+     u yerda kartalar JS bilan quriladi, ya'ni `motion.js` boot paytida ularni
+     topmaydi. Ochish/yopish mantiqi `yuborilganlar.js` ning `card()` ida —
+     element yaratilgan joyda ulanadi.
+     `.feed-*` KOMPONENTI (`components.css`) o'z joyida qoladi. */
 
   /* Har qadam alohida o'raladi: ilgari `initTheme` dagi bitta xato
      `initReveal` ni ham olib ketardi va sahifa bo'm-bo'sh qolardi. */
   function boot() {
     var revealOk = false;
-    [initTheme, initStagger, initReveal, initTypewriter, initNav, initMenu, initFeed, initActions]
+    [initTheme, initStagger, initReveal, initTypewriter, initNav, initMenu, initActions]
       .forEach(function (step) {
         try {
           step();

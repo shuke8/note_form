@@ -1532,3 +1532,1002 @@ ko'rsatadi. Loyihaning barcha CSS fayllari balansda.
   composer+landing auditi (8/8) — hammasi toza.
 
 Kadrlar: `.screenshots/panel-tepada-*.png`, `panel-pastda-*.png`
+
+---
+
+## «Yetkazish ma’lumotlari» — sakkiz variant (2026-08-27)
+
+05-bo‘limdagi yon ustun (`.dispatch-meta`) yorliq + qator matndan iborat edi:
+uch blok bir xil og‘irlikda, o‘z yuzasi yo‘q, «ILOVA / yo‘q» ikki qator joy
+egallab hech narsa demasdi. Muammo bezakda emas, TUZILISHDA edi.
+
+Sakkizta mustaqil yechim qurildi va yonma-yon solishtirish sahifasiga
+qo‘yildi — `yetkazish.html`. Fragmentlar `design/yetkazish/y1…y8`, kontrakt
+`design/yetkazish/CONTRACT.md`, xulosa `design/yetkazish/TAQQOSLASH.md`.
+
+`variants.html` dan farqi TESKARI: u yerda fragment tanlovni hodisa qilib
+CHIQARARDI, bu yerda host ma’lumotni fragmentga BERADI (`om:data`). Manba
+bitta, demak sakkiz variant ekranda ayni bir xil faktni ko‘rsatishi tuzilish
+darajasida kafolatlangan. Sahifada uch holat (to‘liq · tor qamrov · bo‘sh),
+ikki kenglik (340px ustun · to‘liq) va sahnaning O‘Z mavzusi almashadi.
+
+Sahna mavzusi ikkinchi NUSXA bilan emas, o‘sha nusxaning tokenlari bilan
+almashadi: ikki nusxada `id` lar takrorlanib, fragment skripti
+`[data-variant]` ni bittasida topib qolardi.
+
+### Real brauzerda topilgan kamchilik: shaffof `--accent-soft`
+
+Sahna foni `background: var(--accent-soft)` edi. Qorong‘i mavzuda bu token —
+SHAFFOF ko‘k (`rgba(59,130,246,.14)`), ya‘ni ostidagi oq sahifa ko‘rinib
+turardi va sahnadagi oq matn yorug‘ fonda yo‘qolardi. O‘z kartasi yo‘q
+04-variant butunlay o‘qilmas bo‘lgandi. Yechim — fon ikki qatlam:
+
+```css
+background-color: var(--paper);
+background-image: linear-gradient(var(--accent-soft), var(--accent-soft));
+```
+
+Qoida: **shaffof token yolg‘iz fon sifatida berilmaydi** — ostiga qattiq
+yuza qo‘yiladi, aks holda u ota-onaning rangiga bog‘lanib qoladi.
+
+Qolgan tuzatishlar (takrorlangan sarlavha, matnda `--ink-3`, kesilgan sana,
+uzilib ketgan ming ajratkichi) TAQQOSLASH.md da sabab bilan yozilgan.
+
+Kadrlar: `.screenshots/yx-sheet-*.png`
+
+### Tanlangan: 03 — fakt plitalari (2026-08-27)
+
+Foydalanuvchi qarori. `.dispatch-meta` o‘rniga uch **plita**: qamrov keng
+plitada (bo‘limning yagona katta soni va yagona aksent nuqtasi), keyingi
+yuborish va ilova esa joy bo‘lsa yonma-yon, tor ustunda ustma-ust.
+
+- Har plita `--paper` yuzada, `inset 0 0 0 1px var(--hairline)` bilan —
+  ustun endi fonda «suzmaydi», har faktning o‘z chegarasi bor.
+- Ikonka DEKORATIV: faktni takrorlaydi, yangi ma’lumot bermaydi — burchakda,
+  `--ink-3` da, `aria-hidden` bilan.
+- `data-num` — «bu qiymat RAQAMMI» degan savol, bo‘shlik emas. Aholi soni
+  yo‘q hududda yo‘l tanlangan bo‘lsa ham katta mono tipografiya berilmaydi:
+  bo‘sh joyni to‘ldirgan katta matn «fakt» bo‘lib ko‘rinardi.
+- Bo‘sh holatda `«—»` YOZILMAYDI. Har holat sababini va qaysi bo‘limdan
+  tuzatilishini aytadi («Vaqt tanlanmagan / 03-bo‘limda sana va soatni
+  belgilang», «Sana topilmadi / Bu qoida bo‘yicha hech qachon yuborilmaydi»).
+- Sanalar uch ustunda: sana · kun · soat. Ikki ustunda kun nomi bilan soat
+  bitta yacheykaga tiqilib, ellipsis SANANI kesib tashlardi.
+
+#### Konteyner so‘rovi: element O‘ZINI so‘ray olmaydi
+
+Birinchi urinishda `container-type: inline-size` va `grid-template-columns`
+BITTA elementda (`.dispatch-facts`) edi. `@container` so‘rovi faqat
+AJDODGA yo‘naltiriladi, ya’ni element o‘z kengligini so‘rab ololmaydi —
+653px kenglikda ham bitta ustun qolib ketgandi. Ikkovi ajratildi:
+`.dispatch-facts` — konteyner, `.fact-grid` — setka.
+
+Media so‘rovi bu yerda ATAYLAB ishlatilmadi: qaror ekranning emas,
+USTUNNING kengligiga bog‘liq. 1440px da ustun ~394px (bitta ustun), 800px
+da esa ustun to‘liq enga chiqadi va 653px bo‘ladi (ikki ustun) — media
+so‘rovi ikkovini teskari hal qilardi.
+
+Verify: 320 · 375 · 800 · 1440, light+dark, bo‘sh · hoziroq · takroriy
+jadval. Gorizontal scroll yo‘q, kesilgan element yo‘q, `pageerror` 0,
+05-bo‘limning qolgan 17 tuguni joyida.
+
+Kadrlar: `.screenshots/yakun-plita-*.png`
+
+#### Ikki ustunning balandligi (2026-08-27)
+
+Plitalar qo‘yilgach o‘lchandi: chap ustun (telefon sahnasi) 173px, o‘ng ustun
+(faktlar) 348px — AYNAN ikki baravar. Sahna pastida ochiq bo‘shliq turardi.
+
+Ikki yo‘l sinaldi va real brauzerda solishtirildi:
+
+- **B — faktlarni ikki ustunga yoyish** (konteyner chegarasi 440px):
+  faktlar 239px ga tushdi, lekin plitalar 223px ga siqilib, «Ixtiyoriy —
+  xabar ilovasiz ham ketadi» ikki qatorga bo‘lindi va sanalar tiqilib qoldi.
+  Butun blok past-keng bo‘lib, artefakt (telefon sahnasi) o‘z og‘irligini
+  yo‘qotdi. Kadr: `.screenshots/balans-B-2ustun.png`
+- **A — sahna qolgan balandlikni YUTADI** (tanlandi): `align-items: stretch`
+  sahnani qator balandligiga cho‘zadi, `align-content: center` kartalarni
+  markazda ushlaydi. Sahna 548×348 (1,57:1) — mesh gradient nafas oladi,
+  plitalar esa 456px kenglikda qulay qoladi.
+  Kadr: `.screenshots/balans-A-stretch.png`
+
+Nisbat `1.55fr : 1fr` dan `1.2fr : 1fr` ga o‘tdi: o‘ng ustun 394 → 456px,
+plitalar ichida sana qatori bemalol joylashadi.
+
+`.fact-grid { align-content: start }` — faktlar PAST bo‘lgan holatda
+(bo‘sh qamrov) plitalar cho‘zilib, ichida o‘lik bo‘shliq qoldirmasin.
+
+O‘lchov (uch holat, 1440px): bo‘sh 318/318 · hoziroq 329/329 ·
+takroriy jadval 348/348 — ikkovi teng.
+
+#### Yo‘l-yo‘lakay topilgan kamchilik: chip qatordan chiqib ketardi
+
+320px da `.dispatch-title` ichidagi jumla 83px gacha siqilib, `flex: none`
+chip 142px bilan birga 241px berardi — quti esa 201px edi. Chip kartadan
+tashqariga chiqardi. `flex-wrap: wrap` + `.dispatch-line { flex: 1 1 190px }`
+bilan chip o‘z qatoriga tushadi. Bu plitalardan OLDIN ham bor edi.
+
+---
+
+## 02-bo‘lim soddalashtirildi (2026-08-27)
+
+Foydalanuvchi qarori. Ikki blok olib tashlandi:
+
+**Tayyor ssenariylar** (`.tpl-grid` — suv / elektr / yig‘in) — BUTUNLAY
+o‘chirildi: markup, `.tpl*` CSS, `[data-tpl]` boshqaruvchisi,
+`window.OM_TEMPLATES` ma’lumoti va yetim qolgan `i-droplet` sprayt belgisi.
+Matn maydonining `input` tinglovchisi ham soddalashdi — u endi bosilgan
+ssenariy tugmasini qidirmaydi (`$(f.id).addEventListener("input", refresh)`).
+
+Sprayt izohi «faqat ISHLATILADIGAN belgilar turadi» deydi, shuning uchun
+`i-droplet` ham ketdi — u faqat ssenariy tugmasida ishlatilardi.
+
+**Jonli ko‘rinish tasmasi** (`.preview-dock`) — `display: none` bilan
+VAQTINCHA yashirildi, o‘chirilmadi. Sabab: `#pvUz`, `#pvRu`, `#pvTime`,
+`#pvFit` DOM da qolsa `composer.js` dagi tinglovchilar otilmaydi va qaytarish
+bitta qatorni olib tashlash bilan bo‘ladi.
+
+`visibility`/`opacity` EMAS, aynan `display: none`: ko‘rinmas tugma Tab bilan
+topilib qolmasin va ekran o‘quvchi uni o‘qimasin. Qoida fayl OXIRIDA turadi —
+206-qatordagi `position: sticky` va 880px media so‘rovidagi `position: static`
+bilan bir xil aniqlikda, demak oxirgisi yutadi.
+
+Verify: `pageerror` 0, `#pvUz`/`#pvRu`/`#pvTime`/`#pvFit` joyida,
+`dock.offsetParent === null`, 02-bo‘lim holati «4/4 to‘ldirildi», yakuniy
+ko‘rinishdagi telefon kartalari matnni oldingidek oladi.
+
+Kadr: `.screenshots/step2-soddalashtirildi.png`
+
+---
+
+## Sahifa yuzasi va forma qatori (2026-08-27)
+
+### Sahifa kulrangga tushdi — bo‘limlar KO‘RINSIN
+
+Foydalanuvchi shikoyati: «ham orqa fon, ham bo‘limlar oq bo‘lgani uchun
+bo‘limni topib olish qiyin». O‘lchov buni tasdiqladi: `body` ham,
+`.step-sec` ham `--paper` edi — yorug‘da oq ustida oq, qorong‘ida
+`rgb(0,0,0)` ustida `rgb(0,0,0)`. Karta chegarasi faqat hairline bilan
+sezilardi.
+
+Ikki mavzuning fizikasi TESKARI, shuning uchun `body { background:
+var(--paper-raise) }` deb yozib bo‘lmaydi — qorong‘ida u sahifani
+(#141414) kartadan (#000) yorug‘roq qilib, qatlamni ag‘darib yuborardi.
+Juftlik tokenga chiqarildi:
+
+```css
+:root            { --surface-page: var(--paper-raise); --surface-card: var(--paper); }
+[data-theme=dark]{ --surface-page: var(--paper);       --surface-card: var(--paper-raise); }
+```
+
+O‘lchandi: yorug‘da sahifa `#f5f5f5` / karta `#ffffff`, qorong‘ida sahifa
+`#000000` / karta `#141414`. Halqa va `--lift-1` yuza farqi USTIGA
+qo‘shiladi — chegara ham, balandlik ham bir xil gapni aytadi.
+
+`natija.html` ham `composer.css` ni yuklaydi, shuning uchun `.result-real`
+ham `--surface-card` ga o‘tdi: u ham qorong‘ida qora ustida qora edi.
+
+### Navbar → chiqish qatori
+
+Bu sahifa katalog emas, FORMA. Navbardagi to‘rt havola (Qamrov · Matn ·
+Vaqt · Yakun) pastdagi to‘rt kartani takrorlardi, mobil menyu esa forma
+ustiga yana bir qatlam ochardi. Qolgan ikki narsa — chiqish yo‘li va mavzu
+almashtirgichi.
+
+- `class="nav"` SAQLANDI: yopishqoq joylashuv va surilganda paydo
+  bo‘ladigan hairline (`motion.js` → `initNav`, `[data-stuck]`) aynan shu
+  sinfga bog‘langan. `.nav-form` faqat balandlikni 68 → 56px ga tushiradi.
+- `scroll-margin-top` ham shunga qarab tushdi: `.step-sec` 88 → 76,
+  boshqaruvlar 110 → 98. Aks holda bo‘lim boshi qator ostida qolardi.
+- Mahalla nomi («8-mahalla “Do‘stlik”») O‘CHIRILMADI, sahifa boshidagi
+  chiplar qatoriga ko‘chdi: u navigatsiya emas, operator konteksti.
+- `.backlink` da o‘q hoverda 2px chapga siljiydi (`transform`, 160ms,
+  `prefers-reduced-motion` hurmat qilinadi) — yo‘nalish matn bilan ham,
+  harakat bilan ham aytiladi.
+
+Verify: `pageerror` 0 · `data-stuck` surilganda `true` va hairline chiqadi ·
+375/320 da gorizontal scroll yo‘q · mavzu almashtirgichi joyida.
+
+Kadrlar: `.screenshots/fon-kulrang-*.png`, `.screenshots/formbar-*.png`
+
+---
+
+## Matn uzunligi cheklanmaydi (2026-08-27)
+
+Foydalanuvchi qarori: «notification yozishda limit qo‘ymaslik kerak, user
+kerak bo‘lsa kirib o‘qiyveradi».
+
+Chegara UCH joyda edi va uchovi ham olib tashlandi:
+
+- `maxlength="90"` / `maxlength="400"` — bular YOZISHNI kesardi, ya’ni
+  operator gapini tugatolmasdi;
+- `LIMIT = { title: 60, body: 180 }` bo‘yicha validatsiya xatosi
+  («Sarlavha bir qatorga sig‘maydi — {n} ta belgi ortiqcha») — uzun matn
+  yuborishni BLOKLARDI;
+- hisoblagichdagi maxraj (`12/60`) va `data-level` ranglari (amber/qizil) —
+  ular chegara borligini ko‘rsatardi. Endi shunchaki `12 belgi`.
+
+Push bildirishnomasi matnni operatsion tizim darajasida qisqartiradi, lekin
+bu BIZNING cheklovimiz emas. Shuning uchun fakt yo‘qolmadi, ohangi o‘zgardi:
+maydonlar ostida «Push’da bir qator ko‘rinadi — qolganini foydalanuvchi
+xabarni ochib o‘qiydi» va «Push’da ikki qator ko‘rinadi — uzunligi
+cheklanmagan». Telefon ko‘rinishidagi `-webkit-line-clamp: 2` ham qoladi:
+u platformaning haqiqatini ko‘rsatadi, taqiq emas.
+
+Matn maydonlari izohi placeholder O‘RNIGA emas, undan TASHQARI qo‘yildi:
+placeholder birinchi harf yozilishi bilan yo‘qoladi, «ikki qator ko‘rinadi»
+degan fakt esa aynan yozayotganda kerak.
+
+`components.css` dagi `.char-count[data-level="warn"|"crit"]` qoidalari
+o‘chirildi — `data-level` endi hech qayerda yozilmaydi.
+
+---
+
+## «Navbatga qo‘yish» — demo natijasi haqiqiy dizaynda (2026-08-27)
+
+Foydalanuvchi shikoyati: «hadeb error chiqarib hamma ko‘rinishlarni bir
+joyga chiqarmasdan» — real dizayn qanday ko‘rinishini ko‘rsatish kerak.
+
+Ilgari panelning O‘ZI ogohlantirish qutisi edi: amber fon, uchburchak
+ikonka, «Xabar YUBORILMADI — bu demo» sarlavhasi, ichida uzuq chegarali
+«kvitansiya namunasi». U HALOL edi, lekin ikki narsani buzardi — ekran
+XATO bo‘lib o‘qilardi va operator natija ekrani aslida qanday ko‘rinishini
+umuman ko‘rmasdi.
+
+Tartib teskari qilindi:
+
+1. **Tepada bitta demo banneri** (`.specimen-banner`) — ko‘rinadi, ekran
+   nusxasi bilan birga ketadi, lekin butun panelni bo‘yamaydi.
+2. **Ostida haqiqiy karta** — `natija.html` dagi AYNAN o‘sha
+   `.result-real[data-state="queued"]`. Dizayn NUSXALANMADI: `composer.html`
+   endi `assets/natija.css` ni ham yuklaydi, ya’ni natija ekrani ikki joyda
+   ikki xil bo‘lib ketolmaydi.
+3. **Qolgan uch holat** (yuborilmoqda · yuborildi · xatolik) shu panelga
+   TIQILMAYDI — pastda bitta havola bilan `natija.html` ga chiqadi. Hammasi
+   bir panelda turganda operator qaysi biri HOZIR sodir bo‘lganini ajrata
+   olmasdi.
+
+Halollik shartlari o‘zgarmadi (`stub-claims-success-gate`):
+
+- reestr raqami O‘YLAB TOPILMAYDI — va endi u haqidagi QATOR ham yo‘q.
+  Qoida «soxta raqam yozma» edi, «bo‘sh joyni ko‘rsatib tur» emas: raqam
+  yo‘q bo‘lsa, `NF-YYYY-NNNNNN` shabloni har ekranda takrorlanib turishi
+  shart emas. Bannerda bir marta aytiladi va yetadi. Sahifa boshidagi
+  «Reestr raqami — serverdan keladi» chipi ham shu sababdan olib tashlandi;
+- amal tugmalari `disabled`, sababi yonidagi ko‘rinadigan qatorda
+  (o‘chirilgan tugmada tooltip yo‘q — interface-craft);
+- kartadagi har qiymat FORMADAN o‘qiladi, `startSentence()` esa tanlanmagan
+  vaqt o‘rniga sana qo‘ymaydi.
+
+Verify: `pageerror` 0 · 1440/375 × light+dark · JSON `<pre>` o‘z
+konteynerida gorizontal aylanadi, sahifa aylanmaydi · uzun matn (160 belgi)
+xato bermaydi va karta uni to‘liq oladi.
+
+Kadrlar: `.screenshots/demo-natija-*.png`
+
+
+---
+
+## «Yuborish» va natija modali (2026-08-27)
+
+### Tugma nomi: jargon → amal
+
+«Navbatga qo‘yish» ichki atama edi — operator «navbat» nima ekanini bilishi
+shart emas. Tugma endi AMALNI aytadi: **Yuborish**. Natija kartasi ham
+«Navbatga qo‘yildi» o‘rniga «Xabar qabul qilindi» deydi, «navbat» esa
+ostidagi jumlada tushuntiriladi: «Xabar tarqatish navbatida. Birinchi
+yuborish … da boshlanadi.» Holat chipi (`Navbatda`) qoldi — u statusning
+texnik nomi va yonidagi jumla uni ochib beradi.
+
+Boshqa joylardagi shu jargon ham almashdi: «Navbatga qo‘yilgan zahoti» →
+«Yuborilgan zahoti» / «Tarqatish darhol boshlanadi».
+
+### Natija SAHIFA OSTIDA emas, MODALDA
+
+Panel sahifaning oxiriga qo‘shilardi. Uzun formada u ekrandan tashqarida
+tug‘ilardi va «bosdim, hech nima bo‘lmadi» degan taassurot berardi —
+`scrollIntoView` bu kamchilikning yamog‘i edi, yechimi emas.
+
+Nativ `<dialog>` + `showModal()` tanlandi: fokus tuzog‘i, Escape va orqa
+fonning inertligi BRAUZERDAN keladi. Qo‘lda yozilgan modal shu uchtasini
+deyarli har doim yarim qoldiradi.
+
+Real brauzerda topilgan ikki kamchilik:
+
+- **Modal chap-yuqori burchakda qolib ketardi.** `<dialog>` ni brauzer
+  `margin: auto` bilan markazlashtiradi, lekin `system.css` dagi global
+  reset (`* { margin: 0; padding: 0 }`) uni bekor qiladi. O‘lchandi:
+  `getBoundingClientRect()` → `x: 0, y: 0`. `margin: auto` ataylab qaytarildi.
+- **Nav `backdrop-filter` i scrimni yoritardi** — `body[data-modal] .nav
+  { backdrop-filter: none }`. Shu bilan birga `body[data-modal]
+  { overflow: hidden }`: `<dialog>` orqa fonni inert qiladi, lekin g‘ildirak
+  bilan aylantirishni to‘xtatmaydi.
+
+Motion: faqat `opacity` + `transform: scale(0.96)`, 240ms, `--ease-out`.
+`@starting-style` va `transition: display/overlay allow-discrete` bilan —
+qo‘llab-quvvatlanmagan brauzerda o‘tish darhol bo‘ladi, buziladigan narsa
+yo‘q. `prefers-reduced-motion` da `transform` umuman yo‘q.
+
+620px dan tor ekranda modal pastki varaqqa (bottom sheet) aylanadi:
+to‘liq kenglik, faqat yuqori burchaklari yumaloq, `safe-area-inset-bottom`
+hisobga olingan.
+
+### Modaldan olib tashlanganlar
+
+- **«Boshqa holatlar: yuborilmoqda · yuborildi · xatolik»** havolasi —
+  modal BITTA savolga javob beradi: «bosdim, nima bo‘ldi?». Holatlar
+  katalogi `natija.html` da, navbardan emas, kerak bo‘lganda ochiladi.
+- **«So‘rov tanasi (JSON)»** — dasturchi hujjati, operator ekrani emas.
+  So‘rov tanasining shakli shu faylning «So‘rov tanasi» bo‘limida yozilgan,
+  ya‘ni ma‘lumot yo‘qolmadi. `.result-more`, `.result-payload`,
+  `.result-copy` qoidalari ham o‘chirildi.
+
+Verify: Escape va orqa fonga bosish yopadi · yopilgach fokus «Yuborish»
+tugmasiga qaytadi va `body[data-modal]` tozalanadi · 1440 da markazda
+(374/374 chap-o‘ng, 213/213 yuqori-past) · 375 da pastki varaq ·
+`pageerror` 0.
+
+Kadrlar: `.screenshots/modal-*.png`
+
+---
+
+## Tarqatish hisobi va yuborilganlar ro‘yxati (2026-08-27)
+
+Foydalanuvchi so‘rovi: «hoziroq» tanlansa yuborish boshlansin va statistika
+ko‘rinsin; yuborilganlar ro‘yxatida esa qaysilari bir martalik, qaysilari
+davomiy — aniq ko‘rinsin.
+
+⚠️ **Server yo‘q.** Shuning uchun sonlar SIMULYATSIYA va ekran buni uch
+joyda ochiq aytadi: bannerda, sonlar ostidagi qatorda va ro‘yxat oxiridagi
+izohda. Reestr raqami hamon generatsiya qilinmaydi. Bu — `natija.html`
+uchun allaqachon qabul qilingan qoidaning o‘sha o‘zi: spetsimen yuzada
+namuna son bo‘lishi mumkin, lekin u NAMUNA deb belgilanadi.
+
+### «Hoziroq» → modalda jonli tarqatish
+
+`state.when === "now"` bo‘lganda modal `queued` da turmaydi, `sending` dan
+boshlanadi va 12 qadamda `sent` ga o‘tadi:
+
+- ko‘rsatkich `width` bilan EMAS, `transform: scaleX()` bilan yuradi —
+  `width` animatsiyasi har kadrda layout hisoblatadi;
+- qadam funksiyasi `1 − (1 − t)²` — oxiriga yaqin sekinlashadi; bir tekis
+  chiziq «hisob emas, taymer» bo‘lib ko‘rinardi;
+- `prefers-reduced-motion` da ko‘rsatkich sakraydi, sonlar esa baribir
+  yangilanadi — ular ma‘lumot, bezak emas;
+- modal yopilganda taymer to‘xtaydi (`stopDemoDelivery`), aks holda
+  yopib-ochilganda ikkita taymer qolib ketardi.
+
+Kartaning holati bitta joydan yoziladi (`PHASES` + `setPhase`): sarlavha,
+ikonka, chip, jumla va banner hech qachon bir-biriga zid gap ayta olmaydi.
+
+### Katta sonlar shrifti: mono → sans + `tabular-nums`
+
+`.real-num` mono edi. Mono da har belgi bir xil enlik, ya‘ni ming
+ajratkichi ham TO‘LIQ katak egallaydi va «34 819 200» ko‘zga uch alohida
+son bo‘lib ko‘rinardi (real brauzerda ko‘rildi). `tabular-nums` li sans
+raqamlar tekisligini saqlaydi, probel esa tabiiy tor enligida qoladi.
+`natija.html` ham shu tokendan foydalanadi, ya‘ni ikki sahifa bir xil.
+
+### Yuborilganlar ro‘yxati: bir martalik ↔ davomiy
+
+Ilgari bu farq faqat OCHILGAN kartaning ichidagi «Jadval» qatorida turardi,
+ya‘ni «qaysilari qaytadi?» degan savolga javob olish uchun har kartani
+ochib chiqish kerak edi. Endi:
+
+- yopiq kartada ham `Bir martalik` / `Davomiy` yorlig‘i turadi. Davomiy —
+  AKSENT rangda: u hali ham ishlab turgan qoida, operator uni to‘xtatishi
+  mumkin; bir martalik — tugagan hodisa, neytral;
+- tepada filtr: `Hammasi 4` · `Bir martalik 2` · `Davomiy 2`. Filtr
+  ro‘yxatni QAYTA QURMAYDI — faqat `hidden` almashadi, aks holda ochilgan
+  karta yopilib, fokus yo‘qolardi. Natija `role="status"` qatorida ham
+  aytiladi;
+- davomiy yozuvda «Keyingi yuborish» sanasi bor — bu uning yagona amaliy
+  qiymati: «qachon qaytadi?»;
+- har yozuvda yetkazish hisobi: yetkazildi · yetkazilmadi · taxminiy qamrov.
+
+### Yo‘l-yo‘lakay tuzatilgan ikki kamchilik
+
+- **Buzuq markup.** `.feed-grid` erta yopilardi, undan keyin yetim
+  `</article>` va uchta takroriy (ochilmaydigan) karta turardi — ular
+  setkadan tashqarida qolgandi. Bo‘lim to‘rtta haqiqiy yozuv bilan qayta
+  yozildi.
+- **To‘rt ustun.** 1440px da karta ~230px bo‘lib, sarlavha to‘rt qatorga
+  sinardi va ochilgan tanadagi «13» ning ostiga uch qatorlik izoh tushardi.
+  Ikki ustunga o‘tkazildi; ochilgan karta esa butun enni oladi
+  (`grid-column: 1 / -1`).
+
+Verify: 1440/375 × light+dark · filtr uch holatda · ochilgan karta filtrdan
+keyin ham ochiq qoladi · gorizontal scroll yo‘q · `pageerror` 0.
+
+Kadrlar: `.screenshots/live-*.png`, `.screenshots/feed-*.png`
+
+---
+
+## `yuborilganlar.html` — ro‘yxat alohida sahifada (2026-08-27)
+
+Foydalanuvchi qarori: ro‘yxat landingda emas, o‘z sahifasida bo‘lsin va u
+yerda barcha amallar bajarilsin.
+
+Landingdagi lenta ko‘rgazma edi — to‘rtta karta, filtr va amalsiz. Endi
+`landing.html` da faqat KIRISH bloki qoladi (ikki jumla + «Ro‘yxatni
+ochish»), ro‘yxatning o‘zi esa `yuborilganlar.html` da. Ikki joyda ikki xil
+ro‘yxat bo‘lish xavfi shu bilan yopiladi.
+
+### Sahifada nima bor
+
+- **Umumiy raqamlar** — «Davomiy · faol», «Bir martalik», «Xatolik».
+  Ro‘yxat tepasida, chunki «nechta davomiy xabar hozir ishlab turibdi?»
+  degan savol har kunlik va u ro‘yxatni skanerlab topiladigan javob emas.
+- **Qidiruv** — sarlavha, hudud va ikkala til matni bo‘yicha. `type="search"`
+  ning o‘z tozalash tugmasi brauzerdan brauzerga farq qiladi va klaviatura
+  bilan yetib bo‘lmaydi, shuning uchun o‘zimizniki qo‘yildi.
+- **Ikki filtr** — turi (bir martalik / davomiy) va holati (yuborildi ·
+  jarayonda · navbatda · to‘xtatilgan · xatolik). Har tugmada SON turadi.
+  Nol natijali filtr O‘CHIRILMAYDI: uni bosib «bu yerda hech nima yo‘q»
+  javobini ko‘rish halol, tugmani jim o‘chirib qo‘yish esa «bunday holat
+  yo‘q» degan boshqa gap.
+- **Tartib** — avval yangilari / eskilari / qamrov bo‘yicha. Yuborilmagan
+  yozuvda `sent` yo‘q, shuning uchun tartib kaliti REJALASHTIRILGAN sanaga
+  tushadi — aks holda navbatdagi xabar ro‘yxat tubida qolib ketardi.
+- **Bo‘sh holat** — nima uchun bo‘shligini aytadi («Filtr: «zzz» so‘rovi ·
+  davomiy · to‘xtatilgan») va tozalash tugmasini beradi.
+- **Sabab qatori** — xatolik va to‘xtatilgan yozuvda ochilgan tananing
+  BOSHIDA: sabab matndan keyin turganda operator uni topmasdi.
+
+### Amallar: nima ishlaydi, nima yo‘q
+
+**«Nusxa olib tahrirlash» HAQIQATAN ishlaydi** — u serverga tegmaydi:
+qoralamani `sessionStorage` ga yozib `composer.html` ni ochadi. Kompozitor
+uni BIR MARTA o‘qib darhol o‘chiradi, aks holda keyingi «Yangi xabar» ham
+to‘lgan holda ochilardi. Qamrov pog‘ona-pog‘ona tiklanadi (`goScope` ota
+daraja o‘rnatilmagan bo‘lsa ataylab qaytib ketadi). **Vaqt KO‘CHIRILMAYDI**:
+eski xabarning sanasi yangi yuborish uchun to‘g‘ri bo‘lishi shart emas va
+uni jim qo‘yish operatorni o‘sha vaqtga rozi bo‘lgan holga keltirardi —
+ekran buni toast bilan aytadi.
+
+Qolgan amallar (`To‘xtatish` / `Davom ettirish` / `Hisobot` /
+`Navbatdan olish` / `O‘chirish`) serverga murojaat qiladi, shuning uchun
+KO‘RINADI-yu bosilmaydi: sabab yonidagi ko‘rinadigan qatorda yozilgan
+(o‘chirilgan tugmada tooltip ishlamaydi — interface-craft). Bosilganda
+«bajarildi» deb yolg‘on aytadigan tugma qo‘yilmadi.
+
+### Dizayn nusxalanmadi
+
+Kartaning o‘zi — `components.css` dagi `.feed-*` komponenti. Sahifaga xos
+qatlam (`yuborilganlar.css`) faqat sarlavha, raqamlar, asboblar, amallar va
+bo‘sh holatni beradi. Ro‘yxat BITTA ustunda: har yozuvda ikki til, sonlar,
+faktlar va amallar bor — ular yonma-yon ikki ustunda tor bo‘lib qolardi.
+
+Kartalar JS bilan quriladi, ya‘ni `motion.js` boot paytida ularni topmaydi —
+shuning uchun `initFeed`/`initFeedFilter` u yerdan olib tashlandi va
+ochish/yopish mantiqi `card()` ning ichida, element yaratilgan joyda
+ulanadi. `.feed-filter` CSS qoidalari ham o‘chirildi (`.feed-tab` qoldi).
+
+Verify: 1440/375 × light+dark · qidiruv, ikki filtr, tartib va tozalash ·
+bo‘sh holat sababi bilan · «Nusxa olib tahrirlash» kompozitorda matn ham,
+uch pog‘onali qamrov ham tiklanadi va qoralama o‘chadi · `pageerror` 0 ·
+gorizontal scroll yo‘q · mobil input 16px (iOS zoom yo‘q).
+
+Kadrlar: `.screenshots/yb-*.png`, `.screenshots/landing-tarix-cta.png`
+
+### Ro‘yxat qatori: ikonka o‘rniga MA’LUMOT (2026-08-27)
+
+Foydalanuvchi qarori: kartadagi `feed-thumb` ikonkasi kerak emas.
+
+Ikonka haqiqatan ham yangi ma’lumot bermasdi: sakkiz yozuvda olti xil rasm,
+hech biri na turni, na holatni aytardi — u faqat sarlavhani 56px o‘ngga
+surib turardi. Uning o‘rniga qatorning O‘ZI ma’lumotga aylandi.
+
+**Yopiq qator endi to‘rt savolga javob beradi** — kartani ochmasdan:
+
+| ustun | nima aytadi |
+|---|---|
+| Taxminiy qamrov | `~2 400` |
+| Yetkazildi | `2 389` |
+| Yetkazilmadi | `11` (nol bo‘lmasa — ogohlantirish rangida) |
+| Keyingi / Yuborilgan | sana |
+
+To‘rtinchi katak YOZUVGA QARAB o‘zgaradi: davomiy xabarda muhimi «qachon
+qaytadi», yuborilganda «qachon ketdi», navbatdagida «qachon ketadi».
+Uchovini bitta yorliq bilan atash yolg‘on bo‘lardi.
+
+Sonlar tugmadan TASHQARIDA turadi: `<dl>` `<button>` ichida amal qilmaydi
+(button faqat matn oqimini oladi).
+
+Tuzilma DSS imzosi bo‘yicha — kichik mono yorliq USTIDA, katta qiymat
+OSTIDA; sonlar `tabular-nums` li sans, sanalar mono (ustma-ust turganda
+raqamlar tekis tushsin).
+
+Boshqa tuzatishlar:
+
+- **Qiymat yo‘q holat `—`, nol EMAS.** «0 yetkazildi» hali boshlanmagan
+  tarqatishni muvaffaqiyatsiz deb ko‘rsatardi.
+- **Faktlar tasmani takrorlamaydi.** Tasma `next` ni ko‘rsatsa, ochilgan
+  tanada `sent` turadi va aksincha — ilgari «Keyingi yuborish» bir xil sana
+  bilan ikki joyda turardi.
+- **Ikki til YONMA-YON** ochilgan tanada: ular bir-birining tarjimasi,
+  ustma-ust turganda solishtirish uchun ko‘z pastga-yuqoriga yurardi.
+- **«To‘xtatilgan» chipi** `chip-mono` edi va KATTA HARFDA chiqib,
+  «Yuborildi» / «Xatolik» bilan bir qatorda registrni buzardi.
+- Ochilgan karta chegarasini qo‘yiqlashtiradi va tanasi `--paper-alt` ga
+  o‘tadi — ro‘yxatda qaysi biri ochiqligi bir qarashda ko‘rinadi.
+- Ishlatilmay qolgan `.feed-thumb`, `.feed-stats`, `.feed-num*`,
+  `.feed-why`, `.feed-gap` qoidalari `components.css` dan o‘chirildi.
+
+Verify: 1440/375 × light+dark · 375 da tasma 2×2 ga tushadi, tillar va
+faktlar bitta ustunga · gorizontal scroll yo‘q · `pageerror` 0.
+
+Kadrlar: `.screenshots/yb-final-*.png`
+
+### Filtr: to‘qqizta pill → uchta boshqaruv (2026-08-27)
+
+Foydalanuvchi shikoyati: filtr juda ko‘p, keraklisini topib olish qiyin.
+
+O‘lchov: asboblar qatorida **to‘qqizta pill** turardi — uchta tur va oltita
+holat. Ular bir xil ko‘rinishda, bir xil og‘irlikda va ikki qatorda
+tizilgandi, ya‘ni ierarxiya yo‘q edi: keraklisini topish uchun hammasini
+o‘qib chiqish kerak.
+
+Yechim — ierarxiya:
+
+| nima | qayerda | nega |
+|---|---|---|
+| Turi (bir martalik ↔ davomiy) | **segment**, doim ko‘rinadi | sahifaning ASOSIY farqi, ro‘yxatning butun mantiqi shunga qurilgan |
+| Holat (5 ta) | **ro‘yxat** | kamroq so‘raladi va beshta variantni yodda tutish shart emas — ochilganda ko‘rinadi |
+| Tartib | **ro‘yxat** | bir marta qo‘yiladi, keyin tegilmaydi |
+
+Ko‘rinadigan boshqaruv soni **9 → 3**.
+
+- **Segment — bitta yo‘lak, ajratilgan pill emas.** Uchta alohida pill
+  «uchta mustaqil tanlov» bo‘lib ko‘rinardi, holbuki bu BITTA savolning
+  uchta javobi.
+- **Ko‘rsatkich faqat `translateX` bilan yuradi.** Bo‘laklar teng kenglikda
+  (`repeat(3, 1fr)`), shuning uchun `width` umuman o‘zgarmaydi va har kadrda
+  layout hisoblanmaydi. `prefers-reduced-motion` da o‘tish yo‘q.
+  Kenglik o‘zgarganda `ResizeObserver` ko‘rsatkichni qaytadan joylaydi —
+  aks holda u eski joyida qolib ketardi.
+- **Ro‘yxat yorlig‘i maydon USTIDA** (`HOLAT`, `TARTIB`): `select` ning o‘z
+  qiymati «Xatolik · 1» deb turganda u nimaning filtri ekani ko‘rinmasdi.
+- **Sonlar variant matnida** — «Yuborildi · 4». «Barcha holatlar» yonida son
+  YO‘Q: u jami bilan bir xil va pastdagi natija qatorida allaqachon turibdi.
+- **Natija qatori filtrni ham aytadi**: «1 ta yozuv · jami 8 tadan».
+  Yolg‘iz «1 ta yozuv» turganda «hammasi shumi yoki filtr yoqiqmi?» degan
+  savol qolardi. «Tozalash» esa faqat filtr YOQILGANDA ko‘rinadi.
+- **480px dan tor ekranda** son yorliq OSTIGA tushadi: 375px da bir bo‘lakka
+  ~78px qoladi va «Bir martalik» yonidagi son bilan birga sig‘masdan
+  qirqilardi. Bo‘lak kichik ko‘rsatkichga aylanadi, nishon 50px.
+
+Ishlatilmay qolgan `.feed-tab` / `.feed-filter` qoidalari `components.css`
+dan o‘chirildi.
+
+Verify: 1440/375 × light+dark · segment, holat, tartib, qidiruv va tozalash
+· yorliq 375px da qirqilmaydi · nishon 50px · `pageerror` 0.
+
+Kadrlar: `.screenshots/yb-filtr-*.png`
+
+### Sahifaning qolgan qismi (2026-08-27)
+
+Filtrdan keyin qolgan bloklar ham qayta ko‘rildi.
+
+**Umumiy raqamlar — uch quti o‘rniga bitta tasma.** Ular bitta savolning uch
+bo‘lagi, uchta mustaqil karta emas: ajratkich endi hairline, quti emas.
+Har bo‘lak **BOSILADI** va ro‘yxatni filtrlaydi — raqamni ko‘rgan operator
+uni topish uchun pastdagi filtrga qaytib borishga majbur bo‘lmasin. Yoqiq
+bo‘lak ostida qalin chiziq turadi, ya‘ni ro‘yxat qaysi savolga javob
+berayotgani tasmadan ko‘rinadi. Nol qiymatli bo‘lak bosilmaydi: bosib bo‘sh
+ro‘yxatni ko‘rish foydasiz.
+
+**Kirish animatsiyasi — faqat birinchi chizishda.** Kartalar 10px dan
+ko‘tarilib chiqadi (tizimning reveal imzosi), qadam 45ms. Filtr bosilganda
+ro‘yxat QAYTA uchib kirmaydi: filtr tez-tez bajariladigan amal va u yerda
+animatsiya charchatardi (interface-craft: 100+/kun amalda animatsiya yo‘q).
+`prefers-reduced-motion` da umuman yo‘q.
+
+**Takrorlangan amal olib tashlandi.** Navbarda «Yangi xabar» ikki marta
+turardi — havola va tugma sifatida; bitta amal ikki joyda ikki xil
+og‘irlikda ko‘rinardi. Endi faqat tugma (mobil menyuda havola qoladi,
+chunki tugma u yerda yashiringan).
+
+**«Tozalash» bir vaqtda ikki joyda turmaydi.** Bo‘sh holat ochiq bo‘lsa,
+asboblar qatoridagi tugma yashiriladi — ikkita bir xil amaldan qaysi biri
+«asosiy» ekani noaniq bo‘lardi.
+
+**Ishlaydigan amal ajralib turadi.** «Nusxa olib tahrirlash» chegara oladi:
+o‘chirilganlar bilan bir xil ko‘ringanda operator qaysi biri bosilishini
+sinab ko‘rishga majbur bo‘lardi.
+
+**Bo‘sh holat ikonkasi o‘z yuzasida** — yolg‘iz chizilgan 22px lik belgi
+bo‘sh maydonda tasodifiy dog‘ bo‘lib ko‘rinardi.
+
+**Mobil:** tasma bitta ustunga tushganda ajratkich ham gorizontalga
+o‘tadi — vertikal chiziq bo‘laklar yonma-yon turgandagina ma‘noga ega.
+
+Verify: 1440/375 × light+dark · tasma bosilganda ro‘yxat filtrlanadi va
+segment/ro‘yxat holati mos yangilanadi · kirish animatsiyasi faqat birinchi
+chizishda · gorizontal scroll yo‘q · `pageerror` 0.
+
+Kadrlar: `.screenshots/yb-polish-*.png`, `.screenshots/yb-sum-filtr.png`
+
+### Yozuv tafsiloti — modalda (2026-08-27)
+
+Foydalanuvchi qarori: yozuvga bosilganda modal ochilsin va barcha ma‘lumot
+ko‘rinsin.
+
+Ilgari tafsilot kartaning ICHIDA ochilardi. Uzun ro‘yxatda ochilgan yozuv
+qolganlarini pastga surib yuborardi va ikkita yozuvni solishtirish uchun
+aylantirib yurish kerak edi. Modal ro‘yxatni JOYIDA qoldiradi.
+
+**Modal endi umumiy komponent.** Kompozitorning natija oynasi ham, ro‘yxatning
+yozuv oynasi ham `components.css` dagi bitta `.modal` qobig‘ini oladi:
+`.rmodal` `composer.css` dan ko‘chirildi va `.modal` ga aylandi. Ikki
+sahifada ikki nusxa CSS — ikki xil xulqqa aylanadigan yo‘l.
+
+Qobiqning mexanikasi (allaqachon o‘lchangan va tekshirilgan):
+
+- nativ `<dialog>` + `showModal()` — fokus tuzog‘i, Escape va orqa fonning
+  inertligi brauzerdan;
+- `margin: auto` ATAYLAB — `system.css` dagi `* { margin: 0 }` `<dialog>`
+  ning markazlashuvini o‘ldiradi;
+- `body[data-modal] .nav { backdrop-filter: none }` + `overflow: hidden`;
+- kirish `opacity` + `scale(0.96)`, 240ms, `@starting-style` bilan;
+- 620px dan tor ekranda pastki varaq, `safe-area-inset-bottom` hisobga
+  olingan.
+
+**Qatorda nima qoldi:** turi, holati, vaqti, sarlavha, hudud va to‘rt sonli
+tasma. Ular ro‘yxatni SKANERLASH uchun; qolgan hamma narsa — ikkala til,
+qamrov yo‘li, jadval, sabab va amallar — oynada.
+
+Qator endi ochilmaydi, shuning uchun `aria-expanded` o‘rniga
+`aria-haspopup="dialog"` turadi va shevron o‘rniga o‘ng o‘q — «bu yerda
+sahifa o‘zgarmaydi, oyna ochiladi» degan va‘da. O‘q hoverda 2px o‘ngga
+siljiydi.
+
+Ochiladigan karta komponenti (`.feed-item` / `.feed-open` / `.feed-body` /
+`.feed-chev` / `@keyframes feedIn`) `components.css` dan o‘chirildi — u endi
+hech qayerda ishlatilmaydi. `.feed-strong`, `.feed-text`, `.feed-facts`,
+`.feed-kind` qoldi: ular oyna ichida ishlatiladi.
+
+Verify: 1440/375 × light+dark · Escape va orqa fonga bosish yopadi ·
+`body[data-modal]` tozalanadi · «Nusxa olib tahrirlash» oynadan ham
+kompozitorga matn va uch pog‘onali qamrovni olib o‘tadi · kompozitorning
+o‘z modali CSS ko‘chirilgandan keyin ham markazda · `pageerror` 0.
+
+Kadrlar: `.screenshots/yb-modal-*.png`
+
+### Yorliqlar qatori: uch xil vazifa → uch xil shakl (2026-08-27)
+
+Foydalanuvchi shikoyati: kartadagi yorliqlar yonma-yon turgani uchun
+ajratish qiyin.
+
+O‘lchov (ekran nusxasidan): qatorda uch narsa **bir xil balandlikda va uch
+xil vizual tilda** turardi —
+
+| ko‘rinish | nima edi | muammo |
+|---|---|---|
+| `BIR MARTALIK` | mono, KATTA HARF, kul chip | tur |
+| `Navbatda` | oddiy registr, KO‘K chip | holat |
+| `rejalashtirilgan` | yalang‘och kul matn | vaqt — lekin u ham «badge» deb o‘qilardi |
+
+Uchovi ham bir xil og‘irlikda, ya‘ni ko‘z ular orasida ierarxiya ko‘rmasdi.
+Va eng yomoni: «rejalashtirilgan» — VAQT emas, yonidagi «Navbatda»
+holatining TAKRORI edi.
+
+Uch xil VAZIFA endi uch xil SHAKL oladi:
+
+- **Tur → ikonka + matn, fonsiz.** `↻ DAVOMIY` / `→ BIR MARTALIK`. Chip
+  emas: ikkita chip yonma-yon turganda qaysi biri «bu nima» va qaysi biri
+  «hozir qayerda» ekani ajralmasdi. Ikonka turni o‘qimasdan ham aytadi.
+  Davomiy — aksent rangda: u hali ishlab turgan qoida.
+- **Holat → NUQTALI chip.** Fon hamma holatda neytral, rang faqat NUQTADA:
+  to‘rt xil rangli chip yonma-yon turganda ro‘yxat svetofor bo‘lib qolardi.
+  Yagona istisno — **xatolik**: uni ko‘rmay o‘tib ketish mumkin emas,
+  shuning uchun u to‘liq bo‘yaladi. Sahifadagi yagona qizil nuqta ham shu
+  («bitta urg‘u rang» qoidasi).
+- **Vaqt → oddiy kul matn**, chipsiz. Yuborilmagan yozuvda esa UMUMAN
+  yo‘q — rejalashtirilgan sana sonlar tasmasida turadi.
+
+Komponent umumiy: `.kind-tag` `components.css` da va `landing.html` dagi
+tushuntirish bloki ham shu shaklni oladi — bitta tushuncha ikki sahifada
+ikki xil ko‘rinmasin. Eski `.feed-kind` o‘chirildi.
+
+Verify: 1440/375 × light+dark · sakkiz yozuvda yorliq qirqilmaydi · nuqta
+ranglari o‘lchandi (ok `#0a7d55`, run `#1d4ed8`, off `--ink-3`, crit
+`#c11b1b`) · oynada ham ayni qator · landing bloki mos · `pageerror` 0.
+
+Kadrlar: `.screenshots/yb-badge-*.png`, `.screenshots/landing-kind-tag.png`
+
+### Sonlar tasmasi → fakt plitalari, nisbiy vaqt olib tashlandi (2026-08-27)
+
+Foydalanuvchi qarori.
+
+**Nisbiy vaqt (`.yb-ago`) qatordan ketdi.** «2 soat oldin» yorliqlar qatorida
+turardi, aniq sana esa o‘sha kartaning sonlar tasmasida — ikkita «qachon»
+bitta yozuvda. Aniqroq bo‘lgani qoldi. `ago` maydoni ma‘lumotdan ham
+o‘chirildi (endi hech qayerda o‘qilmaydi).
+
+**Sonlar endi FAKT PLITALARI** — kompozitorning 05-bo‘limidagi plitalar
+bilan bir oila:
+
+- har son o‘z plitasida: cho‘kkan yuza (`--paper-alt`), hairline halqa,
+  radius `--r-5`;
+- burchakda DEKORATIV ikonka (`--ink-3`, `aria-hidden`) — u yorliqni
+  takrorlaydi, yangi ma‘lumot bermaydi, shuning uchun so‘nib turadi;
+- tuzilma DSS imzosi bo‘yicha: kichik mono yorliq USTIDA, katta qiymat
+  OSTIDA;
+- qiymat yo‘q plita SHAFFOF bo‘lib qoladi — «0 yetkazildi» hali boshlanmagan
+  tarqatishni muvaffaqiyatsiz deb ko‘rsatardi;
+- sana bir pog‘ona kichik (`--t-sm`): `--t-ui` da «2026-08-29 09:00» oynadagi
+  164px lik plitaga sig‘masdan ikki qatorga bo‘linardi, qolaversa sana —
+  ma‘lumotnoma, sonlar esa sarlavha.
+
+**480px dan tor ekranda ikonka yashiriladi:** 144px lik plitada u 22px joy
+band qilib, «TAXMINIY QAMROV» ikki qatorga bo‘linardi va qo‘shni plitalar
+bilan qator tirnoqli ko‘rinardi. O‘lchandi — ikonkasiz yorliq bir qatorda
+(17px).
+
+Verify: 1440/375 × light+dark · ro‘yxatda ham, oynada ham ayni plitalar ·
+375 da 2×2 · yorliq qirqilmaydi va bir qatorda · `pageerror` 0.
+
+Kadrlar: `.screenshots/yb-plita-*.png`
+
+### Oynada ikki amal (2026-08-27)
+
+Foydalanuvchi qarori: xabarnoma oynasida tahrirlash yoki o‘chirish bo‘lsa
+yetadi.
+
+Ilgari bu yerda beshtagacha tugma turardi — «Nusxa olib tahrirlash»,
+«To‘xtatish» / «Davom ettirish», «Hisobot», «Navbatdan olish», «O‘chirish» —
+va to‘rttasi o‘chirilgan holda edi. Qator amal qatoridan ko‘ra
+ISHLAMAYDIGAN NARSALAR RO‘YXATIGA o‘xshab qolgandi: operator har safar
+qaysi biri bosilishini ko‘z bilan qidirishi kerak edi.
+
+Endi ikkita:
+
+- **Tahrirlash** — ishlaydi. Serverga tegmaydi: matnni va qamrovni
+  `sessionStorage` orqali kompozitorga olib o‘tadi.
+- **O‘chirish** — serverga murojaat qiladi, shuning uchun ko‘rinadi-yu
+  bosilmaydi; sabab yonidagi ko‘rinadigan qatorda.
+
+⚠️ **«Tahrirlash» eski yozuvni o‘zgartirmaydi** — yuborilgan xabarni
+qaytarib bo‘lmaydi, bu YANGI xabar bo‘ladi. Buni tugmaning yonida emas,
+OQIBAT paydo bo‘lgan paytda aytish to‘g‘riroq: kompozitor ochilganda toast
+chiqadi — «Matn ko‘chirildi — bu YANGI xabar, eskisi o‘zgarmaydi. Vaqtni
+qaytadan tanlang». Vaqt ataylab ko‘chirilmaydi.
+
+Verify: uch xil holatdagi yozuvda ham tugmalar bir xil (`Tahrirlash[✓]`,
+`O‘chirish[x]`) · «Tahrirlash» kompozitorga matn va uch pog‘onali qamrovni
+olib o‘tadi, qoralama o‘chadi · toast real brauzerda ko‘rindi (440×66) ·
+`pageerror` 0.
+
+Kadr: `.screenshots/yb-ikki-amal.png`
+
+### «O‘chirish» demoda ham ishlaydi (2026-08-27)
+
+Foydalanuvchi qarori. Amal HAQIQATAN bajariladi — lekin faqat shu brauzerda:
+yozuv `ITEMS` dan olib tashlanadi, ro‘yxat, umumiy raqamlar va segment
+sonlari qayta hisoblanadi.
+
+⚠️ Server yo‘q, ya‘ni o‘chirish saqlanmaydi. Ekran buni **oqibat paydo
+bo‘lgan paytda** aytadi — toastda: «Yozuv ro‘yxatdan olib tashlandi — faqat
+shu brauzerda; sahifa yangilanganda qaytadi». «O‘chirildi» deb yozib,
+keyin yozuvning qaytib kelishi jim yolg‘on bo‘lardi.
+
+**Tasdiq qatorning O‘ZIDA**, `window.confirm` bilan emas: modal ichida
+brauzer oynasi ochilishi qatlamni ikkiga bo‘lardi, qolaversa `confirm`
+matni tahrirlanmaydi va uslubga bo‘ysunmaydi. Amallar qatori tasdiq
+so‘roviga almashadi — «Yozuv ro‘yxatdan olib tashlansinmi?» + ikki tugma.
+
+- fokus «Ha, o‘chirish» ga ko‘chadi; bekor qilinganda «O‘chirish» ga
+  QAYTADI — aks holda u `body` ga tushib, klaviatura foydalanuvchisi oyna
+  boshidan yurishga majbur bo‘lardi;
+- destruktiv tugma to‘ldirilgan QIZIL emas: `--crit` qorong‘i mavzuda
+  `#ff6b6b` ga aylanadi va oq matn u yerda 2,6:1 beradi. Yumshoq fon +
+  qizil matn juftligi tokenlar bilan birga ag‘dariladi. Yangi variant —
+  `components.css` dagi `.btn-crit`;
+- «O‘chirish» tinch holatda NEYTRAL, faqat hoverda qizaradi: doim qizil
+  turgan tugma ro‘yxatda sakkiz marta takrorlanib, ogohlantirish kuchini
+  yo‘qotardi.
+
+**Bo‘sh holatning ikki sababi ajratildi.** Filtr juda tor bo‘lsa —
+«Bu shartlarga mos xabar yo‘q» + tozalash tugmasi. Hammasi o‘chirilgan
+bo‘lsa — «Ro‘yxat bo‘sh» + sahifani yangilash haqida izoh, tozalash tugmasi
+esa YASHIRILADI (tozalanadigan filtr yo‘q).
+
+Verify: 8 → 7 yozuv, «Davomiy · faol» 2 → 1, oyna yopiladi,
+`body[data-modal]` tozalanadi · bekor qilish qatorni qaytaradi va fokus
+joyida · hammasini o‘chirganda bo‘sh holat to‘g‘ri matn bilan chiqadi va
+tasma bo‘laklari `disabled` bo‘ladi · 375 × qorong‘i: tasdiq qatori
+sig‘adi, gorizontal scroll yo‘q · `pageerror` 0.
+
+Kadrlar: `.screenshots/yb-ochirish-tasdiq.png`,
+`.screenshots/yb-hammasi-ochirildi.png`, `.screenshots/yb-tasdiq-375-dark.png`
+
+---
+
+## Kartalar → JADVAL (2026-08-27)
+
+Foydalanuvchi qarori. Kartalar bitta yozuvni ko‘rsatishga yaxshi edi, lekin
+sakkiztasini SOLISHTIRISHGA emas: sana har kartada boshqa joyda turardi va
+ko‘z ustun bo‘ylab yura olmasdi.
+
+### Mobbin referenslari
+
+Qidiruv: «admin dashboard table listing sent push notification campaigns».
+Olingan naqshlar:
+
+- **Customer.io «Campaigns»** — nom + qisqa mazmun BITTA katakda, holat esa
+  nomning yonida nuqta bo‘lib turadi; metrikalar o‘ng ustunlarda.
+- **Intercom «Messages»** — tinch hairline qatorlar, kichik `State` ustuni,
+  ustun sarlavhalari mayda va so‘nib turadi.
+- **Podia**, **Okta «Notifications»** — sana · xabar · amallar tartibi va
+  qator oxiridagi amal tugmalari.
+- **Wix «Manage Push Notifications»** — holat chipi va «Linked to» ustuni.
+
+### Ustunlar
+
+> ⚠️ **ESKIRGAN (2026-08-27).** Quyidagi sakkiz ustunli tavsif va 1320px
+> kenglik TARIXIY kontekst. Amaldagi holat — pastdagi «Sakkiz ustun → olti,
+> tor ekranda esa qatorlar» bo'limida.
+
+`Mazmuni` · `Holat` · `Turi` · `Yaratilgan` · `Boshlangan` ·
+`Oxirgi yuborish` · `Yuborishlar` · `Amallar`
+
+- **Mazmuni** — sarlavha (haqiqiy tugma) va ostida matnning boshi bir
+  qatorda. Sarlavha nima haqidaligini, ikkinchi qator nima YOZILGANINI
+  aytadi. Mazmun ikki qatorga bo‘linsa qator balandligi 96px ga chiqib,
+  ekranda to‘rttagina yozuv qolardi.
+- **Holat** ALOHIDA ustunda. Avval u sarlavha yonida edi va uzun sarlavhada
+  keyingi qatorga tushib ketardi — ustun bo‘ylab yurgan ko‘z uni bir joyda
+  topa olmasdi.
+- **Sanalar** mono + `tabular-nums`: raqamlar ustun bo‘ylab tekis tushadi.
+  Qiymat yo‘q bo‘lsa `—`, nol emas.
+- **Yuborishlar** o‘ngga tekislangan.
+- **Amallar** — ikki ikonka. Jadvaldagi «O‘chirish» oynani TASDIQ holatida
+  ochadi: bitta tasdiq mexanikasi va bitta ko‘rinish; qatorda ikkinchi
+  variantini yasash ikki xil xulq berardi.
+
+### O‘lchov bilan qabul qilingan qarorlar
+
+- **Sahifa ustuni kengaydi** (1136 → 1320px). DSS ning 1136px o‘lchovi
+  O‘QISH uchun (62ch matn qatori), jadval esa SOLISHTIRISH uchun. 1136px da
+  sakkiz ustun 1153px joy so‘rab, «Yuborishlar» va «Amallar» ekrandan
+  chiqib ketardi — jadvalning eng amaliy ikki ustuni ko‘rinmasdi.
+- **Sana ikki qatorga bo‘linmadi.** Sinab ko‘rildi: qator balandligi 73 →
+  94px ga chiqdi va jadval baribir 17px sig‘masdi. Kenglikni oshirish
+  arzonroq bo‘ldi.
+- **Mazmun ustuni YOPISHIB turadi** (`position: sticky; left: 0`): tor
+  ekranda jadval o‘ngga siljiganda sana ustunlari ko‘rinadi-yu, «bu qaysi
+  xabar?» degan savol javobsiz qolardi. Fon majburiy — shaffof yopishqoq
+  katak ostidagi matnni o‘tkazib yuboradi.
+- **Mobil ustunda `max-width` ham SHART**: `min-width: 190px` yolg‘iz
+  turganda sarlavha o‘ralmay ustunni 518px ga cho‘zib yubordi (o‘lchandi).
+- Jadval O‘Z ichida gorizontal siljiydi, sahifa emas: 375px da
+  `documentElement.scrollWidth` 360 < 375.
+
+### Qator bosilishi
+
+Sichqoncha uchun butun qator nishon; klaviatura uchun sarlavha haqiqiy
+`<button aria-haspopup="dialog">`. Amal tugmalari `stopPropagation` bilan
+o‘z ishini qiladi.
+
+Kirish animatsiyasi qatorlarga ko‘chdi: 6px, qadam 35ms, faqat birinchi
+chizishda.
+
+Verify: 1440 da sakkiz ustun sig‘adi (jadval 1320 = konteyner 1320,
+gorizontal scroll yo‘q) · qator balandligi 73px · 375 da jadval o‘z ichida
+siljiydi, mazmun ustuni yopishib turadi · sarlavha, qator va o‘chirish
+tugmasi — uchovi ham oynani ochadi · light+dark · `pageerror` 0.
+
+Kadrlar: `.screenshots/yb-jadval-*.png`
+
+### Qator amallari → `…` menyu (2026-08-27)
+
+Foydalanuvchi qarori. Ikki ikonka har qatorda takrorlanib, sakkiz qatorda
+o‘n olti nishon berardi — ular ma‘lumotdan ko‘ra ko‘proq joy egallardi.
+Endi bitta `…` va uning ostidagi menyu (Mobbin: Customer.io va Podia ham
+shu naqshda).
+
+- Menyu SAHIFA darajasida va `position: fixed`: `.yb-table-wrap` da
+  `overflow-x: auto` bor, ichkaridagi menyu qirqilib ketardi.
+- `transform-origin` JS da TUGMA nuqtasiga qo‘yiladi — menyu o‘z markazidan
+  emas, bosilgan joydan o‘sib chiqadi. Pastda joy yetmasa tepaga ochiladi va
+  origin ham `bottom right` ga almashadi.
+- Kirish `opacity` + `scale(0.96)`, 160ms; `prefers-reduced-motion` da yo‘q.
+- `aria-haspopup="menu"` + `aria-expanded`, `role="menu"`/`menuitem`;
+  o‘q tugmalari aylanib yuradi (IME qo‘riqchisi bilan), Escape yopadi va
+  fokusni TUGMAGA qaytaradi, Tab menyudan chiqadi.
+- Menyudagi «O‘chirish» oynani TASDIQ holatida ochadi — bitta tasdiq
+  mexanikasi va bitta ko‘rinish.
+
+**Real brauzerda topilgan ikki kamchilik:**
+
+1. **Menyu ochilgan zahoti yopilardi.** `position: fixed` element ichidagi
+   elementga fokus berilganda brauzer uni «ko‘rinadigan joyga» surib, scroll
+   hodisasini otadi — u esa `scroll` tinglovchisini ishga tushirardi.
+   Yechim: `focus({ preventScroll: true })`.
+2. **Scroll da yopish umuman noto‘g‘ri edi.** `html` da
+   `scroll-behavior: smooth` bor, ya‘ni har yumshoq siljish yuzlab
+   millisekund davomida scroll hodisasi otadi. Endi menyu yopilmaydi,
+   QAYTA JOYLASHADI — hisob arzon (bitta `getBoundingClientRect`) va
+   `requestAnimationFrame` bilan kadrga bir marta siqiladi.
+
+Verify: menyu tugma ostida va o‘ngga tekislangan · Escape va tashqariga
+bosish yopadi, fokus tugmaga qaytadi · «Tahrirlash» kompozitorga matn va
+qamrovni olib o‘tadi · «O‘chirish» oynani tasdiq bilan ochadi · 375 ×
+qorong‘i: menyu ekrandan chiqmaydi (`left 142 … right 332` / 375) ·
+`pageerror` 0.
+
+Kadrlar: `.screenshots/yb-menyu*.png`
+
+### Sakkiz ustun → olti, tor ekranda esa qatorlar (2026-08-27)
+
+Foydalanuvchi: «ma'lumotlar ko'pku, shu uchun user qiynaladi». O'lchov
+shikoyatni tasdiqladi — jadvalda takror va shovqin bor edi.
+
+**Nima olib tashlandi va NEGA (hammasi o'lchovga tayanadi):**
+
+| Ilgari | Endi | Sabab |
+|---|---|---|
+| `Boshlangan` + `Oxirgi yuborish` | bitta `Yuborish` | bir martalik yozuvda ikkalasi AYNAN bir xil sana edi — beshta bir martalik yozuvning beshtasida ham |
+| `Turi` ustuni | sarlavha ostidagi meta | har qatorda bitta so'zni qaytarardi |
+| sarlavha ostida matn boshi | hudud | matn boshi ko'pincha sarlavhaning o'zini qayta aytardi; hudud esa jadvalda YO'Q edi, garchi qidiruv «hudud bo'yicha» deb va'da qilsa ham |
+
+**Qo'shilgan yagona narsa — `next`.** «Yuborish» katagining ikkinchi qatori
+davomiy yozuvda «keyingi», hali yuborilmaganda «rejada» deydi. Bu sana
+ma'lumotda bor edi, lekin jadvalda ko'rinmasdi — holbuki ishlab turgan
+davomiy xabar uchun eng amaliy sana o'sha.
+
+**Ma'lumot YO'QOLMADI:** «Boshlangan» oynadagi faktlar ro'yxatiga ko'chdi,
+xabar matni oynada to'liq turibdi, hududning to'liq yo'li ham o'sha yerda.
+
+**Sana og'irlik bo'yicha bo'lindi.** `2026-` sakkiz qatorda ham aynan bir
+xil va hech narsani ajratmaydi, kun-oy esa qatorlar orasidagi asosiy farq.
+Uchala bo'lak ham qoladi, faqat rangi va qalinligi har xil: yil va vaqt
+`--ink-2`, kun-oy `--ink` + 500. Mono va `tabular-nums` saqlanadi.
+«Yaratilgan» butun katagi bir pog'ona so'nadi — u kontekst, xulosa emas.
+
+**Sahifa 1136px ga QAYTDI.** 1320px sakkiz ustun uchun kerak edi; oltita
+ustunda u teskari ta'sir berdi — bo'sh joyni sarlavha ustuni yutib,
+sarlavha bilan «Holat» orasida quruq maydon paydo bo'ldi (o'lchandi:
+katak 608px, matn 420px da tugardi).
+
+**Uch pog'onali kenglik (chegaralar O'LCHOVDAN):**
+
+| Kenglik | Holat |
+|---|---|
+| ≥ 1061px | to'liq jadval, tabiiy en 938px |
+| 861–1060px | jadval SIQILADI: «Yuborish» ning ikkinchi qatori o'raladi, sarlavha ustuni 240px, katak chekkasi 12px → tabiiy en ~815px |
+| ≤ 860px | jadval QATORLARGA yoyiladi, gorizontal siljish umuman yo'q |
+
+Ilgari 375px da jadval 820px joy so'rab, ~343px lik ekranda faqat sarlavha
+va «Holat» ning yarmi ko'rinardi — sanani yoki `…` tugmasini ko'rish uchun
+HAR QATORDA yon tomonga surish kerak edi. Endi har qator mustaqil blok,
+ustun sarlavhalari esa `data-label` orqali qiymat yoniga ko'chadi.
+
+**Yoyilgan holatda uchta tuzoq bor edi, uchalasi ham real brauzerda ushlandi:**
+
+1. **Yorliqni flex bilan qo'yib bo'lmaydi.** Katak flex konteynerga
+   aylansa, sanadagi uch span mustaqil flex element bo'lib, oralarida `gap`
+   paydo bo'ladi: «2026-» «08-26» «11:40» bir-biridan uzilib ketadi.
+   Yechim: `position: absolute` yorliq + oddiy oqim.
+2. **`text-overflow: ellipsis` flex konteynerning O'ZIDA ishlamaydi** —
+   u yerdagi yalang'och matn anonim flex elementga aylanadi va uch nuqtasiz
+   qirqiladi («Urganch shahri» → «Urganch shahr», 861px da o'lchandi).
+   Yechim: matn alohida `.yb-place-t` span da.
+3. **`display: block` jadval semantikasini O'CHIRADI.** Brauzer `<table>`
+   ning tug'ma rollarini tashlab yuboradi va ekran o'quvchisi uchun u oddiy
+   bloklar to'plamiga aylanadi. Yechim: `role="table|rowgroup|row|
+   columnheader|cell"` ATAYLAB yozildi.
+
+Yo'l-yo'lakay: bo'sh qiymat tiresi `--ink-3` dan `--ink-2` ga o'tdi —
+`--ink-3` oq ustida 3.35:1 beradi (AA 4.5 talab qiladi) va tizimning o'z
+izohi uni «faqat dekorativ» deb ataydi, tire esa MA'NO tashiydi.
+
+Verify (real brauzer): 320 · 375 · 390 · 876 · 1024 · 1061 · 1440 —
+sahifada ham, jadval ichida ham gorizontal siljish YO'Q · AA fail 0
+(light va dark) · console 0 xato, 0 ogohlantirish · qidiruv «Urganch»
+bo'yicha ishlaydi va topilgan hudud qatorda KO'RINADI · bo'sh holat,
+oyna, `…` menyusi va klaviatura fokusi (16 nishon) buzilmagan ·
+jadval semantikasi yoyilgan holatda ham saqlanadi.
+
+Kadrlar: `.screenshots/tb-before-*.png` (ilgari) va `.screenshots/tb-final-*.png`

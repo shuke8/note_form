@@ -1,0 +1,158 @@
+<!-- @name: Jo‘natma varaqasi
+     @idea: Uch fakt bitta oq hujjatga yig‘iladi: sarlavha qatori, so‘ng
+            hairline bilan ajratilgan uch qator — ikonka, yorliq, qiymat.
+            Pochta varaqasi/chek mantiqi: ko‘z chapdan o‘ngga emas, yuqoridan
+            pastga yuradi va har qator bitta savolga javob beradi.
+     @best: Har uch fakt ham to‘lgan holatda — qatorlar bir xil og‘irlikda,
+            hech biri ikkinchisini bosmaydi. Tor 340px ustunda ham sinmaydi.
+     @cost: Qamrov soni endi bo‘limning eng katta raqami emas — hujjat
+            tekisligi uchun u ham qator bo‘lib turadi. Aksentli katta son
+            kerak bo‘lsa, bu variant uni bermaydi. -->
+<section class="y1" data-variant="1" aria-label="Yetkazish ma’lumotlari">
+  <div class="y1-card">
+    <div class="y1-head">
+      <span class="y1-kicker">Yetkazish</span>
+      <span class="y1-state" id="y1-state"></span>
+    </div>
+    <ul class="y1-rows" id="y1-rows"></ul>
+  </div>
+</section>
+
+<style>
+.y1-card { background: var(--paper); border-radius: var(--r-container);
+           box-shadow: inset 0 0 0 1px var(--hairline); overflow: hidden; }
+.y1-head { display: flex; align-items: center; gap: 12px; padding: 13px 16px;
+           border-bottom: 1px solid var(--hairline); background: var(--paper-alt); }
+.y1-kicker { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+             text-transform: uppercase; color: var(--ink-2); }
+/* Holat qatori — hujjatning «shtampi». Yashil yozuv EMAS, faqat matn:
+   tayyorlik signali kompozitorda kartaning o'z halqasida turadi va bu
+   yerda takrorlanmasin. */
+.y1-state { margin-inline-start: auto; font-size: var(--t-sm); letter-spacing: var(--ls-sm);
+            color: var(--ink-2); text-align: end; }
+
+.y1-rows { list-style: none; margin: 0; padding: 0; }
+.y1-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; padding: 14px 16px; }
+.y1-row + .y1-row { border-top: 1px solid var(--hairline); }
+.y1-ico { width: 28px; height: 28px; border-radius: var(--r-panel); background: var(--ghost);
+          display: grid; place-items: center; color: var(--ink-2); }
+.y1-ico .ico { width: 15px; height: 15px; }
+
+.y1-label { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+            text-transform: uppercase; color: var(--ink-2); }
+/* Qiymat MONO: hujjatda raqam va nom bir ustunda tekis tursin. `tabular-nums`
+   bilan raqam o'zgarganda qator qimirlamaydi. */
+.y1-value { margin-top: 4px; font-family: var(--mono); font-weight: 500; font-size: 19px;
+            line-height: 1.2; letter-spacing: var(--ls-mono); color: var(--ink);
+            font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.y1-value[data-empty="true"] { font-family: var(--sans); font-weight: 400;
+                               font-size: var(--t-ui); color: var(--ink-2); }
+/* Ilova IXTIYORIY fakt — katta mono raqam unga qamrov bilan teng og'irlik
+   berib qo'yardi va ko'z avval shunga tushardi. */
+.y1-value[data-quiet="true"] { font-family: var(--sans); font-weight: 400;
+                               font-size: var(--t-body); letter-spacing: var(--ls-body); }
+.y1-sub { margin-top: 3px; font-size: var(--t-ui); line-height: 1.45; color: var(--ink-2);
+          overflow-wrap: anywhere; }
+
+/* Sanalar — qator ichidagi kichik jadval. Uch ustun: sana / kun / soat. */
+.y1-runs { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 5px; }
+.y1-run { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: baseline; }
+.y1-run b { font-family: var(--mono); font-weight: 500; font-size: var(--t-mono-sm);
+            letter-spacing: var(--ls-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.y1-run span { font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink-2);
+               overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.y1-run i { font-style: normal; font-family: var(--mono); font-size: var(--t-mono-sm);
+            letter-spacing: var(--ls-mono); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+.y1-files { list-style: none; margin: 7px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.y1-file { display: inline-flex; align-items: center; gap: 6px; max-width: 100%;
+           padding: 4px 10px; border-radius: var(--r-control); background: var(--ghost);
+           font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink); }
+.y1-file .ico { width: 13px; height: 13px; flex: none; color: var(--ink-2); }
+.y1-file span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+</style>
+
+<script>
+(function () {
+  "use strict";
+  var root = document.querySelector('[data-variant="1"]');
+  if (!root) return;
+  var rows = root.querySelector("#y1-rows");
+  var state = root.querySelector("#y1-state");
+
+  function ico(id) {
+    return '<span class="y1-ico"><svg class="ico" aria-hidden="true" focusable="false">' +
+           '<use href="#i-' + id + '"/></svg></span>';
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  /* Qiymat + tagidagi izoh. `empty` bo'lsa qiymat o'z tipografiyasini
+     yo'qotadi: bo'sh joyni to'ldirgan katta mono matn «fakt» bo'lib
+     ko'rinardi. */
+  function cell(label, value, sub, empty, extra, quiet) {
+    return '<div><p class="y1-label">' + esc(label) + '</p>' +
+           '<p class="y1-value" data-empty="' + (empty ? "true" : "false") +
+           '" data-quiet="' + (quiet ? "true" : "false") + '">' + esc(value) + '</p>' +
+           (sub ? '<p class="y1-sub">' + esc(sub) + '</p>' : "") +
+           (extra || "") + '</div>';
+  }
+
+  function render(d) {
+    d = d || { reach: null, path: null, when: "none", runs: [], files: [] };
+    var html = "";
+
+    // 01 — qamrov
+    html += '<li class="y1-row">' + ico("users") +
+      (d.reach
+        ? cell("Qamrov", "~" + d.reach + " kishi", (d.path || []).join(" / ") + " · taxminiy", false)
+        : cell("Qamrov", "Qamrov tanlanmagan", "01-bo‘limdan hududni tanlang", true)) +
+      '</li>';
+
+    // 02 — vaqt
+    /* Sarlavha qatorida SANANING O'ZI turadi. Ilgari u yerda «3 ta yaqin
+       sana» yozilardi — bu pastdagi ro'yxatning uzunligini takrorlardi va
+       «keyingi yuborish» degan yorliqqa javob bermasdi. */
+    var rest = "";
+    if (d.when === "repeat" && d.runs.length > 1) {
+      rest = '<p class="y1-label" style="margin-top:9px">Keyin</p><ul class="y1-runs">' +
+        d.runs.slice(1).map(function (r) {
+          return '<li class="y1-run"><b>' + esc(r.iso) + '</b><span>' + esc(r.day) +
+                 '</span><i>' + esc(r.time) + '</i></li>';
+        }).join("") + '</ul>';
+    }
+    var first = d.runs[0];
+    html += '<li class="y1-row">' + ico("calendar-days") +
+      (d.when === "now"
+        ? cell("Keyingi yuborish", "Hoziroq", "Navbatga qo‘yilgan zahoti", false)
+        : d.when === "repeat" && first
+          ? cell("Keyingi yuborish", first.iso,
+                 first.day + ", " + first.time + " · " + (d.whenLine || ""), false, rest)
+          : cell("Keyingi yuborish", "Vaqt tanlanmagan", "03-bo‘limda sana va soatni belgilang", true)) +
+      '</li>';
+
+    // 03 — ilova
+    var filesHtml = d.files.length
+      ? '<ul class="y1-files">' + d.files.map(function (f) {
+          return '<li class="y1-file"><svg class="ico" aria-hidden="true" focusable="false">' +
+                 '<use href="#i-file-text"/></svg><span>' + esc(f) + '</span></li>';
+        }).join("") + '</ul>'
+      : "";
+    html += '<li class="y1-row">' + ico("file-text") +
+      (d.files.length
+        ? cell("Ilova", d.files.length + " ta fayl", "", false, filesHtml, true)
+        : cell("Ilova", "Fayl biriktirilmagan", "Ixtiyoriy — xabar ilovasiz ham ketadi", true)) +
+      '</li>';
+
+    rows.innerHTML = html;
+
+    var ready = d.reach && d.when !== "none";
+    state.textContent = ready ? "qamrov va vaqt to‘liq" : "to‘ldirilmagan";
+  }
+
+  root.addEventListener("om:data", function (e) { render(e.detail); });
+  render(null);
+})();
+</script>

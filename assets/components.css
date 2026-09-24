@@ -4,89 +4,110 @@
    ========================================================================== */
 
 /* -----------------------------------------------------------------------------
-   NAVBAR
-   O'lchangan: sticky, top 0, balandlik 68px, fon SHAFFOF, soya yo'q,
-   z-index 5. Ustida suzuvchi pill qidiruv va pill CTA.
-   Bu yerda qo'shimcha: sahifa surilganda yupqa hairline paydo bo'ladi —
-   shaffof navbar oq kontent ustida chegarasiz «yopishib» qoladi.
+   NAVBAR — SUZUVCHI OQ PILL
+   online-mahalla.uz dan o'lchandi: `nav.container` — oq, radius 100px,
+   balandligi 76px, ichki chekkasi 10px, sahifa tepasidan 40px pastda,
+   kengligi 1300px. SOYA YO'Q: u ko'k yoy fonida oq bo'lgani uchun
+   allaqachon ajralib turadi.
+
+   Sayt navigatsiyasi YOPISHMAYDI. Bu yerda u yopishqoq qoladi (ko'p
+   ekranli asbobda tepaga qaytish nishoni doim kerak), lekin shaffof
+   tasma ustida: pastda kontent o'tayotganda tasma muzlaydi.
    -------------------------------------------------------------------------- */
 .nav {
   position: sticky; top: 0; z-index: 40;
-  /* Ochiluvchi mobil paneli shu qatorga nisbatan joylashadi */
-  height: 68px;
-  display: flex; align-items: center;
-  background: color-mix(in srgb, var(--paper) 82%, transparent);
+  padding-block: 16px;
+  background: transparent;
+  transition: background var(--d-hover) var(--ease-out),
+              backdrop-filter var(--d-hover) var(--ease-out);
+}
+/* Faqat SURILGANDA muzlaydi — tinch holatda tasma umuman ko'rinmasin. */
+.nav[data-stuck="true"] {
+  background: color-mix(in srgb, var(--paper-raise) 78%, transparent);
   backdrop-filter: saturate(180%) blur(14px);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
-  box-shadow: 0 0.5px 0 0 transparent;
-  transition: box-shadow var(--d-hover) var(--ease-out),
-              background var(--d-hover) var(--ease-out);
 }
-.nav[data-stuck="true"] { box-shadow: var(--lift-hair); }
-.nav-inner { display: flex; align-items: center; gap: 28px; width: 100%; }
-.nav-links { display: flex; align-items: center; gap: 24px; }
-.nav-link {
-  font-size: var(--t-ui); font-weight: 500; color: var(--ink);
-  padding: 8px 2px; border-radius: var(--r-2);
-  transition: color var(--d-hover) var(--ease-out), opacity var(--d-hover) var(--ease-out);
+.nav-inner {
+  display: flex; align-items: center; gap: 28px; width: 100%;
+  position: relative;
+  min-height: 76px;
+  padding: 10px 10px 10px 22px;
+  border-radius: var(--r-full);
+  background: var(--paper);
+  box-shadow: var(--lift-hair);
 }
-@media (hover: hover) { .nav-link:hover { color: var(--ink-2); } }
-.nav-link[aria-current="page"] { color: var(--ink); }
-.nav-link[aria-current="page"]::after {
-  content: ""; display: block; height: 1.5px; margin-top: 4px;
-  background: var(--ink); border-radius: 2px;
+/* Qorong'ida oq pillning ekvivalenti YO'Q: `--paper` sahifa foni bilan
+   aynan bir xil (#080c18) va tasma faqat `--lift-hair` (~1,1:1) bilan
+   ajralardi — ya'ni umuman ajralmasdi. Qorong'ida pill KO'TARILGAN
+   yuzada turadi va halqasi kuchliroq bo'ladi. Yorug'da hech nima
+   o'zgarmaydi: u yerda oq pill ko'k yoy ustida o'zini ko'rsatadi. */
+[data-theme="dark"] .nav-inner {
+  background: var(--paper-raise);
+  box-shadow: 0 0 0 1px var(--hairline-2);
 }
-.nav-spacer { flex: 1 1 auto; min-width: 8px; }
-.nav-inner { position: relative; }
 
-/* Mobil menyu: tor ekranda havolalar qatori 724px ga cho‘zilib, sahifani
-   gorizontal scroll qilib yuborardi. Havolalar ochiluvchi panelga
-   ko‘chadi — nusxa YO‘Q, ayni `nav` element qayta joylashadi. */
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-link {
+  font-size: var(--t-ui); font-weight: 400; color: var(--ink);
+  padding: 8px 2px; border-radius: var(--r-control);
+  transition: color var(--d-hover) var(--ease-out);
+}
+@media (hover: hover) { .nav-link:hover { color: var(--accent-ink); } }
+.nav-link[aria-current="page"] { color: var(--accent-ink); font-weight: 500; }
+/* Faol havola ostidagi chiziq ketdi: pill ichida u pillning o'z egri
+   chizig'i bilan bellashardi. Faollik endi RANG bilan aytiladi — sayt
+   ham shunday qiladi. */
+.nav-spacer { flex: 1 1 auto; min-width: 8px; }
+
+/* Mobil menyu: tor ekranda havolalar qatori sahifani gorizontal scroll
+   qilib yuborardi. Havolalar ochiluvchi panelga ko'chadi — nusxa YO'Q,
+   ayni `nav` element qayta joylashadi. */
 @media (max-width: 880px) {
-  /* 320px da 28px lik oraliq + qisqarmaydigan brend qatorni 23px ga
-     cho‘zib yuborardi. Oraliq kichrayadi, brend esa qisqarishga ruxsat
-     oladi (`flex: none` uni qat’iy qilib qo‘ygan edi). */
-  .nav-inner { gap: 12px; }
+  .nav-inner { gap: 12px; padding-inline: 16px 10px; min-height: 64px; }
   .brand { flex: 0 1 auto; min-width: 0; }
   .brand-text { min-width: 0; }
   .brand-name, .brand-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .nav-links {
-    position: absolute; top: calc(100% + 1px); left: 0; right: 0;
+    position: absolute; top: calc(100% + 8px); left: 0; right: 0;
     flex-direction: column; align-items: stretch; gap: 0;
-    /* `left/right` mutlaq joylashuvda ota-onaning PADDING qutisiga
-       nisbatan o‘lchanadi — `.shell` ning 16px padding'i emas, uning
-       tashqi cheti. Manfiy margin qo‘shilsa panel ekrandan 16px chiqib
-       ketardi. */
-    padding: 8px var(--shell-pad) 14px;
+    padding: 10px;
+    border-radius: var(--r-card);
     background: var(--paper);
-    border-bottom: 1px solid var(--hairline);
     box-shadow: var(--lift-2);
   }
   .nav-links[data-open="false"] { display: none; }
-  .nav-link { padding: 13px 4px; font-size: var(--t-body); border-radius: var(--r-3); }
-  .nav-link[aria-current="page"]::after { display: none; }
-  .nav-link[aria-current="page"] { color: var(--ink); font-weight: 600; }
+  .nav-link { padding: 13px 12px; font-size: var(--t-body); border-radius: var(--r-control); }
+  .nav-link[aria-current="page"] { color: var(--accent-ink); font-weight: 500; }
 }
 
 /* Brend */
 .brand { display: inline-flex; align-items: center; gap: 10px; flex: none; }
 .brand-mark { width: 26px; height: 26px; flex: none; }
 .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
-.brand-name { font-size: var(--t-ui); font-weight: 600; color: var(--ink); letter-spacing: -0.02em; }
-.brand-sub { font-family: var(--mono); font-size: 10px; letter-spacing: var(--ls-mono);
-             text-transform: uppercase; color: var(--ink-2); }
+/* Saytning logotipi ikki qatorli: kichik «Online» KATTA «Mahalla» ning
+   USTIDA. Bu yerdagi brend bloki ham shu tartibda — nom pastda va
+   yirikroq, bo'lim nomi tepada va mayda. */
+.brand-mark { width: 34px; height: 34px; }
+.brand-text { flex-direction: column-reverse; }
+.brand-name { font-size: var(--t-lead); font-weight: 500; color: var(--ink); line-height: 1.05; }
+.brand-sub { font-size: var(--t-sm); letter-spacing: var(--ls-mono);
+             text-transform: uppercase; color: var(--ink-3); line-height: 1.2; }
 
 /* -----------------------------------------------------------------------------
    TUGMALAR
-   O'lchangan: radius 100px, balandlik 48px, padding 12px 24px,
-   birlamchi = issiq radial gradient, ikkilamchi = rgba(0,0,0,.02–.05)
-   to'ldirish, CHEGARA YO'Q, SOYA YO'Q. Uchinchi tur — qattiq qora pill.
+   online-mahalla.uz `/login` dan o'lchandi: balandlik 50px, chekka
+   16px 28px, radius 5px, fon TEKIS `#0060fe`, chegara fon bilan bir xil,
+   SOYA YO'Q, matn oq 15px.
+
+   Radius 5px — pill EMAS. Saytning yagona pill tugmasi navigatsiyadagi
+   «Tizimga kirish» (`.btn-pill`); mahsulotning o'zida esa hamma tugma
+   5px. Bu ekran ham mahsulot, marketing sahifasi emas.
    -------------------------------------------------------------------------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  height: 48px; padding-inline: 24px;
-  border-radius: var(--r-pill);
-  font-size: var(--t-ui); font-weight: 500; letter-spacing: -0.01em;
+  height: var(--h-control); padding-inline: 20px;
+  border-radius: var(--r-control);
+  font-size: var(--t-ui); font-weight: 500; letter-spacing: normal;
   white-space: nowrap; text-align: center;
   transition: background var(--d-hover) var(--ease-out),
               color var(--d-hover) var(--ease-out),
@@ -94,6 +115,9 @@
               opacity var(--d-hover) var(--ease-out),
               transform var(--d-tap) var(--ease-out);
 }
+/* `.btn-pill` OLIB TASHLANDI: markupda hech qayerda ishlatilmagan edi va
+   u tugmalar oilasiga ikkinchi shakl kiritardi. Pill endi FAQAT
+   navigatsiya tasmasida. */
 .btn:active { transform: scale(0.97); }
 .btn svg { width: 16px; height: 16px; flex: none; }
 .btn[disabled], .btn[aria-disabled="true"] { opacity: 0.45; pointer-events: none; }
@@ -102,27 +126,38 @@
    turganini bilmaydi. */
 label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 
-.btn-accent { background-image: var(--accent); color: #fff; }
-@media (hover: hover) { .btn-accent:hover { box-shadow: 0 6px 20px rgba(29, 78, 216, 0.32); } }
+/* TEKIS rang, gradient emas: saytda gradientli tugma umuman yo'q.
+   Hover — bir qadam to'qroq ko'k; soya bilan «ko'tarish» qilinmaydi,
+   chunki bu tizim soyasiz. */
+.btn-accent { background: var(--accent-solid); color: #fff; }
+@media (hover: hover) { .btn-accent:hover { background: color-mix(in srgb, var(--accent-solid) 86%, #000); } }
 
-.btn-ink { background: var(--ink); color: var(--paper); }
-@media (hover: hover) { .btn-ink:hover { background: var(--ink-2); } }
+/* Saytning ikkinchi darajali to'ldirilgan tugmasi — to'q navy `#100448`
+   («ЭРИ билан кириш»), qora emas. */
+.btn-ink { background: var(--accent-deep); color: var(--accent-deep-on); }
+@media (hover: hover) { .btn-ink:hover { background: var(--accent-deep-hover); } }
 
 .btn-ghost { background: var(--ghost); color: var(--ink); }
 @media (hover: hover) { .btn-ghost:hover { background: var(--ghost-hover); } }
 
 .btn-quiet { background: transparent; color: var(--ink); }
+/* Destruktiv tasdiq. To'ldirilgan QIZIL emas: `--crit` qorong'i mavzuda
+   `#ff6b6b` ga aylanadi va oq matn u yerda 2,6:1 beradi. Yumshoq fon +
+   qizil matn juftligi tokenlar bilan birga ag'dariladi, ya'ni ikkala
+   mavzuda ham o'qiladi. */
+.btn-crit { background: var(--crit-soft); color: var(--crit);
+            box-shadow: inset 0 0 0 1px var(--crit); }
 @media (hover: hover) { .btn-quiet:hover { background: var(--ghost); } }
 
-.btn-sm { height: 38px; padding-inline: 16px; font-size: var(--t-ui); }
+.btn-sm { height: var(--h-control-sm); padding-inline: 14px; font-size: var(--t-ui); }
 .btn-block { width: 100%; }
 
 /* Ikonka tugmasi — ko'rinishi 38px, tegish maydoni 44px (WCAG 2.5.8) */
 .icon-btn {
   position: relative;
-  width: 38px; height: 38px; flex: none;
+  width: var(--h-control-sm); height: var(--h-control-sm); flex: none;
   display: grid; place-items: center;
-  border-radius: var(--r-pill);
+  border-radius: var(--r-control);
   color: var(--ink);
   transition: background var(--d-hover) var(--ease-out), color var(--d-hover) var(--ease-out);
 }
@@ -138,14 +173,14 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
    -------------------------------------------------------------------------- */
 .chip {
   display: inline-flex; align-items: center; gap: 7px;
-  height: 32px; padding-inline: 14px;
-  border-radius: var(--r-pill);
+  height: var(--h-badge); padding-inline: 12px;
+  border-radius: var(--r-control);
   background: var(--ghost); color: var(--ink);
   font-size: var(--t-sm); font-weight: 500; letter-spacing: var(--ls-sm);
   white-space: nowrap;
 }
-.chip-mono { font-family: var(--mono); font-weight: 400; letter-spacing: var(--ls-mono);
-             text-transform: uppercase; font-size: var(--t-mono-sm); color: var(--ink-2); }
+.chip-mono { font-weight: 500; letter-spacing: var(--ls-mono);
+             text-transform: uppercase; font-size: var(--t-mono-sm); color: var(--ink-3); }
 .chip-accent { background: var(--accent-soft); color: var(--accent-ink); }
 .chip-ok    { background: var(--ok-soft);    color: var(--ok); }
 .chip-warn  { background: var(--warn-soft);  color: var(--warn); }
@@ -157,20 +192,29 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
    nuqtali to'r foni, hairline ramka, burchaklarda 5x5 qora kvadrat.
    Kvadrat o'lchami jonli sahifada o'lchandi (5x5, radius 0, absolute).
    -------------------------------------------------------------------------- */
+/* Plitka — saytning TO'LDIRILGAN kartasi: lavanda yuza, radius 24,
+   ichki chekka 24, chegara ham soya ham YO'Q. O'lchandi:
+   `.showcase__box` 305x145, `#ebf1ff`, `border-radius: 24px`,
+   `padding: 24px`.
+
+   Ilgari bu yerda nuqtali to'r fon va 1px hairline chegara turardi —
+   u boshqa tizimning (monoxrom, chizmali) tili edi. */
 .tile {
   position: relative;
-  padding: 28px 24px;
-  border: 1px solid var(--hairline);
-  background:
-    radial-gradient(circle at 1px 1px, var(--hairline-2) 1px, transparent 0) 0 0 / 16px 16px,
-    var(--paper);
-  transition: border-color var(--d-hover) var(--ease-out), background-color var(--d-hover) var(--ease-out);
+  padding: 24px;
+  border: 0;
+  border-radius: var(--r-card);
+  background: var(--paper-sunk);
+  transition: background-color var(--d-hover) var(--ease-out);
 }
 .tile-plain {
   background: var(--paper);
-  border: 1px solid var(--hairline);
+  box-shadow: inset 0 0 0 1px var(--hairline);
 }
-.tick { position: absolute; width: 5px; height: 5px; background: var(--ink); }
+/* Burchak nishonlari — eski tizimning chizma tili. Saytda bunday belgi
+   yo'q, shuning uchun ular chizilmaydi (markupdan olib tashlangani
+   o'rniga shu yerda o'chiriladi: ular `aria-hidden` dekoratsiya). */
+.tick { display: none; }
 .tick-tl { top: -2.5px; left: -2.5px; }
 .tick-tr { top: -2.5px; right: -2.5px; }
 .tick-bl { bottom: -2.5px; left: -2.5px; }
@@ -183,7 +227,8 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
    -------------------------------------------------------------------------- */
 .media {
   position: relative;
-  border-radius: var(--r-2);
+  /* Media — KONTEYNER, boshqaruv emas: unga karta burchagi tegishli. */
+  border-radius: var(--r-card);
   overflow: hidden;
   background-color: #0e1730;
   background-image:
@@ -231,7 +276,7 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
    kesilishni YOZAYOTGAN paytda ko'radi.
    -------------------------------------------------------------------------- */
 .notif { display: flex; gap: 12px; padding: 16px; align-items: flex-start; }
-.notif-mark { width: 34px; height: 34px; flex: none; border-radius: var(--r-3);
+.notif-mark { width: 34px; height: 34px; flex: none; border-radius: var(--r-control);
               background: var(--ink); color: var(--paper); display: grid; place-items: center; }
 .notif-mark svg { width: 20px; height: 20px; }
 .notif-body { min-width: 0; flex: 1; }
@@ -256,12 +301,17 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
    O'lchangan yangilanish kartasi: flex, gap 16px, kenglik 275px,
    thumbnail 56x56 radius 100px, sarlavha 16/24, meta 14/21 muted.
    -------------------------------------------------------------------------- */
+/* Karta soyasiz. Saytda ikki tur bor va IKKALASI ham soyasiz:
+   to'ldirilgan lavanda karta (radius 24, `#ebf1ff`) va oq karta
+   (radius 28, pastida 3px rangli chiziq). Bu yerdagi `.card` — oq turi;
+   ajralish uchun unga yupqa ko'k halqa beriladi, chunki bizning
+   sahifamiz oq yuzada turadi, saytniki esa ko'k yoyda. */
 .card {
   display: flex; flex-direction: column; gap: 14px;
-  padding: 20px;
-  border-radius: var(--r-5);
+  padding: 24px;
+  border-radius: var(--r-container);
   background: var(--paper);
-  box-shadow: var(--lift-1);
+  box-shadow: inset 0 0 0 1px var(--hairline);
   transition: box-shadow var(--d-hover) var(--ease-out), transform var(--d-hover) var(--ease-out);
 }
 @media (hover: hover) {
@@ -283,47 +333,39 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
   stroke-linecap: round; stroke-linejoin: round;
 }
 
-.feed-item { display: flex; flex-direction: column; padding-block: 4px; }
-.feed-h { margin: 0; font: inherit; font-weight: inherit; }
-.feed-open {
-  display: flex; gap: 16px; align-items: flex-start; width: 100%;
-  padding: 8px; margin: -8px; border-radius: var(--r-4); text-align: left;
-  color: var(--ink); transition: background var(--d-hover) var(--ease-out);
-}
-@media (hover: hover) { .feed-open:hover { background: var(--ghost); } }
-.feed-open:active { transform: scale(.995); }
-.feed-head { flex: 1 1 auto; min-width: 0; }
-.feed-thumb {
-  width: 56px; height: 56px; flex: none;
-  border-radius: var(--r-pill);
-  display: grid; place-items: center;
-  background: var(--paper-raise); color: var(--ink);
-  overflow: hidden;
-}
-.feed-title { display: block; font-size: var(--t-body); line-height: var(--lh-body); letter-spacing: var(--ls-body);
-              color: var(--ink); font-weight: 500; }
-.feed-meta { display: block; margin-top: 8px; font-size: var(--t-ui); color: var(--ink-2); }
-.feed-meta .sep { opacity: 0.5; margin-inline: 6px; }
-.feed-chev { flex: none; width: 16px; height: 16px; margin-top: 20px; color: var(--ink-2);
-             transition: transform var(--d-pane) var(--ease-out); }
-.feed-item[data-open="true"] .feed-chev { transform: rotate(180deg); }
-
-/* Ochilgan tana. `hidden` atributi bilan boshqariladi — balandlik animatsiyasi
-   emas: nol balandlikdagi konteyner ekran o'quvchi uchun HALI HAM mavjud
-   bo'lib qolardi. Ochilishda tizimning reveal imzosi takrorlanadi. */
-.feed-body { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--hairline); }
-.feed-item[data-open="true"] .feed-body { animation: feedIn var(--d-reveal) var(--ease-out) both; }
-@keyframes feedIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+/* Yozuv matni — `yuborilganlar.html` dagi oyna ichida. Ochiladigan karta
+   (`.feed-item`/`.feed-open`/`.feed-body`) OLIB TASHLANDI: tafsilot endi
+   modalda ochiladi, ya'ni ro'yxat joyida qoladi va ikkita yozuvni
+   solishtirish uchun aylantirib yurish kerak emas. */
 .feed-strong { margin-top: 6px; font-size: var(--t-ui); font-weight: 500; color: var(--ink); }
 .feed-text { margin-top: 4px; font-size: var(--t-ui); line-height: 1.55; color: var(--ink-2); }
-.feed-gap { margin-top: 16px; }
 .feed-facts { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
-.feed-facts > div { display: flex; flex-direction: column; gap: 2px; }
+.feed-facts > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .feed-facts dt { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
                  text-transform: uppercase; color: var(--ink-2); }
-.feed-facts dd { margin: 0; font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink);
+.feed-facts dd { margin: 0; font-size: var(--t-ui); color: var(--ink);
                  overflow-wrap: anywhere; }
-.feed-body .hint { margin-top: 16px; }
+
+/* --- Turi: bir martalik / davomiy -----------------------------------------
+   CHIP EMAS. Ilgari u chip edi va holat chipi bilan yonma-yon turganda
+   ikkalasi bir xil og'irlikda ko'rinardi: qaysi biri «bu nima» va qaysi
+   biri «hozir qayerda» ekani ajralmasdi.
+
+   Ikonka turni o'qimasdan ham aytadi: ↻ qaytadi, → bir marta ketadi.
+   -------------------------------------------------------------------------- */
+.kind-tag { display: inline-flex; align-items: center; gap: 6px; flex: none;
+            font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+            text-transform: uppercase; color: var(--ink-2); }
+.kind-tag .ico { width: 13px; height: 13px; flex: none; }
+/* Davomiy — AKSENT: u hali ham ishlab turgan qoida, ya'ni operator uni
+   to'xtatishi mumkin. Bir martalik esa tugagan hodisa — neytral. */
+.kind-tag[data-kind="repeat"] { color: var(--accent-ink); }
+
+
+/* Keyingi yuborish — davomiy xabarning YAGONA amaliy qiymati: «qachon
+   qaytadi?». Shuning uchun u qolgan faktlardan ajralib turadi. */
+.feed-next { font-family: var(--mono); letter-spacing: var(--ls-mono);
+             font-variant-numeric: tabular-nums; color: var(--accent-ink); }
 
 /* -----------------------------------------------------------------------------
    MAYDONLAR
@@ -338,24 +380,28 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 .req { color: var(--accent-ink); }
 .hint { font-size: var(--t-sm); line-height: var(--lh-sm); color: var(--ink-2); }
 
+/* Maydon uslubi `/login` dan o'lchandi: oq fon, `1px solid #e1edf7`
+   chegara, radius 5px, ichki chekka 16px, balandlik 57px. To'q chegara
+   (`--edge`) qoldirilmadi — u bu tizimda juda qattiq turadi va sayt
+   maydonlari yumshoq ko'k chiziq bilan chegaralanadi. */
 .input, .select, .textarea {
   width: 100%;
-  min-height: 48px; padding: 12px 16px;
-  border: 1px solid var(--edge); border-radius: var(--r-5);
+  min-height: var(--h-control); padding: 11px 14px;
+  border: 1px solid var(--hairline); border-radius: var(--r-control);
   background: var(--paper); color: var(--ink);
-  font-size: var(--t-body); letter-spacing: var(--ls-body); line-height: 1.5;
+  font-size: var(--t-ui); letter-spacing: normal; line-height: 1.5;
   outline: none;
   transition: border-color var(--d-hover) var(--ease-out), box-shadow var(--d-hover) var(--ease-out);
 }
 .textarea { min-height: 132px; resize: vertical; }
 .input::placeholder, .textarea::placeholder { color: var(--ink-2); }
-@media (hover: hover) { .input:hover, .select:hover, .textarea:hover { border-color: var(--ink-2); } }
+@media (hover: hover) { .input:hover, .select:hover, .textarea:hover { border-color: var(--hairline-2); } }
 /* Fokus izi qolgan boshqaruvlar bilan BIR XIL: 2px qattiq halqa.
    Yuqoridagi `outline: none` global `:focus-visible` qoidasini yengib
    ketardi (bir xil aniqlik, keyingi fayl yutadi) va maydonda ko‘rinadigan
    iz umuman qolmasdi. Chegara rangi ham o‘zgaradi — sichqoncha bilan
    bosgan foydalanuvchi ham qaysi maydon faolligini ko‘radi. */
-.input:focus, .select:focus, .textarea:focus { border-color: var(--ink); }
+.input:focus, .select:focus, .textarea:focus { border-color: var(--accent-solid); }
 .input:focus-visible, .select:focus-visible, .textarea:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
@@ -366,12 +412,12 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 .select {
   appearance: none;
   padding-inline-end: 42px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%230060fe' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
 }
 [data-theme="dark"] .select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%238ab4ff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 .select:disabled { opacity: 0.5; cursor: not-allowed; background-color: var(--paper-raise); }
 
@@ -383,15 +429,13 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 .char-count { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
               color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.char-count[data-level="warn"] { color: var(--warn); }
-.char-count[data-level="crit"] { color: var(--crit); }
 
 /* Segment (pill qatori) — DSS ning imzo geometriyasi */
 .segment { display: inline-flex; gap: 6px; flex-wrap: wrap; }
 .seg-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  min-height: 44px; padding: 10px 18px;
-  border: 1px solid var(--hairline); border-radius: var(--r-pill);
+  min-height: var(--h-control); padding: 10px 16px;
+  border: 1px solid var(--hairline); border-radius: var(--r-control);
   background: var(--paper); color: var(--ink-2);
   font-size: var(--t-ui); font-weight: 500;
   transition: border-color var(--d-hover) var(--ease-out),
@@ -406,29 +450,55 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
    `aria-pressed` ishlatadi. Ilgari faqat `aria-checked` stillangani
    uchun kod `role=button` da ruxsat etilmagan atributni faqat CSS
    ilgagi bo'lsin deb qo'shib yurgan edi. */
+/* TANLANGAN holat = BREND KO'KI, qora emas.
+   Ilgari bu yerda `--ink` (qora) turardi va ekranda uch xil «tanlangan»
+   tili yonma-yon yashardi: qora to'ldirish (segment, hudud qatori),
+   yumshoq ko'k + halqa (butun respublika), qora tagchiziq (umumiy holat
+   tasmasi). Birlamchi rang ko'k bo'lgan tizimda tanlov qora bo'lishi —
+   foydalanuvchi to'g'ri ko'rsatgan ziddiyat.
+
+   Endi qoida BITTA: tanlov brend ko'kida. Ixcham boshqaruvda u
+   TO'LDIRISH, katta karta-nishonda esa halqa (`.scope-all`) — ikkinchisi
+   solid ko'k bo'lsa blok butun bo'limni bosib ketardi.
+   Oq matn `#0060fe` ustida 5.16:1. */
 .seg-btn[aria-checked="true"],
 .seg-btn[aria-selected="true"],
 .seg-btn[aria-pressed="true"] {
-  background: var(--ink); border-color: var(--ink); color: var(--paper);
+  background: var(--accent-solid); border-color: var(--accent-solid); color: var(--ink-on-fill);
+}
+/* Tanlangan tugma ham hoverga javob beradi — aks holda u «o'lik» tuyuladi.
+   `.seg-btn:hover` yuqorida turgani uchun bu qoida undan KEYIN kelishi
+   shart (aniqlik teng — 0,2,0). */
+@media (hover: hover) {
+  .seg-btn[aria-checked="true"]:hover,
+  .seg-btn[aria-selected="true"]:hover,
+  .seg-btn[aria-pressed="true"]:hover {
+    background: color-mix(in srgb, var(--accent-solid) 86%, #000);
+    border-color: color-mix(in srgb, var(--accent-solid) 86%, #000);
+    color: var(--ink-on-fill);
+  }
 }
 
 /* Til almashtirgich */
-.toggle-group { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-pill); background: var(--paper-raise); }
+.toggle-group { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-control); background: var(--paper-raise); }
 .toggle-btn {
-  min-width: 46px; height: 32px; padding-inline: 12px;
-  border-radius: var(--r-pill);
+  min-width: 46px; height: var(--h-badge); padding-inline: 12px;
+  border-radius: calc(var(--r-control) - 3px);
   font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
   text-transform: uppercase; color: var(--ink-2);
   transition: background var(--d-hover) var(--ease-out), color var(--d-hover) var(--ease-out);
 }
-.toggle-btn[aria-pressed="true"] { background: var(--paper); color: var(--ink); box-shadow: var(--lift-hair); }
+/* Suzuvchi oq «thumb» li almashtirgich: tanlov signali SHAKL (thumb),
+   lekin matn ham brend ko'kida — tanlov butun interfeysda bitta rangda
+   gapiradi. */
+.toggle-btn[aria-pressed="true"] { background: var(--paper); color: var(--accent-ink); box-shadow: var(--lift-hair); }
 
 /* -----------------------------------------------------------------------------
    XABAR BLOKLARI (banner)
    -------------------------------------------------------------------------- */
 .note {
   display: flex; gap: 12px; align-items: flex-start;
-  padding: 16px 18px; border-radius: var(--r-5);
+  padding: 16px 18px; border-radius: var(--r-card);
   font-size: var(--t-ui); line-height: 1.55;
   background: var(--paper-raise); color: var(--ink-2);
   border: 1px solid var(--hairline);
@@ -444,21 +514,20 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
 .empty {
   display: flex; flex-direction: column; align-items: center; gap: 10px;
   padding: 40px 24px; text-align: center;
-  border: 1px dashed var(--hairline-2); border-radius: var(--r-5);
+  border: 1px dashed var(--hairline-2); border-radius: var(--r-card);
   color: var(--ink-2);
 }
-.empty-icon { width: 40px; height: 40px; border-radius: var(--r-pill); background: var(--paper-raise);
+.empty-icon { width: 40px; height: 40px; border-radius: var(--r-full); background: var(--paper-raise);
               display: grid; place-items: center; color: var(--ink-2); }
 .empty-title { font-size: var(--t-body); font-weight: 500; color: var(--ink); }
 
-/* Skeleton — 3 soniyadan uzoq kutish bo'lmasin, lekin kutilsa ko'rinsin */
-.skeleton {
-  border-radius: var(--r-2);
-  background: linear-gradient(90deg, var(--paper-raise) 25%, var(--paper-sunk) 37%, var(--paper-raise) 63%);
-  background-size: 400% 100%;
-  animation: skeleton-slide 1.4s ease-in-out infinite;
-}
-@keyframes skeleton-slide { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+/* `.skeleton` OLIB TASHLANDI. U shu yerda turardi, lekin biror HTML yoki
+   JS da chaqirilmasdi: sahifalarda KUTISH umuman yo'q — ro'yxat lokal
+   massivdan, hudud ma'lumotlari esa oddiy `<script>` dan keladi, ya'ni
+   ikkalasi ham birinchi bo'yoqda tayyor.
+   Ishlatilmaydigan yuklanish holati tizimda «bizda skeleton bor» degan
+   yolg'on taassurot berardi. Server ulanib ro'yxat HAQIQATAN so'ralganda
+   u shu joyga qaytadi — o'shanda uni chaqiradigan kod ham bo'ladi. */
 
 /* -----------------------------------------------------------------------------
    MARQUEE — o'lchangan: sekin gorizontal siljish, will-change: transform.
@@ -480,7 +549,10 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
    FOOTER — o'lchangan: shaffof fon, qora matn, padding-top 96px
    -------------------------------------------------------------------------- */
 .footer { padding-top: var(--gap-section); padding-bottom: 56px; border-top: 1px solid var(--hairline); margin-top: var(--gap-section); }
-.footer-grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 40px; }
+/* Ustunlar soni 4 dan 5 ga chiqdi («Dizayn namunalari» qo'shildi) —
+   `repeat(3, …)` qolganda beshinchi ustun birinchi qatorga sig'may
+   pastga tushib qolardi. */
+.footer-grid { display: grid; grid-template-columns: 1.6fr repeat(4, 1fr); gap: 40px; }
 .footer-col { display: flex; flex-direction: column; gap: 6px; }
 /* Nishon balandligi 24px dan kam bo‘lmasin (WCAG 2.5.8). Faqat matn
    qatori 21px edi; oraliq qisqartirilib, farq padding’ga o‘tkazildi —
@@ -507,14 +579,41 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
               width: min(440px, calc(100vw - 32px)); pointer-events: none; }
 .toast {
   display: flex; align-items: center; gap: 10px;
-  padding: 12px 18px; border-radius: var(--r-pill);
-  background: var(--ink); color: var(--paper);
+  padding: 12px 18px; border-radius: var(--r-panel);
+  /* Yuza IKKALA temada ham bir xil to'q qoladi — `--ink`/`--paper` bilan
+     ag'darilmaydi. Ilgari ag'darilardi va qorong'ida toast OQ bo'lib
+     qolardi; o'sha oq ustida ohang ranglari (#37d39b — 1.9:1) umuman
+     o'qilmasdi. Toast sahifa yuzasi emas, uning USTIDAGI vaqtinchalik
+     qatlam, shuning uchun temaga ergashishi shart emas. */
+  background: #171717; color: #fff;
   font-size: var(--t-ui); box-shadow: var(--lift-2);
   pointer-events: auto;
   animation: toast-in var(--d-pane) var(--ease-out);
 }
 @keyframes toast-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .toast[data-leaving="true"] { opacity: 0; transform: translateY(8px); transition: opacity var(--d-hover), transform var(--d-hover); }
+
+/* OHANG. `motion.js` (`omToast`) `data-tone` ni qo'yadi — "ok" | "warn" |
+   "crit" — lekin bu atribut uchun HECH QANDAY qoida yo'q edi: uchala
+   ohang bir xil ko'rinardi va muvaffaqiyat xatolikdan farqlanmasdi.
+   Farq IKKI kanal orqali beriladi (faqat rang bilan emas — WCAG 1.4.1):
+   ikonkaning SHAKLI va chap chekkadagi rang chizig'i. Ranglar to'q
+   `#171717` yuza uchun tanlangan: 9.3:1 / 9.2:1 / 6.5:1.
+   Ikonka `mask` orqali beriladi — shunda u `--toast-tone` rangini oladi
+   va bitta SVG uchala ohangga yetadi. */
+.toast[data-tone] {
+  padding-left: 15px;
+  border-left: 3px solid var(--toast-tone);
+}
+.toast[data-tone]::before {
+  content: ""; flex: none; width: 18px; height: 18px;
+  background: var(--toast-tone);
+  -webkit-mask: var(--toast-ico) center / 18px 18px no-repeat;
+          mask: var(--toast-ico) center / 18px 18px no-repeat;
+}
+.toast[data-tone="ok"]   { --toast-tone: #37d39b; --toast-ico: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2.4'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M20%206%209%2017l-5-5'/%3E%3C/svg%3E"); }
+.toast[data-tone="warn"] { --toast-tone: #f0ad3d; --toast-ico: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2.4'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M12%203%202.5%2020h19L12%203Z'/%3E%3Cpath%20d='M12%2010v4'/%3E%3Cpath%20d='M12%2016.8h.01'/%3E%3C/svg%3E"); }
+.toast[data-tone="crit"] { --toast-tone: #ff6b6b; --toast-ico: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='black'%20stroke-width='2.4'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='12'%20cy='12'%20r='9'/%3E%3Cpath%20d='m15%209-6%206'/%3E%3Cpath%20d='m9%209%206%206'/%3E%3C/svg%3E"); }
 
 /* -----------------------------------------------------------------------------
    TOUCH: iOS zoom qilmasin (16px), tegish maydoni >= 44px
@@ -541,4 +640,69 @@ label.btn:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
   .nav-toggle { display: grid; }
   .nav-mobile-only { display: inline-flex; }
   .nav-desktop-only { display: none; }
+}
+
+/* -----------------------------------------------------------------------------
+   MODAL
+   Nativ `<dialog>` ustiga qurilgan: fokus tuzog'i, Escape va orqa fonning
+   inertligi BRAUZERDAN keladi. Qo'lda yozilgan modal shu uchtasini deyarli
+   har doim yarim qoldiradi.
+
+   Ikki sahifada ikki nusxa CSS bo'lmasin uchun shu yerda: kompozitorning
+   natija oynasi ham, ro'yxatning yozuv oynasi ham ayni shu qobiqni oladi.
+   -------------------------------------------------------------------------- */
+.modal {
+  width: min(720px, calc(100vw - 32px));
+  max-height: min(86vh, 900px);
+  /* `margin: auto` ATAYLAB yoziladi: `<dialog>` ni brauzer shu bilan
+     markazlashtiradi, lekin `system.css` dagi global reset (`* { margin: 0 }`)
+     uni bekor qiladi va modal ekranning chap-yuqori burchagida qolib ketardi.
+     Real brauzerda o'lchandi: `getBoundingClientRect()` → x:0, y:0. */
+  margin: auto;
+  padding: 0; border: 0; border-radius: var(--r-container);
+  background: var(--surface-card, var(--paper)); color: var(--ink);
+  box-shadow: var(--lift-2);
+  overflow: hidden;
+}
+.modal-inner { max-height: inherit; overflow-y: auto; padding: 20px; }
+.modal-head { display: flex; align-items: flex-start; justify-content: space-between;
+              gap: 12px; margin-bottom: 16px; }
+.modal-head .icon-btn { flex: none; }
+
+/* Kirish: `opacity` + `transform` (layout xossalari EMAS), 240ms.
+   `@starting-style` — `display:none` dan chiqayotgan element uchun boshlang'ich
+   qiymat; `allow-discrete` esa yopilishda animatsiya tugaguncha elementni
+   ushlab turadi. Qo'llab-quvvatlanmasa o'tish darhol bo'ladi. */
+.modal, .modal::backdrop {
+  transition: opacity var(--d-pane) var(--ease-out),
+              transform var(--d-pane) var(--ease-out),
+              display var(--d-pane) allow-discrete,
+              overlay var(--d-pane) allow-discrete;
+}
+.modal { opacity: 0; transform: scale(0.96); }
+.modal[open] { opacity: 1; transform: none; }
+.modal::backdrop { opacity: 0; background: rgba(0, 0, 0, 0.46); }
+.modal[open]::backdrop { opacity: 1; }
+@starting-style {
+  .modal[open] { opacity: 0; transform: scale(0.96); }
+  .modal[open]::backdrop { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal { transform: none; }
+  .modal[open] { transform: none; }
+  @starting-style { .modal[open] { transform: none; } }
+}
+
+/* Modal ochiq turganda nav'ning `backdrop-filter` i scrimni YORITADI —
+   blur ostidagi sahifa o'tib ketadi va qorong'i qatlam kul rangga aylanadi. */
+body[data-modal] .nav { backdrop-filter: none; -webkit-backdrop-filter: none; }
+/* Sahifa modal ostida SURILMASIN: `<dialog>` orqa fonni inert qiladi, lekin
+   g'ildirak bilan aylantirishni to'xtatmaydi. */
+body[data-modal] { overflow: hidden; }
+
+@media (max-width: 620px) {
+  /* Tor ekranda pastki varaq: markazdagi quti barmoqdan uzoqda qolardi. */
+  .modal { width: 100vw; max-width: 100vw; max-height: 92vh;
+           border-radius: var(--r-container) var(--r-container) 0 0; margin: auto auto 0; }
+  .modal-inner { padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
 }

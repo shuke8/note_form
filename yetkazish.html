@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>«Kim oladi?» — yechim variantlari</title>
-<meta name="description" content="Auditoriya qamrovini tanlashning sakkizta mustaqil yondashuvi, yonma-yon." />
+<title>«Yetkazish ma’lumotlari» — yechim variantlari</title>
+<meta name="description" content="Yakuniy ko‘rinishdagi yetkazish ustunini o‘qiladigan qilishning sakkizta mustaqil yondashuvi, yonma-yon." />
 <meta name="color-scheme" content="light dark" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
@@ -27,12 +27,9 @@
 <link rel="stylesheet" href="assets/system.css" />
 <link rel="stylesheet" href="assets/components.css" />
 <link rel="stylesheet" href="assets/variants.css" />
+<link rel="stylesheet" href="assets/yetkazish.css" />
 </head>
 <body>
-<!-- Ikonka sprayti — Lucide (ISC litsenziya, lucide.dev). Qalinlik, uch shakli
-     va o‘lcham `.ico` sinfida BIR JOYDA beriladi: ilgari har inline SVG da
-     `stroke-width` qo‘lda yozilgan va 1.6 bilan 1.7 ga ajralib ketgandi.
-     Faqat ISHLATILADIGAN belgilar turadi — ro‘yxat generatordan chiqadi. -->
 <svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
   <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0" /> <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /></symbol>
@@ -67,7 +64,7 @@
   <symbol id="i-zap" viewBox="0 0 24 24"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" /></symbol>
 </svg>
 
-<a class="skip" href="#vxList">Variantlarga o‘tish</a>
+<a class="skip" href="#yxList">Variantlarga o‘tish</a>
 
 <header class="nav" id="nav">
   <div class="shell nav-inner">
@@ -75,12 +72,13 @@
       <img class="brand-mark" src="assets/logo.svg" alt="" width="26" height="26" />
       <span class="brand-text">
         <span class="brand-name">Onlayn Mahalla</span>
-        <span class="brand-sub">Variantlar</span>
+        <span class="brand-sub">Yetkazish</span>
       </span>
     </a>
 
     <nav class="nav-links" id="navLinks" data-open="false" aria-label="Sahifalar">
       <a class="nav-link" href="./composer.html">Kompozitor</a>
+      <a class="nav-link" href="./variants.html">«Kim oladi?»</a>
       <a class="nav-link" href="./landing.html">Bosh sahifa</a>
     </nav>
 
@@ -101,37 +99,45 @@
   <section class="vx-head">
     <div class="rule-head">
       <p class="eyebrow">Ishchi sahifa</p>
-      <span class="chip chip-mono" id="vxStatus" style="margin-inline-start:auto">yuklanmoqda…</span>
+      <span class="chip chip-mono" id="yxStatus" style="margin-inline-start:auto">yuklanmoqda…</span>
     </div>
 
-    <h1 class="d2" style="margin-top:26px">«Kim oladi?» — sakkizta yechim</h1>
-    <p class="lead" style="margin-top:12px;max-width:62ch">
-      Bir xil vazifa, sakkizta boshqa interaktsiya modeli. Har biri mustaqil
-      qurilgan va uchta linzadan — klaviatura, halollik, dizayn tizimi —
-      o‘tkazilgan. Pastdagi «Natija» qatori har variant chiqargan hodisani
-      ko‘rsatadi: ekranda ko‘ringan narsa bilan qaytgan qiymat bir xilmi,
-      shu yerda tekshiriladi.
+    <h1 class="d2" style="margin-top:26px">«Yetkazish ma’lumotlari» — sakkizta ko‘rinish</h1>
+    <p class="lead" style="margin-top:12px;max-width:64ch">
+      Kompozitorning 05-bo‘limida telefon ko‘rinishi yonida turgan ustun hozir
+      yorliq va qator matndan iborat — struktura yo‘q, shuning uchun ko‘z nimani
+      avval o‘qishni bilmaydi. Quyida bir xil uch fakt — <b>qamrov</b>,
+      <b>keyingi yuborish</b>, <b>ilova</b> — sakkizta boshqa tuzilishda.
+      Ma’lumot hammasida bir xil; farq faqat SHAKLDA.
     </p>
 
     <div class="vx-meta">
       <span class="chip chip-mono">Bir xil dizayn tizimi</span>
-      <span class="chip chip-mono">Bir xil ma’lumot · 14 · 35 · 76</span>
+      <span class="chip chip-mono">Bir xil ma’lumot</span>
       <span class="chip chip-mono">Aholi soni taxminiy</span>
+    </div>
+
+    <!-- Uch holat — chunki variantlar ayni shu yerda ajraladi: biri to'la
+         ma'lumotda chiroyli, lekin bo'sh holatda quruq quti bo'lib qoladi. -->
+    <div class="yx-states" role="group" aria-label="Ko‘rsatiladigan holat">
+      <p class="eyebrow eyebrow-sm" id="yxStateLabel">Holat</p>
+      <div class="yx-state-row" id="yxStateRow" aria-labelledby="yxStateLabel"></div>
+      <p class="hint" id="yxStateNote"></p>
     </div>
 
     <div class="note" style="margin-top:24px">
       <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-info"/></svg>
       <span>
         Bu solishtirish uchun ishchi sahifa, mahsulot emas. Hech bir variant
-        xabar yubormaydi — server ulanmagan. Taqqoslash xulosasi:
-        <code style="font-family:var(--mono);font-size:var(--t-sm)">design/variants/TAQQOSLASH.md</code>
+        xabar yubormaydi va reestr raqamini o‘ylab topmaydi — uni faqat server
+        beradi.
       </span>
     </div>
   </section>
 
-  <nav class="vx-index" id="vxIndex" aria-label="Variantlar ro‘yxati"></nav>
+  <nav class="vx-index" id="yxIndex" aria-label="Variantlar ro‘yxati"></nav>
 
-  <div id="vxList"></div>
+  <div id="yxList"></div>
 
 </main>
 
@@ -143,7 +149,6 @@
 </footer>
 
 <script src="assets/motion.js" defer></script>
-<script src="assets/composer-data.js" defer></script>
-<script src="assets/variants.js" defer></script>
+<script src="assets/yetkazish.js" defer></script>
 </body>
 </html>

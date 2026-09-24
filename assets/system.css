@@ -13,122 +13,191 @@
 :root {
   color-scheme: light;
 
-  /* --- Rang: monoxrom asos ---------------------------------------------------
-     O'lchangan: #FFFFFF sahifa, #FAFAFA bo'lim, #F5F5F5 ikkinchi yuza,
-     #000000 matn, rgba(0,0,0,.6) ikkilamchi, rgba(0,0,0,.45) uchinchi.
+  /* --- Rang: online-mahalla.uz ---------------------------------------------
+     Har qiymat 2026-08-27 da jonli saytda `getComputedStyle` bilan
+     O'LCHANDI — taxmin qilinmadi. Manba sahifalar: `/` (landing) va
+     `/login` (forma tili).
 
-     Uchinchi qadam (#8C8C8C) oq ustida 3.5:1 — AA matn uchun 4.5 talab
-     qiladi. Shuning uchun u FAQAT dekorativ (ajratkich, ikonka, disabled)
-     rolida; o'qiladigan eng past qadam --ink-2. */
+     Sayt monoxrom EMAS: uning asosi oq yuza + och ko'k-lavanda to'ldirish,
+     matn esa sof qora emas #171717. Soya deyarli yo'q — ajratish RANG
+     bilan qilinadi, chuqurlik bilan emas (butun landingda bitta soya
+     topildi: `0 1px 2px rgba(10,13,20,.03)`). */
   --paper:        #ffffff;
-  --paper-alt:    #fafafa;
-  --paper-raise:  #f5f5f5;
-  --paper-sunk:   #ebebeb;
+  --paper-alt:    #f7f9ff;   /* oqdan bir qadam ko'kroq bo'lim yuzasi */
+  --paper-raise:  #f5f5f5;   /* o'lchangan `body` foni */
+  --paper-sunk:   #ebf1ff;   /* o'lchangan karta to'ldirishi */
 
-  --ink:          #000000;                 /* birlamchi matn */
-  --ink-2:        rgba(0, 0, 0, 0.60);     /* #666 · 5.74:1 · ikkilamchi matn */
-  --ink-3:        rgba(0, 0, 0, 0.45);     /* DEKORATIV — matn uchun emas */
+  --ink:          #171717;   /* o'lchangan sarlavha rangi · oq ustida 18.3:1 */
+  --ink-2:        #5c5c5c;   /* o'lchangan ikkilamchi matn · 6.69:1 */
+  --ink-3:        #56678f;   /* o'lchangan ko'k-kul · 5.63:1 — MATN uchun yaroqli */
   --ink-on-fill:  #ffffff;
 
-  --hairline:     rgba(0, 0, 0, 0.08);     /* o'lchangan chegara */
-  --hairline-2:   rgba(0, 0, 0, 0.14);
-  --edge:         rgba(0, 0, 0, 0.55);     /* boshqaruv chegarasi · 3:1 (WCAG 1.4.11) */
+  /* Chegara ham o'lchangan: saytdagi forma maydonining chegarasi. */
+  --hairline:     #e1edf7;
+  --hairline-2:   #cfe0f2;
+  --edge:         #56678f;   /* boshqaruv chegarasi · 5.63:1 (WCAG 1.4.11) */
 
-  --ghost:        rgba(0, 0, 0, 0.04);     /* ikkilamchi tugma to'ldirishi */
-  --ghost-hover:  rgba(0, 0, 0, 0.07);
-  --ghost-quiet:  rgba(0, 0, 0, 0.02);
+  --ghost:        rgba(0, 96, 254, 0.06);
+  --ghost-hover:  rgba(0, 96, 254, 0.11);
+  --ghost-quiet:  rgba(0, 96, 254, 0.03);
 
-  /* --- Aksent -------------------------------------------------------------
-     Gradientning GEOMETRIYASI DSS dan o'lchangan holicha qoladi (radius,
-     markaz, to'xtash nuqtalari) — faqat rang ko'kka almashdi.
-     Yorug' to'xtash nuqtasi ATAYLAB to'q: ustidagi oq matn gradientning eng
-     ochiq joyida ham 4.5:1 dan past tushmasin. Issiq #ffb70f da bu 1.9:1 edi. */
-  --accent:       radial-gradient(75% 150% at 100% 114.2%, #2563eb 0%, #0137d0 100%);
-  --accent-solid: #1d4ed8;                 /* oq ustida 7.0:1 — kontur va to'ldirish */
-  --accent-warm:  #93c5fd;                 /* ::selection — QORA matn ustida turadi */
-  --accent-ink:   #1e40af;                 /* oq ustida 8.6:1 — matn/link uchun */
-  --accent-soft:  #eff6ff;
-  --accent-line:  rgba(37, 99, 235, 0.28);
-  /* MATN uchun alohida gradient: `--accent` oq matn ULARNING USTIDA turishi
-     uchun mo'ljallangan. Uni matnning O'ZIGA to'ldirish qorong'i temada
-     ishlamaydi — o'sha yerda o'lchandi va 2,19:1 chiqdi (katta matn 3:1). */
-  --accent-text:  linear-gradient(100deg, #2563eb 0%, #0137d0 100%);
+  /* --- Aksent ---------------------------------------------------------------
+     O'lchangan: `#0060fe` — TEKIS rang, gradient EMAS. Ilgari bu yerda
+     radial gradient turardi; sayt hech qayerda gradientli tugma
+     ishlatmaydi va gradient CTA umuman AI-belgisi. */
+  --accent:       #0060fe;
+  --accent-solid: #0060fe;   /* oq ustida 5.16:1 — oq matn ustida turadi */
+  --accent-ink:   #0060fe;   /* matn/link · 5.16:1 */
+  --accent-warm:  #bbd4ff;   /* ::selection — QORA matn ostida */
+  --accent-soft:  #ebf1ff;   /* o'lchangan karta to'ldirishi */
+  /* Ikkinchi qadam — `--accent-soft` ning O'ZI lavanda yuza ustida
+     turganda kerak bo'ladi: u yerda ikkalasi bir xil rang bo'lib
+     qo'shilib ketadi (xaritada aynan shu bo'ldi). */
+  --accent-soft-2: #d6e4ff;
+  --accent-line:  rgba(0, 96, 254, 0.28);
+  --accent-text:  #0060fe;
+  /* Saytning ikkinchi va uchinchi ko'ki — «Biznes Navigator» kartalari va
+     login tugmalaridan. */
+  --accent-deep:  #100448;   /* o'lchangan «ЭРИ билан кириш» tugmasi */
+  /* `.btn-ink` ning matni va hover'i AYRIM tokenlarda, chunki qorong'i
+     temada bu tugma AG'DARILADI (to'q fon + oq matn → och fon + to'q matn).
+     Hover'ni `color-mix` bilan hisoblab bo'lmaydi: yorug'da OQ tomonga,
+     qorong'ida esa QORA tomonga siljishi kerak. */
+  --accent-deep-on:    #ffffff;
+  --accent-deep-hover: #3b3169;   /* #100448 82% + #fff 18% */
+  --accent-violet:#7d52f4;   /* o'lchangan uchinchi karta chizig'i */
 
-  /* --- Holat: DSS da semantik palitra YO'Q (marketing sayti).
-         Asbob sahifasiga kerak — issiq aksentga hue jihatdan qo'shni
-         oila tanlandi, har biri AA dan o'tadi. ---------------------------- */
-  --ok:        #0a7d55;                    /* oq ustida 4.83:1 */
-  --ok-soft:   #e8f7f0;
-  --warn:      #8a5300;                    /* oq ustida 6.06:1 */
-  --warn-soft: #fff5e3;
-  --crit:      #c11b1b;                    /* oq ustida 5.94:1 */
-  --crit-soft: #fdecec;
+  /* --- Holat -----------------------------------------------------------------
+     Saytning karta chiziqlari: yashil #1fc16b, to'q sariq #fa7319. Ular
+     TO'LDIRISH uchun (3px chiziq, nuqta, badge) — matn uchun 2.4:1 va
+     2.8:1, ya'ni AA dan o'tmaydi. Shuning uchun har rangda IKKI qadam:
+     `-fill` sayt qiymati, asosiysi esa MATN uchun to'qlashtirilgan. */
+  --ok:        #0d7d45;   /* oq ustida 5.25:1 */
+  /* To'ldirilgan yashil medalion USTIDAGI belgi rangi. Yorug'da oq
+     (5.25:1), qorong'ida esa `--ok` ochroq (#37d39b) bo'lgani uchun oq
+     atigi 2.0:1 berardi — bo'limning yagona «tayyor» signali WCAG 1.4.11
+     (3:1) dan o'tmasdi. Qorong'ida belgi TO'Q bo'ladi. */
+  --on-ok:     #ffffff;
+  --ok-fill:   #1fc16b;   /* o'lchangan sayt yashili */
+  --ok-soft:   #e6f8ef;
+  --warn:      #b45309;   /* oq ustida 5.02:1 */
+  --warn-fill: #fa7319;   /* o'lchangan sayt to'q sarig'i */
+  --warn-soft: #fff2e4;
+  /* Qizil matn OQ ustida emas, o'z YUMSHOQ foni ustida turadi (holat
+     chipi). #d92d20 oq ustida 4.83:1 berardi-yu, #fdecea ustida 4.22 ga
+     tushardi — AA dan past (o'lchandi). Bir qadam to'qlashtirildi. */
+  --crit:      #c2261b;   /* #fdecea ustida 5.18:1 · oq ustida 5.92:1 */
+  --crit-fill: #d92d20;   /* nuqta va chiziq uchun — matn emas */
+  --crit-soft: #fdecea;
 
-  /* --- Fokus ---------------------------------------------------------------- */
-  --focus:      #000000;
+  /* --- Fokus ---------------------------------------------------------------
+     Saytda ko'rinadigan fokus uslubi YO'Q — bu uning kamchiligi, nusxa
+     olinmaydi. Halqa brend ko'kida. */
+  --focus:      #0060fe;
   --focus-halo: #ffffff;
 
-  /* --- Geometriya -----------------------------------------------------------
-     O'lchangan taqsimot: 100px 308 marta, 6px 30, 8px 10, 4px 9,
-     12px 3, 10px 2, 16px 1. Pill tasodif emas — tizimning imzosi. */
-  --r-1:    4px;
-  --r-2:    6px;
-  --r-3:    8px;
-  --r-4:    10px;
-  --r-5:    12px;
-  --r-6:    16px;
-  --r-pill: 100px;
-  /* DSS ning assimetrik karta burchagi — media ustida turgan panel uchun */
-  --r-dock: 16px 16px 6px 6px;
+  /* --- Geometriya: BITTA qoida, to'rt rol -----------------------------------
+     Ilgari bu yerda oltita raqamli qadam (`--r-1..--r-6`) turardi va ular
+     ROL bo'yicha emas, KATTALIK bo'yicha nomlangan edi. Natijada bir xil
+     vazifadagi elementlar har xil burchak olib qoldi: tugma 5px, ikonka
+     tugmasi pill, chip pill, segment pill, menyu bandi 8px. Ekranda bu
+     «har biri boshqa tizimdan kelgan» bo'lib ko'rinardi.
 
-  /* --- Chuqurlik: chegaradan emas, ko'p qatlamli yumshoq soyadan ----------- */
-  --lift-hair: 0 0.5px 0 0 rgba(0, 0, 0, 0.08);
-  --lift-1:
-    0 0.602px 0.602px -1.25px rgba(0, 0, 0, 0.18),
-    0 2.289px 2.289px -2.5px  rgba(0, 0, 0, 0.16),
-    0 10px    10px    -3.75px rgba(0, 0, 0, 0.06),
-    0 0 0 0.5px rgba(0, 0, 0, 0.05);
+     Endi burchakni ELEMENTNING ROLI belgilaydi:
+       · boshqaruv (bosiladigan yoki yoziladigan)  → --r-control
+       · ichki panel / suzuvchi qatlam             → --r-panel
+       · karta                                     → --r-card
+       · katta konteyner (oyna, jadval qobig'i)    → --r-container
+     Dumaloqlik esa RADIUS emas, SHAKL: u faqat tabiatan dumaloq
+     narsalarga beriladi (nuqta, progress chizig'i, kvadrat medalion va
+     saytning imzosi bo'lgan navigatsiya tasmasi) → --r-full.
+
+     `--r-control` 8px: manbada u 5px (o'lchangan, `/login`). Lekin bu
+     interfeysda manbada YO'Q elementlar bor — 26px lik holat belgisi,
+     36px lik ikonka tugmasi — va bitta qiymat ularning HAMMASIGA
+     xizmat qilishi kerak. 5px 26px lik belgida burchak umuman
+     sezilmaydi; 8px eng kichik shunday qiymatki, u hali ham manbaning
+     «kichik burchak» oilasida qoladi. */
+  --r-control:   8px;
+  --r-panel:    16px;
+  --r-card:     24px;
+  --r-container:28px;
+  --r-full:    999px;
+
+  /* Boshqaruv balandligi ham UCH qadamga tushdi: ilgari 32/34/36/38/40/44
+     — oltita qiymat yonma-yon turardi. */
+  --h-control:    44px;   /* asosiy nishon (WCAG 2.5.8) */
+  --h-control-sm: 36px;   /* ikkilamchi, zich joy */
+  --h-badge:      28px;   /* BOSILMAYDIGAN belgi — nishon emas */
+
+  /* Media ustidagi panel — tepasi karta, pastki qismi boshqaruv burchagida. */
+  --r-dock: var(--r-card) var(--r-card) var(--r-control) var(--r-control);
+
+  /* Eski `--r-1..--r-6` va `--r-pill` nomlari OLIB TASHLANDI. Ular
+     kattalik bo'yicha nomlangan edi va shuning uchun har kim o'ziga
+     yoqqanini tanlardi — burchaklar aynan shundan tarqab ketgandi. */
+
+  /* --- Chuqurlik -------------------------------------------------------------
+     Sayt SOYASIZ: butun landingda bitta soya bor. Ajratish rang bilan
+     qilinadi. Suzuvchi qatlam (menyu, oyna, toast) esa soyasiz ishlamaydi —
+     ularga ATAYLAB tiyilgan lift beriladi va u SAHIFADA ishlatilmaydi. */
+  --lift-hair: 0 1px 2px rgba(10, 13, 20, 0.03);
+  --lift-1:    0 1px 2px rgba(10, 13, 20, 0.04);
   --lift-2:
-    0 0.637px 1.147px -0.875px rgba(0, 0, 0, 0.17),
-    0 1.932px 3.477px -1.75px  rgba(0, 0, 0, 0.16),
-    0 5.106px 9.191px -2.625px rgba(0, 0, 0, 0.14),
-    0 16px    28.8px  -3.5px   rgba(0, 0, 0, 0.08);
+    0 1px 2px   rgba(16, 24, 64, 0.04),
+    0 12px 32px rgba(16, 24, 64, 0.12);
 
   /* --- Tipografika ---------------------------------------------------------
-     DSS: Inter Display (Framer, yopiq) + Inter + IBM Plex Mono.
-     Inter Display o'rniga Inter Tight — Google Fonts'dagi ochiq ekvivalenti,
-     kirill qamrovi bor (bu sahifada o'zbek lotin + rus kirill kerak). */
-  --sans:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --display: "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+     Sayt ikki shrift YUKLAYDI: Rubik va PT Sans Caption. Sarlavhalar esa
+     hech qaysisini olmay, `sans-serif` (ya'ni Arial) bo'lib qolgan — bu
+     ularning KAMCHILIGI, nusxa olinmaydi.
 
-  /* O'lchangan qadamlar. Har biriga o'z tracking'i — DSS da kegl o'sgani
-     sari tracking qisqaradi (56px da -0.03em, 14px da 0). */
-  --t-d1: 56px;  --lh-d1: 1.1;   --ls-d1: -0.03em;
-  --t-d2: 40px;  --lh-d2: 1.25;  --ls-d2: -0.02em;
-  --t-d3: 32px;  --lh-d3: 1.25;  --ls-d3: -0.01em;
-  --t-lead: 20px; --lh-lead: 1.5; --ls-lead: -0.03em;
-  --t-body: 16px; --lh-body: 1.5; --ls-body: -0.02em;
-  --t-ui:   14px; --lh-ui:   1.5; --ls-ui:   0;
-  --t-sm:   12px; --lh-sm:   1.5; --ls-sm:   -0.02em;
-  --t-mono: 12px; --lh-mono: 1.5;
-  --t-mono-sm: 11px;
-  /* DSS da mono tracking `normal` — Plex Mono ning tabiiy kengligi ishni
-     bajaradi. Bu yerda 0.02em: kirill katta harflari 11px da zichroq. */
-  --ls-mono: 0.02em;
+     Tanlov: HAMMA JOYDA Rubik. U saytning o'z shrifti, lotin va kirillni
+     qamraydi, 300–900 og'irliklari bor va yumaloq terminallari 24/28px
+     radiuslar bilan bir tilda gapiradi. PT Sans Caption olib o'tilmadi:
+     u caption uchun chizilgan (60px da yoyilib ketadi) va faqat ikki
+     og'irligi bor.
 
-  /* --- Ritm: o'lchangan bo'lim oralig'i 96px, ichki 56/48/32/22/16 -------- */
+     Mono oila UMUMAN olib tashlandi — saytda mono hech qayerda yo'q.
+     Ilgari mono bajargan «yorliq» vazifasini endi Rubik 500 uppercase
+     bajaradi, raqamlar esa `tabular-nums` bilan tekislanadi. */
+  --sans:    "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --display: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono:    "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* O'lchangan qadamlar (sayt `root` i 15px, shuning uchun 22.5 / 16.875
+     kabi kasrli qiymatlar chiqadi — ular 1.5rem va 1.125rem).
+     Tracking HAMMA JOYDA `normal`: saytda manfiy tracking yo'q, va
+     Rubik allaqachon zich chizilgan.
+
+     Qator balandligi esa saytdan OLINMADI: u yerda lead 22.5px/24.75px
+     (1.1) — ikki qatorli xatboshi uchun bu juda zich va o'qishni
+     qiyinlashtiradi. Sarlavhada 1.1 qoladi, matnda 1.5-1.6. */
+  --t-d1: 60px;  --lh-d1: 1.1;   --ls-d1: normal;
+  --t-d2: 44px;  --lh-d2: 1.1;   --ls-d2: normal;
+  --t-d3: 30px;  --lh-d3: 1.15;  --ls-d3: normal;
+  --t-lead: 22px; --lh-lead: 1.45; --ls-lead: normal;
+  --t-body: 16px; --lh-body: 1.6; --ls-body: normal;
+  --t-ui:   15px; --lh-ui:   1.5; --ls-ui:   normal;
+  --t-sm:   13px; --lh-sm:   1.5; --ls-sm:   normal;
+  /* «Mono» nomi tarixiy — endi bu YORLIQ roli: kichik, uppercase, keng
+     tracking. Rubik 500 bilan. */
+  --t-mono: 13px; --lh-mono: 1.5;
+  --t-mono-sm: 12px;
+  --ls-mono: 0.06em;
+
+  /* --- Ritm ------------------------------------------------------------------
+     Konteyner kengligi O'LCHANGAN: `nav.container` 1300px (1436px
+     ko'rinishda chetdan 68px). */
   --gap-section: 96px;
   --gap-block:   56px;
   --gap-group:   32px;
   --gap-row:     16px;
-  --shell:       1136px;   /* o'lchangan kontent kengligi */
+  --shell:       1300px;
   --shell-pad:   24px;
 
   /* --- Motion --------------------------------------------------------------
-     Reveal kadrma-kadr o'lchandi: opacity 0→1 va translateY(10px→0),
-     417ms, ortiqcha sakrashsiz. easeOutQuart egri chizig'i o'lchovga
-     5% ichida to'g'ri keladi (0.2t→0.59 vs 0.544, 0.32t→0.786 vs 0.798). */
+     Saytda motion tizimi yo'q — bu qatlam o'z joyida qoladi. */
   --ease-out:  cubic-bezier(0.25, 1, 0.5, 1);
   --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
   --d-tap:   110ms;
@@ -138,59 +207,95 @@
   --stagger: 60ms;
 }
 
+/* Saytning qahramon foni. Geometriya `heroBg1.svg` dan O'QILDI (taxmin
+   emas): #C0D5FF dan oqqa tushuvchi vertikal gradient va uning ustida
+   (960,960) markazli uchta doira — r 960 / 830 / 680. Birinchisi yana
+   #C0D5FF dan oqqa, qolgan ikkitasi esa oqning 0.1 va 0.16 alfasidan
+   to'liq oqqa. Ko'zga ular ikkita ko'k YOY bo'lib ko'rinadi.
+
+   CSS gradient bilan emas, SVG bilan: uchta konsentrik doiraning
+   kesishuvini `radial-gradient` bilan qayta yasashga urinish yoylarni
+   yo'qotdi (sinaldi — oq qatlamlar ko'kni butunlay yuvib yubordi).
+   SVG esa geometriyani AYNAN saqlaydi va 1.5 KB dan oshmaydi. */
+:root {
+  --hero-arc: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='980' viewBox='0 0 1920 980'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' y1='0' x2='0' y2='980' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23c0d5ff'/%3E%3Cstop offset='1' stop-color='%23ffffff'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='0' y1='163' x2='0' y2='881' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23c0d5ff'/%3E%3Cstop offset='1' stop-color='%23ffffff'/%3E%3C/linearGradient%3E%3ClinearGradient id='c' x1='0' y1='130' x2='0' y2='1013' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23ffffff' stop-opacity='.1'/%3E%3Cstop offset='1' stop-color='%23ffffff'/%3E%3C/linearGradient%3E%3ClinearGradient id='d' x1='0' y1='280' x2='0' y2='1092' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23ffffff' stop-opacity='.16'/%3E%3Cstop offset='1' stop-color='%23ffffff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='980' fill='url(%23a)'/%3E%3Ccircle cx='960' cy='960' r='960' fill='url(%23b)'/%3E%3Ccircle cx='961' cy='960' r='830' fill='url(%23c)'/%3E%3Ccircle cx='960' cy='960' r='680' fill='url(%23d)'/%3E%3C/svg%3E");
+}
+
 [data-theme="dark"] {
   color-scheme: dark;
 
-  /* DSS ning qora bo'limlari: sof qora yuza, sof oq matn. */
-  --paper:        #000000;
-  --paper-alt:    #0a0a0a;
-  --paper-raise:  #141414;
-  --paper-sunk:   #1c1c1c;
+  /* Saytda qorong'i tema YO'Q — u faqat yorug' rejimda ishlaydi. Lekin bu
+     yerda tema almashtirgichi allaqachon bor va uni olib tashlash ishlab
+     turgan xususiyatni yo'qotish bo'lardi. Shuning uchun qorong'i tema
+     saytning KO'K identitetidan CHIQARILDI: sof qora emas, ko'k-navy
+     oila — saytning eng to'q qiymati `#100448` bilan bir tomirdan. */
+  --paper:        #080c18;
+  --paper-alt:    #0d1324;
+  --paper-raise:  #131b30;
+  --paper-sunk:   #1a2440;
 
   --ink:          #ffffff;
-  --ink-2:        rgba(255, 255, 255, 0.66);  /* qora ustida 9.0:1 */
-  --ink-3:        rgba(255, 255, 255, 0.45);
-  --ink-on-fill:  #ffffff;
+  --ink-2:        rgba(255, 255, 255, 0.68);
+  --ink-3:        #93a4c8;
 
   --hairline:     rgba(255, 255, 255, 0.10);
-  --hairline-2:   rgba(255, 255, 255, 0.16);
-  --edge:         rgba(255, 255, 255, 0.42);
+  --hairline-2:   rgba(255, 255, 255, 0.18);
+  /* 0.45 da chegara #080c18 ustida ~3,1:1 berardi — 1.4.11 chegarasida,
+     zaxirasiz. 0.55 uni 4,5:1 ga chiqaradi va chip hali ham «chegara»
+     bo'lib qoladi, to'ldirishga aylanmaydi. */
+  --edge:         rgba(255, 255, 255, 0.55);
 
-  --ghost:        rgba(255, 255, 255, 0.07);
-  --ghost-hover:  rgba(255, 255, 255, 0.11);
-  --ghost-quiet:  rgba(255, 255, 255, 0.04);
+  --ghost:        rgba(122, 168, 255, 0.10);
+  --ghost-hover:  rgba(122, 168, 255, 0.16);
+  --ghost-quiet:  rgba(122, 168, 255, 0.05);
 
-  --accent-ink:   #93c5fd;                   /* qora ustida 10.4:1 */
-  /* Yorug' temadagi #1d4ed8 qora yuzada 3.3:1 ga tushib, 1.4.11 chegarasiga
-     yopishib qolardi — qorong'i temada aksent yorug'roq bo'ladi. */
-  --accent-solid: #60a5fa;
-  --accent-soft:  rgba(59, 130, 246, 0.14);
-  --accent-line:  rgba(96, 165, 250, 0.36);
-  --accent-text:  linear-gradient(100deg, #93c5fd 0%, #60a5fa 100%);
+  /* Ikkita rol AJRATILDI, chunki ular qarama-qarshi tomonga tortadi:
+     · TO'LDIRISH (`--accent-solid`) ustida OQ matn turadi — u yorug'
+       bo'lsa oq matn yo'qoladi. `#2b7bff` sinaldi va oq matn 3.90:1
+       berdi (AA 4.5 talab qiladi), shuning uchun to'ldirish yorug'
+       temadagidek `#0060fe` bo'lib qoladi — oq matn 5.16:1.
+     · MATN (`--accent-ink`) to'q navy ustida turadi — u to'q bo'lsa
+       o'zi yo'qoladi, shuning uchun ochroq `#8ab4ff` (8.9:1). */
+  --accent:       #0060fe;
+  --accent-solid: #0060fe;
+  --accent-ink:   #8ab4ff;   /* to'q yuzada 8.9:1 */
+  --accent-soft:  rgba(0, 96, 254, 0.20);
+  --accent-soft-2: #21356b;
+  --accent-line:  rgba(122, 168, 255, 0.36);
+  --accent-text:  #8ab4ff;
+  /* `#060422` sahifa foni `#080c18` bilan 1.03:1 berardi — `.btn-ink`
+     ning SHAKLI yo'qolardi va navigatsiyada faqat suzib turgan so'z
+     qolardi. Qorong'ida tugma AG'DARILADI: och yuza + to'q matn
+     (sahifaga 16.7:1, matnga 15.9:1). `.btn-accent` ko'k bo'lib
+     qolgani uchun ikki tugma bir-biriga o'xshab qolmaydi. */
+  --accent-deep:       #e8edff;
+  --accent-deep-on:    #0b1030;
+  --accent-deep-hover: #cfd8f5;
+  --accent-violet:#a98bff;
 
   --ok:        #37d39b;
-  --ok-soft:   rgba(55, 211, 155, 0.13);
+  --on-ok:     #062117;   /* #37d39b ustida 8.85:1 */
+  --ok-fill:   #37d39b;
+  --ok-soft:   rgba(55, 211, 155, 0.14);
   --warn:      #f0ad3d;
-  --warn-soft: rgba(240, 173, 61, 0.13);
+  --warn-fill: #f0ad3d;
+  --warn-soft: rgba(240, 173, 61, 0.14);
   --crit:      #ff6b6b;
-  --crit-soft: rgba(255, 107, 107, 0.13);
+  --crit-fill: #ff6b6b;
+  --crit-soft: rgba(255, 107, 107, 0.14);
 
-  --focus:      #ffffff;
-  --focus-halo: #000000;
+  --focus:      #8ab4ff;
+  --focus-halo: #080c18;
 
-  /* Qora ustidagi qora soya ko'rinmaydi — chekkani halqa ajratadi. */
-  --lift-hair: 0 0.5px 0 0 rgba(255, 255, 255, 0.10);
-  --lift-1:
-    0 0 0 0.5px rgba(255, 255, 255, 0.10),
-    0 0.602px 0.602px -1.25px rgba(0, 0, 0, 0.55),
-    0 2.289px 2.289px -2.5px  rgba(0, 0, 0, 0.5),
-    0 10px    10px    -3.75px rgba(0, 0, 0, 0.35);
+  --lift-hair: 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --lift-1:    0 0 0 1px rgba(255, 255, 255, 0.06);
   --lift-2:
-    0 0 0 1px rgba(255, 255, 255, 0.11),
-    0 0.637px 1.147px -0.875px rgba(0, 0, 0, 0.55),
-    0 1.932px 3.477px -1.75px  rgba(0, 0, 0, 0.5),
-    0 5.106px 9.191px -2.625px rgba(0, 0, 0, 0.45),
-    0 16px    28.8px  -3.5px   rgba(0, 0, 0, 0.4);
+    0 0 0 1px rgba(255, 255, 255, 0.10),
+    0 12px 32px rgba(0, 0, 0, 0.55);
+
+  /* Qorong'i variant — AYNAN o'sha geometriya, faqat ko'k-navy oilasida:
+     tepada #1b2c5c, pastda sahifa foni #080c18. */
+  --hero-arc: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='980' viewBox='0 0 1920 980'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' y1='0' x2='0' y2='980' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%231b2c5c'/%3E%3Cstop offset='1' stop-color='%23080c18'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='0' y1='163' x2='0' y2='881' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%232a417a'/%3E%3Cstop offset='1' stop-color='%23080c18'/%3E%3C/linearGradient%3E%3ClinearGradient id='c' x1='0' y1='130' x2='0' y2='1013' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23080c18' stop-opacity='.1'/%3E%3Cstop offset='1' stop-color='%23080c18'/%3E%3C/linearGradient%3E%3ClinearGradient id='d' x1='0' y1='280' x2='0' y2='1092' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23080c18' stop-opacity='.16'/%3E%3Cstop offset='1' stop-color='%23080c18'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='980' fill='url(%23a)'/%3E%3Ccircle cx='960' cy='960' r='960' fill='url(%23b)'/%3E%3Ccircle cx='961' cy='960' r='830' fill='url(%23c)'/%3E%3Ccircle cx='960' cy='960' r='680' fill='url(%23d)'/%3E%3C/svg%3E");
 }
 
 /* -----------------------------------------------------------------------------
@@ -211,7 +316,7 @@ body {
   background: var(--paper);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Soxta yarim-qalin harf yasalmasin — Inter'da real og'irliklar bor. */
+  /* Soxta yarim-qalin harf yasalmasin — Rubik'da real og'irliklar bor. */
   font-synthesis-weight: none;
   overflow-x: clip;
 }
@@ -258,7 +363,11 @@ table { border-collapse: collapse; }
 .ink { color: var(--ink); }
 .ink-2 { color: var(--ink-2); }
 
-/* Mono katta harfli yorliq — DSS ning bo'lim boshlovchisi. */
+/* Katta harfli yorliq — bo'lim boshlovchisi.
+   Ilgari bu rolni MONO shrift bajarardi. Saytda mono hech qayerda yo'q,
+   shuning uchun yorliq endi Rubik bilan yoziladi — lekin 400 da u oddiy
+   matndan farq qilmay qolardi, shu sababli 500 va kengaytirilgan
+   tracking. Farq shrift oilasidan emas, OG'IRLIK + TRACKING dan keladi. */
 .eyebrow {
   font-family: var(--mono);
   font-size: var(--t-mono);
@@ -266,10 +375,11 @@ table { border-collapse: collapse; }
   letter-spacing: var(--ls-mono);
   text-transform: uppercase;
   color: var(--ink-2);
-  font-weight: 400;
+  font-weight: 500;
 }
 .eyebrow-sm { font-size: var(--t-mono-sm); }
-.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: var(--ls-mono); }
+/* `.mono` nomi tarixiy — endi u faqat RAQAM TEKISLASHNI beradi. */
+.mono { font-variant-numeric: tabular-nums; }
 
 /* Terminal kursori — DSS sarlavhasi shu bilan tugaydi.
    MATN emas, chizilgan blok: ekran o'quvchi ::after kontentini o'qiydi va
@@ -370,7 +480,7 @@ table { border-collapse: collapse; }
 .skip {
   position: absolute; left: 16px; top: 16px; z-index: 100;
   transform: translateY(-140%);
-  padding: 12px 20px; border-radius: var(--r-pill);
+  padding: 12px 20px; border-radius: var(--r-control);
   background: var(--ink); color: var(--paper);
   font-size: var(--t-ui); font-weight: 500;
   transition: transform var(--d-pane) var(--ease-out);

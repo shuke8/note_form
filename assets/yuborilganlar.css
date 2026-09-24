@@ -1,0 +1,645 @@
+/* =============================================================================
+   YUBORILGAN XABARNOMALAR — ro'yxat sahifasi
+
+   Kartaning O'ZI `components.css` dagi `.feed-*` komponenti: ro'yxat
+   `landing.html` dan shu yerga ko'chdi, dizayn esa nusxalanmadi. Bu fayl faqat
+   sahifaga xos qatlamni beradi — sarlavha, umumiy raqamlar, asboblar qatori,
+   amallar va bo'sh holat.
+   ========================================================================== */
+
+/* Sahifa yuzasi kartalardan bir pog'ona past — `composer.css` dagi juftlikning
+   aynan o'zi, lekin bu sahifa uni yuklamaydi, shuning uchun qayta e'lon
+   qilinadi. Qorong'ida qatlam TESKARI ag'dariladi. */
+:root { --surface-page: var(--paper-raise); --surface-card: var(--paper); }
+[data-theme="dark"] { --surface-page: var(--paper); --surface-card: var(--paper-raise); }
+body { background: var(--surface-page); }
+
+/* Sahifa DSS ning 1136px o'lchoviga QAYTDI (2026-08-27).
+
+   Ilgari bu yerda 1320px turardi, chunki SAKKIZ ustun 1136px ga sig'masdi
+   va «Yuborishlar» bilan «Amallar» ekrandan chiqib ketardi. Ustunlar
+   oltitaga tushgach 1320px teskari ta'sir bera boshladi: qolgan bo'sh joyni
+   sarlavha ustuni yutib, sarlavha bilan «Holat» orasida 200px lik quruq
+   maydon paydo bo'ldi (o'lchandi: sarlavha katagi 608px, matn esa 420px da
+   tugardi) — ko'z bir ustundan ikkinchisiga o'tishda bo'sh joydan sakrashga
+   majbur bo'lardi. */
+
+.yb-head { padding-top: 48px; }
+
+/* --- Umumiy holat tasmasi -------------------------------------------------
+   Uch alohida oq quti o'rniga BITTA tasma: ular bitta savolning uch bo'lagi,
+   uchta mustaqil karta emas. Ajratkich — hairline, quti emas.
+
+   Har bo'lak BOSILADI va ro'yxatni filtrlaydi: raqamni ko'rgan operator uni
+   topish uchun pastdagi filtrga qaytib borishga majbur bo'lmasin.
+   -------------------------------------------------------------------------- */
+.yb-summary { margin-top: 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+              border-radius: var(--r-container); overflow: hidden;
+              background: var(--surface-card); box-shadow: inset 0 0 0 1px var(--hairline); }
+.yb-sum { display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+          padding: 16px 18px; text-align: left; color: var(--ink);
+          transition: background var(--d-hover) var(--ease-out); }
+.yb-sum + .yb-sum { box-shadow: inset 1px 0 0 0 var(--hairline); }
+@media (hover: hover) { .yb-sum:not([disabled]):hover { background: var(--ghost); } }
+.yb-sum[aria-pressed="true"] { background: var(--ghost); }
+/* Yoqiq bo'lak ostida qalin chiziq — ro'yxat qaysi savolga javob berayotgani
+   tasmadan ko'rinib tursin. Rang BREND KO'KI: tanlov butun interfeysda
+   bitta rangda gapiradi (ilgari bu chiziq qora edi). */
+.yb-sum[aria-pressed="true"]::after {
+  content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 2px;
+  background: var(--accent-solid);
+}
+.yb-sum { position: relative; }
+.yb-sum[disabled] { cursor: default; }
+/* `tabular-nums` li SANS: mono da ming ajratkichi to'liq katak egallaydi. */
+.yb-sum-num { font-size: var(--t-d3); font-weight: 500; line-height: 1.05;
+              letter-spacing: -0.015em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.yb-sum-num[data-tone="crit"] { color: var(--crit); }
+.yb-sum[disabled] .yb-sum-num { color: var(--ink-2); }
+.yb-sum-why { font-size: var(--t-sm); letter-spacing: var(--ls-sm); color: var(--ink-2); }
+
+.yb-lead { margin-top: 12px; max-width: 56ch; }
+
+/* --- Asboblar qatori ------------------------------------------------------
+   Ilgari bu yerda TO'QQIZTA pill turardi (3 tur + 6 holat). Ular bir xil
+   ko'rinishda, bir xil og'irlikda va ikki qatorda tizilgandi — keraklisini
+   topish uchun hammasini o'qib chiqish kerak edi.
+
+   Endi ierarxiya bor: sahifaning ASOSIY farqi (bir martalik ↔ davomiy)
+   segment bo'lib doim ko'rinadi, holat va tartib esa ro'yxatga yig'ildi.
+   Ko'rinadigan boshqaruv soni 9 dan 3 ga tushdi.
+   -------------------------------------------------------------------------- */
+.yb-tools { margin-top: 28px; padding: 16px; border-radius: var(--r-container);
+            background: var(--surface-card); box-shadow: inset 0 0 0 1px var(--hairline); }
+
+.yb-search { position: relative; display: flex; align-items: center; }
+.yb-search > .ico { position: absolute; inset-inline-start: 14px; width: 16px; height: 16px;
+                    color: var(--ink-2); pointer-events: none; }
+/* `type="search"` ning o'z tozalash tugmasi brauzerdan brauzerga farq qiladi
+   va klaviatura bilan yetib bo'lmaydi — o'zimiznikini qo'yamiz. */
+.yb-search .input { padding-inline: 40px; }
+.yb-search input[type="search"]::-webkit-search-cancel-button { display: none; }
+.yb-search-clear { position: absolute; inset-inline-end: 6px; }
+
+.yb-controls { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+
+/* --- Segment ---------------------------------------------------------------
+   Bitta yo'lak, uchta teng bo'lak va siljiydigan ko'rsatkich. Ajratilgan
+   pill'lar «uchta mustaqil tanlov» bo'lib ko'rinardi, holbuki bu BITTA
+   savolning uchta javobi.
+   -------------------------------------------------------------------------- */
+/* Segment BOSH boshqaruv, lekin cheksiz cho'zilmaydi: 700px kenglikda bir
+   bo'lak 232px bo'lib, ichidagi ikki so'z bo'sh maydonda yo'qolib ketardi. */
+.yb-segment { position: relative; flex: 1 1 320px; max-width: 460px; min-width: 0;
+              display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+              /* Ichki burchak = tashqi burchak − ichki chekka (8 − 4).
+                 Teng radius bergan ichma-ich element tashqi egri chiziqdan
+                 «chiqib» turgandek ko'rinadi. */
+              padding: 4px; border-radius: var(--r-control);
+              background: var(--paper-sunk); }
+.yb-segment-thumb {
+  position: absolute; top: 4px; bottom: 4px; left: 0;
+  border-radius: calc(var(--r-control) - 4px); background: var(--surface-card);
+  box-shadow: var(--lift-1);
+  /* FAQAT `transform`: segmentlar teng kenglikda, ya'ni `width` umuman
+     o'zgarmaydi va har kadrda layout hisoblanmaydi. */
+  transition: transform var(--d-pane) var(--ease-out);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) { .yb-segment-thumb { transition: none; } }
+
+.yb-segment-btn {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: var(--h-control-sm); padding: 8px 10px; border-radius: calc(var(--r-control) - 4px);
+  color: var(--ink-2); font-size: var(--t-ui); letter-spacing: var(--ls-ui);
+  transition: color var(--d-hover) var(--ease-out);
+}
+@media (hover: hover) { .yb-segment-btn:hover { color: var(--ink); } }
+.yb-segment-btn[aria-pressed="true"] { color: var(--accent-ink); font-weight: 500; }
+.yb-segment-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.yb-segment-count { flex: none; font-family: var(--mono); font-size: var(--t-mono-sm);
+                    letter-spacing: var(--ls-mono); color: var(--ink-2);
+                    font-variant-numeric: tabular-nums; }
+.yb-segment-btn[aria-pressed="true"] .yb-segment-count { color: var(--accent-ink); }
+
+/* --- Ro'yxatli boshqaruvlar ------------------------------------------------
+   Yorliq maydon USTIDA turadi: `select` ning o'z qiymati «Yuborildi · 4»
+   deb turganda, u nimaning filtri ekani ko'rinmasdi.
+   -------------------------------------------------------------------------- */
+.yb-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; flex: 0 1 205px; }
+.yb-field-label { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+                  text-transform: uppercase; color: var(--ink-2); }
+.yb-field .select { min-height: 40px; width: 100%; }
+
+/* 1440px da qatorda ~378px O'LIK JOY qolardi: segment `max-width: 460px`
+   bilan cheklangan, ikkala `select` esa `flex-grow: 0` (`flex: 0 1 205px`)
+   edi — 1268px lik yo'lakning atigi 890px i band bo'lardi va qolgani
+   bo'sh turardi. Keng ekranda qator FLEX emas, GRID bo'ladi: uchta ustun
+   yo'lakni to'liq bo'lib oladi va boshqaruvlar bir-biriga tekislanadi.
+   Tor ekranda (880px va past) flex va `flex-wrap` o'z holicha qoladi —
+   u yerda ustma-ust joylashish kerak.
+   Ustun nisbati 1.6 : 1 : 1 — segment BOSH boshqaruv, `select` lar unga
+   ergashadi. 1268px da: 554 · 347 · 347 (bir segment bo'lagi 182px). */
+@media (min-width: 1000px) {
+  .yb-controls {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .yb-segment { max-width: none; }
+}
+
+/* --- Natija qatori --------------------------------------------------------- */
+.yb-result { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--hairline);
+             display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.yb-result .hint { margin: 0; }
+.yb-result .btn { margin-inline-start: auto; }
+.yb-result .ico { width: 14px; height: 14px; }
+
+/* --- Jadval ---------------------------------------------------------------
+   Kartalar bir yozuvni ko'rsatishga yaxshi edi, lekin sakkiztasini
+   SOLISHTIRISHGA emas: sana har kartada boshqa joyda turardi va ko'z ustun
+   bo'ylab yura olmasdi.
+
+   Referens (Mobbin): Customer.io «Campaigns» — nom + qisqa mazmun bitta
+   katakda, holat nomning yonida nuqta bo'lib; Intercom «Messages» — tinch
+   hairline qatorlar; Podia va Okta — sana · xabar · amallar tartibi.
+   -------------------------------------------------------------------------- */
+.yb-table-wrap {
+  margin-top: 20px; border-radius: var(--r-container); overflow: hidden;
+  background: var(--surface-card); box-shadow: inset 0 0 0 1px var(--hairline);
+  /* Tor ekranda jadval O'Z ichida siljiydi — sahifa emas. */
+  overflow-x: auto;
+}
+.yb-table { width: 100%; min-width: 1085px; border-collapse: collapse; }
+
+/* Ustun kengliklari BELGILANGAN. `auto` da brauzer ularni mazmunga qarab
+   har filtr almashganda qayta hisoblardi: «Yuborishlar» ustuni «11» dan
+   «1» ga o'tganda butun jadval bir necha piksel siljib ketardi va ko'z
+   tekislikni qaytadan qidirishga majbur bo'lardi. Sarlavha ustuni esa
+   qolganidan keyin qolgan joyni oladi. */
+.yb-th-kind  { width: 128px; }
+.yb-th-place { width: 156px; }
+.yb-th-state { width: 138px; }
+.yb-th-sent  { width: 152px; }
+.yb-th-next  { width: 152px; }
+.yb-th-num   { width: 108px; }
+
+.yb-table thead th {
+  position: sticky; top: 0; z-index: 1;
+  padding: 12px 14px; text-align: left; vertical-align: bottom;
+  background: var(--paper-alt);
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+  text-transform: uppercase; font-weight: 400; color: var(--ink-2);
+  white-space: nowrap;
+}
+.yb-th-num, .yb-td-num { text-align: right; }
+.yb-th-act { width: 64px; }
+.yb-td-act { text-align: right; }
+
+.yb-tr { cursor: pointer; transition: background var(--d-hover) var(--ease-out); }
+.yb-tr + .yb-tr td { border-top: 1px solid var(--hairline); }
+
+/* --- Ustunlar orasidagi ajratkich ------------------------------------------
+   Qator ichida qo'shni kataklar bir-biriga qo'shilib ketardi: «BIR MARTALIK»
+   bilan «Urganch shahri» orasida faqat ichki chekka bor edi va ko'z ularni
+   bitta uzun matn deb o'qirdi. Endi har ustun o'z chizig'i bilan ajraladi.
+
+   Chiziq UCHINCHI katakdan boshlanadi: ikkinchi katakning chap chekkasida
+   yopishqoq sarlavha ustunining O'Z chizig'i (`::after`) allaqachon turibdi
+   va ikkalasi qo'shilib 2px qalin chiziq berardi. */
+.yb-table thead th + th + th,
+.yb-table tbody td + td + td { border-inline-start: 1px solid var(--hairline); }
+@media (hover: hover) { .yb-tr:hover { background: var(--ghost-quiet); } }
+.yb-tr:focus-within { background: var(--ghost-quiet); }
+/* Kataklar MARKAZGA tekislanadi. `top` da bir qatorli sarlavhali qator
+   ichida holat chipi va sanalar tepaga yopishib, qolgan joy pastda bo'sh
+   qolardi — qatorlar bir-biriga nisbatan qiyshiq ko'rinardi (sarlavha
+   ikki qatorga o'ralganda qator 76px, o'ralmaganda 60px). */
+.yb-table td { padding: 13px 14px; vertical-align: middle; }
+
+/* --- Mazmun katagi -------------------------------------------------------- */
+/* Mazmun ustuni YOPISHIB turadi: tor ekranda jadval o'ngga siljiganda
+   sana ustunlari ko'rinadi-yu, «bu qaysi xabar?» degan savol javobsiz
+   qolardi. Fon MAJBURIY — shaffof yopishqoq katak ostidagi matnni
+   o'tkazib yuboradi. */
+.yb-th-msg, .yb-td-msg { min-width: 280px; position: sticky; left: 0; z-index: 2; }
+.yb-td-msg { background: var(--surface-card); }
+.yb-tr:hover .yb-td-msg { background: var(--surface-card); }
+.yb-th-msg { z-index: 3; background: var(--paper-alt); }
+/* O'ng chekkasida hairline — yopishqoq ustun qayerda tugashi ko'rinsin. */
+.yb-th-msg::after, .yb-td-msg::after {
+  content: ""; position: absolute; top: 0; bottom: 0; inset-inline-end: 0;
+  width: 1px; background: var(--hairline);
+}
+/* Sarlavha — haqiqiy tugma: qator bosilishi sichqoncha uchun qulay, lekin
+   klaviatura uchun alohida nishon kerak. */
+.yb-open { text-align: left; padding: 0; color: var(--ink);
+           font-size: var(--t-body); line-height: 1.35; letter-spacing: var(--ls-body);
+           font-weight: 500; }
+@media (hover: hover) { .yb-open:hover { text-decoration: underline; text-underline-offset: 3px; } }
+/* Sarlavha ikki qatordan oshmaydi — jadvalning qiymati ZICHLIKDA. */
+.yb-open { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2;
+           -webkit-box-orient: vertical; overflow: hidden; max-width: 100%; }
+
+/* --- Hudud ustuni ---------------------------------------------------------
+   Ilgari hudud sarlavha OSTIDA, turi bilan yonma-yon turardi — ya'ni bitta
+   katakda uch xil ma'no ustma-ust yotardi. Endi u o'z ustunida va uzun nom
+   uch nuqta bilan qirqiladi.
+   -------------------------------------------------------------------------- */
+.yb-td-kind { white-space: nowrap; }
+.yb-td-place { min-width: 0; }
+.yb-place { display: inline-flex; align-items: center; gap: 7px; min-width: 0; max-width: 100%;
+            font-size: var(--t-sm); line-height: 1.5; color: var(--ink-2); }
+.yb-place .ico { width: 14px; height: 14px; flex: none; color: var(--ink-3); }
+/* Qirqish MATNNING O'ZIDA: `text-overflow: ellipsis` flex konteynerda
+   ishlamaydi — u yerdagi yalang'och matn anonim flex elementga aylanadi va
+   uch nuqtasiz qirqiladi. */
+.yb-place-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.yb-td-state { white-space: nowrap; }
+
+/* --- Holat ----------------------------------------------------------------
+   Nuqtali chip. Fon NEYTRAL, rang faqat NUQTADA: to'rt xil rangli chip
+   ustun bo'ylab tizilganda jadval svetofor bo'lib qolardi.
+   -------------------------------------------------------------------------- */
+.yb-state { display: inline-flex; align-items: center; gap: 7px;
+            min-height: var(--h-badge); padding: 4px 10px; border-radius: var(--r-control);
+            background: var(--ghost); color: var(--ink);
+            font-size: var(--t-sm); letter-spacing: var(--ls-sm); white-space: nowrap; }
+.yb-state .dot { width: 7px; height: 7px; }
+.yb-state[data-tone="ok"]  .dot { background: var(--ok); }
+.yb-state[data-tone="run"] .dot { background: var(--accent-solid); }
+.yb-state[data-tone="off"] { color: var(--ink-2); }
+.yb-state[data-tone="off"] .dot { background: var(--ink-3); }
+/* Yagona istisno — xatolik: uni ko'rmay o'tib ketish mumkin emas, shuning
+   uchun u to'liq bo'yaladi. Sahifadagi yagona qizil nuqta ham shu. */
+.yb-state[data-tone="crit"] { background: var(--crit-soft); color: var(--crit); }
+.yb-state[data-tone="crit"] .dot { background: currentColor; }
+
+/* --- Sana ustunlari -------------------------------------------------------
+   Sana — mono va tabular: ustun bo'ylab yurgan ko'z raqamni bir joyda
+   ko'radi.
+
+   Sana BO'LAKLARGA ajratildi, chunki ular teng emas: `2026-` sakkiz
+   qatorda ham AYNAN bir xil va hech narsani ajratmaydi, kun-oy esa
+   qatorlar orasidagi asosiy farq. Uchala bo'lak ham qoladi — ma'lumot
+   yo'qolmaydi — lekin og'irligi har xil.
+   -------------------------------------------------------------------------- */
+.yb-td-date { white-space: nowrap; font-family: var(--mono); font-size: var(--t-sm);
+              letter-spacing: var(--ls-mono); color: var(--ink);
+              font-variant-numeric: tabular-nums; }
+.yb-yr { color: var(--ink-2); }
+.yb-md { font-weight: 500; }
+.yb-hm { color: var(--ink-2); margin-inline-start: 0.6ch; }
+/* Qiymat YO'Q — nol EMAS: «0» hali boshlanmagan tarqatishni bo'lib
+   o'tgandek ko'rsatardi.
+
+   Tire `--ink-2` da, `--ink-3` da EMAS: u dekorativ belgi emas, MA'NO
+   tashiydi («bu yozuv hali yuborilmagan»). `--ink-3` oq ustida 3.35:1
+   beradi va AA ning 4.5 talabidan past — tizimning o'z izohi ham uni
+   «faqat dekorativ» deb ataydi (o'lchandi, `system.css:30`). */
+.yb-dash, .yb-td-num[data-empty="true"] { color: var(--ink-2); font-weight: 400; }
+
+/* «Keyingi» — hali BO'LADIGAN ish, shuning uchun aksent rangda: davomiy
+   xabar ishlab turibdi va operator uni to'xtatishi mumkin. Turi yorlig'i
+   ham shu rangda — bitta tushuncha, bitta rang. «Yuborilgan» esa o'tgan
+   hodisa, u neytral. */
+.yb-td-next { color: var(--accent-ink); }
+.yb-td-next .yb-yr, .yb-td-next .yb-hm { color: inherit; opacity: 0.72; }
+.yb-td-next .yb-md { color: inherit; }
+
+.yb-td-num { white-space: nowrap; font-size: var(--t-body); font-weight: 500;
+             color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* --- Qator amallari -------------------------------------------------------
+   Ikki ikonka har qatorda takrorlanib, sakkiz qatorda o'n olti nishon
+   berardi — ular ma'lumotdan ko'ra ko'proq joy egallardi. Endi bitta `…`.
+   -------------------------------------------------------------------------- */
+.yb-dots { width: var(--h-control-sm); height: var(--h-control-sm); color: var(--ink-2); }
+.yb-dots .ico { width: 18px; height: 18px; fill: currentColor; stroke: none; }
+@media (hover: hover) { .yb-dots:hover { background: var(--ghost); color: var(--ink); } }
+.yb-dots[aria-expanded="true"] { background: var(--ghost); color: var(--ink); }
+
+/* Menyu SAHIFA darajasida va `fixed`: `.yb-table-wrap` da `overflow-x: auto`
+   bor, ichkaridagi menyu qirqilib ketardi. */
+.yb-menu {
+  position: fixed; z-index: 60; min-width: 190px; padding: 6px;
+  /* Suzuvchi menyu — PANEL burchagi (karta emas): u kontent qatlami
+     emas, ustidagi vaqtinchalik qatlam. */
+  border-radius: var(--r-panel); background: var(--surface-card);
+  box-shadow: var(--lift-2), inset 0 0 0 1px var(--hairline);
+  display: flex; flex-direction: column; gap: 2px;
+  /* Kirish: `opacity` + `scale(0.96)` (layout xossalari EMAS), 160ms.
+     `transform-origin` JS da TUGMA nuqtasiga qo'yiladi — menyu o'z
+     markazidan emas, bosilgan joydan o'sib chiqadi. */
+  opacity: 0; transform: scale(0.96);
+  transition: opacity var(--d-hover) var(--ease-out), transform var(--d-hover) var(--ease-out);
+}
+.yb-menu[data-open="true"] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .yb-menu { transition: none; transform: none; }
+}
+
+.yb-menu-item {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  min-height: var(--h-control-sm); padding: 8px 12px; border-radius: var(--r-control);
+  text-align: left; color: var(--ink);
+  font-size: var(--t-ui); letter-spacing: var(--ls-ui);
+  transition: background var(--d-hover) var(--ease-out), color var(--d-hover) var(--ease-out);
+}
+.yb-menu-item .ico { width: 15px; height: 15px; flex: none; color: var(--ink-2); }
+@media (hover: hover) { .yb-menu-item:hover { background: var(--ghost); } }
+.yb-menu-item:focus-visible { background: var(--ghost); }
+/* Destruktiv amal hoverda QIZARADI — bosilishidan oldin nima bo'lishini
+   aytadi. Tinch holatda neytral: doim qizil turgan qator menyuni
+   ogohlantirishga aylantirib yuborardi. */
+@media (hover: hover) {
+  .yb-menu-del:hover { background: var(--crit-soft); color: var(--crit); }
+}
+.yb-menu-del:hover .ico, .yb-menu-del:focus-visible .ico { color: currentColor; }
+.yb-menu-del:focus-visible { background: var(--crit-soft); color: var(--crit); }
+
+/* --- Kirish animatsiyasi --------------------------------------------------
+   FAQAT birinchi chizishda: filtr bosilganda jadval qayta uchib kirsa,
+   tez-tez bajariladigan amalda charchatardi.
+   -------------------------------------------------------------------------- */
+.yb-tr[data-enter="true"] { animation: ybIn 320ms var(--ease-out) both;
+                            animation-delay: calc(var(--i, 0) * 35ms); }
+@keyframes ybIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .yb-tr[data-enter="true"] { animation: none; } }
+
+/* --- Yozuv oynasi --------------------------------------------------------- */
+/* Yorliqlar qatori — oynada. Uch xil VAZIFA uch xil SHAKL oladi:
+   tur → ikonka + matn (fonsiz), holat → nuqtali chip. */
+.yb-tags { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin-bottom: 10px; }
+.yb-modal-head { padding-bottom: 16px; border-bottom: 1px solid var(--hairline); }
+.yb-modal-head .d3 { margin-top: 4px; text-wrap: pretty; }
+.yb-modal-head .yb-scope { margin-top: 8px; }
+/* Oynadagi tasma o'z chekkasiga muhtoj emas — u allaqachon `modal-inner`
+   ichida. */
+.yb-strip, .yb-modal-strip { margin-top: 16px; }
+
+/* --- Yetkazish bloki (oynada) ----------------------------------------------
+   To'rtta teng plita o'rniga bitta blok: katta son, ulush chizig'i va bir
+   qatorli izoh. Sabab `yuborilganlar.js` dagi `deliverBlock()` izohida.
+   -------------------------------------------------------------------------- */
+.yb-deliver { padding: 18px 20px 20px; border-radius: var(--r-card);
+              background: var(--paper-alt); box-shadow: inset 0 0 0 1px var(--hairline); }
+.yb-deliver-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.yb-deliver-main { min-width: 0; }
+/* `tabular-nums` li SANS: mono da ming ajratkichi to'liq katak egallab,
+   «2 389» uch bo'lakka bo'linib ko'rinardi. */
+.yb-deliver-num { margin: 6px 0 0; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+                  font-size: var(--t-d3); font-weight: 500; line-height: 1.05;
+                  color: var(--ink); font-variant-numeric: tabular-nums; }
+.yb-deliver-of { font-size: var(--t-ui); font-weight: 400; color: var(--ink-2); }
+/* Ulush — o'ng chekkada, sonning tayanch chizig'ida. */
+.yb-deliver-pct { flex: none; font-size: var(--t-lead); font-weight: 500; color: var(--accent-ink);
+                  font-variant-numeric: tabular-nums; }
+
+/* Chiziq — ulushning YAGONA vizual ko'rinishi. Balandligi 8px: 4px da u
+   ingichka ajratkichga o'xshab, o'lchov ekani bilinmasdi. */
+.yb-deliver-bar { margin-top: 14px; height: 8px; border-radius: var(--r-full);
+                  background: var(--paper-sunk); overflow: hidden; }
+.yb-deliver-bar span { display: block; height: 100%; border-radius: var(--r-full);
+                       background: var(--accent-solid); }
+/* Rang HOLATDAN: to'xtagan tarqatishning chizig'i brend ko'kida turishi
+   «hammasi joyida» degan yolg'on signal bo'lardi. */
+.yb-deliver[data-tone="crit"] .yb-deliver-bar span { background: var(--crit); }
+.yb-deliver[data-tone="crit"] .yb-deliver-pct { color: var(--crit); }
+.yb-deliver[data-tone="off"] .yb-deliver-bar span { background: var(--ink-3); }
+.yb-deliver[data-tone="off"] .yb-deliver-pct { color: var(--ink-2); }
+
+.yb-deliver-foot { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px 20px;
+                   font-size: var(--t-sm); line-height: var(--lh-sm); color: var(--ink-2); }
+/* Yetkazilmagan — ogohlantirish rangida, lekin CHIP emas: u ikkinchi
+   darajali fakt va katta sonning e'tiborini tortib olmasligi kerak. */
+.yb-deliver-fail { display: inline-flex; align-items: center; gap: 7px; color: var(--warn); }
+.yb-deliver-fail .dot { width: 7px; height: 7px; background: currentColor; }
+
+/* Tarqatish boshlanmagan holat: chiziq ham, ulush ham YO'Q — nolinchi
+   chiziq «boshlandi-yu, hech kimga yetmadi» degan yolg'on bo'lardi. */
+.yb-deliver[data-empty="true"] .yb-deliver-num { color: var(--ink-2); }
+
+/* Yozuvning hududi — oynada sarlavha ostida. */
+.yb-scope { display: block; font-size: var(--t-ui); line-height: 1.45;
+            color: var(--ink-2); overflow-wrap: anywhere; }
+
+.yb-langs { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hairline);
+            display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; }
+.yb-lang { min-width: 0; }
+.yb-lang .feed-strong { margin-top: 6px; }
+.yb-facts { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hairline);
+            display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; }
+
+/* Sabab qatori — xatolik va to'xtatish uchun. Oynaning BOSHIDA turadi:
+   sabab matndan keyin turganda operator uni topmasdi. */
+.yb-why { margin-top: 16px; padding: 12px 14px; border-radius: var(--r-panel);
+          font-size: var(--t-ui); line-height: 1.5; }
+.yb-why[data-tone="crit"]  { background: var(--crit-soft); color: var(--crit); }
+.yb-why[data-tone="quiet"] { background: var(--ghost); color: var(--ink-2); }
+
+/* --- Amallar -------------------------------------------------------------- */
+.yb-actions { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hairline);
+              display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.yb-actions .ico { width: 15px; height: 15px; }
+/* Asosiy amal chegara bilan ajralib turadi. */
+.yb-act-main { background: var(--surface-card); box-shadow: inset 0 0 0 1px var(--hairline-2); }
+@media (hover: hover) { .yb-act-main:hover { box-shadow: inset 0 0 0 1px var(--edge); } }
+/* Destruktiv amal hoverda QIZARADI — bosilishidan oldin nima bo'lishini
+   aytadi. Tinch holatda esa neytral: doim qizil turgan tugma ro'yxatda
+   sakkiz marta takrorlanib, ogohlantirish kuchini yo'qotardi. */
+@media (hover: hover) {
+  .yb-act-del:hover { background: var(--crit-soft); color: var(--crit); }
+}
+
+/* Tasdiq qatori — `window.confirm` O'RNIGA. Modal ichida brauzer oynasi
+   ochilishi qatlamni ikkiga bo'lardi, qolaversa `confirm` matni
+   tahrirlanmaydi va uslubga bo'ysunmaydi. */
+.yb-actions[data-confirm="true"] { background: var(--crit-soft); margin-inline: -20px;
+                                   padding-inline: 20px; padding-bottom: 16px; border-radius: var(--r-panel); }
+.yb-confirm-q { flex: 1 1 220px; font-size: var(--t-ui); font-weight: 500; color: var(--crit); }
+/* Izoh tugmalar bilan bir qatorda emas, ULARNING OSTIDA: yonma-yon
+   turganda u tugmaning yorlig'i bo'lib ko'rinib, «O'chirish» ni
+   o'chirilgan tugmaday ko'rsatardi. */
+.yb-actions-why { flex: 1 1 100%; margin-top: 4px; font-size: var(--t-sm);
+                  letter-spacing: var(--ls-sm); color: var(--ink-2); }
+
+/* --- Bo'sh holat ---------------------------------------------------------- */
+.yb-empty { margin-top: 24px; padding: 44px 24px; border-radius: var(--r-container);
+            background: var(--surface-card); box-shadow: inset 0 0 0 1px var(--hairline);
+            display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+/* Ikonka O'Z yuzasida — yolg'iz chizilgan 22px lik belgi bo'sh maydonda
+   tasodifiy dog' bo'lib ko'rinardi. */
+.yb-empty-mark { width: 44px; height: 44px; border-radius: var(--r-full);
+                 display: grid; place-items: center; margin-bottom: 6px;
+                 background: var(--paper-sunk); color: var(--ink-2); }
+.yb-empty-mark .ico { width: 20px; height: 20px; }
+.yb-empty-title { font-family: var(--display); font-size: var(--t-lead); font-weight: 500;
+                  letter-spacing: var(--ls-lead); color: var(--ink); }
+.yb-empty-body { max-width: 52ch; font-size: var(--t-ui); line-height: 1.55; color: var(--ink-2); }
+.yb-empty .btn { margin-top: 8px; }
+
+.yb-note { margin-top: 24px; }
+
+@media (max-width: 880px) {
+  .yb-summary { grid-template-columns: 1fr; }
+  /* Ustma-ust turganda ajratkich ham GORIZONTAL bo'lsin — vertikal chiziq
+     bo'laklar yonma-yon turgandagina ma'noga ega. */
+  .yb-sum + .yb-sum { box-shadow: inset 0 1px 0 0 var(--hairline); }
+  /* Segment va ikkala ro'yxat to'liq enda: 880px dan tor ekranda ular
+     yonma-yon turganda «Bir martalik» yorlig'i qirqilardi. */
+  .yb-segment { flex: 1 1 100%; max-width: none; }
+  .yb-field { flex: 1 1 100%; }
+}
+@media (max-width: 480px) {
+  /* 375px da bir bo'lakka ~78px qoladi va «Bir martalik» yonidagi son bilan
+     birga sig'masdan qirqilardi. Son yorliq OSTIGA tushadi — bo'lak
+     kichik ko'rsatkichga aylanadi va nishon 44px dan pastga tushmaydi. */
+  .yb-segment-btn { flex-direction: column; gap: 1px; min-height: 46px; padding: 7px 6px;
+                    font-size: var(--t-sm); letter-spacing: var(--ls-sm); }
+  .yb-segment-count { font-size: var(--t-mono-sm); }
+}
+@media (max-width: 620px) {
+  /* Katta son va ulush tor ekranda bir qatorda sig'maydi. */
+  .yb-deliver-head { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .yb-langs, .yb-facts { grid-template-columns: 1fr; }
+  .yb-tools { padding: 12px; }
+}
+
+/* --- Tor ekran: jadval QATORLARGA yoyiladi --------------------------------
+   Bu sahifaning eng og'ir joyi shu yerda edi. Jadval 820px joy so'raydi,
+   375px lik ekranda esa ~343px bor — ya'ni yozuvning sanasini, sonini yoki
+   `…` tugmasini ko'rish uchun HAR QATORDA yon tomonga surish kerak edi.
+   Yopishqoq sarlavha ustuni ekranning deyarli hammasini egallab, qolgan
+   beshta ustundan bir chekkasigina ko'rinardi (o'lchandi: 375px da
+   ko'rinadigan qism — sarlavha + «Holat» ning yarmi).
+
+   Chegara 1200px va u O'LCHOVDAN olingan, taxmindan emas: sakkiz ustun
+   siqilgan holatda ham ~1050px so'raydi, shell chekkasi 2x24px va brauzer
+   siljitgichi bilan birga 1200px dan tor ekranda kontent shundan pastga
+   tushadi. Shu nuqtadan
+   boshlab har qator MUSTAQIL blok bo'ladi, ustun sarlavhalari esa
+   `data-label` orqali har qiymatning yoniga ko'chadi — gorizontal siljish
+   umuman qolmaydi.
+
+   `thead` DOM da qoladi (ekran o'quvchisi uchun jadval tuzilishi buzilmasin),
+   faqat ko'zdan yashiriladi.
+   -------------------------------------------------------------------------- */
+/* --- Oraliq kenglik: jadval SIQILADI -------------------------------------
+   Sakkiz ustunning tabiiy eni 1138px (o'lchandi). Siqilgan holatda —
+   sarlavha ustuni 220px, kataklar chekkasi 12px — u ~1050px ga tushadi.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1420px) {
+  /* Bazadagi `min-width` — KENG ekrandagi qulay en; bu yerda u to'siq
+     bo'lib qolardi: jadval siqilgan bo'lsa ham o'sha enni so'rab turardi. */
+  .yb-table { min-width: 0; }
+  .yb-th-msg, .yb-td-msg { min-width: 220px; }
+  .yb-th-place { width: 150px; }
+  .yb-table td, .yb-table thead th { padding: 12px; }
+}
+
+@media (max-width: 1200px) {
+  .yb-table-wrap { overflow: visible; background: none; box-shadow: none; border-radius: 0; }
+  .yb-table { display: block; min-width: 0; }
+  /* Sarlavha DOM da qoladi (ekran o'quvchisi uchun ustun nomlari kerak),
+     lekin ko'zdan yashiriladi.
+
+     Butun ZANJIR `display: block` qilinishi SHART. Yolg'iz `thead` ga
+     `overflow: hidden` bergani yetmaydi: ichkarida `tr` va `th` hamon
+     jadval qutilari bo'lib qoladi va anonim jadval 726px ga cho'zilib,
+     320px da sahifani 1px gorizontal siljitardi (o'lchandi:
+     `scrollWidth` 306 vs `clientWidth` 305). */
+  .yb-table thead {
+    display: block;
+    position: absolute; width: 1px; height: 1px; margin: -1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .yb-table thead tr { display: block; width: 1px; overflow: hidden; }
+  .yb-table thead th { display: block; width: 1px; height: 1px; padding: 0; overflow: hidden; }
+  .yb-table tbody { display: block; }
+
+  .yb-tr { display: block; position: relative; padding: 14px 16px 14px;
+           border-radius: var(--r-card); background: var(--surface-card);
+           box-shadow: inset 0 0 0 1px var(--hairline); }
+  .yb-tr + .yb-tr { margin-top: 8px; }
+  /* Blok holatida qatorlar orasidagi chiziq oraliqqa aylandi, ustunlar
+     orasidagi vertikal chiziq esa ma'nosini yo'qotadi — kataklar endi
+     yonma-yon emas, ustma-ust turadi. O'rniga har maydon o'z gorizontal
+     chizig'i bilan ajraladi. */
+  .yb-tr + .yb-tr td { border-top: 0; }
+  .yb-table tbody td + td + td { border-inline-start: 0; }
+  .yb-table td[data-label]:not(.yb-td-msg) {
+    padding-bottom: 9px; border-bottom: 1px solid var(--hairline);
+  }
+  /* Oxirgi maydonning ostidagi chiziq kartaning o'z chekkasi bilan
+     qo'shilib, ikki qavat bo'lib ko'rinardi. */
+  .yb-table td.yb-td-num { border-bottom: 0; padding-bottom: 0; }
+
+  /* Yorliq — o'chirilgan `thead` ning o'rnida, ABSOLYUT joylashadi.
+     Flex/grid bilan qilib bo'lmaydi: katak ichidagi sana uch bo'lakka
+     ajratilgan (`yb-yr` / `yb-md` / `yb-hm`) va flex konteynerda ular
+     mustaqil element bo'lib, oralarida `gap` paydo bo'lardi — «2026-»,
+     «08-26» va «11:40» bir-biridan uzilib ketardi (o'lchandi). Absolyut
+     yorliq + oddiy oqim esa bo'laklarni yopishtirib qoldiradi va ikki
+     qatorli qiymat ham yorliq ostiga emas, yonига to'g'ri tushadi. */
+  .yb-table td { display: block; padding: 0; }
+  .yb-table td[data-label]:not(.yb-td-msg) {
+    position: relative; min-height: 20px; padding-inline-start: 116px;
+  }
+  .yb-table td[data-label]:not(.yb-td-msg)::before {
+    content: attr(data-label); position: absolute; top: 0; inset-inline-start: 0;
+    width: 104px; line-height: 20px;
+    font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono);
+    text-transform: uppercase; color: var(--ink-2);
+  }
+
+  /* Sarlavha katagi — blokning boshi: yopishqoqlik ham, chekka chizig'i ham
+     endi ma'noga ega emas. O'ng tomonda `…` tugmasi uchun joy qoldiriladi.
+     Selektor `.yb-table td` dan KUCHLIROQ bo'lishi shart. */
+  .yb-table td.yb-td-msg { display: block; position: static; z-index: auto;
+                           min-width: 0; max-width: none; background: none;
+                           padding: 0 44px 0 0; }
+  .yb-td-msg::after { content: none; }
+  .yb-tr:hover .yb-td-msg { background: none; }
+  .yb-open { max-width: none; }
+  /* Yoyilgan holatda hudud qirqilmasin — karta eni yetarli. */
+  .yb-place-t { white-space: normal; overflow: visible; }
+
+  .yb-table td.yb-td-kind { margin-top: 12px; }
+  .yb-table td.yb-td-place, .yb-table td.yb-td-state,
+  .yb-table td.yb-td-date, .yb-table td.yb-td-num { margin-top: 9px; }
+  .yb-table td.yb-td-num { text-align: left; }
+
+  .yb-table td.yb-td-act { position: absolute; top: 10px; inset-inline-end: 10px;
+                           display: block; padding: 0; }
+}
+
+/* Keng kartada maydonlar IKKI ustunga tizilади: 1200px lik ekranda bitta
+   ustunli karta o'ng yarmini bo'sh qoldirib, ro'yxatni behuda cho'zib
+   yuborardi. Telefonda (640px dan tor) esa bitta ustun qoladi. */
+/* Eng tor ekranda yorliq ustuni toraytiriladi: 305px lik kartada 104px
+   lik yorliq qiymatga 157px qoldirib, «8-mahalla "Do'stlik"» ni chekkaga
+   yopishtirardi (o'lchandi). */
+@media (max-width: 480px) {
+  .yb-table td[data-label]:not(.yb-td-msg) { padding-inline-start: 96px; }
+  .yb-table td[data-label]:not(.yb-td-msg)::before { width: 86px; }
+}
+
+@media (min-width: 641px) and (max-width: 1200px) {
+  .yb-tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+           column-gap: 28px; row-gap: 10px; align-content: start; }
+  .yb-table td.yb-td-msg { grid-column: 1 / -1; }
+  /* Grid oralig'i `row-gap` dan keladi — margin ikki marta joy qo'shardi. */
+  .yb-table td.yb-td-kind, .yb-table td.yb-td-place, .yb-table td.yb-td-state,
+  .yb-table td.yb-td-date, .yb-table td.yb-td-num { margin-top: 0; }
+  .yb-table td.yb-td-msg { margin-bottom: 4px; }
+  /* Ikki ustunli to'rda OXIRGI qator «Keyingi» va «Yuborishlar» dan
+     iborat. Bitta ustunli holatda faqat «Yuborishlar» oxirgi edi, shuning
+     uchun chiziq «Keyingi» ostida osilib qolardi. */
+  .yb-table td.yb-td-next, .yb-table td.yb-td-num {
+    border-bottom: 0; padding-bottom: 0;
+  }
+}

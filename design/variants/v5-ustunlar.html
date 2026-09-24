@@ -23,7 +23,7 @@
 <style>
   .v5 { display: flex; flex-direction: column; gap: 12px; }
   .v5-fail { align-items: flex-start; }   .v5-legal { color: var(--ink-2); }
-  .v5-shell { border: 1px solid var(--hairline); border-radius: var(--r-5); background: var(--paper); overflow: hidden; }
+  .v5-shell { border: 1px solid var(--hairline); border-radius: var(--r-card); background: var(--paper); overflow: hidden; }
   .v5-root { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--hairline); }
   .v5-root:focus-visible, .v5-tog:focus-visible { outline-offset: -2px; }   /* shell overflow:hidden tashqi halqani qirqardi */
   .v5-root-tick { width: 10px; height: 10px; flex: none; border-radius: 50%; border: 1.6px solid var(--edge); transition: transform var(--d-tap) var(--ease-out); }
@@ -37,7 +37,7 @@
   .v5-n { font-size: var(--t-mono-sm); color: var(--ink-2); }   .v5-tog { display: none; }
   .v5-list { display: flex; flex-direction: column; gap: 2px; padding: 6px; max-height: 296px; overflow-y: auto; overscroll-behavior: contain; }
   .v5 .empty { padding: 26px 16px; gap: 6px; border: 0; }   .v5 .empty .small { color: var(--ink-2); max-width: 28ch; }
-  .v5-opt { position: relative; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 10px; border-radius: var(--r-3); color: var(--ink); cursor: pointer; -webkit-user-select: none; user-select: none; animation: v5-in 180ms var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 14ms); }
+  .v5-opt { position: relative; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 10px; border-radius: var(--r-control); color: var(--ink); cursor: pointer; -webkit-user-select: none; user-select: none; animation: v5-in 180ms var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 14ms); }
   /* Fon o'zgarishi animatsiya QILINMAYDI — hover uchun alohida qatlam, u faqat opacity bilan kiradi. */
   .v5-opt::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--ghost); opacity: 0; transition: opacity var(--d-hover) var(--ease-out); }
   .v5-opt > * { position: relative; }   .v5-opt:focus-visible { outline-offset: -2px; }   /* scroll konteyner tashqi halqani qirqardi */

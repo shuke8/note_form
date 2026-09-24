@@ -2,60 +2,118 @@
    LANDING — sahifaga xos qatlam. Tizim qiymatlari `system.css` da.
    ========================================================================== */
 
+/* --- Qahramon yoyi ---------------------------------------------------------
+   online-mahalla.uz ning imzosi: sahifaning yuqori qismida #C0D5FF dan oqqa
+   tushadigan gradient va uning ustida (960,960) markazli uchta konsentrik
+   doira — ko'zga ular ko'k yoy bo'lib ko'rinadi. Geometriya ularning
+   `heroBg1.svg` faylidan o'qildi, bu yerda CSS gradient bilan qayta
+   yig'ilgan (tashqi fayl kerak emas va u har kenglikda cho'ziladi).
+
+   Yoy `fixed` EMAS: sayt ham uni sahifa bilan birga suradi. Balandligi
+   980px — SVG ning o'z balandligi.
+
+   Bu MUHIM, dekorativ emas: suzuvchi oq navigatsiya pilli faqat ko'k yuza
+   ustida ko'rinadi. Oq sahifada u oq ustida oq bo'lib yo'qoladi. */
+/* Yoy ALOHIDA qatlamda, `body` foniga qo'shib emas: `--hero-arc` ning
+   o'zi to'rt qatlamli ro'yxat va uni `background` qisqartmasi ichiga
+   qo'shganda faqat OXIRGI qatlam o'lchamni oladi — qolgan uchtasi butun
+   sahifa balandligiga (3885px) yoyilib, ko'zga umuman ko'rinmay qolardi
+   (o'lchandi). Alohida element esa 980px lik o'z qutisiga ega. */
+html { background: var(--paper); }
+body { background: transparent; position: relative; }
+body::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  top: 0; left: 0; right: 0; height: 980px;
+  background: var(--hero-arc) no-repeat top center;
+  /* Sayt rasmni tabiiy o'lchamida (1920x980) qo'yadi va chetlarini
+     qirqadi. `cover` aynan shuni beradi — 1920 dan tor ekranda rasm
+     kichraymaydi, faqat yon tomonlari kesiladi, ya'ni yoylar egriligini
+     yo'qotmaydi. */
+  background-size: cover;
+}
+
 /* HERO — DSS: sarlavha chapda, qo'llab-quvvatlovchi matn o'ngda,
    ular BIR QATORDA emas: sarlavha to'liq kenglikni oladi, tugmalar va
    izoh sarlavha ostida bir-biriga qarama-qarshi turadi. */
-.hero { padding-top: 76px; padding-bottom: var(--gap-section); }
-.hero-title { max-width: 20ch; }
+/* Qahramon MARKAZDA — saytning eng kuchli imzosi: 60px lik sarlavha va
+   uning ostidagi ikki qatorli izoh sahifaning o'rtasida turadi
+   (o'lchandi: h1 800px kenglikda, matn markazlangan).
+
+   Markazlash faqat SHU YERDA: qolgan bo'limlar chapdan tekislangan,
+   chunki ular zich matn va ro'yxatlardan iborat. */
+.hero { padding-top: 96px; padding-bottom: var(--gap-section); text-align: center; }
+.hero-title { max-width: 22ch; margin-inline: auto; }
 /* Almashinuvchi so‘z va kursor bir butun: ular ikki qatorga bo‘linsa
    kursor keyingi qator boshida yolg‘iz qolib ketadi. */
+/* Almashinuvchi so'z va kursor bir butun: ular ikki qatorga bo'linsa
+   kursor keyingi qator boshida yolg'iz qolib ketardi. Kenglik zaxirasi
+   `motion.js` da o'chirilgan — sababi o'sha yerda yozilgan. */
 .hero-tail { display: inline-block; white-space: nowrap; }
 .hero-slot { display: inline; white-space: pre; }
+/* Izoh tugmalardan YUQORIDA: saytda ham sarlavhadan keyin darhol izoh
+   keladi. `order` bilan — markup tartibi tegilmaydi. */
 .hero-row {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  gap: 32px; margin-top: 40px; flex-wrap: wrap;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 26px; margin-top: 26px;
 }
-.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.hero-aside { max-width: 34ch; font-size: var(--t-body); line-height: var(--lh-body);
-              letter-spacing: var(--ls-body); color: var(--ink-2); }
-.hero-rule { margin-top: 48px; border-top: 1px solid var(--hairline); padding-top: 22px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.hero-aside { order: -1; max-width: 58ch; margin-inline: auto;
+              font-size: var(--t-lead); line-height: var(--lh-lead);
+              letter-spacing: normal; color: var(--ink-2); }
+/* Lenta bo'limi sarlavhasi markazdan MEROS OLMAYDI — u ro'yxat, sarlavha emas. */
+.hero-rule { margin-top: 56px; border-top: 1px solid var(--hairline); padding-top: 22px; text-align: left; }
 
 /* HUDUD LENTASI */
-.region { font-family: var(--mono); font-size: var(--t-ui); letter-spacing: var(--ls-mono);
-          color: var(--ink-2); white-space: nowrap; }
+.region { font-size: var(--t-ui); color: var(--ink-2); white-space: nowrap;
+          font-variant-numeric: tabular-nums; }
 .region b { color: var(--ink); font-weight: 500; }
 
 /* IMKONIYAT PLITKALARI
-   To‘r chiziqlari konteyner FONIDAN emas, har plitkaning o‘z chegarasidan:
-   plitka `data-reveal` bilan yashirin turganda konteyner foni kulrang plita
-   bo‘lib ko‘rinib qolardi. Endi yashirin plitka o‘z chizig‘ini ham yashiradi. */
+   Ilgari bu to'r edi: plitkalar bir-biriga yopishib turardi va ularni
+   1px hairline ajratardi. Saytda esa kartalar ORALIQ bilan ajraladi va
+   har biri to'ldirilgan lavanda quti — chiziq umuman yo'q. */
 .tile-frame { position: relative; }
-.tile-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-             border-top: 1px solid var(--hairline); border-left: 1px solid var(--hairline); }
-.tile-grid > .tile {
-  border: 0;
-  border-right: 1px solid var(--hairline);
-  border-bottom: 1px solid var(--hairline);
-}
-.tile-ico { width: 40px; height: 40px; border-radius: var(--r-pill); background: var(--paper);
-            border: 1px solid var(--hairline); display: grid; place-items: center; color: var(--ink); }
+.tile-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+
+/* Ikonka nishoni — saytning «Biznes Navigator» kartalaridan: 40px
+   yumaloq-kvadrat, TO'LDIRILGAN rang, ichida oq ikonka. O'lchangan
+   ranglar: yashil #1fc16b, to'q sariq #fa7319, binafsha #7d52f4, ko'k
+   #0060fe — to'rttasi ketma-ket takrorlanadi. */
+.tile-ico { width: 40px; height: 40px; border-radius: var(--r-control); flex: none;
+            display: grid; place-items: center; color: #fff; background: var(--accent-solid); }
+.tile-grid > .tile:nth-child(4n+1) .tile-ico { background: var(--ok-fill); }
+.tile-grid > .tile:nth-child(4n+2) .tile-ico { background: var(--warn-fill); }
+.tile-grid > .tile:nth-child(4n+3) .tile-ico { background: var(--accent-violet); }
+.tile-grid > .tile:nth-child(4n+4) .tile-ico { background: var(--accent-solid); }
 .tile-ico svg { width: 19px; height: 19px; }
 .tile-name { margin-top: 18px; font-size: var(--t-body); font-weight: 500; color: var(--ink);
              letter-spacing: var(--ls-body); }
 .tile-note { margin-top: 6px; font-size: var(--t-ui); color: var(--ink-2); }
 
-/* RAQAMLAR */
-.stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
-.stat { display: flex; flex-direction: column; gap: 8px; padding-top: 18px; border-top: 1px solid var(--hairline); }
+/* RAQAMLAR — ular ham to'ldirilgan karta bo'ldi: yuqoridagi chiziq
+   eski tizimning belgisi edi. */
+.stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.stat { display: flex; flex-direction: column; gap: 8px; padding: 24px;
+        border-radius: var(--r-card); background: var(--paper-sunk); }
 .stat-num { font-family: var(--display); font-size: var(--t-d3); line-height: 1.1; font-weight: 500;
-            letter-spacing: -0.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+            letter-spacing: normal; color: var(--ink); font-variant-numeric: tabular-nums; }
 .stat-label { font-size: var(--t-ui); color: var(--ink-2); }
 
-/* BOSQICHLAR */
-.step-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap-group); }
-.step { display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 1px solid var(--ink); }
-.step-num { font-family: var(--mono); font-size: var(--t-mono-sm); letter-spacing: var(--ls-mono); color: var(--ink-2); }
-.step-name { font-size: var(--t-lead); font-weight: 500; color: var(--ink); letter-spacing: var(--ls-lead);
+/* BOSQICHLAR — saytning «Biznes Navigator» kartasi: OQ yuza, radius 28,
+   ichki chekka 24 va PASTIDA 3px rangli chiziq. O'lchandi:
+   `.biznesNavigator__box` 291x191, `border-radius: 28px`,
+   `border-bottom: 3px solid` (yashil / to'q sariq / binafsha).
+   Chiziq — kartaning YAGONA rangi; qolgani neytral. */
+.step-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.step { display: flex; flex-direction: column; gap: 10px; padding: 24px;
+        border-radius: var(--r-container); background: var(--paper);
+        box-shadow: inset 0 0 0 1px var(--hairline);
+        border-bottom: 3px solid var(--accent-solid); }
+.step:nth-child(1) { border-bottom-color: var(--ok-fill); }
+.step:nth-child(2) { border-bottom-color: var(--warn-fill); }
+.step:nth-child(3) { border-bottom-color: var(--accent-violet); }
+.step-num { font-size: var(--t-mono-sm); font-weight: 500; letter-spacing: var(--ls-mono); color: var(--ink-3); }
+.step-name { font-size: var(--t-lead); font-weight: 500; color: var(--ink); letter-spacing: normal;
              font-family: var(--display); }
 .step-text { font-size: var(--t-ui); color: var(--ink-2); line-height: 1.55; }
 
@@ -63,35 +121,58 @@
 /* `align-items: start` — ochilgan karta faqat O'ZINI cho'zsin. Standart
    `stretch` da bir qatordagi qolgan uchta karta ham baland qutiga aylanib,
    ochilmagan holda ham «nimadir ochildi» degan taassurot berardi. */
-.feed-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; align-items: start; }
+/* Yuborilganlar LENTASI landingdan olib tashlandi — ro'yxatning o'zi endi
+   `yuborilganlar.html` da. Bu yerda faqat kirish bloki qoladi. */
+.tarix-cta { margin-top: 32px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+             gap: 32px; align-items: start; }
+.tarix-copy { min-width: 0; }
+.tarix-facts { list-style: none; margin: 0; padding: 24px; display: flex; flex-direction: column; gap: 16px;
+               border-radius: var(--r-card); background: var(--paper-sunk); }
+.tarix-facts li { display: flex; flex-direction: column; gap: 6px;
+                  font-size: var(--t-ui); line-height: 1.5; color: var(--ink-2); }
+.tarix-facts .kind-tag { align-self: flex-start; }
 
-/* YAKUNIY CTA */
-.cta { position: relative; border-radius: var(--r-2); overflow: hidden; padding: 96px 40px; text-align: center; }
+/* YAKUNIY CTA — saytning ko'k paneli (login sahifasining o'ng yarmi
+   ham aynan shunday): TEKIS `#0060fe`, radius 28. Ilgari bu qora mesh
+   gradientli panel edi — boshqa tizimning tili. */
+.cta { position: relative; border-radius: var(--r-container); overflow: hidden; padding: 96px 40px; text-align: center;
+       background: var(--accent-solid); }
+/* `.media-cool` ning mesh gradienti va don qoplamasi bu yerda o'chadi.
+   Selektor IKKI sinfdan iborat bo'lishi shart: `.media-cool` bilan `.cta`
+   aniqligi teng va u KEYINGI faylda emas, oldingisida turadi — ya'ni
+   yolg'iz `.cta` uni yenga olmasdi (o'lchandi: panel qora qolardi). */
+.cta.media, .cta.media-cool {
+  background-color: var(--accent-solid);
+  background-image: none;
+}
+.cta.media::after { content: none; }
 .cta-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 22px; }
 .cta .d2 { color: #fff; max-width: 20ch; }
-.cta-sub { color: rgba(255, 255, 255, 0.78); max-width: 46ch; font-size: var(--t-body);
-           line-height: var(--lh-body); letter-spacing: var(--ls-body); }
-/* O'lchandi: 0,72 alfa mesh yuzaning eng yorug' nuqtasida 4,29:1 berardi.
-   Kichik mono yorliq uchun AA 4,5 talab qiladi. */
-.cta .eyebrow { color: rgba(255, 255, 255, 0.9); }
+/* Oq `#0060fe` ustida 5.16:1 beradi — ya'ni ALFA uchun deyarli joy yo'q:
+   0.86 da u 4.16 ga tushib AA dan o'tmaydi (o'lchandi). Shuning uchun
+   ko'k panel ichidagi matn SOF oq. */
+.cta-sub { color: #fff; max-width: 46ch; font-size: var(--t-body);
+           line-height: var(--lh-body); letter-spacing: normal; }
+.cta .eyebrow { color: #fff; }
 /* Karta va matn don qoplamasidan YUQORIDA — u ularning fonini yoritmasin. */
 .cta-inner { position: relative; z-index: 1; }
-.cta .btn-ink { background: #fff; color: #000; }
-@media (hover: hover) { .cta .btn-ink:hover { background: rgba(255, 255, 255, 0.86); } }
+.cta .btn-ink { background: #fff; color: var(--accent-solid); }
+@media (hover: hover) { .cta .btn-ink:hover { background: rgba(255, 255, 255, 0.9); } }
 .cta :focus-visible { outline-color: #fff; }
 
 /* RESPONSIV */
 @media (max-width: 1080px) {
-  .tile-grid, .stat-grid, .feed-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tile-grid, .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tarix-cta { grid-template-columns: 1fr; }
   .step-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .hero { padding-top: 44px; }
   .hero-title { max-width: none; }
-  .hero-row { align-items: flex-start; gap: 24px; }
+  .hero-row { gap: 22px; }
   .hero-actions { width: 100%; }
   .hero-actions .btn { flex: 1 1 auto; }
-  .tile-grid, .stat-grid, .feed-grid { grid-template-columns: 1fr; }
+  .tile-grid, .stat-grid { grid-template-columns: 1fr; }
   .media-pad { padding: 40px 16px; }
   .cta { padding: 56px 20px; }
 }
