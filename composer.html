@@ -7,8 +7,8 @@
 <meta name="description" content="Qamrovni tanlang, matnni ikkala tilda yozing va telefonda qanday ko‘rinishini shu yerda ko‘ring." />
 <meta name="color-scheme" content="light dark" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-<meta name="theme-color" content="#dbe6f6" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#070b14" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#335d99" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#1d3457" media="(prefers-color-scheme: dark)" />
 <script>
   (function () {
     var t = null;
@@ -21,7 +21,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
 <link rel="stylesheet" href="assets/ui/tokens.css" />
 <link rel="stylesheet" href="assets/ui/controls.css" />
 <link rel="stylesheet" href="assets/ui/shell.css" />
@@ -66,28 +66,28 @@
 
 <a class="skip" href="#step-1">Formaga o‘tish</a>
 
-<div class="canvas">
-<div class="app">
-  <header class="app-top">
-    <span class="brand">
-      <img src="assets/favicon.svg" alt="" width="28" height="28" />
-      <span class="brand-name">Onlayn Mahalla</span>
-    </span>
-    <span class="app-crumb" aria-hidden="true">/</span>
-    <span class="app-title">Yangi xabarnoma</span>
-    <span class="app-top-spacer"></span>
-    <button type="button" class="btn btn-quiet btn-sm app-reset" id="resetBtn" aria-label="Qoralamani tozalash" title="Qoralamani tozalash">
+<header class="topbar">
+  <div class="topbar-inner">
+    <span class="topbar-brand">online-mahalla.uz</span>
+    <span class="topbar-spacer"></span>
+    <button type="button" class="topbar-btn topbar-btn-text" id="resetBtn" aria-label="Qoralamani tozalash" title="Qoralamani tozalash">
       <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
       <span>Tozalash</span>
     </button>
-    <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Qorong‘i mavzuga o‘tish" title="Qorong‘i mavzuga o‘tish">
+    <button class="topbar-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Qorong‘i mavzuga o‘tish" title="Qorong‘i mavzuga o‘tish">
       <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
     </button>
-  </header>
+  </div>
+</header>
 
+<div class="page">
+  <div class="page-head">
+    <p class="page-crumb">Xabarnomalar</p>
+    <p class="page-title">Yangi xabarnoma</p>
+  </div>
   <div class="app-body">
     <aside class="app-side">
-      <div class="app-side-inner">
+      <div class="app-side-inner card">
         <nav class="stepper" id="stepper" aria-label="Bosqichlar">
           <ol class="stepper-list">
           <li>
@@ -146,7 +146,7 @@
       </div>
     </aside>
 
-    <main class="doc">
+    <main class="doc card">
   <section class="step-sec" id="step-1" aria-labelledby="h-step-1">
     <div class="step-head">
       <span class="step-index" aria-hidden="true">01</span>
@@ -642,7 +642,6 @@
       </div>
     </div>
   </div>
-</div>
 </div>
 
 <dialog class="modal" id="resultDialog" aria-labelledby="resultTitle">

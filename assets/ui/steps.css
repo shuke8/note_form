@@ -1,7 +1,7 @@
 .scope { display: flex; flex-direction: column; gap: 24px; padding-top: 28px; }
 .scope-mapwrap {
-  container-type: inline-size; position: relative; padding: 20px; border-radius: var(--r-card);
-  background: var(--paper-alt); border: 1px solid var(--hairline);
+  container-type: inline-size; position: relative; padding: 16px 0 0;
+  border-top: 1px solid var(--hairline-2);
 }
 .scope-panel { order: -1; }
 .scope-map { width: 100%; height: auto; max-height: 300px; margin: 0 auto; pointer-events: none; }
@@ -14,16 +14,16 @@
   .scope-cap-wide { display: inline; }
 }
 .scope-cell { transform-box: fill-box; transform-origin: 50% 50%; transition: transform var(--d-hover) var(--ease-out); }
-.scope-rg { fill: var(--paper); stroke: var(--edge); stroke-width: 1.25; transition: fill var(--d-hover) var(--ease-out), stroke var(--d-hover) var(--ease-out); }
+.scope-rg { fill: var(--map-fill); stroke: var(--paper); stroke-width: 1.25; transition: fill var(--d-hover) var(--ease-out), stroke var(--d-hover) var(--ease-out); }
 .scope-mark { fill: none; stroke: var(--ink-2); stroke-width: 1.5; pointer-events: none; }
 .scope-tap, .scope-back { fill: transparent; stroke: none; }
-.scope-cell[data-state="dim"] .scope-rg { fill: var(--paper-sunk); stroke: var(--edge); stroke-opacity: 0.55; }
+.scope-cell[data-state="dim"] .scope-rg { fill: var(--map-dim); }
 .scope-cell[data-hot="true"] { transform: translateY(-2px); }
-.scope-cell[data-hot="true"] .scope-rg { fill: var(--accent-soft); stroke: var(--accent-solid); stroke-width: 2; }
+.scope-cell[data-hot="true"] .scope-rg { fill: var(--accent); stroke: var(--paper); }
 .scope-cell[data-hot="true"] .scope-mark { stroke: var(--accent-solid); }
-.scope-cell[data-state="on"] .scope-rg { fill: var(--accent-solid); stroke: var(--paper); stroke-width: 1.25; }
+.scope-cell[data-state="on"] .scope-rg { fill: var(--accent-solid); }
 .scope-cell[data-state="on"] .scope-mark { stroke: var(--ink-on-fill); }
-.scope[data-allhot="true"] .scope-cell:not([data-state="on"]) .scope-rg { fill: var(--accent-soft-2); stroke: var(--accent-line); }
+.scope[data-allhot="true"] .scope-cell:not([data-state="on"]) .scope-rg { fill: var(--accent); }
 .scope-maphint {
   position: absolute; left: 20px; top: 20px; z-index: 1; padding: 6px 12px;
   border-radius: var(--r-full); background: var(--ink); color: var(--paper);
@@ -81,7 +81,7 @@
 .scope-chev { width: 16px; height: 16px; color: var(--ink-3); }
 .scope-row[aria-current="true"] :is(.scope-idx, .scope-pop, .scope-chev) { color: var(--accent-ink); }
 
-.scope-sum { padding: 16px; border-radius: var(--r-panel); background: var(--paper-alt); border: 1px solid var(--hairline); display: flex; flex-direction: column; gap: 6px; }
+.scope-sum { padding: 16px; border-radius: var(--r-panel); background: var(--paper-sunk); display: flex; flex-direction: column; gap: 6px; }
 .scope-sum:has(.empty) { padding: 0; background: none; border: 0; }
 .scope-reach { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .scope-reach b { font-size: 28px; font-weight: 500; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
@@ -94,7 +94,7 @@
 .preview-dock { padding-top: 28px; }
 .preview-strip {
   display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; align-items: center;
-  padding: 20px; border-radius: var(--r-card); background: var(--paper-alt); border: 1px solid var(--hairline);
+  padding: 16px; border-radius: var(--r-panel); background: var(--paper-sunk);
 }
 .preview-card { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .notif-foot { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -113,7 +113,7 @@
 .when-time { max-width: 220px; }
 .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip-row .seg-btn {
-  min-width: 56px; min-height: 44px; padding: 0 16px; border-radius: var(--r-full);
+  min-width: 56px; min-height: 44px; padding: 0 16px; border-radius: var(--r-control);
   font-weight: 500; box-shadow: none; border-color: var(--edge);
 }
 .month-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
@@ -121,14 +121,14 @@
 
 .runs { display: flex; flex-direction: column; gap: 12px; }
 .runs-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.run-chip { display: inline-flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-radius: var(--r-control); background: var(--paper-alt); border: 1px solid var(--hairline); }
+.run-chip { display: inline-flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-radius: var(--r-control); background: var(--paper-sunk); }
 .run-chip b { font-size: var(--t-ui); font-weight: 500; font-variant-numeric: tabular-nums; }
 .run-chip span { font-size: var(--t-mono-sm); color: var(--ink-3); }
 .runs-sum[data-tone="warn"] { color: var(--warn); }
 
 .drop {
   display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 40px 24px; text-align: center;
-  border: 1.5px dashed var(--edge); border-radius: var(--r-card); background: var(--paper-alt);
+  border: 1.5px dashed var(--edge); border-radius: var(--r-panel); background: var(--paper-alt);
   transition: border-color var(--d-hover) var(--ease-out), background-color var(--d-hover) var(--ease-out);
 }
 .drop[data-over="true"] { border-color: var(--accent-solid); background: var(--accent-soft); }
@@ -165,14 +165,20 @@
 .sum-todo-arrow { width: 16px; height: 16px; color: var(--ink-3); }
 
 .dispatch-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; align-items: start; }
-.dispatch-phones { display: flex; flex-direction: column; gap: 16px; padding: 20px; border-radius: var(--r-card); background: var(--paper-alt); border: 1px solid var(--hairline); }
+.dispatch-phones { display: flex; flex-direction: column; gap: 16px; padding: 16px; border-radius: var(--r-panel); background: var(--paper-sunk); }
 .dispatch-phone { display: flex; flex-direction: column; gap: 8px; }
-.fact-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-.fact { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 16px 16px 16px 60px; border: 1px solid var(--hairline); border-radius: var(--r-panel); min-height: 88px; }
-.fact-ico { position: absolute; left: 16px; top: 16px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--paper-sunk); color: var(--ink-2); }
+.fact-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+.fact { position: relative; display: flex; flex-direction: column; gap: 2px; padding: 14px 0 14px 48px; min-height: 64px; }
+.fact + .fact { border-top: 1px solid var(--hairline-2); }
+.fact:first-child { padding-top: 4px; }
+.fact-ico { position: absolute; left: 0; top: 14px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-control); background: var(--tone-blue); color: #ffffff; }
+.fact:first-child .fact-ico { top: 4px; }
 .fact-ico .ico { width: 16px; height: 16px; }
-.fact[data-empty="false"] .fact-ico { background: var(--accent-soft); color: var(--accent-ink); }
-.fact-big { font-size: 26px; font-weight: 500; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1.15; }
+#rcWhenTile .fact-ico { background: var(--tone-purple); }
+#rcFilesTile .fact-ico { background: var(--tone-orange); }
+.fact[data-empty="true"] .fact-ico { background: var(--paper-sunk); color: var(--ink-3); }
+.fact .eyebrow { text-transform: none; letter-spacing: 0; font-size: var(--t-ui); font-weight: 400; color: var(--ink-3); }
+.fact-big { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; line-height: 1.15; }
 .fact-big[data-num="false"] { font-size: var(--t-ui); color: var(--ink-2); letter-spacing: 0; }
 .fact-unit, .fact-hint { font-size: var(--t-sm); color: var(--ink-3); }
 .fact-value { font-size: var(--t-ui); font-weight: 500; }
@@ -196,7 +202,6 @@
   .dispatch-when { padding-inline-start: 0; }
 }
 @media (max-width: 640px) {
-  .segment-tiles .seg-btn { min-height: 84px; padding: 12px 6px; font-size: var(--t-sm); }
   .when-grid { grid-template-columns: minmax(0, 1fr); }
   .month-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .scope-mapwrap { padding: 12px; }

@@ -36,7 +36,7 @@ label.btn:focus-within { box-shadow: var(--focus-ring); }
 
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
-  min-height: 26px; padding: 0 10px; border-radius: var(--r-full);
+  min-height: 26px; padding: 0 10px; border-radius: 6px;
   background: var(--paper-sunk); color: var(--ink-2);
   font-size: var(--t-mono-sm); font-weight: 500; line-height: 1; white-space: nowrap;
 }
@@ -86,7 +86,7 @@ input[type="date"].input, input[type="time"].input { font-variant-numeric: tabul
   min-height: var(--h-control); padding: 0 16px;
   border: 1px solid var(--hairline); border-radius: var(--r-control);
   background: var(--paper); color: var(--ink);
-  font-size: var(--t-ui); font-weight: 500;
+  font-size: var(--t-ui); font-weight: 500; white-space: nowrap;
   box-shadow: var(--lift-1);
   transition: border-color var(--d-hover) var(--ease-out), background-color var(--d-hover) var(--ease-out),
               color var(--d-hover) var(--ease-out), transform var(--d-tap) var(--ease-out);
@@ -137,19 +137,19 @@ input[type="date"].input, input[type="time"].input { font-variant-numeric: tabul
 .empty {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   padding: 28px 20px; text-align: center;
-  border: 1px dashed var(--edge); border-radius: var(--r-panel);
+  border-radius: var(--r-panel); background: var(--paper-sunk);
   color: var(--ink-2); font-size: var(--t-sm); line-height: var(--lh-sm);
 }
 .empty > p:not(.empty-title) { max-width: 44ch; }
 .empty-icon {
   display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 4px;
-  border-radius: var(--r-full); background: var(--paper-sunk); color: var(--ink-2);
+  border-radius: var(--r-control); background: var(--paper); color: var(--ink-2);
 }
 .empty-title { font-size: var(--t-ui); font-weight: 500; color: var(--ink); }
 
 .notif {
   display: flex; gap: 12px; align-items: flex-start; padding: 14px;
-  border-radius: 18px; background: var(--paper); box-shadow: var(--lift-2);
+  border-radius: var(--r-panel); background: var(--paper); box-shadow: var(--lift-2);
 }
 .notif-mark {
   display: grid; place-items: center; width: 36px; height: 36px; flex: none;
@@ -185,3 +185,13 @@ input[type="date"].input, input[type="time"].input { font-variant-numeric: tabul
 .modal-inner { padding: 24px; }
 .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 body[data-modal] { overflow: hidden; }
+
+@media (max-width: 640px) {
+  .segment { grid-template-columns: minmax(0, 1fr); }
+  .segment-tiles .seg-btn {
+    display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 12px; row-gap: 2px;
+    justify-items: start; align-items: center; min-height: 64px; padding: 12px 16px; text-align: start;
+  }
+  .segment-tiles .seg-btn .ico { grid-row: 1 / span 2; margin: 0; }
+  .segment-tiles .seg-label, .segment-tiles .seg-sub { white-space: normal; }
+}
