@@ -12,15 +12,16 @@
 .btn:active { transform: scale(0.98); }
 .btn .ico { width: 16px; height: 16px; }
 .btn[disabled], .btn[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn-accent { background: var(--accent-solid); color: var(--ink-on-fill); min-width: 180px; }
-.btn-accent .ico { transition: transform var(--d-hover) var(--ease-out); }
+.btn-solid, .btn-accent { background: var(--primary); color: var(--primary-ink); }
+.btn-outline { background: var(--paper); border-color: var(--edge); color: var(--ink); }
 .btn-ghost { background: var(--paper); border-color: var(--hairline); color: var(--ink); box-shadow: var(--lift-1); }
 .btn-quiet { background: transparent; color: var(--ink-2); padding: 0 12px; }
 .btn-sm { min-height: var(--h-control-sm); padding: 0 14px; font-size: var(--t-sm); }
+@media (max-width: 640px), (pointer: coarse) { .btn-sm { min-height: 44px; } }
 label.btn:focus-within { box-shadow: var(--focus-ring); }
 @media (hover: hover) {
-  .btn-accent:hover { background: var(--accent-hover); }
-  .btn-accent:hover .ico:last-child { transform: translateX(2px); }
+  .btn-solid:hover, .btn-accent:hover { background: var(--primary-hover); }
+  .btn-outline:hover { border-color: var(--ink-2); background: var(--paper-sunk); }
   .btn-ghost:hover { border-color: var(--edge); }
   .btn-quiet:hover { color: var(--ink); background: var(--paper-sunk); }
 }
@@ -41,6 +42,11 @@ label.btn:focus-within { box-shadow: var(--focus-ring); }
   font-size: var(--t-mono-sm); font-weight: 500; line-height: 1; white-space: nowrap;
 }
 .chip-mono { font-variant-numeric: tabular-nums; }
+.badge {
+  display: inline-flex; align-items: center; min-height: 24px; padding: 0 8px; border-radius: 6px;
+  border: 1px solid var(--hairline); background: var(--paper-sunk); color: var(--ink-2);
+  font-size: var(--t-mono-sm); font-weight: 500; white-space: nowrap;
+}
 .chip-accent { background: var(--accent-soft); color: var(--accent-ink); }
 .chip-ok { background: var(--ok-soft); color: var(--ok); }
 .chip-warn { background: var(--warn-soft); color: var(--warn); }

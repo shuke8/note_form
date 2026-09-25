@@ -34,15 +34,20 @@
   /* Bir savol — bir ekran. Uzun scroll o'rniga 5 bosqich: oldinga faqat
      joriy to'liq bo'lsa, orqaga har doim, stepper faqat o'tilganlarga. */
   var currentStep = 1;
-  var maxReached = 1;
-  var stepTried = { 1: false, 2: false, 3: false, 4: false, 5: false };
-  var STEP_COUNT = 5;
+  var stepTried = { 1: false, 2: false, 3: false, 4: false };
+  var ROWS = [1, 2, 3, 4];
+  var REQUIRED_ROWS = [1, 2, 3];
   var STEP_LABEL = {
     1: "Ким олади",
-    2: "Нима ёзилади",
+    2: "Хабар матни",
     3: "Қачон кетади",
-    4: "Илова",
-    5: "Якуний кўриниш"
+    4: "Илова"
+  };
+  var EDIT_LABEL = {
+    1: ["Қамровни танлаш", "Ўзгартириш"],
+    2: ["Матн ёзиш", "Ўзгартириш"],
+    3: ["Вақтни белгилаш", "Ўзгартириш"],
+    4: ["Файл қўшиш", "Ўзгартириш"]
   };
 
   /* ---------------------------------------------------------------------------
@@ -1268,7 +1273,7 @@
       : path ? "Аҳоли сони йўқ" : "Қамров танланмаган";
     $("rcScope").textContent = path
       ? (reach ? "киши · " : "") + path.join(" / ")
-      : "01-бўлимдан ҳудудни танланг";
+      : "«Ким олади» бўлимида ҳудудни танланг";
     /* Telefondagi ko'rinishda bo'sh matn `:empty::before` bilan o'z joy
        egallovchisini chiqaradi — bu yerga «yozilmagan» so'zi YOZILMAYDI,
        aks holda u haqiqiy sarlavha bo'lib ko'rinardi. */
@@ -1288,33 +1293,21 @@
     // --- holat qatori ---
     var errors = validate();
     var status = $("status"), text = $("statusText");
-    if (currentStep < 5) {
-      var stepErr = errorsForStep(currentStep, errors);
-      if (currentStep === 4 && !stepErr.length) {
-        status.setAttribute("data-tone", "");
-        text.textContent = state.files.length
-          ? state.files.length + " та файл қўшилди"
-          : "Илова ихтиёрий — ўтказиб юбориш мумкин";
-      } else if (!stepErr.length) {
-        status.setAttribute("data-tone", "ok");
-        text.textContent = "Кейингисига ўтиш мумкин";
-      } else {
-        status.setAttribute("data-tone", stepTried[currentStep] ? "crit" : "");
-        text.textContent = stepErr[0].msg
-          || (stepErr[0].box && stepErr[0].box.textContent.trim())
-          || "Бу босқични тўлдиринг";
-      }
-    } else if (!errors.length) {
+    var left = REQUIRED_ROWS.filter(function (i) { return !stepValid(i, errors); }).length;
+    if (!errors.length) {
       status.setAttribute("data-tone", "ok");
-      text.textContent = "Ҳаммаси тўлдирилган";
-    } else {
-      status.setAttribute("data-tone", state.submitted ? "crit" : "");
-      /* Nol natijali jadval xatosi «1 ta maydon to'ldirilishi kerak» deb
-         yozilardi, holbuki BIRORTA maydon bo'sh emas edi. */
+      text.textContent = "Хабар юборишга тайёр";
+    } else if (state.submitted) {
+      status.setAttribute("data-tone", "crit");
       var hasRule = errors.some(function (e) { return e.kind === "rule"; });
       text.textContent = hasRule
-        ? errors.length + " та муаммо бор — 03-бўлимни текширинг"
-        : errors.length + " та майдон тўлдирилиши керак";
+        ? errors.length + " та муаммо бор — белгиланган бўлимларни текширинг"
+        : left + " та бўлим тўлдирилмаган";
+    } else {
+      status.setAttribute("data-tone", "");
+      text.textContent = left === 1
+        ? "Деярли тайёр — битта бўлим қолди"
+        : "Давом этинг — " + left + " та бўлим қолди";
     }
 
     /* 03-bo'limga tegishli xatolar faqat foydalanuvchi o'sha bo'limga
@@ -1330,6 +1323,7 @@
        emas, yo'l ko'rsatkich: bo'limga tegilmagan bo'lsa ham nima qolganini
        aytadi. */
     renderSummary(errors, path, reach);
+    paintRows(errors);
     return errors;
   }
 
@@ -1346,7 +1340,6 @@
     errMonths: 3, errFrom: 3, errTo: 3, errRuns: 3,
     errFiles: 4
   };
-  var SECTION_NAME = { 1: "Ким олади", 2: "Нима ёзилади", 3: "Қачон кетади", 4: "Илова", 5: "Якуний кўриниш" };
 
   function errorSection(e) {
     return e && e.box ? (SECTION_OF[e.box.id] || 0) : 0;
@@ -1366,106 +1359,80 @@
     });
   }
 
-  function paintWizard() {
-    var errors = validate();
-    var i;
-    for (i = 1; i <= STEP_COUNT; i++) {
-      var sec = $("step-" + i);
-      var on = i === currentStep;
-      var wasHidden = sec.hidden;
-      sec.hidden = !on;
-      if (on && wasHidden) {
-        sec.removeAttribute("data-enter");
-        void sec.offsetWidth;
-        sec.setAttribute("data-enter", "1");
-      } else if (!on) {
-        sec.removeAttribute("data-enter");
+  function rowDone(i, errors) {
+    if (i === 4) return state.files.length > 0 && stepValid(4, errors);
+    return stepValid(i, errors);
+  }
+
+  function paintRows(errors) {
+    ROWS.forEach(function (i) {
+      var row = $("step-" + i), body = $("body-" + i);
+      var open = i === currentStep;
+      var wasHidden = body.hidden;
+      body.hidden = !open;
+      if (open && wasHidden) {
+        body.removeAttribute("data-enter");
+        void body.offsetWidth;
+        body.setAttribute("data-enter", "1");
       }
-      var btn = document.querySelector('.stepper-item[data-step="' + i + '"]');
-      if (!btn) continue;
-      var visit = i <= maxReached;
-      btn.setAttribute("aria-disabled", visit ? "false" : "true");
-      if (on) btn.setAttribute("aria-current", "step");
-      else btn.removeAttribute("aria-current");
-      var done = !on && i <= maxReached && stepValid(i, errors);
-      btn.setAttribute("data-done", done ? "true" : "false");
-    }
-    $("backBtn").hidden = currentStep === 1;
-    $("nextBtn").hidden = currentStep === 5;
-    $("submitBtn").hidden = currentStep !== 5;
-    $("nextLabel").textContent = (currentStep === 4 && !state.files.length)
-      ? "Ўтказиб юбориш"
-      : "Кейинги";
-    $("stepCount").textContent = currentStep + " / " + STEP_COUNT;
-    document.body.setAttribute("data-step", String(currentStep));
+      var done = rowDone(i, errors);
+      var bad = !stepValid(i, errors) && (stepTried[i] || state.submitted);
+      row.setAttribute("data-state", bad ? "error" : done ? "done" : "todo");
+      row.setAttribute("data-open", open ? "true" : "false");
+      var edit = row.querySelector("[data-edit]");
+      edit.hidden = open;
+      edit.textContent = EDIT_LABEL[i][done ? 1 : 0];
+      edit.setAttribute("aria-expanded", open ? "true" : "false");
+    });
   }
 
   function goStep(n, opts) {
     opts = opts || {};
-    n = Math.max(1, Math.min(STEP_COUNT, n | 0));
-    if (n === currentStep && !opts.force) {
-      if (opts.focusEl) focusStepEl(opts.focusEl);
-      return true;
-    }
-    if (!opts.skipGate && n > currentStep) {
-      if (currentStep === 3) state.whenTouched = true;
-      var errors = validate();
-      if (!stepValid(currentStep, errors)) {
-        stepTried[currentStep] = true;
-        showErrors(errorsForStep(currentStep, errors));
-        var first = errorsForStep(currentStep, errors)[0];
-        if (first && first.el) focusStepEl(first.el);
-        refresh();
-        return false;
-      }
-    }
     currentStep = n;
-    if (n > maxReached) maxReached = n;
-    paintWizard();
-    /* Hash `#step-N` QO‘YILMAYDI: u `id="step-N"` ga sakrab, sarlavha va
-       stepper ni ekrandan chiqarib yuboradi. Holat `history.state` da. */
-    if (!opts.fromPop) {
-      try { history.pushState({ omStep: n }, ""); } catch (err) { /* file:// */ }
-    }
-    window.scrollTo(0, 0);
+    refresh();
+    if (!n) return true;
+    var live = $("stepLive");
+    if (live) live.textContent = STEP_LABEL[n] + " бўлими очилди";
     if (opts.focusEl) focusStepEl(opts.focusEl);
     else {
       var h = $("h-step-" + n);
-      if (h) h.focus({ preventScroll: true });
+      if (h) {
+        h.focus({ preventScroll: true });
+        $("step-" + n).scrollIntoView({ block: "nearest" });
+      }
     }
-    var live = $("stepLive");
-    if (live) live.textContent = "Босқич " + n + ", " + STEP_LABEL[n];
-    refresh();
     return true;
   }
 
-  function initWizard() {
-    $("nextBtn").addEventListener("click", function () {
-      if (currentStep === 3) state.whenTouched = true;
-      goStep(currentStep + 1);
+  function saveRow(n) {
+    if (n === 3) state.whenTouched = true;
+    var errors = validate();
+    var own = errorsForStep(n, errors);
+    if (own.length) {
+      stepTried[n] = true;
+      showErrors(own);
+      if (own[0].el) focusStepEl(own[0].el);
+      refresh();
+      return;
+    }
+    var next = REQUIRED_ROWS.filter(function (i) { return i !== n && !stepValid(i, errors); })[0] || 0;
+    goStep(next);
+    if (!next) $("step-" + n).querySelector("[data-edit]").focus();
+  }
+
+  function initChecklist() {
+    document.querySelector(".checklist").addEventListener("click", function (e) {
+      var edit = e.target.closest ? e.target.closest("[data-edit]") : null;
+      if (edit) { goStep(+edit.getAttribute("data-edit")); return; }
+      var save = e.target.closest ? e.target.closest("[data-save]") : null;
+      if (save) saveRow(+save.getAttribute("data-save"));
     });
-    $("backBtn").addEventListener("click", function () {
-      goStep(currentStep - 1, { skipGate: true });
-    });
-    $("stepper").addEventListener("click", function (e) {
-      var btn = e.target.closest ? e.target.closest(".stepper-item") : null;
-      if (!btn || btn.getAttribute("aria-disabled") === "true") return;
-      var n = +btn.getAttribute("data-step");
-      goStep(n, { skipGate: n <= maxReached });
-    });
-    window.addEventListener("popstate", function (e) {
-      var n = (e.state && e.state.omStep) || 1;
-      goStep(n, { fromPop: true, skipGate: true, force: true });
-    });
-    try { history.replaceState({ omStep: 1 }, ""); } catch (err) { /* file:// */ }
     document.addEventListener("keydown", function (e) {
       if (e.key !== "Enter" || !(e.metaKey || e.ctrlKey)) return;
       if (document.body.getAttribute("data-modal") != null) return;
       e.preventDefault();
-      if (currentStep === 5) $("submitBtn").click();
-      else $("nextBtn").click();
+      $("submitBtn").click();
     });
-    paintWizard();
   }
 
   /* «Keyingi yuborish» — hisoblangan sanalar, jadval bo'limidagi AYNAN
@@ -1491,7 +1458,7 @@
     if (state.when === "now") return line("Ҳозироқ", "Юборилган заҳоти", false);
     if (state.when === "later") {
       var d = dateIso("fDate"), t = $("fTime").value;
-      if (!d || !t) return line("Вақт танланмаган", "03-бўлимда сана ва соатни белгиланг", true);
+      if (!d || !t) return line("Вақт танланмаган", "«Қачон кетади» бўлимида сана ва соатни белгиланг", true);
       return line(dateText("fDate") + " · " + t, null, false);
     }
     if (!scheduleReady() || rangeBroken()) return line("Вақт танланмаган", "Жадвал тўлиқ эмас", true);
@@ -1560,91 +1527,21 @@
       el.setAttribute("data-tone", ok ? "ok" : "todo");
     }
     var path = scopePath();
-    set("st1", path ? path[path.length - 1] : "танланмаган", !broken[1]);
-    set("st2", filled + "/4 тўлдирилди", !broken[2]);
-    /* 03 sukut holatda ham TO'LIQ: «Hoziroq» — bu haqiqiy qiymat, shuning
-       uchun u yashil bo'ladi va bu yolg'on emas. */
-    set("st3", scheduleReady() && !broken[3] ? whenText() : "тўлдирилмаган", !broken[3]);
-    /* 04 ixtiyoriy: u hech qachon «bajarilmagan» bo'lmaydi, faqat qiymatini
-       aytadi. Yashil belgi «ish qildingiz» degan yolg'on bo'lardi. */
-    set("st4", state.files.length ? state.files.length + " та файл" : "Ихтиёрий", false);
-    set("st5", errors.length ? "тайёр эмас" : "юборишга тайёр", !errors.length);
+    var reach = currentReach();
+    set("st1", path
+      ? path[path.length - 1] + (reach ? " · " + popText(reach) + " киши" : "")
+      : "Хабар кимларга юборилади?", !broken[1]);
+    var uzTitle = $("uzTitle").value.trim();
+    set("st2", filled === 4
+      ? "«" + uzTitle + "» · ўзбекча ва русча"
+      : filled ? filled + " / 4 майдон тўлдирилди" : "Сарлавҳа ва матн, икки тилда", !broken[2]);
+    set("st3", scheduleReady() && !broken[3] ? whenText() : "Хабар қачон юборилади?", !broken[3]);
+    set("st4", state.files.length ? state.files.length + " та файл" : "Ихтиёрий — ҳужжат ёки расм", false);
   }
 
   function renderSummary(errors, path, reach) {
     renderStepStates(errors);
-    var line = $("rcLine"), todo = $("rcTodo"), list = $("rcTodoList");
-
-    /* Yo'l ko'rsatkich ro'yxati. Xato obyektining matni yo'q bo'lsa (qamrov
-       xatosi matnni markupda saqlaydi) qutining o'z matni olinadi — ikki
-       joyda ikki xil gap yozilmasin. */
-    var items = errors.map(function (e) {
-      var id = e.box ? e.box.id : "";
-      var text = e.msg || (e.box ? e.box.textContent.trim() : "");
-      return { section: SECTION_OF[id] || 0, text: text, el: e.el, box: e.box };
-    }).filter(function (i) { return i.section && i.text; });
-
-    if (!items.length) {
-      todo.hidden = true;
-      list.innerHTML = "";
-    } else {
-      todo.hidden = false;
-      /* Yorliqda SON YO'Q: u yuqoridagi chipda allaqachon turibdi va ikki
-         joyda bir xil raqam takrorlanardi. Bu yerda esa NIMA qilish
-         kerakligi yoziladi. */
-      $("rcTodoLabel").textContent = "Нима қилиш керак";
-      list.innerHTML = "";
-
-      /* Qator — MAYDON emas, BO'LIM. Ilgari har bo'sh maydon o'z qatorini
-         olardi va 02-bo'lim to'rtta bir xil ko'rinishdagi qator berardi
-         («O'zbekcha sarlavhani yozing», «O'zbekcha matnni yozing», ...).
-         Ro'yxat devorga aylanardi, holbuki foydalanuvchi baribir bo'limga
-         BIR MARTA o'tib, u yerdagi hammasini to'ldiradi.
-
-         Endi bir bo'lim = bir qator. Bo'limda bitta xato bo'lsa uning
-         MATNI, bir nechta bo'lsa SONI yoziladi — «4 ta maydon» degan
-         qator to'rtta qatordan aniqroq va qisqaroq. */
-      var groups = [];
-      items.forEach(function (it, i) {
-        var g = groups[groups.length - 1];
-        if (!g || g.section !== it.section) {
-          g = { section: it.section, idx: i, rows: [] };
-          groups.push(g);
-        }
-        g.rows.push(it);
-      });
-
-      groups.forEach(function (g) {
-        var name = SECTION_NAME[g.section] || "";
-        var text = g.rows.length === 1
-          ? g.rows[0].text
-          : g.rows.length + " та майдон тўлдирилмаган";
-        var li = document.createElement("li");
-        li.className = "sum-todo-item";
-        var btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "sum-todo-btn";
-        /* Nishon — bo'limning BIRINCHI bo'sh maydoni: o'tgandan keyin
-           kursor darhol to'ldiriladigan joyda turadi. */
-        btn.setAttribute("data-idx", String(g.idx));
-        btn.innerHTML = '<span class="sum-todo-sec" aria-hidden="true">' + pad(g.section) + "</span>" +
-          '<span class="sum-todo-body">' +
-            '<span class="sum-todo-name"></span>' +
-            '<span class="sum-todo-text"></span>' +
-          "</span>" +
-          '<svg class="ico sum-todo-arrow" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>';
-        /* Raqam FAQAT nishonda: nomga «01 · » qo'shilsa u qatorda ikki
-           marta chiqardi. */
-        btn.querySelector(".sum-todo-name").textContent = name;
-        btn.querySelector(".sum-todo-text").textContent = text;
-        /* Nishonning to'liq nomi harakatni ham aytadi: yolg'iz xato matni
-           tugma nima qilishini aytmasdi. */
-        btn.setAttribute("aria-label", name + " — " + text + ", бўлимга ўтиш");
-        li.appendChild(btn);
-        list.appendChild(li);
-      });
-      todoTargets = items;
-    }
+    var line = $("rcLine");
 
     /* Jumla FAQAT hamma bo'lak ma'lum bo'lganda quriladi. Yarim ma'lumot
        bilan yozilgan jumla («Bu xabar — kishiga ketadi») ekranni bilmagan
@@ -1654,10 +1551,6 @@
     /* Karta butunligicha holat oladi: tayyor bo'lganda aksent halqasi yonadi
        va u yagona vizual «shu tayyor» signali bo'ladi. */
     $("rcCard").setAttribute("data-ready", ready ? "true" : "false");
-    /* Chip matni ham `validate()` dan chiqadi — pastdagi holat qatori bilan
-       ikki xil gap aytishi mumkin emas. */
-    $("rcBadgeText").textContent = ready ? "Юборишга тайёр"
-      : items.length ? items.length + " та нарса қолди" : "Тўлдирилмоқда";
     /* Belgi ikkala holatda ham bor — u holatni RANG bilan emas, SHAKL bilan
        aytadi (rangga tayanish rang ko'rmaydigan foydalanuvchi uchun signalni
        yo'qotadi). */
@@ -1666,7 +1559,7 @@
       /* Jumla VERDIKT aytadi, chip esa SONNI — ikkalasida bir xil raqam
          turganda ular bir-birini takrorlab, qatorda ikki marta «5» chiqardi. */
       line.textContent = "Хабар ҳали юборишга тайёр эмас";
-      $("rcWhenLine").textContent = "Булар тўлдирилгач, бу ерда хабар кимга ва қачон кетиши ёзилади.";
+      $("rcWhenLine").textContent = "Бўлимлар тўлдирилгач, бу ерда хабар кимга ва қачон кетиши ёзилади.";
       return;
     }
     /* Ikki jumla, har biri BITTA savolga javob beradi: kimga, va qachon.
@@ -1713,19 +1606,6 @@
   /* Ro'yxat har chizilganda qayta quriladi, shuning uchun tugma bosilganda
      nishon INDEKS bo'yicha topiladi — DOM ga element bog'lab qo'yish
      qayta chizilgandan keyin o'lik havolaga aylanardi. */
-  var todoTargets = [];
-  function initSummary() {
-    $("rcTodoList").addEventListener("click", function (e) {
-      var btn = e.target.closest ? e.target.closest(".sum-todo-btn") : null;
-      if (!btn) return;
-      var it = todoTargets[+btn.getAttribute("data-idx")];
-      if (!it || !it.el) return;
-      /* Avval tegishli bosqich ochilishi kerak: yashirin elementga fokus
-         berish brauzerda jimgina muvaffaqiyatsiz tugaydi. */
-      goStep(it.section, { skipGate: true, focusEl: it.el });
-    });
-  }
-
   /* So'rov tanasiga KIRADIGAN holatning imzosi. Ko'rinish tili, fokus,
      ochiq-yopiq bo'limlar bu yerga kirmaydi. */
   var renderedSignature = null;
@@ -2105,12 +1985,11 @@
 
   function boot() {
     initScope();
-    initSummary();
     initText();
     initWhen();
     initFiles();
     initSubmit();
-    initWizard();
+    initChecklist();
     applyDraft();
     refresh();
   }

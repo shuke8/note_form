@@ -48,14 +48,17 @@ class ComposerUiTest(unittest.TestCase):
         self.page.close()
         self.assertEqual(self.errors, [])
 
+    def save(self, n):
+        self.page.click(f'[data-save="{n}"]')
+
     def to_step_two(self):
         self.page.click("#scopeAll")
-        self.page.click("#nextBtn")
-        self.page.wait_for_selector("#step-2:not([hidden])")
+        self.save(1)
+        self.page.wait_for_selector("#body-2:not([hidden])")
 
     def test_text_error_clears_once_field_is_filled(self):
         self.to_step_two()
-        self.page.click("#nextBtn")
+        self.save(2)
         self.assertTrue(self.page.is_visible("#errUzTitle"))
         self.page.fill("#uzTitle", "Сув таъминоти вақтинча тўхтатилади")
         self.assertFalse(self.page.is_visible("#errUzTitle"))
@@ -63,12 +66,9 @@ class ComposerUiTest(unittest.TestCase):
         self.assertTrue(self.page.is_visible("#errUzBody"))
 
     def test_day_error_clears_once_a_day_is_picked(self):
-        self.to_step_two()
-        for sel, text in [("#uzTitle", "Сарлавҳа"), ("#uzBody", "Матн"), ("#ruTitle", "Заголовок"), ("#ruBody", "Текст")]:
-            self.page.fill(sel, text)
-        self.page.click("#nextBtn")
+        self.to_step_three()
         self.page.click('[data-when="repeat"]')
-        self.page.click("#nextBtn")
+        self.save(3)
         self.assertTrue(self.page.is_visible("#errDays"))
         self.page.click('[data-day="1"]')
         self.assertFalse(self.page.is_visible("#errDays"))
@@ -77,13 +77,14 @@ class ComposerUiTest(unittest.TestCase):
         self.to_step_two()
         for sel, text in [("#uzTitle", "Сарлавҳа"), ("#uzBody", "Матн"), ("#ruTitle", "Заголовок"), ("#ruBody", "Текст")]:
             self.page.fill(sel, text)
-        self.page.click("#nextBtn")
-        self.page.wait_for_selector("#step-3:not([hidden])")
+        self.save(2)
+        self.page.click('[data-edit="3"]')
+        self.page.wait_for_selector("#body-3:not([hidden])")
 
     def test_chip_row_shows_its_error_state(self):
         self.to_step_three()
         self.page.click('[data-when="repeat"]')
-        self.page.click("#nextBtn")
+        self.save(3)
         self.page.wait_for_timeout(400)
         colour = self.page.eval_on_selector('#dayRow [data-day="1"]', "e => getComputedStyle(e).borderTopColor")
         crit = self.page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--crit').trim()")
@@ -111,8 +112,7 @@ class ComposerUiTest(unittest.TestCase):
 
     def test_leaving_after_dispatch_does_not_ask(self):
         self.to_step_three()
-        self.page.click("#nextBtn")
-        self.page.click("#nextBtn")
+        self.save(3)
         self.page.click("#submitBtn")
         self.page.wait_for_selector("#resultDialog[open]")
         self.assertFalse(self.leaving_is_held())
@@ -141,6 +141,32 @@ class ComposerUiTest(unittest.TestCase):
         self.assertEqual(self.page.get_attribute("#fDate", "data-iso"), "2030-10-05")
         self.assertIn("5 октябр 2030", self.page.inner_text("#st3"))
 
+    def test_checklist_opens_one_row_and_summarises_the_rest(self):
+        self.assertTrue(self.page.is_visible("#body-1"))
+        self.assertTrue(self.page.is_hidden("#body-2"))
+        self.page.click("#scopeAll")
+        self.save(1)
+        self.assertEqual(self.page.get_attribute("#step-1", "data-state"), "done")
+        self.assertEqual(self.page.inner_text("#st1"), "Ўзбекистон Республикаси · ~35.1M киши")
+        self.assertEqual(self.page.inner_text('#step-1 [data-edit]'), "Ўзгартириш")
+        self.assertTrue(self.page.is_visible("#body-2"))
+        self.assertTrue(self.page.is_hidden("#body-1"))
+
+    def test_saving_an_incomplete_row_keeps_it_open_and_marks_it(self):
+        self.save(1)
+        self.assertTrue(self.page.is_visible("#body-1"))
+        self.assertEqual(self.page.get_attribute("#step-1", "data-state"), "error")
+        self.assertTrue(self.page.is_visible("#scopeError"))
+
+    def test_send_with_gaps_opens_the_first_gap(self):
+        self.page.click("#scopeAll")
+        self.save(1)
+        self.page.click('[data-edit="1"]')
+        self.page.click("#submitBtn")
+        self.assertTrue(self.page.is_visible("#body-2"))
+        self.assertEqual(self.page.get_attribute("#step-2", "data-state"), "error")
+        self.assertIn("тўлдирилмаган", self.page.inner_text("#status"))
+
     def test_calendar_speaks_cyrillic_and_fills_the_field(self):
         self.to_later()
         self.page.click("#whenLater .date-toggle")
@@ -153,7 +179,7 @@ class ComposerUiTest(unittest.TestCase):
         self.page.click(pop + " .date-day:not(.is-out) >> nth=14")
         self.assertTrue(self.page.is_hidden(pop))
         self.assertRegex(self.page.input_value("#fDate"), r"^15\.\d{2}\.\d{4}$")
-        self.page.click("#nextBtn")
+        self.save(3)
         self.assertFalse(self.page.is_visible("#errDate"))
 
     def test_calendar_blocks_days_before_today(self):
@@ -197,7 +223,7 @@ class ComposerUiTest(unittest.TestCase):
         self.page.click("#fFrom")
         self.page.keyboard.type("31022030")
         self.page.click('[data-day="1"]')
-        self.page.click("#nextBtn")
+        self.save(3)
         self.assertIn("мавжуд эмас", self.page.inner_text("#errFrom"))
 
 

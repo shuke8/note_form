@@ -66,102 +66,57 @@
   <symbol id="i-zap" viewBox="0 0 24 24"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" /></symbol>
 </svg>
 
-<a class="skip" href="#step-1">Формага ўтиш</a>
+<a class="skip" href="#h-step-1">Формага ўтиш</a>
 
 <header class="topbar">
   <div class="topbar-inner">
     <span class="topbar-brand">online-mahalla.uz</span>
+    <span class="topbar-sep" aria-hidden="true"></span>
+    <span class="topbar-crumb">Хабарномалар</span>
     <span class="topbar-spacer"></span>
-    <button type="button" class="topbar-btn topbar-btn-text" id="resetBtn" aria-label="Қораламани тозалаш" title="Қораламани тозалаш">
+    <button type="button" class="btn btn-quiet btn-sm topbar-reset" id="resetBtn" aria-label="Қораламани тозалаш" title="Қораламани тозалаш">
       <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
       <span>Тозалаш</span>
     </button>
-    <button class="topbar-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Қоронғи мавзуга ўтиш" title="Қоронғи мавзуга ўтиш">
+    <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Қоронғи мавзуга ўтиш" title="Қоронғи мавзуга ўтиш">
       <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
     </button>
+    <div class="send-bar" id="actions">
+      <button type="button" class="btn btn-solid" id="submitBtn">
+        <span id="submitLabel">Юбориш</span>
+      </button>
+    </div>
   </div>
 </header>
 
-<div class="page">
-  <div class="page-head">
-    <p class="page-crumb">Хабарномалар</p>
-    <p class="page-title">Янги хабарнома</p>
-  </div>
-  <div class="app-body">
-    <aside class="app-side">
-      <div class="app-side-inner card">
-        <nav class="stepper" id="stepper" aria-label="Босқичлар">
-          <ol class="stepper-list">
-          <li>
-            <button type="button" class="stepper-item" data-step="1" aria-current="step">
-              <span class="stepper-num" aria-hidden="true">
-                <span class="stepper-idx">1</span>
-                <svg class="ico stepper-check"><use href="#i-check"/></svg>
-              </span>
-              <span class="stepper-name">Ким олади</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="stepper-item" data-step="2" aria-disabled="true">
-              <span class="stepper-num" aria-hidden="true">
-                <span class="stepper-idx">2</span>
-                <svg class="ico stepper-check"><use href="#i-check"/></svg>
-              </span>
-              <span class="stepper-name">Нима ёзилади</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="stepper-item" data-step="3" aria-disabled="true">
-              <span class="stepper-num" aria-hidden="true">
-                <span class="stepper-idx">3</span>
-                <svg class="ico stepper-check"><use href="#i-check"/></svg>
-              </span>
-              <span class="stepper-name">Қачон кетади</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="stepper-item" data-step="4" aria-disabled="true">
-              <span class="stepper-num" aria-hidden="true">
-                <span class="stepper-idx">4</span>
-                <svg class="ico stepper-check"><use href="#i-check"/></svg>
-              </span>
-              <span class="stepper-name">Илова</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="stepper-item" data-step="5" aria-disabled="true">
-              <span class="stepper-num" aria-hidden="true">
-                <span class="stepper-idx">5</span>
-                <svg class="ico stepper-check"><use href="#i-check"/></svg>
-              </span>
-              <span class="stepper-name">Якун</span>
-            </button>
-          </li>
-          </ol>
-          <p class="sr-only" id="stepLive" role="status"></p>
-        </nav>
-        <div class="side-note" aria-label="Қоралама маълумотлари" role="group">
-          <p class="side-note-row"><span>Ҳолат</span><b>Қоралама</b></p>
-          <p class="side-note-row"><span>Маҳалла</span><b>8-маҳалла “Дўстлик”</b></p>
-          <p class="side-note-row"><span>Оператор</span><b>Ш. Рўзибоев</b></p>
+<main class="page">
+  <div class="page-grid">
+    <div class="page-main">
+      <div class="page-head">
+        <div class="page-title-row">
+          <h1 class="page-title">Янги хабарнома</h1>
+          <span class="badge">Қоралама</span>
         </div>
+        <p class="page-meta">8-маҳалла “Дўстлик” · Оператор Ш. Рўзибоев</p>
+        <p class="page-status" id="status" role="status"><span id="statusText">Қамров ва матн тўлдирилиши керак</span></p>
+        <p class="sr-only" id="stepLive" role="status"></p>
       </div>
-    </aside>
 
-    <div class="main-col">
-    <main class="doc card">
-  <section class="step-sec" id="step-1" aria-labelledby="h-step-1">
-    <div class="step-head">
-      <span class="step-index" aria-hidden="true">01</span>
-      <div class="step-title">
-        <h1 class="d2" id="h-step-1" tabindex="-1">Ким олади?</h1>
-        <p class="step-aside">Хабар кимларга кўринади — харитадан ёки рўйхатдан танланг</p>
-      </div>
-      <span class="step-state" id="st1" data-tone="todo">
-        <span class="step-state-text"></span>
-      </span>
-    </div>
-    <div class="step-body">
+      <div class="checklist">
+      <section class="ck-row" id="step-1" aria-labelledby="h-step-1" data-state="todo">
+        <div class="ck-head">
+          <span class="ck-mark" aria-hidden="true">
+            <svg class="ico ck-ok" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>
+            <svg class="ico ck-bad" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg>
+          </span>
+          <div class="ck-text">
+            <h2 class="ck-title" id="h-step-1" tabindex="-1">Ким олади</h2>
+            <p class="ck-sum step-state" id="st1" data-tone="todo"><span class="step-state-text"></span></p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm ck-edit" data-edit="1" aria-controls="body-1" aria-expanded="false" aria-describedby="h-step-1">Қамровни танлаш</button>
+        </div>
+        <div class="ck-body step-body" id="body-1" hidden>
+
       <div class="scope" id="scope" data-failed="false">
         <figure class="scope-mapwrap tile" aria-hidden="true">
           <svg class="scope-map" id="scopeSvg" viewBox="0 0 480 320" focusable="false"></svg>
@@ -188,22 +143,25 @@
           <p class="sr-only" role="status" id="scopeLive"></p>
         </div>
       </div>
+          <div class="ck-actions">
+            <button type="button" class="btn btn-solid" data-save="1">Тайёр</button>
+          </div>
+        </div>
+      </section>
+      <section class="ck-row" id="step-2" aria-labelledby="h-step-2" data-state="todo">
+        <div class="ck-head">
+          <span class="ck-mark" aria-hidden="true">
+            <svg class="ico ck-ok" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>
+            <svg class="ico ck-bad" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg>
+          </span>
+          <div class="ck-text">
+            <h2 class="ck-title" id="h-step-2" tabindex="-1">Хабар матни</h2>
+            <p class="ck-sum step-state" id="st2" data-tone="todo"><span class="step-state-text"></span></p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm ck-edit" data-edit="2" aria-controls="body-2" aria-expanded="false" aria-describedby="h-step-2">Матн ёзиш</button>
+        </div>
+        <div class="ck-body step-body" id="body-2" hidden>
 
-    </div>
-  </section>
-
-  <section class="step-sec" id="step-2" aria-labelledby="h-step-2" hidden>
-    <div class="step-head">
-      <span class="step-index" aria-hidden="true">02</span>
-      <div class="step-title">
-        <h1 class="d2" id="h-step-2" tabindex="-1">Нима ёзилади?</h1>
-        <p class="step-aside">Иккала тил мажбурий — фойдаланувчи ўз тилида ўқийди</p>
-      </div>
-      <span class="step-state" id="st2" data-tone="todo">
-        <span class="step-state-text"></span>
-      </span>
-    </div>
-    <div class="step-body">
       <div class="preview-dock">
         <div class="media preview-strip" role="group" aria-labelledby="previewLabel">
           <div class="preview-card">
@@ -304,21 +262,25 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
+          <div class="ck-actions">
+            <button type="button" class="btn btn-solid" data-save="2">Тайёр</button>
+          </div>
+        </div>
+      </section>
+      <section class="ck-row" id="step-3" aria-labelledby="h-step-3" data-state="todo">
+        <div class="ck-head">
+          <span class="ck-mark" aria-hidden="true">
+            <svg class="ico ck-ok" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>
+            <svg class="ico ck-bad" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg>
+          </span>
+          <div class="ck-text">
+            <h2 class="ck-title" id="h-step-3" tabindex="-1">Қачон кетади</h2>
+            <p class="ck-sum step-state" id="st3" data-tone="todo"><span class="step-state-text"></span></p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm ck-edit" data-edit="3" aria-controls="body-3" aria-expanded="false" aria-describedby="h-step-3">Вақтни белгилаш</button>
+        </div>
+        <div class="ck-body step-body" id="body-3" hidden>
 
-  <section class="step-sec" id="step-3" aria-labelledby="h-step-3" hidden>
-    <div class="step-head">
-      <span class="step-index" aria-hidden="true">03</span>
-      <div class="step-title">
-        <h1 class="d2" id="h-step-3" tabindex="-1">Қачон кетади?</h1>
-        <p class="step-aside">Тошкент вақти · UTC+5</p>
-      </div>
-      <span class="step-state" id="st3" data-tone="todo">
-        <span class="step-state-text"></span>
-      </span>
-    </div>
-    <div class="step-body">
       <div class="row">
         <div class="row-label">
           <span class="label" id="whenLabel">Юбориш тури</span>
@@ -484,21 +446,25 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
+          <div class="ck-actions">
+            <button type="button" class="btn btn-solid" data-save="3">Тайёр</button>
+          </div>
+        </div>
+      </section>
+      <section class="ck-row" id="step-4" aria-labelledby="h-step-4" data-state="todo">
+        <div class="ck-head">
+          <span class="ck-mark" aria-hidden="true">
+            <svg class="ico ck-ok" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>
+            <svg class="ico ck-bad" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg>
+          </span>
+          <div class="ck-text">
+            <h2 class="ck-title" id="h-step-4" tabindex="-1">Илова</h2>
+            <p class="ck-sum step-state" id="st4" data-tone="todo"><span class="step-state-text"></span></p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm ck-edit" data-edit="4" aria-controls="body-4" aria-expanded="false" aria-describedby="h-step-4">Файл қўшиш</button>
+        </div>
+        <div class="ck-body step-body" id="body-4" hidden>
 
-  <section class="step-sec" id="step-4" aria-labelledby="h-step-4" hidden>
-    <div class="step-head">
-      <span class="step-index" aria-hidden="true">04</span>
-      <div class="step-title">
-        <h1 class="d2" id="h-step-4" tabindex="-1">Илова қўшиш</h1>
-        <p class="step-aside">Ихтиёрий — эълон, жадвал ёки расм</p>
-      </div>
-      <span class="step-state" id="st4" data-tone="todo">
-        <span class="step-state-text"></span>
-      </span>
-    </div>
-    <div class="step-body">
       <div class="row">
         <div class="row-label">
           <span class="label">Файллар</span>
@@ -520,21 +486,18 @@
           <p class="field-error" id="errFiles" role="alert" hidden></p>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="step-sec" id="step-5" aria-labelledby="h-step-5" hidden>
-    <div class="step-head">
-      <span class="step-index" aria-hidden="true">05</span>
-      <div class="step-title">
-        <h1 class="d2" id="h-step-5" tabindex="-1">Якуний кўриниш</h1>
-        <p class="step-aside">Юборишдан олдин текширинг</p>
+          <div class="ck-actions">
+            <button type="button" class="btn btn-solid" data-save="4">Тайёр</button>
+          </div>
+        </div>
+      </section>
       </div>
-      <span class="step-state" id="st5" data-tone="todo">
-        <span class="step-state-text"></span>
-      </span>
     </div>
-    <div class="step-body">
+
+    <aside class="page-side" aria-labelledby="sideTitle">
+      <div class="side-card">
+        <h2 class="side-title" id="sideTitle">Қабул қилувчи кўради</h2>
+
       <div class="dispatch" id="rcCard" data-ready="false">
         <div class="dispatch-head">
           <div class="dispatch-title">
@@ -542,14 +505,8 @@
               <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-list" id="rcMarkUse"/></svg>
             </span>
             <p class="dispatch-line" id="rcLine"></p>
-            <span class="chip dispatch-badge" id="rcBadge"><span id="rcBadgeText"></span></span>
           </div>
           <p class="dispatch-when" id="rcWhenLine"></p>
-        </div>
-
-        <div class="sum-todo" id="rcTodo" hidden>
-          <p class="eyebrow eyebrow-sm" id="rcTodoLabel"></p>
-          <ul class="sum-todo-list" id="rcTodoList" aria-labelledby="rcTodoLabel"></ul>
         </div>
 
         <div class="dispatch-grid">
@@ -596,7 +553,7 @@
               </span>
               <p class="eyebrow eyebrow-sm">Тахминий қамров</p>
               <p class="fact-big" id="rcReach" data-num="false">Қамров танланмаган</p>
-              <p class="fact-unit" id="rcScope">01-бўлимдан ҳудудни танланг</p>
+              <p class="fact-unit" id="rcScope">«Ким олади» бўлимида ҳудудни танланг</p>
             </div>
             <div class="fact" id="rcWhenTile" data-empty="true">
               <span class="fact-ico" aria-hidden="true">
@@ -616,35 +573,10 @@
           </aside>
         </div>
       </div>
-
-    </div>
-  </section>
-    </main>
-      <div class="actions" id="actions">
-        <div class="actions-inner">
-          <p class="actions-status" id="status" role="status">
-            <span class="actions-count" id="stepCount">1 / 5</span>
-            <span id="statusText">Қамров ва матн тўлдирилиши керак</span>
-          </p>
-          <div class="actions-buttons">
-            <button type="button" class="btn btn-ghost" id="backBtn" hidden>
-              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
-              Орқага
-            </button>
-            <button type="button" class="btn btn-accent" id="nextBtn">
-              <span id="nextLabel">Кейинги</span>
-              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
-            </button>
-            <button type="button" class="btn btn-accent" id="submitBtn" hidden>
-              <span id="submitLabel">Юбориш</span>
-              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
-            </button>
-          </div>
-        </div>
       </div>
-    </div>
+    </aside>
   </div>
-</div>
+</main>
 
 <dialog class="modal" id="resultDialog" aria-labelledby="resultTitle">
   <div class="modal-inner">
