@@ -51,6 +51,7 @@
   <symbol id="i-move-horizontal" viewBox="0 0 24 24"><path d="m18 8 4 4-4 4" /> <path d="M2 12h20" /> <path d="m6 8-4 4 4 4" /></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="M12 5v14" /></symbol>
   <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4" /> <path d="M3 11v-1a4 4 0 0 1 4-4h14" /> <path d="m7 22-4-4 4-4" /> <path d="M21 13v1a4 4 0 0 1-4 4H3" /></symbol>
+  <symbol id="i-rotate-ccw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /> <path d="M3 3v5h5" /></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34" /> <circle cx="11" cy="11" r="8" /></symbol>
   <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></symbol>
   <symbol id="i-shopping-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1" /> <circle cx="19" cy="21" r="1" /> <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></symbol>
@@ -72,7 +73,13 @@
       <img src="assets/favicon.svg" alt="" width="28" height="28" />
       <span class="brand-name">Onlayn Mahalla</span>
     </span>
+    <span class="app-crumb" aria-hidden="true">/</span>
+    <span class="app-title">Yangi xabarnoma</span>
     <span class="app-top-spacer"></span>
+    <button type="button" class="btn btn-quiet btn-sm app-reset" id="resetBtn" aria-label="Qoralamani tozalash" title="Qoralamani tozalash">
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
+      <span>Tozalash</span>
+    </button>
     <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Qorong‘i mavzuga o‘tish" title="Qorong‘i mavzuga o‘tish">
       <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
     </button>
@@ -167,6 +174,10 @@
             <span class="scope-all-txt"><span class="scope-all-name">Butun respublika</span><span class="scope-all-sub" id="scopeAllSub"></span></span>
             <span class="scope-all-pop" id="scopeAllPop">—</span>
           </button>
+          <p class="field-error" id="scopeError" role="alert" hidden>
+        <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg>
+        Qamrovni tanlang — xabar kimga ketishini tizim taxmin qilmaydi.
+      </p>
           <nav class="scope-crumbs" id="scopeCrumbs" aria-label="Tanlangan qamrov yo‘li"></nav>
           <p class="eyebrow eyebrow-sm" id="scopeLvl"></p>
           <ul class="scope-list" id="scopeList" role="list" aria-labelledby="scopeLvl"></ul>
@@ -175,10 +186,6 @@
         </div>
       </div>
 
-      <p class="field-error" id="scopeError" role="alert" hidden>
-        <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg>
-        Qamrovni tanlang — xabar kimga ketishini tizim taxmin qilmaydi.
-      </p>
     </div>
   </section>
 
@@ -318,15 +325,18 @@
           <div class="segment segment-tiles" role="radiogroup" aria-labelledby="whenLabel" id="whenGroup">
             <button type="button" class="seg-btn" role="radio" aria-checked="true" data-when="now">
               <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg>
-              Hoziroq
+              <span class="seg-label">Hoziroq</span>
+              <span class="seg-sub">Tasdiqlangach darhol</span>
             </button>
             <button type="button" class="seg-btn" role="radio" aria-checked="false" data-when="later">
               <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg>
-              Belgilangan vaqtda
+              <span class="seg-label">Belgilangan vaqtda</span>
+              <span class="seg-sub">Bir marta, aniq vaqtda</span>
             </button>
             <button type="button" class="seg-btn" role="radio" aria-checked="false" data-when="repeat">
               <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-repeat"/></svg>
-              Takroriy
+              <span class="seg-label">Takroriy</span>
+              <span class="seg-sub">Jadval bo‘yicha qaytadi</span>
             </button>
           </div>
         </div>
@@ -617,7 +627,6 @@
         <span id="statusText">Qamrov va matn to‘ldirilishi kerak</span>
       </p>
       <div class="actions-buttons">
-        <button type="button" class="btn btn-quiet" id="resetBtn">Tozalash</button>
         <button type="button" class="btn btn-ghost" id="backBtn" hidden>
           <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
           Orqaga
