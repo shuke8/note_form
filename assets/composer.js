@@ -31,24 +31,9 @@
     submitted: false      // tekshiruv xatolari faqat urinishdan keyin ko'rinadi
   };
 
-  /* Bir savol — bir ekran. Uzun scroll o'rniga 5 bosqich: oldinga faqat
-     joriy to'liq bo'lsa, orqaga har doim, stepper faqat o'tilganlarga. */
-  var currentStep = 1;
-  var stepTried = { 1: false, 2: false, 3: false, 4: false };
-  var ROWS = [1, 2, 3, 4];
-  var REQUIRED_ROWS = [1, 2, 3];
-  var STEP_LABEL = {
-    1: "Ким олади",
-    2: "Хабар матни",
-    3: "Қачон кетади",
-    4: "Илова"
-  };
-  var EDIT_LABEL = {
-    1: ["Қамровни танлаш", "Ўзгартириш"],
-    2: ["Матн ёзиш", "Ўзгартириш"],
-    3: ["Вақтни белгилаш", "Ўзгартириш"],
-    4: ["Файл қўшиш", "Ўзгартириш"]
-  };
+  var touched = {};
+  var REQUIRED_SECTIONS = [1, 2, 3];
+  var SECTION_NAME = { 1: "Ким олади", 2: "Хабар матни", 3: "Қачон кетади", 4: "Илова" };
 
   /* ---------------------------------------------------------------------------
      RADIOGROUP — o'q tugmalar bilan yurish, roving tabindex.
@@ -56,7 +41,9 @@
      guruh ichida qamalib qoladi.
   ------------------------------------------------------------------------- */
   function wireRadioGroup(group, onSelect) {
-    var items = Array.prototype.slice.call(group.querySelectorAll('[role="radio"]'));
+    var items = Array.prototype.slice.call(group.querySelectorAll('[role="radio"]')).filter(function (it) {
+      return it.closest('[role="radiogroup"]') === group;
+    });
     if (!items.length) return;
 
     function focusIndex(i) {
@@ -300,24 +287,6 @@
     }).join("");
   }
 
-  function renderScopeSum() {
-    var sum = $("scopeSum");
-    if (!state.scope) {
-      sum.innerHTML = '<div class="empty"><span class="empty-icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-map-pin"/></svg></span>' +
-        '<p class="empty-title">Қамров танланмаган</p><p>Рўйхатдан ҳудудни танланг ёки «Бутун республика» ни босинг.</p></div>';
-      return;
-    }
-    var reach = currentReach();
-    var share = (reach == null || REPUBLIC_POP == null) ? null : (reach / REPUBLIC_POP) * 100;
-    var tail = reach == null ? "реестрда бу поғона учун сон йўқ"
-      : "киши" + (state.scope === "republic" ? " · реестрдаги барча ҳудудлар"
-        : share == null ? "" : " · реестрдаги жами аҳолининг " + (share < 0.1 ? "0,1% дан кам" : "~" + share.toFixed(1).replace(".", ",") + "%"));
-    sum.innerHTML = '<p class="eyebrow eyebrow-sm">Тахминий қамров</p>' +
-      '<p class="scope-reach"><b>' + popText(reach) + "</b><span>" + tail + "</span></p>" +
-      '<p class="scope-path">' + esc(scopePath().join(" / ")) + "</p>" +
-      '<p class="hint">Рақам намуна реестридан олинган тахмин — аниқ сон эмас; юборишдан олдин реестрдан янгиланади.</p>';
-  }
-
   function rowByName(name) {
     var rows = $("scopeList").querySelectorAll(".scope-row"), i;
     for (i = 0; i < rows.length; i++) if (rows[i].getAttribute("data-name") === name) return rows[i];
@@ -344,7 +313,7 @@
     var active = document.activeElement === document.body && preRow ? preRow : document.activeElement;
     var keep = list.contains(active) ? active.getAttribute("data-name") : null;
 
-    if (changed) { renderScopeCrumbs(); renderScopeSum(); }
+    if (changed) renderScopeCrumbs();
     var rows = changed ? renderScopeList() : scopeRows();
 
     Object.keys(cells).forEach(function (n) {
@@ -526,6 +495,13 @@
 
     $("pvUz").addEventListener("click", function () { setPreviewLang("uz"); });
     $("pvRu").addEventListener("click", function () { setPreviewLang("ru"); });
+    [["uz", "uzTitle", "uzBody"], ["ru", "ruTitle", "ruBody"]].forEach(function (group) {
+      [group[1], group[2]].forEach(function (id) {
+        $(id).addEventListener("focus", function () {
+          if (state.previewLang !== group[0]) setPreviewLang(group[0]);
+        });
+      });
+    });
   }
 
   function setPreviewLang(lang) {
@@ -898,11 +874,21 @@
     syncStops();
   }
 
+  function reveal(el, show) {
+    var wasHidden = el.hidden;
+    el.hidden = !show;
+    if (!show || !wasHidden) return;
+    el.removeAttribute("data-enter");
+    void el.offsetWidth;
+    el.setAttribute("data-enter", "1");
+  }
+
   function initWhen() {
     wireRadioGroup($("whenGroup"), function (el) {
       state.when = el.getAttribute("data-when");
-      $("whenLater").hidden = state.when !== "later";
-      $("whenRepeat").hidden = state.when !== "repeat";
+      reveal($("whenLater"), state.when === "later");
+      reveal($("whenRepeat"), state.when === "repeat");
+      WHEN_BOXES.forEach(function (id) { delete touched[id]; });
       // Rejim almashdi — endi ochilgan panel qizil bo'lib qarshi olmasin.
       state.whenTouched = false;
       refresh();
@@ -1242,6 +1228,8 @@
     var ruOk = $("ruTitle").value.trim() && $("ruBody").value.trim();
     $("uzState").textContent = uzOk ? "Тўлиқ" : "Тўлиқ эмас";
     $("ruState").textContent = ruOk ? "Тўлиқ" : "Тўлиқ эмас";
+    $("uzState").setAttribute("data-full", uzOk ? "true" : "false");
+    $("ruState").setAttribute("data-full", ruOk ? "true" : "false");
 
     // --- ko'rinish ---
     var lang = state.previewLang;
@@ -1249,25 +1237,7 @@
     var body = $(lang + "Body").value.trim();
     $("pvTitle").textContent = title;
     $("pvText").textContent = body;
-    // Tanlanmagan vaqt o'rniga 09:00 QO'YILMAYDI — ilgari ko'rinish
-    // operator kiritmagan vaqtni ko'rsatib turardi.
-    var pvTime = state.when === "now" ? "ҳозир"
-      : state.when === "repeat" ? timeVal("fRepeatTime")
-      : timeVal("fTime");
-    $("pvTime").textContent = pvTime || "—";
-
-    /* Ilgari bu chip «Matn kesiladi» deb OGOHLANTIRARDI — ya'ni uzun matnni
-       xato deb ko'rsatardi. Chegara olib tashlangach u faqat FAKT aytadi:
-       push'da boshi ko'rinadi, to'lig'i xabar ochilganda. */
-    var fit = $("pvFit"), fitText = $("pvFitText");
-    fit.className = "chip chip-mono";
-    fitText.textContent = (!title && !body)
-      ? "Матн киритилмаган"
-      : "Пушда боши кўринади";
-
-    $("sideScope").textContent = path ? path[path.length - 1] : "—";
-    $("sideReach").textContent = reach ? "~" + reach : "—";
-    $("sideWhen").textContent = whenText();
+    paintLock();
 
     // --- yakun ---
     /* Qamrov plitasi. `data-num` — bu qiymat RAQAMMI degan savol, bo'shlik
@@ -1282,56 +1252,24 @@
     $("rcScope").textContent = path
       ? (reach ? "киши · " : "") + path.join(" / ")
       : "«Ким олади» бўлимида ҳудудни танланг";
-    /* Telefondagi ko'rinishda bo'sh matn `:empty::before` bilan o'z joy
-       egallovchisini chiqaradi — bu yerga «yozilmagan» so'zi YOZILMAYDI,
-       aks holda u haqiqiy sarlavha bo'lib ko'rinardi. */
-    $("rcUzTitle").textContent = $("uzTitle").value.trim();
-    $("rcUzBody").textContent = $("uzBody").value.trim();
-    $("rcRuTitle").textContent = $("ruTitle").value.trim();
-    $("rcRuBody").textContent = $("ruBody").value.trim();
-    /* Tanlanmagan vaqt o'rniga 09:00 QO'YILMAYDI — ekran operator
-       kiritmagan vaqtni ko'rsatib turardi. */
-    var stamp = state.when === "now" ? "ҳозир"
-      : state.when === "repeat" ? timeVal("fRepeatTime") : timeVal("fTime");
-    $("rcUzTime").textContent = stamp || "—";
-    $("rcRuTime").textContent = stamp || "—";
+    $("rcReachNote").hidden = !reach;
     renderDispatchFiles();
     renderDispatchDates();
 
     // --- holat qatori ---
     var errors = validate();
     var status = $("status"), text = $("statusText");
-    var left = REQUIRED_ROWS.filter(function (i) { return !stepValid(i, errors); }).length;
-    if (!errors.length) {
-      status.setAttribute("data-tone", "ok");
-      text.textContent = "Хабар юборишга тайёр";
-    } else if (state.submitted) {
-      status.setAttribute("data-tone", "crit");
-      var hasRule = errors.some(function (e) { return e.kind === "rule"; });
-      text.textContent = hasRule
-        ? errors.length + " та муаммо бор — белгиланган бўлимларни текширинг"
-        : left + " та бўлим тўлдирилмаган";
-    } else {
-      status.setAttribute("data-tone", "");
-      text.textContent = left === 1
-        ? "Деярли тайёр — битта бўлим қолди"
-        : "Давом этинг — " + left + " та бўлим қолди";
-    }
+    status.setAttribute("data-tone", !errors.length ? "ok" : state.submitted ? "crit" : "");
+    text.textContent = errors.length ? statusText(errors) : "Хабар юборишга тайёр";
 
     /* 03-bo'limga tegishli xatolar faqat foydalanuvchi o'sha bo'limga
        TEGGANDAN keyin (yoki «Navbatga qo'yish» bosilgandan keyin) ko'rsatiladi:
        rejim almashtirilgan zahoti panel qip-qizil ochilib qarshi olardi. */
-    var shown = state.whenTouched ? errors : errors.filter(function (e) {
-      return !e.box || WHEN_BOXES.indexOf(e.box.id) < 0;
-    });
-    if (state.submitted) showErrors(shown);
-    else if (stepTried[currentStep]) showErrors(errorsForStep(currentStep, shown));
-
-    /* Yakuniy ko'rinish HAR DOIM to'liq ro'yxatdan quriladi — u xato holati
-       emas, yo'l ko'rsatkich: bo'limga tegilmagan bo'lsa ham nima qolganini
-       aytadi. */
-    renderSummary(errors, path, reach);
-    paintRows(errors);
+    showErrors(errors.filter(function (e) {
+      if (e.box && touched[e.box.id]) return true;
+      if (!state.submitted) return false;
+      return state.whenTouched || !e.box || WHEN_BOXES.indexOf(e.box.id) < 0;
+    }));
     return errors;
   }
 
@@ -1352,95 +1290,114 @@
   function errorSection(e) {
     return e && e.box ? (SECTION_OF[e.box.id] || 0) : 0;
   }
-  function errorsForStep(step, errors) {
-    return errors.filter(function (e) { return errorSection(e) === step; });
+  function sectionValid(section, errors) {
+    return !errors.some(function (e) { return errorSection(e) === section; });
   }
-  function stepValid(step, errors) {
-    if (step === 5) return !errors.length;
-    return !errorsForStep(step, errors).length;
+  function statusText(errors) {
+    var wrong = {}, missing = [], broken = [];
+    errors.forEach(function (e) { if (e.kind === "rule") wrong[errorSection(e)] = true; });
+    REQUIRED_SECTIONS.forEach(function (i) {
+      if (sectionValid(i, errors)) return;
+      (wrong[i] ? broken : missing).push("«" + SECTION_NAME[i] + "»");
+    });
+    var parts = [];
+    if (missing.length) parts.push((state.submitted ? "Тўлдирилмаган: " : "Тўлдириш керак: ") + missing.join(", "));
+    if (broken.length) parts.push("Тузатиш керак: " + broken.join(", "));
+    return parts.length ? parts.join(" · ") : errors.length + " та майдонни текширинг";
   }
-  function focusStepEl(el) {
+  function focusField(el) {
     if (!el) return;
     requestAnimationFrame(function () {
-      try { el.focus({ preventScroll: true }); } catch (err) { /* yashirin tugma */ }
+      try { el.focus({ preventScroll: true }); } catch (err) { return; }
       if (el.scrollIntoView) el.scrollIntoView({ block: "center", behavior: "smooth" });
     });
   }
 
-  function rowDone(i, errors) {
-    if (i === 4) return state.files.length > 0 && stepValid(4, errors);
-    return stepValid(i, errors);
+  function lockMoment() {
+    if (state.when === "later") {
+      var d = ymd(dateIso("fDate")), t = timeVal("fTime");
+      if (d && t) { d.setHours(+t.slice(0, 2), +t.slice(3), 0, 0); return d; }
+    }
+    if (state.when === "repeat" && scheduleReady() && !rangeBroken()) {
+      var next = runs(1).list[0];
+      if (next) return next;
+    }
+    return tashNow();
   }
 
-  function paintRows(errors) {
-    ROWS.forEach(function (i) {
-      var row = $("step-" + i), body = $("body-" + i);
-      var open = i === currentStep;
-      var wasHidden = body.hidden;
-      body.hidden = !open;
-      if (open && wasHidden) {
-        body.removeAttribute("data-enter");
-        void body.offsetWidth;
-        body.setAttribute("data-enter", "1");
-      }
-      var done = rowDone(i, errors);
-      var bad = !stepValid(i, errors) && (stepTried[i] || state.submitted);
-      row.setAttribute("data-state", bad ? "error" : done ? "done" : "todo");
-      row.setAttribute("data-open", open ? "true" : "false");
-      var edit = row.querySelector("[data-edit]");
-      edit.hidden = open;
-      edit.textContent = EDIT_LABEL[i][done ? 1 : 0];
-      edit.setAttribute("aria-expanded", open ? "true" : "false");
+  function paintLock() {
+    var at = lockMoment();
+    var day = DAY_FULL[String(at.getDay())];
+    $("lockTime").textContent = pad2(at.getHours()) + ":" + pad2(at.getMinutes());
+    $("lockDate").textContent = day.charAt(0).toUpperCase() + day.slice(1) + ", " + dateLabel(at);
+  }
+
+  function touchHost(target) {
+    var wrap = target.closest ? target.closest(".pick-field, .chip-row") : null;
+    if (!wrap) return target.hasAttribute && target.hasAttribute("aria-describedby") ? { host: target, wrap: target } : null;
+    var host = wrap.hasAttribute("aria-describedby") ? wrap : wrap.querySelector("[aria-describedby]");
+    return host ? { host: host, wrap: wrap } : null;
+  }
+
+  function initTouch() {
+    var pressing = false, pressedAt = 0, pending = false, fallback = 0;
+    function flush() {
+      clearTimeout(fallback);
+      pending = false;
+      setTimeout(refresh, 0);
+    }
+    function release() {
+      pressing = false;
+      if (pending) flush();
+    }
+    document.addEventListener("pointerdown", function (e) {
+      pressing = e.pointerType !== "touch";
+      pressedAt = Date.now();
+    }, true);
+    document.addEventListener("pointerup", release, true);
+    document.addEventListener("pointercancel", release, true);
+    window.addEventListener("blur", release);
+    document.querySelector(".page-grid").addEventListener("focusout", function (e) {
+      var hit = touchHost(e.target);
+      if (!hit || (e.relatedTarget && hit.wrap.contains(e.relatedTarget))) return;
+      var fresh = hit.host.getAttribute("aria-describedby").split(/\s+/).filter(function (id) {
+        return id.indexOf("err") === 0 && !touched[id];
+      });
+      if (!fresh.length) return;
+      fresh.forEach(function (id) { touched[id] = true; });
+      if (!pressing || Date.now() - pressedAt > 2000) return setTimeout(refresh, 0);
+      pending = true;
+      clearTimeout(fallback);
+      fallback = setTimeout(flush, 2000);
     });
   }
 
-  function goStep(n, opts) {
-    opts = opts || {};
-    currentStep = n;
-    refresh();
-    if (!n) return true;
-    var live = $("stepLive");
-    if (live) live.textContent = STEP_LABEL[n] + " бўлими очилди";
-    if (opts.focusEl) focusStepEl(opts.focusEl);
-    else {
-      var h = $("h-step-" + n);
-      if (h) {
-        h.focus({ preventScroll: true });
-        $("step-" + n).scrollIntoView({ block: "nearest" });
-      }
+  function initSideScroll() {
+    var grid = document.querySelector(".side-card .fact-grid");
+    function sync() {
+      var overflow = grid.scrollHeight > grid.clientHeight + 1;
+      if (overflow) grid.tabIndex = 0;
+      else grid.removeAttribute("tabindex");
+      grid.setAttribute("data-more", overflow && grid.scrollTop + grid.clientHeight < grid.scrollHeight - 1 ? "true" : "false");
     }
-    return true;
+    grid.addEventListener("scroll", sync, { passive: true });
+    if (window.ResizeObserver) {
+      var watch = new ResizeObserver(sync);
+      watch.observe(grid);
+      Array.prototype.forEach.call(grid.children, function (tile) { watch.observe(tile); });
+    }
+    window.addEventListener("resize", sync);
+    sync();
   }
 
-  function saveRow(n) {
-    if (n === 3) state.whenTouched = true;
-    var errors = validate();
-    var own = errorsForStep(n, errors);
-    if (own.length) {
-      stepTried[n] = true;
-      showErrors(own);
-      if (own[0].el) focusStepEl(own[0].el);
-      refresh();
-      return;
-    }
-    var next = REQUIRED_ROWS.filter(function (i) { return i !== n && !stepValid(i, errors); })[0] || 0;
-    goStep(next);
-    if (!next) $("step-" + n).querySelector("[data-edit]").focus();
-  }
-
-  function initChecklist() {
-    document.querySelector(".checklist").addEventListener("click", function (e) {
-      var edit = e.target.closest ? e.target.closest("[data-edit]") : null;
-      if (edit) { goStep(+edit.getAttribute("data-edit")); return; }
-      var save = e.target.closest ? e.target.closest("[data-save]") : null;
-      if (save) saveRow(+save.getAttribute("data-save"));
-    });
+  function initShortcuts() {
     document.addEventListener("keydown", function (e) {
       if (e.key !== "Enter" || !(e.metaKey || e.ctrlKey)) return;
       if (document.body.getAttribute("data-modal") != null) return;
       e.preventDefault();
       $("submitBtn").click();
     });
+    setInterval(function () { if (!document.hidden) paintLock(); }, 30000);
   }
 
   /* «Keyingi yuborish» — hisoblangan sanalar, jadval bo'limidagi AYNAN
@@ -1517,100 +1474,6 @@
     box.appendChild(ul);
   }
 
-  /* Har karta sarlavhasidagi holat. U bo'limning QIYMATINI aytadi, hukmni
-     emas — «tanlanmagan» va «O'zbekiston Respublikasi» ikkovi ham fakt.
-     Manba `validate()` ning O'SHA natijasi, ya'ni karta bilan pastdagi
-     holat qatori ikki xil gap ayta olmaydi. */
-  function renderStepStates(errors) {
-    var broken = {};
-    errors.forEach(function (e) {
-      var sec = e.box ? SECTION_OF[e.box.id] : 0;
-      if (sec) broken[sec] = (broken[sec] || 0) + 1;
-    });
-    var filled = TEXT_FIELDS.filter(function (f) { return $(f.id).value.trim(); }).length;
-
-    function set(id, text, ok) {
-      var el = $(id);
-      el.querySelector(".step-state-text").textContent = text;
-      el.setAttribute("data-tone", ok ? "ok" : "todo");
-    }
-    var path = scopePath();
-    var reach = currentReach();
-    set("st1", path
-      ? path[path.length - 1] + (reach ? " · " + popText(reach) + " киши" : "")
-      : "Хабар кимларга юборилади?", !broken[1]);
-    var uzTitle = $("uzTitle").value.trim();
-    set("st2", filled === 4
-      ? "«" + uzTitle + "» · ўзбекча ва русча"
-      : filled ? filled + " / 4 майдон тўлдирилди" : "Сарлавҳа ва матн, икки тилда", !broken[2]);
-    set("st3", scheduleReady() && !broken[3] ? whenText() : "Хабар қачон юборилади?", !broken[3]);
-    set("st4", state.files.length ? state.files.length + " та файл" : "Ихтиёрий — ҳужжат ёки расм", false);
-  }
-
-  function renderSummary(errors, path, reach) {
-    renderStepStates(errors);
-    var line = $("rcLine");
-
-    /* Jumla FAQAT hamma bo'lak ma'lum bo'lganda quriladi. Yarim ma'lumot
-       bilan yozilgan jumla («Bu xabar — kishiga ketadi») ekranni bilmagan
-       narsasini biladi deb ko'rsatardi. */
-    var ready = !errors.length;
-    line.setAttribute("data-ready", ready ? "true" : "false");
-    /* Karta butunligicha holat oladi: tayyor bo'lganda aksent halqasi yonadi
-       va u yagona vizual «shu tayyor» signali bo'ladi. */
-    $("rcCard").setAttribute("data-ready", ready ? "true" : "false");
-    /* Belgi ikkala holatda ham bor — u holatni RANG bilan emas, SHAKL bilan
-       aytadi (rangga tayanish rang ko'rmaydigan foydalanuvchi uchun signalni
-       yo'qotadi). */
-    $("rcMarkUse").setAttribute("href", ready ? "#i-check" : "#i-list");
-    if (!ready) {
-      /* Jumla VERDIKT aytadi, chip esa SONNI — ikkalasida bir xil raqam
-         turganda ular bir-birini takrorlab, qatorda ikki marta «5» chiqardi. */
-      line.textContent = "Хабар ҳали юборишга тайёр эмас";
-      $("rcWhenLine").textContent = "Бўлимлар тўлдирилгач, бу ерда хабар кимга ва қачон кетиши ёзилади.";
-      return;
-    }
-    /* Ikki jumla, har biri BITTA savolga javob beradi: kimga, va qachon.
-       Bitta uzun jumla («... kishiga — O'zbekiston Respublikasi — dushanba,
-       payshanba kunlari ...») o'qilmasdi. */
-    var who = path.join(" / ");
-    line.textContent = reach
-      ? "Бу хабар " + who + " бўйича тахминан ~" + reach + " кишига кетади."
-      : "Бу хабар " + who + " бўйича кетади — қамров сони реестрда кўрсатилмаган.";
-    $("rcWhenLine").textContent = whenSentence();
-  }
-
-  /* «A, B va C» — oxirgi bog'lovchi vergul emas, «va». Ro'yxat sifatida
-     yozilgan jumla («sentyabr, oktyabr oylarida») tugallanmagan tuyulardi. */
-  function joinWords(arr) {
-    if (arr.length < 2) return arr.join("");
-    return arr.slice(0, -1).join(", ") + " ва " + arr[arr.length - 1];
-  }
-
-  /* Jumla ichidagi vaqt bo'lagi. `whenText()` qisqartmalar bilan yozadi
-     («Du, Pa · 09:00 · har yili Sen, Okt»); jumlada to'liq so'zlar kerak. */
-  function whenSentence() {
-    if (state.when === "now") return "Ҳозироқ юборилади.";
-    if (state.when === "later") {
-      return dateText("fDate") + " куни соат " + timeVal("fTime") + " да юборилади.";
-    }
-    var names = ORDER.filter(function (d) { return state.days.indexOf(d) > -1; })
-      .map(function (d) { return DAY_FULL[d]; });
-    /* Jumla bosh harf bilan boshlanadi: hafta kuni nomlari o'z holicha kichik
-       harfli, lekin bu yerda ular JUMLANI ochadi. */
-    var lead = joinWords(names);
-    lead = lead.charAt(0).toUpperCase() + lead.slice(1);
-    var when = lead + " кунлари соат " + timeVal("fRepeatTime") + " да";
-    if (state.span === "months") {
-      var ms = state.months.slice().sort(function (a, b) { return a - b; })
-        .map(function (n) { return MONTH_FULL[n - 1]; });
-      /* «har yili» ochiq yoziladi: oy tanlovi yilni bilmaydi va kelasi yil ham
-         qaytadi — buni ekranda aytmaslik jim va'da bo'lardi. */
-      return when + ", ҳар йили " + joinWords(ms) + " ойларида юборилади.";
-    }
-    return when + ", " + dateText("fFrom") + " дан " + dateText("fTo") + " гача юборилади.";
-  }
-
   /* Ro'yxat har chizilganda qayta quriladi, shuning uchun tugma bosilganda
      nishon INDEKS bo'yicha topiladi — DOM ga element bog'lab qo'yish
      qayta chizilgandan keyin o'lik havolaga aylanardi. */
@@ -1644,9 +1507,7 @@
       var errors = refresh();
       if (errors.length) {
         var first = errors[0];
-        var sec = errorSection(first) || 1;
-        stepTried[sec] = true;
-        goStep(sec, { skipGate: true, focusEl: first.el, force: true });
+        focusField(first.el || $("h-sec-" + (errorSection(first) || 1)));
         if (window.omToast) {
           window.omToast(state.dataFailed
             ? "Ҳудуд маълумотлари юкланмади — юбориб бўлмайди"
@@ -1997,7 +1858,9 @@
     initWhen();
     initFiles();
     initSubmit();
-    initChecklist();
+    initTouch();
+    initShortcuts();
+    initSideScroll();
     applyDraft();
     refresh();
   }

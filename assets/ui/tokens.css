@@ -31,6 +31,12 @@
   --accent-line:  rgba(37, 99, 235, 0.45);
   --map-fill:     #dbe4f0;
   --map-dim:      #eef2f7;
+  --phone-bezel:  #111827;
+  --lock-wall:    #dbe3ee;
+  --lock-ink:     #0f172a;
+  --lock-ink-2:   #334155;
+  --lock-card:    rgba(255, 255, 255, 0.8);
+  --scroll-shade: rgba(17, 24, 39, 0.12);
 
   --tone-green:  #059669;
   --tone-purple: #7c3aed;
@@ -117,6 +123,12 @@
   --accent-line:  rgba(96, 165, 250, 0.5);
   --map-fill:     #2b3345;
   --map-dim:      #1f2430;
+  --phone-bezel:  #050506;
+  --lock-wall:    #232a38;
+  --lock-ink:     #f4f4f5;
+  --lock-ink-2:   #c7c9d1;
+  --lock-card:    rgba(21, 21, 24, 0.82);
+  --scroll-shade: rgba(0, 0, 0, 0.55);
 
   --ok:        #34d399;
   --ok-soft:   #0f2a22;
@@ -129,7 +141,7 @@
 
   --lift-1: 0 1px 2px rgba(0, 0, 0, 0.4);
   --lift-2: 0 0 0 1px #2a2a31;
-  --lift-card: 0 0 0 1px #2a2a31;
+  --lift-card: none;
   --lift-pop: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px #2a2a31;
   --lift-app: var(--lift-pop);
 }
