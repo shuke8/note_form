@@ -1911,15 +1911,6 @@
              AYNAN bir xil: ikki ekranda ikki xil sabab yozilmasin. */
           '<p class="real-hint">Tugmalar serverga murojaat qiladi — server ulanmagani uchun ishlamaydi.</p>' +
         "</div>" +
-
-        /* `natija.html` OQIMDA hech qayerdan ochilmasdi — tupik sahifa edi.
-           Havola aynan shu yerda kerak: foydalanuvchi demo panelini ko'rib
-           «server ulanganda nima bo'ladi?» degan savolga shu daqiqada
-           keladi. To'rt holatning to'liq namunasi o'sha sahifada. */
-        '<p class="real-hint">' +
-          '<a class="real-link" href="./natija.html">' +
-            'Server ulanganda ekran qanday ko\u2018rinadi — to\u2018rt holat namunasi' +
-          "</a></p>" +
       "</div>";
 
     var dl = box.querySelector(".real-grid");

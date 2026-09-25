@@ -7,38 +7,28 @@
 <meta name="description" content="Qamrovni tanlang, matnni ikkala tilda yozing va telefonda qanday ko‘rinishini shu yerda ko‘ring." />
 <meta name="color-scheme" content="light dark" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#dbe6f6" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#070b14" media="(prefers-color-scheme: dark)" />
 <script>
-  /* Mavzu birinchi bo'yoqdan OLDIN qo'yiladi. `motion.js` `defer` bilan
-     yuklanadi, shuning uchun saqlangan qorong'i mavzu har ochilishda bir
-     marta oq bo'lib yonib ketardi. */
   (function () {
     var t = null;
-    try { t = localStorage.getItem("om-theme"); } catch (e) { /* private rejim */ }
+    try { t = localStorage.getItem("om-theme"); } catch (e) { t = null; }
     if (!t) {
-      t = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark" : "light";
+      t = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     }
     document.documentElement.setAttribute("data-theme", t);
   })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" />
-<link rel="stylesheet" href="assets/system.css" />
-<link rel="stylesheet" href="assets/components.css" />
-<link rel="stylesheet" href="assets/composer.css" />
-<!-- Natija kartasi dizayni NUSXALANMAYDI: «Navbatga qo‘yish» bosilganda
-     chiqadigan panel `natija.html` dagi AYNAN o‘sha `.result-real` ni
-     ishlatadi — ikki joyda ikki xil natija ekrani bo‘lib qolmasin. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="assets/ui/tokens.css" />
+<link rel="stylesheet" href="assets/ui/controls.css" />
+<link rel="stylesheet" href="assets/ui/shell.css" />
+<link rel="stylesheet" href="assets/ui/steps.css" />
 <link rel="stylesheet" href="assets/natija.css" />
 </head>
 <body>
-<!-- Ikonka sprayti — Lucide (ISC litsenziya, lucide.dev). Qalinlik, uch shakli
-     va o‘lcham `.ico` sinfida BIR JOYDA beriladi: ilgari har inline SVG da
-     `stroke-width` qo‘lda yozilgan va 1.6 bilan 1.7 ga ajralib ketgandi.
-     Faqat ISHLATILADIGAN belgilar turadi — ro‘yxat generatordan chiqadi. -->
 <svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
   <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5" /> <path d="m12 19-7-7 7-7" /></symbol>
   <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
@@ -75,113 +65,94 @@
 
 <a class="skip" href="#step-1">Formaga o‘tish</a>
 
-<!-- Bu sahifa — FORMA, katalog emas. Brend bloki, bo‘lim havolalari va
-     mobil menyu tugmasi bu yerda navigatsiya emas, SHOVQIN edi: to‘rt
-     havola pastdagi to‘rt kartani takrorlardi, mobil menyu esa forma
-     ustiga yana bir qatlam ochardi. Qoladigan ikki narsa — chiqish yo‘li
-     va mavzu almashtirgichi.
+<div class="canvas">
+<div class="app">
+  <header class="app-top">
+    <span class="brand">
+      <img src="assets/favicon.svg" alt="" width="28" height="28" />
+      <span class="brand-name">Onlayn Mahalla</span>
+    </span>
+    <span class="app-top-spacer"></span>
+    <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Qorong‘i mavzuga o‘tish" title="Qorong‘i mavzuga o‘tish">
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
+    </button>
+  </header>
 
-     `class="nav"` SAQLANADI: yopishqoq joylashuv va surilganda paydo
-     bo‘ladigan hairline (`motion.js` → `initNav`, `[data-stuck]`) aynan shu
-     sinfga bog‘langan — nusxa CSS yozilmaydi. -->
-<header class="nav nav-form nav-wizard" id="nav">
-  <div class="shell nav-wizard-shell">
-    <div class="nav-inner">
-      <a class="backlink" href="./landing.html">
-        <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
-        <span>Bosh sahifaga</span>
-      </a>
-      <span class="nav-spacer"></span>
-      <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Qorong‘i mavzuga o‘tish" title="Qorong‘i mavzuga o‘tish">
-        <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
-      </button>
-    </div>
-    <nav class="stepper" id="stepper" aria-label="Bosqichlar">
-    <ol class="stepper-list">
-      <li>
-        <button type="button" class="stepper-item" data-step="1" aria-current="step">
-          <span class="stepper-num" aria-hidden="true">
-            <span class="stepper-idx">01</span>
-            <svg class="ico stepper-check"><use href="#i-check"/></svg>
-          </span>
-          <span class="stepper-name">Kim oladi</span>
-        </button>
-      </li>
-      <li>
-        <button type="button" class="stepper-item" data-step="2" aria-disabled="true">
-          <span class="stepper-num" aria-hidden="true">
-            <span class="stepper-idx">02</span>
-            <svg class="ico stepper-check"><use href="#i-check"/></svg>
-          </span>
-          <span class="stepper-name">Nima yoziladi</span>
-        </button>
-      </li>
-      <li>
-        <button type="button" class="stepper-item" data-step="3" aria-disabled="true">
-          <span class="stepper-num" aria-hidden="true">
-            <span class="stepper-idx">03</span>
-            <svg class="ico stepper-check"><use href="#i-check"/></svg>
-          </span>
-          <span class="stepper-name">Qachon ketadi</span>
-        </button>
-      </li>
-      <li>
-        <button type="button" class="stepper-item" data-step="4" aria-disabled="true">
-          <span class="stepper-num" aria-hidden="true">
-            <span class="stepper-idx">04</span>
-            <svg class="ico stepper-check"><use href="#i-check"/></svg>
-          </span>
-          <span class="stepper-name">Ilova</span>
-        </button>
-      </li>
-      <li>
-        <button type="button" class="stepper-item" data-step="5" aria-disabled="true">
-          <span class="stepper-num" aria-hidden="true">
-            <span class="stepper-idx">05</span>
-            <svg class="ico stepper-check"><use href="#i-check"/></svg>
-          </span>
-          <span class="stepper-name">Yakun</span>
-        </button>
-      </li>
-    </ol>
-    <p class="sr-only" id="stepLive" role="status"></p>
-    </nav>
-  </div>
-</header>
+  <div class="app-body">
+    <aside class="app-side">
+      <div class="app-side-inner">
+        <nav class="stepper" id="stepper" aria-label="Bosqichlar">
+          <ol class="stepper-list">
+          <li>
+            <button type="button" class="stepper-item" data-step="1" aria-current="step">
+              <span class="stepper-num" aria-hidden="true">
+                <span class="stepper-idx">1</span>
+                <svg class="ico stepper-check"><use href="#i-check"/></svg>
+              </span>
+              <span class="stepper-name">Kim oladi</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="stepper-item" data-step="2" aria-disabled="true">
+              <span class="stepper-num" aria-hidden="true">
+                <span class="stepper-idx">2</span>
+                <svg class="ico stepper-check"><use href="#i-check"/></svg>
+              </span>
+              <span class="stepper-name">Nima yoziladi</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="stepper-item" data-step="3" aria-disabled="true">
+              <span class="stepper-num" aria-hidden="true">
+                <span class="stepper-idx">3</span>
+                <svg class="ico stepper-check"><use href="#i-check"/></svg>
+              </span>
+              <span class="stepper-name">Qachon ketadi</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="stepper-item" data-step="4" aria-disabled="true">
+              <span class="stepper-num" aria-hidden="true">
+                <span class="stepper-idx">4</span>
+                <svg class="ico stepper-check"><use href="#i-check"/></svg>
+              </span>
+              <span class="stepper-name">Ilova</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="stepper-item" data-step="5" aria-disabled="true">
+              <span class="stepper-num" aria-hidden="true">
+                <span class="stepper-idx">5</span>
+                <svg class="ico stepper-check"><use href="#i-check"/></svg>
+              </span>
+              <span class="stepper-name">Yakun</span>
+            </button>
+          </li>
+          </ol>
+          <p class="sr-only" id="stepLive" role="status"></p>
+        </nav>
+        <div class="side-note" aria-label="Qoralama ma’lumotlari" role="group">
+          <p class="side-note-row"><span>Holat</span><b>Qoralama</b></p>
+          <p class="side-note-row"><span>Mahalla</span><b>8-mahalla “Do‘stlik”</b></p>
+          <p class="side-note-row"><span>Operator</span><b>Sh. Ro‘ziboyev</b></p>
+        </div>
+      </div>
+    </aside>
 
-<main class="shell doc">
-  <div class="doc-context">
-    <p class="eyebrow">Yangi xabarnoma</p>
-    <span class="chip chip-mono">Qoralama</span>
-    <span class="chip chip-mono">8-mahalla “Do‘stlik”</span>
-    <span class="chip chip-mono">Operator: Sh. Ro‘ziboyev</span>
-  </div>
-
-  <!-- ============================ 01 QAMROV ============================ -->
+    <main class="doc">
   <section class="step-sec" id="step-1" aria-labelledby="h-step-1">
     <div class="step-head">
       <span class="step-index" aria-hidden="true">01</span>
       <div class="step-title">
         <h1 class="d2" id="h-step-1" tabindex="-1">Kim oladi?</h1>
-        <p class="step-aside">Xabar kimlarga ko‘rinadi</p>
+        <p class="step-aside">Xabar kimlarga ko‘rinadi — xaritadan yoki ro‘yxatdan tanlang</p>
       </div>
-      <!-- Holat `validate()` ning AYNAN o'sha natijasidan chiqadi: karta
-           yopilganda ham bo'lim nima deganini shu qator aytadi. -->
       <span class="step-state" id="st1" data-tone="todo">
         <span class="dot" aria-hidden="true"></span><span class="step-state-text"></span>
       </span>
     </div>
-
     <div class="step-body">
-      <!-- Qamrov = TURGAN JOYING. Alohida «daraja» tanlagichi yo‘q: xaritada yoki
-           ro‘yxatda qayerda to‘xtasang, xabar o‘sha yerga ketadi.
-           Ilgari bu to‘rtta daraja radiosi + uchta select edi — ikki xil model,
-           va ular bir-biridan uzilib qolardi: ekran «Viloyat» deb turib,
-           so‘rov tanasida eski mahalla qolib ketardi. -->
       <div class="scope" id="scope" data-failed="false">
-        <!-- Xarita BUTUNLAY `aria-hidden`: yonidagi ro‘yxat xuddi shu tanlovni
-             to‘liq nom bilan beradi. Chizmani tasvirlash ham, bir tanlovni ikki marta
-             Tab zanjiriga qo‘yish ham — yuk, foyda emas. -->
         <figure class="scope-mapwrap tile" aria-hidden="true">
           <svg class="scope-map" id="scopeSvg" viewBox="0 0 480 320" focusable="false"></svg>
           <span class="scope-maphint" id="scopeHint">Butun respublika</span>
@@ -191,9 +162,6 @@
         </figure>
 
         <div class="scope-panel">
-          <!-- Doimiy tugma, ro‘yxat qatori EMAS: qator bo‘lganida u tumanga
-               kirilishi bilan yo‘qolardi va eng ko‘p ishlatiladigan qamrov
-               eng chuqur ko‘milgani bo‘lardi. -->
           <button type="button" class="scope-all" id="scopeAll" aria-describedby="scopeError">
             <span class="scope-all-ring" aria-hidden="true"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-globe"/></svg></span>
             <span class="scope-all-txt"><span class="scope-all-name">Butun respublika</span><span class="scope-all-sub" id="scopeAllSub"></span></span>
@@ -214,23 +182,18 @@
     </div>
   </section>
 
-  <!-- ============================= 02 MATN ============================= -->
   <section class="step-sec" id="step-2" aria-labelledby="h-step-2" hidden>
     <div class="step-head">
       <span class="step-index" aria-hidden="true">02</span>
       <div class="step-title">
         <h1 class="d2" id="h-step-2" tabindex="-1">Nima yoziladi?</h1>
-        <p class="step-aside">Ikkala til majburiy</p>
+        <p class="step-aside">Ikkala til majburiy — foydalanuvchi o‘z tilida o‘qiydi</p>
       </div>
-      <!-- Holat `validate()` ning AYNAN o'sha natijasidan chiqadi: karta
-           yopilganda ham bo'lim nima deganini shu qator aytadi. -->
       <span class="step-state" id="st2" data-tone="todo">
         <span class="dot" aria-hidden="true"></span><span class="step-state-text"></span>
       </span>
     </div>
-
     <div class="step-body">
-      <!-- Jonli ko‘rinish: bo‘lim ekranda turganda navbar ostiga yopishadi -->
       <div class="preview-dock">
         <div class="media preview-strip" role="group" aria-labelledby="previewLabel">
           <div class="preview-card">
@@ -252,7 +215,7 @@
                 <button type="button" class="toggle-btn" id="pvUz" aria-pressed="true">UZ</button>
                 <button type="button" class="toggle-btn" id="pvRu" aria-pressed="false">RU</button>
               </span>
-              <span class="chip" id="pvFit" style="margin-inline-start:auto"><span class="dot"></span><span id="pvFitText">Matn kiritilmagan</span></span>
+              <span class="chip" id="pvFit"><span class="dot"></span><span id="pvFitText">Matn kiritilmagan</span></span>
             </div>
           </div>
 
@@ -267,12 +230,14 @@
         </div>
       </div>
 
-      <div class="lang-grid">
-        <div class="lang-col">
-          <div class="lang-head">
-            <span class="lang-tag"><span class="chip chip-mono">UZ</span><span class="label">O‘zbekcha</span></span>
-            <span class="chip chip-mono" id="uzState">To‘liq emas</span>
-          </div>
+
+      <div class="row">
+        <div class="row-label">
+          <span class="lang-tag"><span class="chip chip-mono">UZ</span><span class="label">O‘zbekcha</span></span>
+          <p class="row-desc">Ilova tili o‘zbekcha bo‘lgan foydalanuvchilar ko‘radi.</p>
+          <span class="chip chip-mono lang-state" id="uzState">To‘liq emas</span>
+        </div>
+        <div class="row-ctl">
           <div class="field">
             <div class="label-row">
               <label class="label" for="uzTitle">Sarlavha <span class="req" aria-hidden="true">*</span></label>
@@ -292,19 +257,19 @@
             <textarea class="textarea" id="uzBody" required
                       placeholder="Sana, vaqt va sabab."
                       aria-describedby="uzBodyHint errUzBody"></textarea>
-            <!-- Izoh placeholder O'RNIGA emas, UNDAN TASHQARI: placeholder
-                 birinchi harf yozilishi bilan yo'qoladi va «ikki qator
-                 ko'rinadi» degan fakt aynan yozayotganda kerak bo'ladi. -->
             <p class="hint" id="uzBodyHint">Push’da ikki qator ko‘rinadi — uzunligi cheklanmagan.</p>
             <p class="field-error" id="errUzBody" role="alert" hidden></p>
           </div>
         </div>
+      </div>
 
-        <div class="lang-col">
-          <div class="lang-head">
-            <span class="lang-tag"><span class="chip chip-mono">RU</span><span class="label">Ruscha</span></span>
-            <span class="chip chip-mono" id="ruState">To‘liq emas</span>
-          </div>
+      <div class="row">
+        <div class="row-label">
+          <span class="lang-tag"><span class="chip chip-mono">RU</span><span class="label">Ruscha</span></span>
+          <p class="row-desc">Ilova tili ruscha bo‘lgan foydalanuvchilar ko‘radi.</p>
+          <span class="chip chip-mono lang-state" id="ruState">To‘liq emas</span>
+        </div>
+        <div class="row-ctl">
           <div class="field">
             <div class="label-row">
               <label class="label" for="ruTitle">Заголовок <span class="req" aria-hidden="true">*</span></label>
@@ -332,7 +297,6 @@
     </div>
   </section>
 
-  <!-- ============================= 03 VAQT ============================= -->
   <section class="step-sec" id="step-3" aria-labelledby="h-step-3" hidden>
     <div class="step-head">
       <span class="step-index" aria-hidden="true">03</span>
@@ -340,203 +304,212 @@
         <h1 class="d2" id="h-step-3" tabindex="-1">Qachon ketadi?</h1>
         <p class="step-aside">Toshkent vaqti · UTC+5</p>
       </div>
-      <!-- Holat `validate()` ning AYNAN o'sha natijasidan chiqadi: karta
-           yopilganda ham bo'lim nima deganini shu qator aytadi. -->
       <span class="step-state" id="st3" data-tone="todo">
         <span class="dot" aria-hidden="true"></span><span class="step-state-text"></span>
       </span>
     </div>
-
     <div class="step-body">
-      <div class="segment" role="radiogroup" aria-labelledby="h-step-3" id="whenGroup">
-        <button type="button" class="seg-btn" role="radio" aria-checked="true" data-when="now">
-          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg>
-          Hoziroq
-        </button>
-        <button type="button" class="seg-btn" role="radio" aria-checked="false" data-when="later">
-          <svg class="ico" width="12" height="11" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg>
-          Belgilangan vaqtda
-        </button>
-        <button type="button" class="seg-btn" role="radio" aria-checked="false" data-when="repeat">
-          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-repeat"/></svg>
-          Takroriy
-        </button>
-      </div>
-
-      <div class="when-grid" id="whenLater" hidden>
-        <div class="field">
-          <label class="label" for="fDate">Sana <span class="req" aria-hidden="true">*</span></label>
-          <input class="input" id="fDate" type="date" aria-describedby="errDate" />
-          <p class="field-error" id="errDate" role="alert" hidden></p>
+      <div class="row">
+        <div class="row-label">
+          <span class="label" id="whenLabel">Yuborish turi</span>
+          <p class="row-desc">Bir martalik yoki jadval bo‘yicha qaytadigan xabar.</p>
         </div>
-        <div class="field">
-          <label class="label" for="fTime">Vaqt <span class="req" aria-hidden="true">*</span></label>
-          <input class="input" id="fTime" type="time" value="09:00" aria-describedby="errTime" />
-          <p class="field-error" id="errTime" role="alert" hidden></p>
+        <div class="row-ctl">
+          <div class="segment segment-tiles" role="radiogroup" aria-labelledby="whenLabel" id="whenGroup">
+            <button type="button" class="seg-btn" role="radio" aria-checked="true" data-when="now">
+              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-zap"/></svg>
+              Hoziroq
+            </button>
+            <button type="button" class="seg-btn" role="radio" aria-checked="false" data-when="later">
+              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-calendar"/></svg>
+              Belgilangan vaqtda
+            </button>
+            <button type="button" class="seg-btn" role="radio" aria-checked="false" data-when="repeat">
+              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-repeat"/></svg>
+              Takroriy
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- 03-bo‘limning YAGONA jonli sohasi. #whenRepeat ICHIDA EMAS: yashirin
-           konteyner ichidagi live region ochilgandan keyingi birinchi o‘zgarishni
-           yutib yuboradi. Matn faqat HAQIQATAN o‘zgarganda yoziladi. -->
+      <div class="row" id="whenLater" hidden>
+        <div class="row-label">
+          <span class="label">Sana va vaqt</span>
+          <p class="row-desc">Xabar shu daqiqada bir marta ketadi.</p>
+        </div>
+        <div class="row-ctl when-grid">
+          <div class="field">
+            <label class="label" for="fDate">Sana <span class="req" aria-hidden="true">*</span></label>
+            <input class="input" id="fDate" type="date" aria-describedby="errDate" />
+            <p class="field-error" id="errDate" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label class="label" for="fTime">Vaqt <span class="req" aria-hidden="true">*</span></label>
+            <input class="input" id="fTime" type="time" value="09:00" aria-describedby="errTime" />
+            <p class="field-error" id="errTime" role="alert" hidden></p>
+          </div>
+        </div>
+      </div>
+
       <p class="sr-only" id="whenLive" role="status"></p>
 
-      <!-- Takroriy jadval ikki mustaqil savolga bo‘linadi: NIMA takrorlanadi
-           (kunlar + vaqt) va QAYSI DAVRDA amal qiladi (Tanlangan oylar |
-           Sana oralig‘i).
-
-           «Doimiy» varianti OLIB TASHLANDI (2026-08-27, foydalanuvchi qarori).
-           Muddatsiz takrorlanish endi «Tanlangan oylar» da 12 oyni belgilash
-           orqali ifodalanadi — imkoniyat yo‘qolmadi, lekin u endi ATAYLAB
-           tanlanadi. Sukut «Tanlangan oylar»: qolgan ikki variantdan
-           birinchisi. -->
       <div class="when-stack" id="whenRepeat" hidden>
-
-        <!-- Kunlar: role="toolbar" + roving tabindex — 7 ta Tab to‘xtashi 1 taga
-             tushadi va oy qatori bilan AYNAN bir xil klaviatura modeli bo‘ladi.
-             `aria-pressed` saqlanadi (ko‘p tanlov), `aria-checked` QO‘YILMAYDI. -->
-        <div class="field">
-          <span class="label" id="dayLabel">Qaysi kunlari <span class="req" aria-hidden="true">*</span>
-            <span class="opt">— bir nechtasi</span></span>
-          <div class="chip-row" role="toolbar" aria-orientation="horizontal"
-               aria-labelledby="dayLabel" aria-describedby="dayHint errDays" id="dayRow">
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="1" aria-label="Dushanba">Du</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="2" aria-label="Seshanba">Se</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="3" aria-label="Chorshanba">Ch</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="4" aria-label="Payshanba">Pa</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="5" aria-label="Juma">Ju</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="6" aria-label="Shanba">Sh</button>
-            <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="0" aria-label="Yakshanba">Ya</button>
+        <div class="row">
+          <div class="row-label">
+            <span class="label" id="dayLabel">Qaysi kunlari <span class="req" aria-hidden="true">*</span></span>
+            <p class="row-desc">Bir nechtasini tanlash mumkin.</p>
           </div>
-          <p class="hint" id="dayHint">O‘q tugmalari bilan yuring, Space bilan tanlang.</p>
-          <p class="field-error" id="errDays" hidden></p>
-        </div>
-
-        <!-- value="09:00" QOLADI: u yashirin taxmin emas — tahrirlanadigan maydonda
-             KO‘RINIB turgan sukut qiymat va tanaga aynan shunday tushadi. -->
-        <div class="field when-time">
-          <label class="label" for="fRepeatTime">Vaqt <span class="req" aria-hidden="true">*</span></label>
-          <input class="input" id="fRepeatTime" type="time" value="09:00" aria-describedby="errRepeatTime" />
-          <p class="field-error" id="errRepeatTime" hidden></p>
-        </div>
-
-        <!-- Har radioning O‘Z STATIK tavsifi bor: o‘zgaruvchan bitta hint browse
-             rejimida boshqa rejimning tavsifini o‘qib yuborardi. Ko‘rinadigan
-             #spanHint jonli, lekin unda aria YO‘Q. -->
-        <div class="field">
-          <span class="label" id="spanLabel">Qaysi davrda amal qiladi? <span class="req" aria-hidden="true">*</span></span>
-          <div class="segment" role="radiogroup" aria-labelledby="spanLabel" id="spanGroup">
-            <button type="button" class="seg-btn" role="radio" aria-checked="true" data-span="months" aria-describedby="spanDescMonths">
-              <svg class="ico" width="12" height="11" aria-hidden="true" focusable="false"><use href="#i-calendar-days"/></svg>
-              Tanlangan oylar
-            </button>
-            <button type="button" class="seg-btn" role="radio" aria-checked="false" data-span="range" aria-describedby="spanDescRange">
-              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-move-horizontal"/></svg>
-              Sana oralig‘i
-            </button>
-          </div>
-          <span class="sr-only" id="spanDescMonths">Har yili faqat tanlangan oylarda qaytadi. Faqat shu yilgi bo‘lsa, Sana oralig‘i variantini tanlang.</span>
-          <span class="sr-only" id="spanDescRange">Tanlangan oraliq tugagach butunlay to‘xtaydi. Har yili qaytarish uchun Tanlangan oylar variantini tanlang.</span>
-          <p class="hint" id="spanHint">Har yili faqat tanlangan oylarda qaytadi. Faqat shu yilgi bo‘lsa, «Sana oralig‘i» ni tanlang.</p>
-        </div>
-
-        <!-- 6×2 grid: yarim yil bir qator. Sen va Okt HAR IKKI breakpointda
-             yonma-yon qoladi — foydalanuvchining misoli hech qayerda uzilmaydi.
-             «Iyun»/«Iyul» TO‘LIQ yoziladi: «Iyn»/«Iyl» ko‘zda ham, ovozda ham
-             farq qilmaydi. Qisqartmalarda aria-label to‘liq nom beradi va
-             ko‘rinadigan matn uning prefiksi bo‘lib qoladi (WCAG 2.5.3). -->
-        <!-- `hidden` YO‘Q: «Tanlangan oylar» endi sukut variant, demak oy
-             qatori bo‘lim ochilishi bilan ko‘rinadi. -->
-        <div class="field" id="spanMonths">
-          <span class="label" id="monthLabel">Qaysi oylarda <span class="req" aria-hidden="true">*</span>
-            <span class="opt">— bir nechtasi</span></span>
-          <div class="chip-row month-row" role="toolbar" aria-orientation="horizontal"
-               aria-labelledby="monthLabel" aria-describedby="monthHint errMonths" id="monthRow">
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="1" aria-label="Yanvar">Yan</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="2" aria-label="Fevral">Fev</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="3" aria-label="Mart">Mar</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="4" aria-label="Aprel">Apr</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="5">May</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="6">Iyun</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="7">Iyul</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="8" aria-label="Avgust">Avg</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="9" aria-label="Sentyabr">Sen</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="10" aria-label="Oktyabr">Okt</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="11" aria-label="Noyabr">Noy</button>
-            <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="12" aria-label="Dekabr">Dek</button>
-          </div>
-          <p class="hint" id="monthHint">O‘q tugmalari bilan yuring, Space bilan tanlang. Har yili shu oylarda qaytadi.</p>
-          <p class="field-error" id="errMonths" hidden></p>
-        </div>
-
-        <div class="when-grid" id="spanRange" hidden>
-          <div class="field">
-            <label class="label" for="fFrom">Boshlanish <span class="req" aria-hidden="true">*</span></label>
-            <input class="input" id="fFrom" type="date" aria-describedby="errFrom" />
-            <p class="field-error" id="errFrom" hidden></p>
-          </div>
-          <div class="field">
-            <label class="label" for="fTo">Tugash <span class="req" aria-hidden="true">*</span></label>
-            <!-- errRuns AYNAN shu maydonga bog‘lanadi: nol-natija xatosi fokus
-                 tushgan maydonda o‘qilmasa, u faqat ko‘zga tegishli bo‘lib qolardi. -->
-            <input class="input" id="fTo" type="date" aria-describedby="untilHint errTo errRuns" />
-            <p class="hint" id="untilHint">Shu kun ham kiradi (Toshkent bo‘yicha 23:59).</p>
-            <p class="field-error" id="errTo" hidden></p>
-            <p class="field-error" id="errRuns" hidden></p>
+          <div class="row-ctl field">
+            <div class="chip-row" role="toolbar" aria-orientation="horizontal"
+                 aria-labelledby="dayLabel" aria-describedby="dayHint errDays" id="dayRow">
+              <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="1" aria-label="Dushanba">Du</button>
+              <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="2" aria-label="Seshanba">Se</button>
+              <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="3" aria-label="Chorshanba">Ch</button>
+              <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="4" aria-label="Payshanba">Pa</button>
+              <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="5" aria-label="Juma">Ju</button>
+              <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="6" aria-label="Shanba">Sh</button>
+              <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="0" aria-label="Yakshanba">Ya</button>
+            </div>
+            <p class="hint" id="dayHint">O‘q tugmalari bilan yuring, Space bilan tanlang.</p>
+            <p class="field-error" id="errDays" hidden></p>
           </div>
         </div>
 
-        <!-- Hisoblangan haqiqat. Markupda BO‘SH keladi — hech qanday sana HTML ga
-             qattiq yozilmaydi, aks holda JS yiqilganda ekran o‘zi to‘qigan sanalarni
-             fakt sifatida ko‘rsatardi. `aria-live` bu yerda YO‘Q: e‘lon #whenLive da. -->
-        <div class="runs" id="runs" role="group" aria-labelledby="runsLabel">
-          <span class="eyebrow eyebrow-sm" id="runsLabel">Keyingi yuborishlar</span>
-          <div class="runs-chips" id="runsChips" role="list" hidden></div>
-          <div class="empty" id="runsEmpty" hidden>
-            <span class="empty-icon" aria-hidden="true"><svg class="ico" width="15" height="13.5" aria-hidden="true" focusable="false"><use href="#i-calendar-x"/></svg></span>
-            <p class="empty-title">Hech qachon yuborilmaydi</p>
-            <p id="runsEmptyBody"></p>
+        <div class="row">
+          <div class="row-label">
+            <label class="label" for="fRepeatTime">Vaqt <span class="req" aria-hidden="true">*</span></label>
+            <p class="row-desc">Har tanlangan kunda shu vaqtda ketadi.</p>
           </div>
-          <p class="hint runs-sum" id="runsSum"></p>
+          <div class="row-ctl field when-time">
+            <input class="input" id="fRepeatTime" type="time" value="09:00" aria-describedby="errRepeatTime" />
+            <p class="field-error" id="errRepeatTime" hidden></p>
+          </div>
         </div>
-      </div>
+
+        <div class="row">
+          <div class="row-label">
+            <span class="label" id="spanLabel">Amal qilish davri <span class="req" aria-hidden="true">*</span></span>
+            <p class="row-desc">Har yili qaytadimi yoki bir oraliqda tugaydimi.</p>
+          </div>
+          <div class="row-ctl field">
+            <div class="segment" role="radiogroup" aria-labelledby="spanLabel" id="spanGroup">
+              <button type="button" class="seg-btn" role="radio" aria-checked="true" data-span="months" aria-describedby="spanDescMonths">
+                <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-calendar-days"/></svg>
+                Tanlangan oylar
+              </button>
+              <button type="button" class="seg-btn" role="radio" aria-checked="false" data-span="range" aria-describedby="spanDescRange">
+                <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-move-horizontal"/></svg>
+                Sana oralig‘i
+              </button>
+            </div>
+            <span class="sr-only" id="spanDescMonths">Har yili faqat tanlangan oylarda qaytadi. Faqat shu yilgi bo‘lsa, Sana oralig‘i variantini tanlang.</span>
+            <span class="sr-only" id="spanDescRange">Tanlangan oraliq tugagach butunlay to‘xtaydi. Har yili qaytarish uchun Tanlangan oylar variantini tanlang.</span>
+            <p class="hint" id="spanHint">Har yili faqat tanlangan oylarda qaytadi. Faqat shu yilgi bo‘lsa, «Sana oralig‘i» ni tanlang.</p>
+          </div>
+        </div>
+
+        <div class="row" id="spanMonths">
+          <div class="row-label">
+            <span class="label" id="monthLabel">Qaysi oylarda <span class="req" aria-hidden="true">*</span></span>
+            <p class="row-desc">Bir nechtasini tanlash mumkin.</p>
+          </div>
+          <div class="row-ctl field">
+            <div class="chip-row month-row" role="toolbar" aria-orientation="horizontal"
+                 aria-labelledby="monthLabel" aria-describedby="monthHint errMonths" id="monthRow">
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="1" aria-label="Yanvar">Yan</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="2" aria-label="Fevral">Fev</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="3" aria-label="Mart">Mar</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="4" aria-label="Aprel">Apr</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="5">May</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="6">Iyun</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="7">Iyul</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="8" aria-label="Avgust">Avg</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="9" aria-label="Sentyabr">Sen</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="10" aria-label="Oktyabr">Okt</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="11" aria-label="Noyabr">Noy</button>
+              <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="12" aria-label="Dekabr">Dek</button>
+            </div>
+            <p class="hint" id="monthHint">O‘q tugmalari bilan yuring, Space bilan tanlang. Har yili shu oylarda qaytadi.</p>
+            <p class="field-error" id="errMonths" hidden></p>
+          </div>
+        </div>
+
+        <div class="row" id="spanRange" hidden>
+          <div class="row-label">
+            <span class="label">Sana oralig‘i</span>
+            <p class="row-desc">Oraliq tugagach xabar butunlay to‘xtaydi.</p>
+          </div>
+          <div class="row-ctl when-grid">
+            <div class="field">
+              <label class="label" for="fFrom">Boshlanish <span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="fFrom" type="date" aria-describedby="errFrom" />
+              <p class="field-error" id="errFrom" hidden></p>
+            </div>
+            <div class="field">
+              <label class="label" for="fTo">Tugash <span class="req" aria-hidden="true">*</span></label>
+              <input class="input" id="fTo" type="date" aria-describedby="untilHint errTo errRuns" />
+              <p class="hint" id="untilHint">Shu kun ham kiradi (Toshkent bo‘yicha 23:59).</p>
+              <p class="field-error" id="errTo" hidden></p>
+              <p class="field-error" id="errRuns" hidden></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="row-label">
+            <span class="label" id="runsLabel">Keyingi yuborishlar</span>
+            <p class="row-desc">Jadvaldan hisoblangan eng yaqin sanalar.</p>
+          </div>
+          <div class="row-ctl runs" id="runs" role="group" aria-labelledby="runsLabel">
+            <div class="runs-chips" id="runsChips" role="list" hidden></div>
+            <div class="empty" id="runsEmpty" hidden>
+              <span class="empty-icon" aria-hidden="true"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-calendar-x"/></svg></span>
+              <p class="empty-title">Hech qachon yuborilmaydi</p>
+              <p id="runsEmptyBody"></p>
+            </div>
+            <p class="hint runs-sum" id="runsSum"></p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================ 04 ILOVA ============================ -->
   <section class="step-sec" id="step-4" aria-labelledby="h-step-4" hidden>
     <div class="step-head">
       <span class="step-index" aria-hidden="true">04</span>
       <div class="step-title">
         <h1 class="d2" id="h-step-4" tabindex="-1">Ilova qo‘shish</h1>
-        <p class="step-aside">Ixtiyoriy</p>
+        <p class="step-aside">Ixtiyoriy — e’lon, jadval yoki rasm</p>
       </div>
-      <!-- Holat `validate()` ning AYNAN o'sha natijasidan chiqadi: karta
-           yopilganda ham bo'lim nima deganini shu qator aytadi. -->
       <span class="step-state" id="st4" data-tone="todo">
         <span class="dot" aria-hidden="true"></span><span class="step-state-text"></span>
       </span>
     </div>
-
     <div class="step-body">
-      <div class="drop" id="drop">
-        <span class="empty-icon" aria-hidden="true">
-          <svg class="ico" width="18" height="18" aria-hidden="true" focusable="false"><use href="#i-upload"/></svg>
-        </span>
-        <p class="empty-title">Fayl tanlang yoki shu yerga tortib tashlang</p>
-        <p class="hint">PDF, JPG yoki PNG · bittasi 10 MB gacha · 5 tagacha</p>
-        <label class="btn btn-ghost btn-sm" for="fFiles" style="margin-top:6px">
-          Fayl tanlash
-          <input class="sr-only" id="fFiles" type="file" multiple accept=".pdf,.jpg,.jpeg,.png" />
-        </label>
+      <div class="row">
+        <div class="row-label">
+          <span class="label">Fayllar</span>
+          <p class="row-desc">PDF, JPG yoki PNG · bittasi 10 MB gacha · 5 tagacha.</p>
+        </div>
+        <div class="row-ctl">
+          <div class="drop" id="drop">
+            <span class="empty-icon" aria-hidden="true">
+              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-upload"/></svg>
+            </span>
+            <p class="empty-title">Fayl tanlang yoki shu yerga tortib tashlang</p>
+            <p class="hint">Qabul qiluvchi xabarni ochganda ilovani ko‘radi</p>
+            <label class="btn btn-ghost btn-sm" for="fFiles">
+              Fayl tanlash
+              <input class="sr-only" id="fFiles" type="file" multiple accept=".pdf,.jpg,.jpeg,.png" />
+            </label>
+          </div>
+          <div class="file-list" id="fileList" hidden></div>
+          <p class="field-error" id="errFiles" role="alert" hidden></p>
+        </div>
       </div>
-      <div class="file-list" id="fileList" hidden></div>
-      <p class="field-error" id="errFiles" role="alert" hidden></p>
     </div>
   </section>
 
-  <!-- ============================= 05 YAKUN ============================= -->
   <section class="step-sec" id="step-5" aria-labelledby="h-step-5" hidden>
     <div class="step-head">
       <span class="step-index" aria-hidden="true">05</span>
@@ -544,42 +517,18 @@
         <h1 class="d2" id="h-step-5" tabindex="-1">Yakuniy ko‘rinish</h1>
         <p class="step-aside">Yuborishdan oldin tekshiring</p>
       </div>
-      <!-- Holat `validate()` ning AYNAN o'sha natijasidan chiqadi: karta
-           yopilganda ham bo'lim nima deganini shu qator aytadi. -->
       <span class="step-state" id="st5" data-tone="todo">
         <span class="dot" aria-hidden="true"></span><span class="step-state-text"></span>
       </span>
     </div>
-
     <div class="step-body">
-      <!-- Yuborishdan oldin odam AYNAN bitta savolga javob qidiradi: «bu xabar
-           kimga, qachon va nima deb ketadi?» Ilgari bu yerda olti qatorli
-           kalit-qiymat jadvali turardi va u savolga javob bermasdi: sarlavha
-           ko‘rinardi-yu, MATN ko‘rinmasdi; «Aholi» ustuni hududning aholisimi
-           yoki qabul qiluvchilar sonimi — noaniq edi; nima yetishmayotgani esa
-           faqat pastdagi status qatorida raqam bo‘lib turardi. -->
-      <!-- Bu bo‘limning ishi — YUBORISHDAN OLDINGI TEKSHIRUV. Shuning uchun u
-           ma’lumotni qayta yozib bermaydi, ARTEFAKTNING O‘ZINI ko‘rsatadi:
-           qabul qiluvchining telefonida ikkala til qanday chiqishi, va yonida
-           yetkazish faktlari (uch plita). Ilgari bu yerda faqat matn qatorlari turardi —
-           o‘qish uchun ham, tekshirish uchun ham og‘ir edi. -->
       <div class="dispatch" id="rcCard" data-ready="false">
         <div class="dispatch-head">
           <div class="dispatch-title">
-            <!-- Xulosa qatorining OLDIDA belgi turadi: bo'lim ochilganda ko'z
-                 birinchi shu yerga tushadi va «tayyormi yoki yo'qmi» degan
-                 javobni matnni o'qimasdan oladi.
-
-                 Belgi OGOHLANTIRISH EMAS (qizil uchburchak yo'q): to'ldirilmagan
-                 maydon xato emas, u shunchaki hali qilinmagan ish. Shuning uchun
-                 tayyor emas holatda — ro'yxat ikonkasi, tayyor holatda — tik. -->
             <span class="dispatch-mark" id="rcMark" aria-hidden="true">
               <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-list" id="rcMarkUse"/></svg>
             </span>
             <p class="dispatch-line" id="rcLine"></p>
-            <!-- Rang HOLATNI tashiydi, bezak emas: yashil chip faqat kartaning
-                 `data-ready` si bilan birga yonadi va pastdagi holat qatori bilan
-                 bir xil manbadan (`validate()`) oziqlanadi. -->
             <span class="chip dispatch-badge" id="rcBadge"><span class="dot" aria-hidden="true"></span><span id="rcBadgeText"></span></span>
           </div>
           <p class="dispatch-when" id="rcWhenLine"></p>
@@ -591,12 +540,6 @@
         </div>
 
         <div class="dispatch-grid">
-          <!-- Ikkala til BIR VAQTDA: 02-bo‘limdagi ko‘rinish bir tilni
-               almashtirib ko‘rsatadi (yozayotganda shu to‘g‘ri), yakuniy
-               tekshiruvda esa ikkovini yonma-yon solishtirish kerak. -->
-          <!-- `media` — landing dagi telefon sahnasining AYNAN o‘zi: ko‘k mesh
-               yuza «bu telefon ekrani» degan tayyor tilni takrorlaydi, oq kartalar
-               esa unda ko‘tarilib turadi. -->
           <div class="dispatch-phones media">
           <figure class="dispatch-phone">
             <figcaption class="eyebrow eyebrow-sm">O‘zbekcha</figcaption>
@@ -632,25 +575,13 @@
           </figure>
           </div>
 
-          <!-- Uch fakt — uch PLITA. Ilgari bu yerda yorliq va qator matn
-               turardi: uch blok bir xil vizual og‘irlikda, o‘z yuzasi yo‘q,
-               «ILOVA / yo‘q» esa ikki qator joy egallab hech nima demasdi —
-               ko‘z qaysi biri muhimligini bilmasdi. Sakkizta yechim
-               `design/yetkazish/` da yonma-yon solishtirildi. -->
           <aside class="dispatch-facts" aria-label="Yetkazish ma’lumotlari">
-            <!-- Setka ALOHIDA elementda: element O‘Z kengligini `@container`
-                 bilan so‘rab ololmaydi, so‘rov faqat AJDODGA yo‘naltiriladi.
-                 Ilgari ikkovi bitta elementda edi va ikki ustunli holat
-                 hech qachon yonmasdi — 653px kenglikda ham bitta ustun
-                 qolib ketgandi. -->
             <div class="fact-grid">
             <div class="fact" id="rcReachTile" data-empty="true" data-wide="true">
               <span class="fact-ico" aria-hidden="true">
                 <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-users"/></svg>
               </span>
               <p class="eyebrow eyebrow-sm">Taxminiy qamrov</p>
-              <!-- Markupdagi matn — HALOL sukut holati: JS yiqilsa ekran
-                   o‘zi to‘qigan sonni emas, «tanlanmagan» ni ko‘rsatadi. -->
               <p class="fact-big" id="rcReach" data-num="false">Qamrov tanlanmagan</p>
               <p class="fact-unit" id="rcScope">01-bo‘limdan hududni tanlang</p>
             </div>
@@ -659,8 +590,6 @@
                 <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-calendar-days"/></svg>
               </span>
               <p class="eyebrow eyebrow-sm">Keyingi yuborish</p>
-              <!-- Markupda BO‘SH keladi: sana HTML ga qattiq yozilsa, JS
-                   yiqilganda ekran o‘zi to‘qigan vaqtni fakt sifatida ko‘rsatardi. -->
               <div id="rcDates"></div>
             </div>
             <div class="fact" id="rcFilesTile" data-empty="true">
@@ -677,22 +606,18 @@
 
     </div>
   </section>
+    </main>
+  </div>
 
-
-</main>
-
-<!-- Amal paneli `main` dan TASHQARIDA: `position: fixed` element ota-onasining
-     kengligini olmaydi, shuning uchun fon butun ekranni qoplaydi, ichki qism esa
-     `.shell` bilan kontent ustuniga tekislanadi. -->
-<div class="actions" id="actions">
-  <div class="shell actions-inner">
+  <div class="actions" id="actions">
+    <div class="actions-inner">
       <p class="actions-status" id="status" role="status">
         <span class="actions-count" id="stepCount">1 / 5</span>
         <span class="dot" aria-hidden="true"></span>
         <span id="statusText">Qamrov va matn to‘ldirilishi kerak</span>
       </p>
       <div class="actions-buttons">
-        <button type="button" class="btn btn-ghost" id="resetBtn">Tozalash</button>
+        <button type="button" class="btn btn-quiet" id="resetBtn">Tozalash</button>
         <button type="button" class="btn btn-ghost" id="backBtn" hidden>
           <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
           Orqaga
@@ -706,13 +631,11 @@
           <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
         </button>
       </div>
+    </div>
   </div>
 </div>
+</div>
 
-<!-- Natija SAHIFA OSTIDA emas, modalda chiqadi: pastga qo‘shilgan panel
-     uzun formada ko‘rinmay qolardi va «bosdim, hech nima bo‘lmadi» degan
-     taassurot berardi. Nativ `<dialog>` tanlandi — fokus tuzog‘i, Escape
-     va orqa fon inertligi brauzerdan keladi, qo‘lda yozilmaydi. -->
 <dialog class="modal" id="resultDialog" aria-labelledby="resultTitle">
   <div class="modal-inner">
     <div class="modal-head">
