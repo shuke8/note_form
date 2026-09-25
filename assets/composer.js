@@ -299,7 +299,7 @@
     var sum = $("scopeSum");
     if (!state.scope) {
       sum.innerHTML = '<div class="empty"><span class="empty-icon"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-map-pin"/></svg></span>' +
-        '<p class="empty-title">Қамров танланмаган</p><p>Бутун республика учун юқоридаги тугмани босинг; тор қамров учун харитадан ҳудудни ёки рўйхатдан қаторни танланг. Хабар кимга кетишини тизим ўзи тахмин қилмайди.</p></div>';
+        '<p class="empty-title">Қамров танланмаган</p><p>Рўйхатдан ҳудудни танланг ёки «Бутун республика» ни босинг.</p></div>';
       return;
     }
     var reach = currentReach();
@@ -567,6 +567,10 @@
   /* `toISOString()` bu bo'limda TAQIQ: u UTC ga o'tkazadi va Toshkentda
      soat 05:00 gacha bir kun ORQAGA beradi. */
   function isoOf(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+  function dateLabel(d) {
+    var label = d.getDate() + " " + MONTH_FULL[d.getMonth()];
+    return d.getFullYear() === tashNow().getFullYear() ? label : label + " " + d.getFullYear();
+  }
   /* ISO satr HECH QACHON `new Date(str)` ga berilmaydi — u UTC deb o'qiladi va
      hafta kunini siljitadi. Komponentlar bo'yicha, soat 12:00 da quriladi:
      hech qanday ofset sanani boshqa kunga o'tkaza olmaydi. */
@@ -804,7 +808,7 @@
     }
     chips.hidden = false;
     chips.innerHTML = r.list.map(function (d) {
-      return '<span class="run-chip" role="listitem"><b>' + isoOf(d) + "</b><span>" +
+      return '<span class="run-chip" role="listitem"><b>' + dateLabel(d) + "</b><span>" +
         DAY_FULL[String(d.getDay())] + ", " + pad2(d.getHours()) + ":" + pad2(d.getMinutes()) + "</span></span>";
     }).join("");
 
@@ -814,7 +818,7 @@
       sum.textContent = "12 ойнинг ҳаммаси танланган — жадвал тўхтатилмагунча ҳар ҳафта қайтаверади.";
       sum.setAttribute("data-tone", "warn");
     } else if (days > 60) {
-      sum.textContent = "Биринчи юбориш " + isoOf(first) + ", " + DAY_FULL[String(first.getDay())] +
+      sum.textContent = "Биринчи юбориш " + dateLabel(first) + ", " + DAY_FULL[String(first.getDay())] +
         " — тахминан " + Math.round(days / 30) + " ойдан кейин. Шу йил керак бўлса, бугундан кейинги ойлардан бирини ҳам белгиланг.";
       sum.setAttribute("data-tone", "warn");
     } else if (state.span === "range") {
@@ -826,7 +830,7 @@
         : "Бу оралиқда жами " + n + (all.capped ? "+" : "") + " марта юборилади.";
       if (n === 1) sum.setAttribute("data-tone", "warn");
     } else {
-      sum.textContent = "Биринчи юбориш " + isoOf(first) + ", " + DAY_FULL[String(first.getDay())] + ".";
+      sum.textContent = "Биринчи юбориш " + dateLabel(first) + ", " + DAY_FULL[String(first.getDay())] + ".";
     }
   }
 
@@ -1185,7 +1189,10 @@
     // Lekin TANAGA kirmaydigan o'zgarish (ko'rinish tili) panelni
     // o'chirmasligi kerak, shuning uchun imzo bo'yicha solishtiriladi.
     var slot = $("resultSlot");
-    if (slot.firstChild && payloadSignature() !== renderedSignature) slot.innerHTML = "";
+    if (slot.firstChild && payloadSignature() !== renderedSignature) {
+      slot.innerHTML = "";
+      state.dispatched = false;
+    }
 
     // --- jadval ---
     // `min` HAR SAFAR qayta yoziladi: sahifa yarim tundan oshib ochiq qolsa
@@ -1303,6 +1310,7 @@
       return !e.box || WHEN_BOXES.indexOf(e.box.id) < 0;
     });
     if (state.submitted) showErrors(shown);
+    else if (stepTried[currentStep]) showErrors(errorsForStep(currentStep, shown));
 
     /* Yakuniy ko'rinish HAR DOIM to'liq ro'yxatdan quriladi — u xato holati
        emas, yo'l ko'rsatkich: bo'limga tegilmagan bo'lsa ham nima qolganini
@@ -1483,7 +1491,7 @@
     r.list.forEach(function (d) {
       var li = document.createElement("li");
       li.className = "fact-run";
-      var b = document.createElement("b"); b.textContent = isoOf(d);
+      var b = document.createElement("b"); b.textContent = dateLabel(d);
       var day = document.createElement("span"); day.textContent = DAY_FULL[String(d.getDay())];
       var at = document.createElement("i"); at.textContent = pad2(d.getHours()) + ":" + pad2(d.getMinutes());
       li.appendChild(b); li.appendChild(day); li.appendChild(at);
@@ -1545,7 +1553,7 @@
     set("st3", scheduleReady() && !broken[3] ? whenText() : "тўлдирилмаган", !broken[3]);
     /* 04 ixtiyoriy: u hech qachon «bajarilmagan» bo'lmaydi, faqat qiymatini
        aytadi. Yashil belgi «ish qildingiz» degan yolg'on bo'lardi. */
-    set("st4", state.files.length ? state.files.length + " та файл" : "йўқ", false);
+    set("st4", state.files.length ? state.files.length + " та файл" : "Ихтиёрий", false);
     set("st5", errors.length ? "тайёр эмас" : "юборишга тайёр", !errors.length);
   }
 
@@ -1777,8 +1785,21 @@
 
     $("resetBtn").addEventListener("click", function () {
       if (!window.confirm("Барча киритилган маълумот ўчирилади. Давом этамизми?")) return;
+      allowLeave = true;
       window.location.reload();
     });
+    window.addEventListener("beforeunload", function (e) {
+      if (allowLeave || !hasDraft()) return;
+      e.preventDefault();
+      e.returnValue = "";
+    });
+  }
+
+  var allowLeave = false;
+  function hasDraft() {
+    if (state.dispatched) return false;
+    var typed = ["uzTitle", "uzBody", "ruTitle", "ruBody"].some(function (id) { return $(id).value.trim() !== ""; });
+    return typed || !!state.scope || state.files.length > 0;
   }
 
   /* Bu yerda kutiladigan hech narsa yo'q: tekshiruv `click` ichida
@@ -1787,6 +1808,7 @@
      ishni bo'layotgandek ko'rsatardi. Javob endi darhol chiqadi;
      tugma bosilganini panelning o'zi va toast tasdiqlaydi. */
   function runSubmit() {
+    state.dispatched = true;
     renderDemoResult();
     var dlg = $("resultDialog");
     /* `showModal()` — `show()` EMAS: faqat u orqa fonni inert qiladi, fokus
@@ -1812,7 +1834,7 @@
       ["Тиллар", "Ўзбекча ва русча"],
       ["Илова", state.files.length
         ? state.files.map(function (f) { return f.name; }).join(", ")
-        : "йўқ"]
+        : "Йўқ"]
     ];
   }
 
@@ -1829,7 +1851,7 @@
     var r = runs(1);
     if (!r.list.length) return "Хабар тарқатиш навбатида.";
     var f = r.list[0];
-    return "Хабар тарқатиш навбатида. Биринчи юбориш " + isoOf(f) + ", " +
+    return "Хабар тарқатиш навбатида. Биринчи юбориш " + dateLabel(f) + ", " +
            pad2(f.getHours()) + ":" + pad2(f.getMinutes()) + " да бошланади.";
   }
 

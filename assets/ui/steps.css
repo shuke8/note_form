@@ -116,6 +116,7 @@
   min-width: 56px; min-height: 44px; padding: 0 16px; border-radius: var(--r-control);
   font-weight: 500; box-shadow: none; border-color: var(--edge);
 }
+.chip-row[aria-invalid="true"] .seg-btn:not([aria-pressed="true"]) { border-color: var(--crit); }
 .month-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
 .month-row .seg-btn { min-width: 0; padding: 0 8px; }
 
@@ -193,6 +194,7 @@
 .result > .specimen-banner, .result > .result-real { margin-top: 0; }
 .specimen-banner { border-radius: var(--r-panel) !important; }
 .real-bar span { background: var(--accent-solid) !important; }
+.modal .result-real { padding: 0; border: 0; border-radius: 0; background: none; }
 
 @media (max-width: 900px) {
   .scope-panel { grid-template-columns: minmax(0, 1fr); }
@@ -200,6 +202,8 @@
   .preview-strip, .dispatch-grid { grid-template-columns: minmax(0, 1fr); }
   .sum-todo-list { grid-template-columns: minmax(0, 1fr); }
   .dispatch-when { padding-inline-start: 0; }
+  .dispatch-title { align-items: flex-start; }
+  .dispatch-line { font-size: var(--t-body); line-height: 1.45; }
 }
 @media (max-width: 640px) {
   .when-grid { grid-template-columns: minmax(0, 1fr); }

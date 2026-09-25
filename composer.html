@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uz" class="no-js">
+<html lang="uz-Cyrl" class="no-js">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -146,6 +146,7 @@
       </div>
     </aside>
 
+    <div class="main-col">
     <main class="doc card">
   <section class="step-sec" id="step-1" aria-labelledby="h-step-1">
     <div class="step-head">
@@ -155,7 +156,7 @@
         <p class="step-aside">Хабар кимларга кўринади — харитадан ёки рўйхатдан танланг</p>
       </div>
       <span class="step-state" id="st1" data-tone="todo">
-        <span class="dot" aria-hidden="true"></span><span class="step-state-text"></span>
+        <span class="step-state-text"></span>
       </span>
     </div>
     <div class="step-body">
@@ -197,7 +198,7 @@
         <p class="step-aside">Иккала тил мажбурий — фойдаланувчи ўз тилида ўқийди</p>
       </div>
       <span class="step-state" id="st2" data-tone="todo">
-        <span class="dot" aria-hidden="true"></span><span class="step-state-text"></span>
+        <span class="step-state-text"></span>
       </span>
     </div>
     <div class="step-body">
@@ -250,7 +251,7 @@
               <label class="label" for="uzTitle">Сарлавҳа <span class="req" aria-hidden="true">*</span></label>
               <span class="char-count" id="uzTitleCount">0 белги</span>
             </div>
-            <input class="input" id="uzTitle" type="text" required
+            <input class="input" id="uzTitle" name="uzTitle" autocomplete="off" type="text" required
                    placeholder="Масалан: Сув таъминоти вақтинча тўхтатилади"
                    aria-describedby="uzTitleHint errUzTitle" />
             <p class="hint" id="uzTitleHint">Пуш билдиришномасида бир қатор кўринади — қолганини фойдаланувчи хабарни очиб ўқийди.</p>
@@ -261,7 +262,7 @@
               <label class="label" for="uzBody">Матн <span class="req" aria-hidden="true">*</span></label>
               <span class="char-count" id="uzBodyCount">0 белги</span>
             </div>
-            <textarea class="textarea" id="uzBody" required
+            <textarea class="textarea" id="uzBody" name="uzBody" autocomplete="off" required
                       placeholder="Сана, вақт ва сабаб."
                       aria-describedby="uzBodyHint errUzBody"></textarea>
             <p class="hint" id="uzBodyHint">Пушда икки қатор кўринади — узунлиги чекланмаган.</p>
@@ -282,7 +283,7 @@
               <label class="label" for="ruTitle">Заголовок <span class="req" aria-hidden="true">*</span></label>
               <span class="char-count" id="ruTitleCount">0 белги</span>
             </div>
-            <input class="input" id="ruTitle" type="text" required lang="ru"
+            <input class="input" id="ruTitle" name="ruTitle" autocomplete="off" type="text" required lang="ru"
                    placeholder="Например: Водоснабжение будет временно отключено"
                    aria-describedby="ruTitleHint errRuTitle" />
             <p class="hint" id="ruTitleHint">В push-уведомлении видна одна строка — остальное пользователь прочитает, открыв сообщение.</p>
@@ -293,7 +294,7 @@
               <label class="label" for="ruBody">Текст <span class="req" aria-hidden="true">*</span></label>
               <span class="char-count" id="ruBodyCount">0 белги</span>
             </div>
-            <textarea class="textarea" id="ruBody" required lang="ru"
+            <textarea class="textarea" id="ruBody" name="ruBody" autocomplete="off" required lang="ru"
                       placeholder="Дата, время и причина."
                       aria-describedby="ruBodyHint errRuBody"></textarea>
             <p class="hint" id="ruBodyHint">В push видны две строки — длина не ограничена.</p>
@@ -312,7 +313,7 @@
         <p class="step-aside">Тошкент вақти · UTC+5</p>
       </div>
       <span class="step-state" id="st3" data-tone="todo">
-        <span class="dot" aria-hidden="true"></span><span class="step-state-text"></span>
+        <span class="step-state-text"></span>
       </span>
     </div>
     <div class="step-body">
@@ -350,12 +351,12 @@
         <div class="row-ctl when-grid">
           <div class="field">
             <label class="label" for="fDate">Сана <span class="req" aria-hidden="true">*</span></label>
-            <input class="input" id="fDate" type="date" aria-describedby="errDate" />
+            <input class="input" id="fDate" name="fDate" autocomplete="off" type="date" aria-describedby="errDate" />
             <p class="field-error" id="errDate" role="alert" hidden></p>
           </div>
           <div class="field">
             <label class="label" for="fTime">Вақт <span class="req" aria-hidden="true">*</span></label>
-            <input class="input" id="fTime" type="time" value="09:00" aria-describedby="errTime" />
+            <input class="input" id="fTime" name="fTime" autocomplete="off" type="time" value="09:00" aria-describedby="errTime" />
             <p class="field-error" id="errTime" role="alert" hidden></p>
           </div>
         </div>
@@ -391,7 +392,7 @@
             <p class="row-desc">Ҳар танланган кунда шу вақтда кетади.</p>
           </div>
           <div class="row-ctl field when-time">
-            <input class="input" id="fRepeatTime" type="time" value="09:00" aria-describedby="errRepeatTime" />
+            <input class="input" id="fRepeatTime" name="fRepeatTime" autocomplete="off" type="time" value="09:00" aria-describedby="errRepeatTime" />
             <p class="field-error" id="errRepeatTime" hidden></p>
           </div>
         </div>
@@ -452,12 +453,12 @@
           <div class="row-ctl when-grid">
             <div class="field">
               <label class="label" for="fFrom">Бошланиш <span class="req" aria-hidden="true">*</span></label>
-              <input class="input" id="fFrom" type="date" aria-describedby="errFrom" />
+              <input class="input" id="fFrom" name="fFrom" autocomplete="off" type="date" aria-describedby="errFrom" />
               <p class="field-error" id="errFrom" hidden></p>
             </div>
             <div class="field">
               <label class="label" for="fTo">Тугаш <span class="req" aria-hidden="true">*</span></label>
-              <input class="input" id="fTo" type="date" aria-describedby="untilHint errTo errRuns" />
+              <input class="input" id="fTo" name="fTo" autocomplete="off" type="date" aria-describedby="untilHint errTo errRuns" />
               <p class="hint" id="untilHint">Шу кун ҳам киради (Тошкент бўйича 23:59).</p>
               <p class="field-error" id="errTo" hidden></p>
               <p class="field-error" id="errRuns" hidden></p>
@@ -492,7 +493,7 @@
         <p class="step-aside">Ихтиёрий — эълон, жадвал ёки расм</p>
       </div>
       <span class="step-state" id="st4" data-tone="todo">
-        <span class="dot" aria-hidden="true"></span><span class="step-state-text"></span>
+        <span class="step-state-text"></span>
       </span>
     </div>
     <div class="step-body">
@@ -528,7 +529,7 @@
         <p class="step-aside">Юборишдан олдин текширинг</p>
       </div>
       <span class="step-state" id="st5" data-tone="todo">
-        <span class="dot" aria-hidden="true"></span><span class="step-state-text"></span>
+        <span class="step-state-text"></span>
       </span>
     </div>
     <div class="step-body">
@@ -539,7 +540,7 @@
               <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-list" id="rcMarkUse"/></svg>
             </span>
             <p class="dispatch-line" id="rcLine"></p>
-            <span class="chip dispatch-badge" id="rcBadge"><span class="dot" aria-hidden="true"></span><span id="rcBadgeText"></span></span>
+            <span class="chip dispatch-badge" id="rcBadge"><span id="rcBadgeText"></span></span>
           </div>
           <p class="dispatch-when" id="rcWhenLine"></p>
         </div>
@@ -617,28 +618,27 @@
     </div>
   </section>
     </main>
-  </div>
-
-  <div class="actions" id="actions">
-    <div class="actions-inner">
-      <p class="actions-status" id="status" role="status">
-        <span class="actions-count" id="stepCount">1 / 5</span>
-        <span class="dot" aria-hidden="true"></span>
-        <span id="statusText">Қамров ва матн тўлдирилиши керак</span>
-      </p>
-      <div class="actions-buttons">
-        <button type="button" class="btn btn-ghost" id="backBtn" hidden>
-          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
-          Орқага
-        </button>
-        <button type="button" class="btn btn-accent" id="nextBtn">
-          <span id="nextLabel">Кейинги</span>
-          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
-        </button>
-        <button type="button" class="btn btn-accent" id="submitBtn" hidden>
-          <span id="submitLabel">Юбориш</span>
-          <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
-        </button>
+      <div class="actions" id="actions">
+        <div class="actions-inner">
+          <p class="actions-status" id="status" role="status">
+            <span class="actions-count" id="stepCount">1 / 5</span>
+            <span id="statusText">Қамров ва матн тўлдирилиши керак</span>
+          </p>
+          <div class="actions-buttons">
+            <button type="button" class="btn btn-ghost" id="backBtn" hidden>
+              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-left"/></svg>
+              Орқага
+            </button>
+            <button type="button" class="btn btn-accent" id="nextBtn">
+              <span id="nextLabel">Кейинги</span>
+              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+            </button>
+            <button type="button" class="btn btn-accent" id="submitBtn" hidden>
+              <span id="submitLabel">Юбориш</span>
+              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
