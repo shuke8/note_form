@@ -2,17 +2,17 @@
 .pick-field .input { padding-inline-end: 52px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
 .pick-toggle {
   position: absolute; top: 2px; right: 2px; bottom: 2px; width: 44px;
-  display: grid; place-items: center; border-radius: 6px; color: var(--ink-2);
+  display: grid; place-items: center; border-radius: 8px; color: var(--ink-2);
   transition: background-color var(--d-hover) var(--ease-out), color var(--d-hover) var(--ease-out);
 }
 .pick-toggle::after { content: ""; position: absolute; inset: -2px; }
-.pick-toggle[aria-expanded="true"] { color: var(--accent-ink); background: var(--accent-soft); }
+.pick-toggle[aria-expanded="true"] { color: var(--sel-ink); background: var(--sel); }
 @media (hover: hover) { .pick-toggle:hover { color: var(--ink); background: var(--paper-sunk); } }
 
 .pick-pop {
   position: absolute; z-index: 40; top: calc(100% + 8px); left: 0;
   max-width: calc(100vw - 32px); padding: 12px;
-  border-radius: var(--r-panel); background: var(--paper); box-shadow: var(--lift-pop);
+  border-radius: 18px; background: var(--paper); box-shadow: var(--lift-pop);
   animation: pick-pop-in var(--d-hover) var(--ease-out) both;
 }
 @keyframes pick-pop-in { from { opacity: 0; transform: translateY(-4px); } }
@@ -21,7 +21,7 @@
 
 .date-pop { width: 320px; }
 .date-head { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; margin-bottom: 4px; }
-.date-title { text-align: center; font-size: var(--t-ui); font-weight: 600; color: var(--ink); }
+.date-title { text-align: center; font-size: var(--t-ui); font-weight: 800; color: var(--ink); }
 .date-nav { display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--r-control); color: var(--ink-2); }
 .date-nav:disabled { opacity: 0.35; cursor: default; }
 @media (hover: hover) { .date-nav:not(:disabled):hover { background: var(--paper-sunk); color: var(--ink); } }
@@ -33,8 +33,8 @@
   transition: background-color var(--d-hover) var(--ease-out), color var(--d-hover) var(--ease-out);
 }
 .date-day.is-out { color: var(--ink-3); }
-.date-day[aria-current="date"] { box-shadow: inset 0 0 0 1px var(--edge); font-weight: 600; }
-.date-day[aria-selected="true"] { background: var(--primary); color: var(--primary-ink); font-weight: 600; }
+.date-day[aria-current="date"] { box-shadow: inset 0 0 0 1.5px var(--accent); font-weight: 800; }
+.date-day[aria-selected="true"] { background: var(--sel); color: var(--sel-ink); font-weight: 800; }
 .date-day[aria-disabled="true"] { color: var(--ink-3); opacity: 0.45; text-decoration: line-through; cursor: not-allowed; }
 @media (hover: hover) { .date-day:not([aria-selected="true"]):not([aria-disabled="true"]):hover { background: var(--paper-sunk); } }
 .date-day:focus-visible, .time-opt:focus-visible { box-shadow: var(--focus-ring); }
@@ -51,11 +51,13 @@
   font-variant-numeric: tabular-nums; color: var(--ink);
   transition: background-color var(--d-hover) var(--ease-out), color var(--d-hover) var(--ease-out);
 }
-.time-opt[aria-selected="true"] { background: var(--primary); color: var(--primary-ink); font-weight: 600; }
+.time-opt[aria-selected="true"] { background: var(--sel); color: var(--sel-ink); font-weight: 800; }
 @media (hover: hover) { .time-opt:not([aria-selected="true"]):hover { background: var(--paper-sunk); } }
 
 @media (max-width: 640px) {
   .pick-pop, .when-grid .field:last-child .pick-pop { left: 0; right: auto; }
-  .date-pop { width: 100%; max-width: none; }
+  .date-pop { left: calc(4px - var(--card-pad)); width: calc(100% + 2 * var(--card-pad) - 8px); max-width: none; padding: 8px; }
+  .date-day { height: 44px; }
+  .date-row, .date-grid { gap: 0; }
   .time-pop { width: min(100%, 280px); }
 }

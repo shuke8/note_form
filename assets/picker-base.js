@@ -98,8 +98,13 @@
     if (refocus) this.toggle.focus();
   };
 
+  function reservedBottom() {
+    var bar = document.getElementById("actions");
+    return bar && getComputedStyle(bar).position === "fixed" ? bar.offsetHeight : 0;
+  }
+
   Field.prototype.reveal = function () {
-    var gap = 16;
+    var gap = 16 + reservedBottom();
     var bottom = this.pop.getBoundingClientRect().bottom + window.scrollY + gap;
     if (bottom > document.body.offsetHeight) document.body.style.minHeight = Math.ceil(bottom) + "px";
     var overflow = this.pop.getBoundingClientRect().bottom + gap - window.innerHeight;

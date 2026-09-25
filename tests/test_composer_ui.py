@@ -264,6 +264,73 @@ class ComposerUiTest(unittest.TestCase):
         cut = self.page.eval_on_selector_all(".scope-name", "els => els.filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent)")
         self.assertEqual(cut, [])
 
+    def platform_fonts(self, selector):
+        self.page.evaluate("document.fonts.ready.then(() => 1)")
+        self.page.wait_for_timeout(300)
+        cdp = self.page.context.new_cdp_session(self.page)
+        cdp.send("DOM.enable")
+        cdp.send("CSS.enable")
+        root = cdp.send("DOM.getDocument", {"depth": -1})["root"]["nodeId"]
+        node = cdp.send("DOM.querySelector", {"nodeId": root, "selector": selector})["nodeId"]
+        return {f["familyName"].split(" ")[0] for f in cdp.send("CSS.getPlatformFontsForNode", {"nodeId": node})["fonts"]}
+
+    def test_uzbek_letters_render_in_the_interface_fonts(self):
+        self.page.evaluate("document.querySelector('.scope-row').click()")
+        for selector, family in [("#h-sec-3", "Onest"), ('[data-when="now"] .choice-name', "Onest"),
+                                 (".scope-name", "Onest"), ("label[for=uzTitle]", "Source")]:
+            with self.subTest(selector=selector):
+                self.assertEqual(self.platform_fonts(selector), {family})
+
+    def test_top_bar_focus_ring_stands_out_on_green(self):
+        self.page.focus("#resetBtn")
+        self.page.keyboard.press("Shift+Tab")
+        self.page.keyboard.press("Tab")
+        ring = self.page.eval_on_selector("#resetBtn", "e => getComputedStyle(e).boxShadow")
+        ink = self.page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--backdrop-ink').trim()")
+        self.assertIn(self.page.evaluate(f"(() => {{ const d = document.createElement('i'); d.style.color = '{ink}'; document.body.append(d); const c = getComputedStyle(d).color; d.remove(); return c; }})()"), ring)
+
+    def test_preview_stays_below_the_top_bar_at_the_page_end(self):
+        self.page.click("#scopeAll")
+        self.fill_text()
+        self.to_repeat()
+        self.page.click('[data-day="1"]')
+        self.page.click('[data-month="10"]')
+        self.page.evaluate("scrollTo(0, document.documentElement.scrollHeight)")
+        self.page.wait_for_timeout(200)
+        card = self.page.locator(".side-card").bounding_box()
+        bar = self.page.locator(".topbar").bounding_box()
+        self.assertGreaterEqual(card["y"], bar["y"] + bar["height"])
+        last = self.page.locator("#sec-4").bounding_box()
+        self.assertLessEqual(card["y"] + card["height"], last["y"] + last["height"] + 1)
+
+    def test_theme_colour_survives_reduced_motion(self):
+        page = self.browser.new_page(viewport={"width": 1280, "height": 900}, reduced_motion="reduce")
+        try:
+            page.goto(self.url, wait_until="domcontentloaded")
+            page.click("[data-theme-toggle]")
+            page.wait_for_timeout(100)
+            colour = page.eval_on_selector('meta[name="theme-color"]:not([media])', "m => m.content")
+            self.assertNotIn("rgba(0, 0, 0, 0)", colour)
+            self.assertNotEqual(colour.strip(), "")
+        finally:
+            page.close()
+
+    def test_calendar_clears_the_phone_send_bar(self):
+        self.page.set_viewport_size({"width": 390, "height": 844})
+        self.to_later()
+        self.page.click("#whenLater .pick-toggle")
+        self.page.wait_for_timeout(300)
+        pop = self.page.locator("#whenLater .date-pop").bounding_box()
+        bar = self.page.locator("#actions").bounding_box()
+        self.assertLessEqual(pop["y"] + pop["height"], bar["y"])
+
+    def test_phone_toasts_leave_the_bottom_free(self):
+        self.page.set_viewport_size({"width": 320, "height": 640})
+        self.page.click("#submitBtn")
+        self.page.wait_for_selector(".toast")
+        toast = self.page.locator(".toast").first.bounding_box()
+        self.assertLess(toast["y"] + toast["height"], 320)
+
     def test_status_tells_missing_from_wrong(self):
         self.to_later()
         self.page.fill("#fTime", "")
