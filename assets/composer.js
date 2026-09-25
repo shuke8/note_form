@@ -581,6 +581,19 @@
     return isNaN(d) ? null : d;
   }
 
+  function dateIso(id) {
+    var el = $(id);
+    return el.dataset.iso != null ? el.dataset.iso : el.value;
+  }
+  function dateBad(id) {
+    var el = $(id);
+    return el.dataset.bad === "true" || !!(el.validity && el.validity.badInput);
+  }
+  function dateText(id) {
+    var d = ymd(dateIso(id));
+    return d ? dateLabel(d) : "";
+  }
+
   /* Takrorlanish qoidasining SOF ko'rinishi — ekran ham, tana ham shundan
      oziqlanadi. Faol bo'lmagan tarmoq bu yerga tushmaydi. */
   function scheduleRule() {
@@ -588,7 +601,7 @@
     var w;
     switch (state.span) {
       case "months": w = { kind: "months", months: state.months.slice().sort(function (a, b) { return a - b; }) }; break;
-      case "range":  w = { kind: "range", from: $("fFrom").value || null, to: $("fTo").value || null }; break;
+      case "range":  w = { kind: "range", from: dateIso("fFrom") || null, to: dateIso("fTo") || null }; break;
       /* Ilgari bu yerda `default: w = { kind: "always" }` turardi. «Doimiy»
          olib tashlangach uni qoldirish XAVFLI bo'lardi: `state.span` biror
          sabab bilan noma'lum qiymat olsa, ekran ikki variantdan birini
@@ -671,9 +684,9 @@
      ishga tushmaydi. */
   function rangeBroken() {
     if (state.when !== "repeat" || state.span !== "range") return null;
-    var from = $("fFrom"), to = $("fTo");
-    if (from.validity.badInput || to.validity.badInput) return "badInput";
-    if (from.value && to.value && to.value < from.value) return "inverted";
+    if (dateBad("fFrom") || dateBad("fTo")) return "badInput";
+    var from = dateIso("fFrom"), to = dateIso("fTo");
+    if (from && to && to < from) return "inverted";
     return null;
   }
 
@@ -693,14 +706,14 @@
       var m = monthListText();
       return m ? "ҳар йили " + m : "ойлар танланмаган";
     }
-    var f = $("fFrom").value, t = $("fTo").value;
+    var f = dateText("fFrom"), t = dateText("fTo");
     return (f && t) ? f + " — " + t : "оралиқ танланмаган";
   }
 
   function whenText() {
     if (state.when === "now") return "Ҳозироқ";
     if (state.when === "later") {
-      var d = $("fDate").value, t = $("fTime").value;
+      var d = dateText("fDate"), t = $("fTime").value;
       if (!d) return "Сана танланмаган";
       if (!t) return d + " · вақт танланмаган";
       return d + " · " + t;
@@ -724,7 +737,7 @@
     if (state.when !== "repeat") return true;
     if (!state.days.length || !$("fRepeatTime").value) return false;
     if (state.span === "months") return state.months.length > 0;
-    return !!($("fFrom").value && $("fTo").value);
+    return !!(dateIso("fFrom") && dateIso("fTo"));
   }
 
   /* So'rov tanasidagi `schedule` obyekti. `days` o'rniga `byday`: qiymat
@@ -733,7 +746,7 @@
   function schedulePayload() {
     if (state.when === "now") return { mode: "now" };
     if (state.when === "later") {
-      return { mode: "at", date: $("fDate").value || null, time: $("fTime").value || null, tzid: TZID };
+      return { mode: "at", date: dateIso("fDate") || null, time: $("fTime").value || null, tzid: TZID };
     }
     var rule = scheduleRule();
     var first = runs(1).list[0] || null;
@@ -927,9 +940,9 @@
      uchun tekshiruv qoidalari unga umuman tayanmaydi. */
   function syncDateBounds() {
     var today = isoOf(tashNow());
-    $("fDate").min = today;
-    $("fFrom").min = today;
-    $("fTo").min = $("fFrom").value || today;
+    $("fDate").dataset.min = today;
+    $("fFrom").dataset.min = today;
+    $("fTo").dataset.min = dateIso("fFrom") || today;
   }
 
   /* ---------------------------------------------------------------------------
@@ -1071,7 +1084,7 @@
     });
 
     if (state.when === "later") {
-      var date = $("fDate").value, time = $("fTime").value;
+      var date = dateIso("fDate"), time = $("fTime").value;
       if (!date) errors.push({ el: $("fDate"), box: $("errDate"), msg: "Юбориш санасини танланг." });
       if (!time) errors.push({ el: $("fTime"), box: $("errTime"), msg: "Юбориш вақтини танланг." });
       if (date && time) {
@@ -1102,28 +1115,29 @@
 
       if (state.span === "range") {
         var from = $("fFrom"), to = $("fTo");
+        var fromIso = dateIso("fFrom"), toIso = dateIso("fTo");
         var today = isoOf(tashNow());
         /* `badInput` — mavjud bo'lmagan sana (29.02.2027): brauzer `.value` ni
            BO'SH qaytaradi, lekin maydonda raqamlar ko'rinib turadi. «Sanani
            tanlang» deyish foydalanuvchini adashtirardi — u sanani ko'rib turibdi. */
-        if (from.validity.badInput) {
-          errors.push({ el: from, box: $("errFrom"), kind: "rule", msg: "Бу сана мавжуд эмас — мавжуд санани танланг (масалан 2027-02-28)." });
-        } else if (!from.value) {
+        if (dateBad("fFrom")) {
+          errors.push({ el: from, box: $("errFrom"), kind: "rule", msg: "Бу сана мавжуд эмас — мавжуд санани танланг (масалан 28.02.2027)." });
+        } else if (!fromIso) {
           errors.push({ el: from, box: $("errFrom"), msg: "Бошланиш санасини танланг." });
-        } else if (from.value < today) {
+        } else if (fromIso < today) {
           errors.push({ el: from, box: $("errFrom"), kind: "rule", msg: "Бошланиш санаси ўтиб кетган — бугунги ёки келгуси санани танланг." });
         }
 
-        if (to.validity.badInput) {
+        if (dateBad("fTo")) {
           errors.push({ el: to, box: $("errTo"), kind: "rule", msg: "Бу сана мавжуд эмас — мавжуд санани танланг." });
-        } else if (!to.value) {
-          errors.push({ el: to, box: $("errTo"), msg: "Тугаш санасини танланг ёки «Доимий» ни белгиланг." });
-        } else if (from.value && to.value < from.value) {
+        } else if (!toIso) {
+          errors.push({ el: to, box: $("errTo"), msg: "Тугаш санасини танланг." });
+        } else if (fromIso && toIso < fromIso) {
           /* Teskari oraliqda nol-natija tahlili UMUMAN ishga tushmaydi:
              «bu kun uchramaydi» deyish YOLG'ON sabab bo'lardi va foydalanuvchini
              to'g'ri kun chipini almashtirishga majburlardi. */
           errors.push({ el: to, box: $("errTo"), kind: "rule",
-            msg: "Тугаш санасини бошланиш санасидан кейинга қўйинг — " + from.value + " дан кейинги санани танланг." });
+            msg: "Тугаш санасини бошланиш санасидан кейинга қўйинг — " + fromIso + " дан кейинги санани танланг." });
         }
       }
 
@@ -1137,7 +1151,7 @@
             box: $("errRuns"), kind: "rule",
             msg: rangeHasAnyDay()
               ? "Бу оралиқдаги барча юбориш вақтлари ўтиб кетган — тугаш санасини узайтиринг ёки кечроқ вақт қўйинг."
-              : ($("fFrom").value + " — " + $("fTo").value + " оралиғида " + (dayListText() || "танланган кун") +
+              : (dateText("fFrom") + " — " + dateText("fTo") + " оралиғида " + (dayListText() || "танланган кун") +
                  " куни учрамайди — тугаш санасини узайтиринг ёки бошқа кун танланг.") });
         }
       }
@@ -1476,9 +1490,9 @@
     }
     if (state.when === "now") return line("Ҳозироқ", "Юборилган заҳоти", false);
     if (state.when === "later") {
-      var d = $("fDate").value, t = $("fTime").value;
+      var d = dateIso("fDate"), t = $("fTime").value;
       if (!d || !t) return line("Вақт танланмаган", "03-бўлимда сана ва соатни белгиланг", true);
-      return line(d + " · " + t, null, false);
+      return line(dateText("fDate") + " · " + t, null, false);
     }
     if (!scheduleReady() || rangeBroken()) return line("Вақт танланмаган", "Жадвал тўлиқ эмас", true);
     var r = runs(3);
@@ -1677,7 +1691,7 @@
   function whenSentence() {
     if (state.when === "now") return "Ҳозироқ юборилади.";
     if (state.when === "later") {
-      return $("fDate").value + " куни соат " + $("fTime").value + " да юборилади.";
+      return dateText("fDate") + " куни соат " + $("fTime").value + " да юборилади.";
     }
     var names = ORDER.filter(function (d) { return state.days.indexOf(d) > -1; })
       .map(function (d) { return DAY_FULL[d]; });
@@ -1693,7 +1707,7 @@
          qaytadi — buni ekranda aytmaslik jim va'da bo'lardi. */
       return when + ", ҳар йили " + joinWords(ms) + " ойларида юборилади.";
     }
-    return when + ", " + $("fFrom").value + " дан " + $("fTo").value + " гача юборилади.";
+    return when + ", " + dateText("fFrom") + " дан " + dateText("fTo") + " гача юборилади.";
   }
 
   /* Ro'yxat har chizilganda qayta quriladi, shuning uchun tugma bosilganda
@@ -1726,7 +1740,7 @@
       JSON.stringify(schedulePayload()),
       /* `badInput` da `.value` bo'sh bo'lib qoladi, ya'ni imzo o'zgarmasdi
          va eski JSON paneli ekranda qolib ketardi. */
-      $("fDate").validity.badInput, $("fFrom").validity.badInput, $("fTo").validity.badInput,
+      dateBad("fDate"), dateBad("fFrom"), dateBad("fTo"),
       isoOf(tashNow()),
       state.files.map(function (f) { return f.name + ":" + f.size; }).join(",")
     ].join("|");
@@ -1843,9 +1857,9 @@
   function startSentence() {
     if (state.when === "now") return "Тарқатиш дарҳол бошланади.";
     if (state.when === "later") {
-      var d = $("fDate").value, t = $("fTime").value;
+      var d = dateIso("fDate"), t = $("fTime").value;
       return d && t
-        ? "Хабар тарқатиш навбатида. Юбориш " + d + ", " + t + " да бошланади."
+        ? "Хабар тарқатиш навбатида. Юбориш " + dateText("fDate") + ", " + t + " да бошланади."
         : "Хабар тарқатиш навбатида.";
     }
     var r = runs(1);

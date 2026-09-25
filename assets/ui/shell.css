@@ -69,7 +69,7 @@
 .main-col { display: flex; flex-direction: column; min-width: 0; }
 .doc { min-width: 0; padding: 28px; }
 
-.step-sec[data-enter="1"] { animation: step-in var(--d-pane) var(--ease-out) both; }
+.step-sec[data-enter="1"] { animation: step-in var(--d-pane) var(--ease-out) backwards; }
 @keyframes step-in { from { opacity: 0; transform: translateY(8px); } }
 
 .step-head {

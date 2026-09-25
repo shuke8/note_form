@@ -127,6 +127,79 @@ class ComposerUiTest(unittest.TestCase):
         self.page.wait_for_function("document.querySelectorAll('.scope-row').length > 0")
         self.assertIsNone(self.page.get_attribute("#scopeAll", "aria-current"))
 
+    def to_later(self):
+        self.to_step_three()
+        self.page.click('[data-when="later"]')
+        self.page.wait_for_selector("#whenLater:not([hidden])")
+
+    def test_date_field_is_written_in_cyrillic(self):
+        self.to_later()
+        self.assertEqual(self.page.get_attribute("#fDate", "placeholder"), "КК.ОО.ЙЙЙЙ")
+        self.page.click("#fDate")
+        self.page.keyboard.type("05102030")
+        self.assertEqual(self.page.input_value("#fDate"), "05.10.2030")
+        self.assertEqual(self.page.get_attribute("#fDate", "data-iso"), "2030-10-05")
+        self.assertIn("5 октябр 2030", self.page.inner_text("#st3"))
+
+    def test_calendar_speaks_cyrillic_and_fills_the_field(self):
+        self.to_later()
+        self.page.click("#whenLater .date-toggle")
+        pop = "#whenLater .date-pop"
+        self.page.wait_for_selector(pop + ":not([hidden])")
+        self.assertRegex(self.page.inner_text(pop + " .date-title"), r"^(Январ|Феврал|Март|Апрел|Май|Июн|Июл|Август|Сентябр|Октябр|Ноябр|Декабр) \d{4}$")
+        heads = self.page.eval_on_selector_all(pop + " .date-wd", "els => els.map(e => e.textContent)")
+        self.assertEqual(heads, ["Ду", "Се", "Чо", "Па", "Жу", "Ша", "Як"])
+        self.page.click(pop + " .date-nav[aria-label='Кейинги ой']")
+        self.page.click(pop + " .date-day:not(.is-out) >> nth=14")
+        self.assertTrue(self.page.is_hidden(pop))
+        self.assertRegex(self.page.input_value("#fDate"), r"^15\.\d{2}\.\d{4}$")
+        self.page.click("#nextBtn")
+        self.assertFalse(self.page.is_visible("#errDate"))
+
+    def test_calendar_blocks_days_before_today(self):
+        self.to_later()
+        self.page.click("#whenLater .date-toggle")
+        today = self.page.get_attribute("#fDate", "data-min")
+        blocked = self.page.eval_on_selector_all(
+            "#whenLater .date-day[aria-disabled='true']", "els => els.map(e => e.dataset.iso)")
+        self.assertTrue(all(d < today for d in blocked))
+        self.assertNotIn(today, blocked)
+        self.assertTrue(self.page.is_disabled("#whenLater .date-nav[aria-label='Олдинги ой']"))
+
+    def test_calendar_works_from_the_keyboard(self):
+        self.to_later()
+        self.page.focus("#whenLater .date-toggle")
+        self.page.keyboard.press("Enter")
+        start = self.page.evaluate("document.activeElement.dataset.iso")
+        self.page.keyboard.press("ArrowRight")
+        self.page.keyboard.press("ArrowDown")
+        moved = self.page.evaluate("document.activeElement.dataset.iso")
+        self.assertGreater(moved, start)
+        self.page.keyboard.press("Enter")
+        self.assertEqual(self.page.get_attribute("#fDate", "data-iso"), moved)
+        self.page.click("#whenLater .date-toggle")
+        self.page.keyboard.press("Escape")
+        self.assertTrue(self.page.is_hidden("#whenLater .date-pop"))
+        self.assertTrue(self.page.evaluate("document.activeElement.classList.contains('date-toggle')"))
+
+    def test_calendar_opens_on_the_month_being_typed(self):
+        self.to_later()
+        self.page.click("#fDate")
+        self.page.keyboard.type("1512")
+        self.page.click("#whenLater .date-toggle")
+        self.assertTrue(self.page.inner_text("#whenLater .date-title").startswith("Декабр"))
+        self.assertTrue(self.page.evaluate("document.activeElement.dataset.iso.endsWith('-12-15')"))
+
+    def test_impossible_date_is_named_as_such(self):
+        self.to_step_three()
+        self.page.click('[data-when="repeat"]')
+        self.page.click('[data-span="range"]')
+        self.page.click("#fFrom")
+        self.page.keyboard.type("31022030")
+        self.page.click('[data-day="1"]')
+        self.page.click("#nextBtn")
+        self.assertIn("мавжуд эмас", self.page.inner_text("#errFrom"))
+
 
 if __name__ == "__main__":
     unittest.main()
