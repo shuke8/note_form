@@ -26,7 +26,7 @@
 <link rel="stylesheet" href="assets/ui/controls.css" />
 <link rel="stylesheet" href="assets/ui/shell.css" />
 <link rel="stylesheet" href="assets/ui/steps.css" />
-<link rel="stylesheet" href="assets/ui/datepicker.css" />
+<link rel="stylesheet" href="assets/ui/pickers.css" />
 <link rel="stylesheet" href="assets/natija.css" />
 </head>
 <body>
@@ -320,7 +320,7 @@
           </div>
           <div class="field">
             <label class="label" for="fTime">Вақт <span class="req" aria-hidden="true">*</span></label>
-            <input class="input" id="fTime" name="fTime" autocomplete="off" type="time" value="09:00" aria-describedby="errTime" />
+            <input class="input" id="fTime" name="fTime" autocomplete="off" type="time" value="09:00" data-timepicker aria-describedby="errTime" />
             <p class="field-error" id="errTime" role="alert" hidden></p>
           </div>
         </div>
@@ -356,7 +356,7 @@
             <p class="row-desc">Ҳар танланган кунда шу вақтда кетади.</p>
           </div>
           <div class="row-ctl field when-time">
-            <input class="input" id="fRepeatTime" name="fRepeatTime" autocomplete="off" type="time" value="09:00" aria-describedby="errRepeatTime" />
+            <input class="input" id="fRepeatTime" name="fRepeatTime" autocomplete="off" type="time" value="09:00" data-timepicker aria-describedby="errRepeatTime" />
             <p class="field-error" id="errRepeatTime" hidden></p>
           </div>
         </div>
@@ -591,8 +591,10 @@
 </dialog>
 
 <script src="assets/motion.js" defer></script>
+<script src="assets/picker-base.js" defer></script>
 <script src="assets/datepicker-core.js" defer></script>
 <script src="assets/datepicker.js" defer></script>
+<script src="assets/timepicker.js" defer></script>
 <script src="assets/composer-data.js" defer></script>
 <script src="assets/composer.js" defer></script>
 </body>

@@ -169,8 +169,8 @@ class ComposerUiTest(unittest.TestCase):
 
     def test_calendar_speaks_cyrillic_and_fills_the_field(self):
         self.to_later()
-        self.page.click("#whenLater .date-toggle")
-        pop = "#whenLater .date-pop"
+        self.page.click("#whenLater .pick-toggle")
+        pop = "#whenLater .pick-pop"
         self.page.wait_for_selector(pop + ":not([hidden])")
         self.assertRegex(self.page.inner_text(pop + " .date-title"), r"^(Январ|Феврал|Март|Апрел|Май|Июн|Июл|Август|Сентябр|Октябр|Ноябр|Декабр) \d{4}$")
         heads = self.page.eval_on_selector_all(pop + " .date-wd", "els => els.map(e => e.textContent)")
@@ -184,7 +184,7 @@ class ComposerUiTest(unittest.TestCase):
 
     def test_calendar_blocks_days_before_today(self):
         self.to_later()
-        self.page.click("#whenLater .date-toggle")
+        self.page.click("#whenLater .pick-toggle")
         today = self.page.get_attribute("#fDate", "data-min")
         blocked = self.page.eval_on_selector_all(
             "#whenLater .date-day[aria-disabled='true']", "els => els.map(e => e.dataset.iso)")
@@ -194,7 +194,7 @@ class ComposerUiTest(unittest.TestCase):
 
     def test_calendar_works_from_the_keyboard(self):
         self.to_later()
-        self.page.focus("#whenLater .date-toggle")
+        self.page.focus("#whenLater .pick-toggle")
         self.page.keyboard.press("Enter")
         start = self.page.evaluate("document.activeElement.dataset.iso")
         self.page.keyboard.press("ArrowRight")
@@ -203,18 +203,50 @@ class ComposerUiTest(unittest.TestCase):
         self.assertGreater(moved, start)
         self.page.keyboard.press("Enter")
         self.assertEqual(self.page.get_attribute("#fDate", "data-iso"), moved)
-        self.page.click("#whenLater .date-toggle")
+        self.page.click("#whenLater .pick-toggle")
         self.page.keyboard.press("Escape")
-        self.assertTrue(self.page.is_hidden("#whenLater .date-pop"))
-        self.assertTrue(self.page.evaluate("document.activeElement.classList.contains('date-toggle')"))
+        self.assertTrue(self.page.is_hidden("#whenLater .pick-pop"))
+        self.assertTrue(self.page.evaluate("document.activeElement.classList.contains('pick-toggle')"))
 
     def test_calendar_opens_on_the_month_being_typed(self):
         self.to_later()
         self.page.click("#fDate")
         self.page.keyboard.type("1512")
-        self.page.click("#whenLater .date-toggle")
+        self.page.click("#whenLater .pick-toggle")
         self.assertTrue(self.page.inner_text("#whenLater .date-title").startswith("Декабр"))
         self.assertTrue(self.page.evaluate("document.activeElement.dataset.iso.endsWith('-12-15')"))
+
+    def test_time_field_is_written_in_cyrillic(self):
+        self.to_later()
+        self.assertEqual(self.page.get_attribute("#fTime", "placeholder"), "СС:ДД")
+        self.assertEqual(self.page.get_attribute("#fTime", "data-time"), "09:00")
+        self.page.fill("#fTime", "")
+        self.page.click("#fTime")
+        self.page.keyboard.type("1430")
+        self.assertEqual(self.page.input_value("#fTime"), "14:30")
+        self.assertEqual(self.page.get_attribute("#fTime", "data-time"), "14:30")
+
+    def test_time_list_picks_hour_then_minute(self):
+        self.to_later()
+        self.page.click("#whenLater .field:last-child .pick-toggle")
+        pop = "#whenLater .field:last-child .pick-pop"
+        labels = self.page.eval_on_selector_all(pop + " .time-col-label", "els => els.map(e => e.textContent)")
+        self.assertEqual(labels, ["Соат", "Дақиқа"])
+        self.assertEqual(self.page.evaluate("document.activeElement.textContent"), "09")
+        self.page.click(pop + " [data-kind='h'] [data-value='18']")
+        self.assertEqual(self.page.input_value("#fTime"), "18:00")
+        self.assertTrue(self.page.is_visible(pop))
+        self.page.click(pop + " [data-kind='m'] [data-value='45']")
+        self.assertEqual(self.page.input_value("#fTime"), "18:45")
+        self.assertTrue(self.page.is_hidden(pop))
+
+    def test_impossible_time_is_named_as_such(self):
+        self.to_later()
+        self.page.fill("#fTime", "")
+        self.page.click("#fTime")
+        self.page.keyboard.type("2570")
+        self.save(3)
+        self.assertIn("мавжуд эмас", self.page.inner_text("#errTime"))
 
     def test_impossible_date_is_named_as_such(self):
         self.to_step_three()
