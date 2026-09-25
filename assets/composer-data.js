@@ -10,67 +10,67 @@
    Har tuman ro'yxatida bir nechta MFY namunasi bor — to'liq ro'yxat emas.
    ========================================================================== */
 window.OM_GEO = {
-  "Qoraqalpog‘iston Respublikasi": { pop: 1900000, districts: {
-    "Nukus shahri":     { pop: 330000, mahallas: { "1-mahalla": 3100, "Bereke MFY": 2600, "Do‘stlik MFY": 2900 } },
-    "Xo‘jayli tumani":  { pop: 120000, mahallas: { "Markaz MFY": 2400, "Yangiobod MFY": 1900 } },
-    "Chimboy tumani":   { pop: 105000, mahallas: { "Chimboy MFY": 2200, "Oqdaryo MFY": 1700 } } } },
+  "Қорақалпоғистон Республикаси": { pop: 1900000, districts: {
+    "Нукус шаҳри":     { pop: 330000, mahallas: { "1-маҳалла": 3100, "Береке МФЙ": 2600, "Дўстлик МФЙ": 2900 } },
+    "Хўжайли тумани":  { pop: 120000, mahallas: { "Марказ МФЙ": 2400, "Янгиобод МФЙ": 1900 } },
+    "Чимбой тумани":   { pop: 105000, mahallas: { "Чимбой МФЙ": 2200, "Оқдарё МФЙ": 1700 } } } },
 
-  "Andijon viloyati": { pop: 3300000, districts: {
-    "Andijon shahri":   { pop: 450000, mahallas: { "Bog‘ishamol MFY": 3400, "Navbahor MFY": 2800, "Yangiobod MFY": 3100 } },
-    "Asaka tumani":     { pop: 175000, mahallas: { "Asaka MFY": 2500, "Mustaqillik MFY": 2100 } },
-    "Xonobod shahri":   { pop:  95000, mahallas: { "Xonobod MFY": 2300, "Guliston MFY": 1800 } } } },
+  "Андижон вилояти": { pop: 3300000, districts: {
+    "Андижон шаҳри":   { pop: 450000, mahallas: { "Боғишамол МФЙ": 3400, "Навбаҳор МФЙ": 2800, "Янгиобод МФЙ": 3100 } },
+    "Асака тумани":     { pop: 175000, mahallas: { "Асака МФЙ": 2500, "Мустақиллик МФЙ": 2100 } },
+    "Хонобод шаҳри":   { pop:  95000, mahallas: { "Хонобод МФЙ": 2300, "Гулистон МФЙ": 1800 } } } },
 
-  "Buxoro viloyati": { pop: 2000000, districts: {
-    "Buxoro shahri":    { pop: 290000, mahallas: { "Registon MFY": 2700, "Sitorai MFY": 2200, "Xoja MFY": 2500 } },
-    "G‘ijduvon tumani": { pop: 190000, mahallas: { "G‘ijduvon MFY": 2600, "Damashqon MFY": 2000 } },
-    "Kogon shahri":     { pop:  65000, mahallas: { "Kogon MFY": 2100, "Temiryo‘l MFY": 1600 } } } },
+  "Бухоро вилояти": { pop: 2000000, districts: {
+    "Бухоро шаҳри":    { pop: 290000, mahallas: { "Регистон МФЙ": 2700, "Ситораи МФЙ": 2200, "Хожа МФЙ": 2500 } },
+    "Ғиждувон тумани": { pop: 190000, mahallas: { "Ғиждувон МФЙ": 2600, "Дамашқон МФЙ": 2000 } },
+    "Когон шаҳри":     { pop:  65000, mahallas: { "Когон МФЙ": 2100, "Темирйўл МФЙ": 1600 } } } },
 
-  "Farg‘ona viloyati": { pop: 3800000, districts: {
-    "Farg‘ona shahri":  { pop: 290000, mahallas: { "Yangi Farg‘ona MFY": 3000, "Sanoat MFY": 2400 } },
-    "Marg‘ilon shahri": { pop: 230000, mahallas: { "Marg‘ilon MFY": 2800, "Hunarmand MFY": 2300 } },
-    "Qo‘qon shahri":    { pop: 260000, mahallas: { "Qo‘qon MFY": 2900, "Xonqadam MFY": 2200 } } } },
+  "Фарғона вилояти": { pop: 3800000, districts: {
+    "Фарғона шаҳри":  { pop: 290000, mahallas: { "Янги Фарғона МФЙ": 3000, "Саноат МФЙ": 2400 } },
+    "Марғилон шаҳри": { pop: 230000, mahallas: { "Марғилон МФЙ": 2800, "Ҳунарманд МФЙ": 2300 } },
+    "Қўқон шаҳри":    { pop: 260000, mahallas: { "Қўқон МФЙ": 2900, "Хонқадам МФЙ": 2200 } } } },
 
-  "Jizzax viloyati": { pop: 1400000, districts: {
-    "Jizzax shahri":    { pop: 190000, mahallas: { "Sharq MFY": 2500, "Yangihayot MFY": 2000 } },
-    "Zomin tumani":     { pop: 100000, mahallas: { "Zomin MFY": 2200, "Tog‘li MFY": 1400 } } } },
+  "Жиззах вилояти": { pop: 1400000, districts: {
+    "Жиззах шаҳри":    { pop: 190000, mahallas: { "Шарқ МФЙ": 2500, "Янгиҳаёт МФЙ": 2000 } },
+    "Зомин тумани":     { pop: 100000, mahallas: { "Зомин МФЙ": 2200, "Тоғли МФЙ": 1400 } } } },
 
-  "Xorazm viloyati": { pop: 1900000, districts: {
-    "Urganch shahri":     { pop: 155000, mahallas: { "Urganch MFY": 2600, "Al-Xorazmiy MFY": 2100 } },
-    "Xiva shahri":        { pop:  95000, mahallas: { "Ichan qal’a MFY": 1800, "Dishan qal’a MFY": 2000 } },
-    "Qo‘shko‘pir tumani": { pop: 125000, mahallas: { "8-mahalla “Do‘stlik”": 2400, "Yangiariq MFY": 1900, "Bog‘ot MFY": 2100 } } } },
+  "Хоразм вилояти": { pop: 1900000, districts: {
+    "Урганч шаҳри":     { pop: 155000, mahallas: { "Урганч МФЙ": 2600, "Ал-Хоразмий МФЙ": 2100 } },
+    "Хива шаҳри":        { pop:  95000, mahallas: { "Ичан қалъа МФЙ": 1800, "Дишан қалъа МФЙ": 2000 } },
+    "Қўшкўпир тумани": { pop: 125000, mahallas: { "8-маҳалла “Дўстлик”": 2400, "Янгиариқ МФЙ": 1900, "Боғот МФЙ": 2100 } } } },
 
-  "Namangan viloyati": { pop: 2900000, districts: {
-    "Namangan shahri":  { pop: 640000, mahallas: { "Davlatobod MFY": 3300, "Yangi Namangan MFY": 2900 } },
-    "Chust tumani":     { pop: 155000, mahallas: { "Chust MFY": 2400, "Yorqo‘rg‘on MFY": 1900 } } } },
+  "Наманган вилояти": { pop: 2900000, districts: {
+    "Наманган шаҳри":  { pop: 640000, mahallas: { "Давлатобод МФЙ": 3300, "Янги Наманган МФЙ": 2900 } },
+    "Чуст тумани":     { pop: 155000, mahallas: { "Чуст МФЙ": 2400, "Ёрқўрғон МФЙ": 1900 } } } },
 
-  "Navoiy viloyati": { pop: 1000000, districts: {
-    "Navoiy shahri":     { pop: 145000, mahallas: { "Navoiy MFY": 2500, "Sanoat MFY": 2000 } },
-    "Zarafshon shahri":  { pop:  85000, mahallas: { "Zarafshon MFY": 2200, "Konchi MFY": 1700 } } } },
+  "Навоий вилояти": { pop: 1000000, districts: {
+    "Навоий шаҳри":     { pop: 145000, mahallas: { "Навоий МФЙ": 2500, "Саноат МФЙ": 2000 } },
+    "Зарафшон шаҳри":  { pop:  85000, mahallas: { "Зарафшон МФЙ": 2200, "Кончи МФЙ": 1700 } } } },
 
-  "Qashqadaryo viloyati": { pop: 3400000, districts: {
-    "Qarshi shahri":     { pop: 275000, mahallas: { "Qarshi MFY": 2800, "Yangiobod MFY": 2300 } },
-    "Shahrisabz shahri": { pop: 110000, mahallas: { "Shahrisabz MFY": 2400, "Oqsaroy MFY": 1900 } } } },
+  "Қашқадарё вилояти": { pop: 3400000, districts: {
+    "Қарши шаҳри":     { pop: 275000, mahallas: { "Қарши МФЙ": 2800, "Янгиобод МФЙ": 2300 } },
+    "Шаҳрисабз шаҳри": { pop: 110000, mahallas: { "Шаҳрисабз МФЙ": 2400, "Оқсарой МФЙ": 1900 } } } },
 
-  "Samarqand viloyati": { pop: 4000000, districts: {
-    "Samarqand shahri":     { pop: 560000, mahallas: { "Registon MFY": 3200, "Siyob MFY": 2700, "Universitet MFY": 2500 } },
-    "Kattaqo‘rg‘on shahri": { pop:  90000, mahallas: { "Kattaqo‘rg‘on MFY": 2300, "Payariq MFY": 1800 } } } },
+  "Самарқанд вилояти": { pop: 4000000, districts: {
+    "Самарқанд шаҳри":     { pop: 560000, mahallas: { "Регистон МФЙ": 3200, "Сиёб МФЙ": 2700, "Университет МФЙ": 2500 } },
+    "Каттақўрғон шаҳри": { pop:  90000, mahallas: { "Каттақўрғон МФЙ": 2300, "Паяриқ МФЙ": 1800 } } } },
 
-  "Sirdaryo viloyati": { pop: 900000, districts: {
-    "Guliston shahri":  { pop:  85000, mahallas: { "Guliston MFY": 2200, "Yangiyer MFY": 1700 } },
-    "Shirin shahri":    { pop:  30000, mahallas: { "Shirin MFY": 1600, "Energetik MFY": 1300 } } } },
+  "Сирдарё вилояти": { pop: 900000, districts: {
+    "Гулистон шаҳри":  { pop:  85000, mahallas: { "Гулистон МФЙ": 2200, "Янгиер МФЙ": 1700 } },
+    "Ширин шаҳри":    { pop:  30000, mahallas: { "Ширин МФЙ": 1600, "Энергетик МФЙ": 1300 } } } },
 
-  "Surxondaryo viloyati": { pop: 2700000, districts: {
-    "Termiz shahri":    { pop: 185000, mahallas: { "Termiz MFY": 2600, "Amudaryo MFY": 2100 } },
-    "Denov tumani":     { pop: 265000, mahallas: { "Denov MFY": 2800, "Sho‘rchi MFY": 2200 } } } },
+  "Сурхондарё вилояти": { pop: 2700000, districts: {
+    "Термиз шаҳри":    { pop: 185000, mahallas: { "Термиз МФЙ": 2600, "Амударё МФЙ": 2100 } },
+    "Денов тумани":     { pop: 265000, mahallas: { "Денов МФЙ": 2800, "Шўрчи МФЙ": 2200 } } } },
 
-  "Toshkent viloyati": { pop: 3000000, districts: {
-    "Nurafshon shahri": { pop:  55000, mahallas: { "Nurafshon MFY": 2000, "Yangiobod MFY": 1600 } },
-    "Chirchiq shahri":  { pop: 170000, mahallas: { "Chirchiq MFY": 2500, "Kimyogar MFY": 2000 } },
-    "Zangiota tumani":  { pop: 195000, mahallas: { "Zangiota MFY": 2600, "Eshonguzar MFY": 2100 } } } },
+  "Тошкент вилояти": { pop: 3000000, districts: {
+    "Нурафшон шаҳри": { pop:  55000, mahallas: { "Нурафшон МФЙ": 2000, "Янгиобод МФЙ": 1600 } },
+    "Чирчиқ шаҳри":  { pop: 170000, mahallas: { "Чирчиқ МФЙ": 2500, "Кимёгар МФЙ": 2000 } },
+    "Зангиота тумани":  { pop: 195000, mahallas: { "Зангиота МФЙ": 2600, "Эшонгузар МФЙ": 2100 } } } },
 
-  "Toshkent shahri": { pop: 2900000, districts: {
-    "Yunusobod tumani": { pop: 300000, mahallas: { "12-mahalla": 3000, "Bodomzor MFY": 2600, "Shifokorlar MFY": 2400 } },
-    "Chilonzor tumani": { pop: 265000, mahallas: { "Chilonzor MFY": 2900, "Qatortol MFY": 2500 } },
-    "Mirobod tumani":   { pop: 145000, mahallas: { "Mirobod MFY": 2300, "Salar MFY": 1900 } } } }
+  "Тошкент шаҳри": { pop: 2900000, districts: {
+    "Юнусобод тумани": { pop: 300000, mahallas: { "12-маҳалла": 3000, "Бодомзор МФЙ": 2600, "Шифокорлар МФЙ": 2400 } },
+    "Чилонзор тумани": { pop: 265000, mahallas: { "Чилонзор МФЙ": 2900, "Қатортол МФЙ": 2500 } },
+    "Миробод тумани":   { pop: 145000, mahallas: { "Миробод МФЙ": 2300, "Салар МФЙ": 1900 } } } }
 };
 

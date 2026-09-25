@@ -77,7 +77,7 @@
   padding-bottom: 20px; border-bottom: 1px solid var(--hairline);
 }
 .step-index { grid-column: 1 / -1; font-size: var(--t-sm); font-weight: 500; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
-.step-index::before { content: "Bosqich "; }
+.step-index::before { content: "Босқич "; }
 .step-index::after { content: " / 05"; color: var(--ink-3); }
 .d2 { font-size: var(--t-d1); font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); }
 .d2:focus { outline: none; }

@@ -246,7 +246,7 @@
     function setOpen(open) {
       panel.setAttribute("data-open", open ? "true" : "false");
       btn.setAttribute("aria-expanded", open ? "true" : "false");
-      btn.setAttribute("aria-label", open ? "Menyuni yopish" : "Menyuni ochish");
+      btn.setAttribute("aria-label", open ? "Менюни ёпиш" : "Менюни очиш");
     }
 
     btn.addEventListener("click", function () {
@@ -310,7 +310,7 @@
     document.documentElement.setAttribute("data-theme", theme);
     document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
       b.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
-      var label = theme === "dark" ? "Yorug‘ mavzuga o‘tish" : "Qorong‘i mavzuga o‘tish";
+      var label = theme === "dark" ? "Ёруғ мавзуга ўтиш" : "Қоронғи мавзуга ўтиш";
       b.setAttribute("aria-label", label);
       b.setAttribute("title", label);
     });
@@ -339,7 +339,7 @@
           // deb o'ylaydi.
           if (!storageWarned) {
             storageWarned = true;
-            if (window.omToast) window.omToast("Mavzu tanlovi bu brauzerda saqlanmaydi", "warn");
+            if (window.omToast) window.omToast("Мавзу танлови бу браузерда сақланмайди", "warn");
           }
         }
       });
@@ -405,7 +405,7 @@
           step();
           if (step === initReveal) revealOk = true;
         } catch (e) {
-          console.error("[motion] " + (step.name || "step") + " ishlamadi", e);
+          console.error("[motion] " + (step.name || "step") + " ишламади", e);
         }
       });
     /* `no-js` ni FAQAT reveal muvaffaqiyatli tugagandagina olamiz.
