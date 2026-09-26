@@ -55,8 +55,9 @@
     head.appendChild(words);
     box.appendChild(head);
     box.appendChild(summary(job.body, job.selection));
-    box.appendChild(actions(phase, handlers, extra));
-    box.appendChild(jsonBlock(job.body));
+    var row = actions(phase, handlers, extra);
+    if (row.children.length) box.appendChild(row);
+    box.appendChild(jsonBlock(job.body, handlers));
     host.appendChild(box);
     $("resultEyebrow").textContent = p.eyebrow;
     $("resultDialog").setAttribute("aria-busy", phase === "sending" ? "true" : "false");
@@ -76,14 +77,19 @@
     return dl;
   }
 
-  function jsonBlock(body) {
+  function jsonBlock(body, handlers) {
     var wrap = ui.node("div", "send-json");
+    var top = ui.node("div", "send-json-top");
     var label = ui.node("p", "send-json-label", "Серверга кетадиган маълумот");
     label.id = "jsonLabel";
+    var copy = button("btn-outline btn-sm", "i-copy", "Нусха олиш", function () { handlers.copy(); });
+    copy.id = "copyJson";
+    top.appendChild(label);
+    top.appendChild(copy);
     var pre = ui.node("pre", "send-code", JSON.stringify(body, null, 2));
     pre.tabIndex = 0;
     pre.setAttribute("aria-labelledby", "jsonLabel");
-    wrap.appendChild(label);
+    wrap.appendChild(top);
     wrap.appendChild(pre);
     return wrap;
   }
@@ -114,7 +120,6 @@
       cancel.id = "cancelSend";
       row.appendChild(cancel);
     }
-    row.appendChild(button("btn-outline", "i-copy", "Нусха олиш", function () { handlers.copy(); }));
     return row;
   }
 

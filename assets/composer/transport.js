@@ -20,12 +20,24 @@
     return key ? FIELD_NAME[key] : path;
   }
 
+  function messageOf(v) {
+    if (typeof v === "string") return v;
+    if (Array.isArray(v)) return v.map(messageOf).join("; ");
+    if (v && typeof v === "object") return typeof v.message === "string" ? v.message : JSON.stringify(v);
+    return String(v);
+  }
+
+  function entry(path, message) {
+    var p = String(path).replace(/^payload\./, "");
+    return { path: p, label: label(p), message: messageOf(message) };
+  }
+
   function fieldErrors(data) {
     var errs = data && data.errors, out = [];
     if (Array.isArray(errs)) {
-      errs.forEach(function (e) { if (e && e.field) out.push(label(String(e.field)) + ": " + String(e.message || "")); });
+      errs.forEach(function (e) { if (e && e.field) out.push(entry(e.field, e.message || "")); });
     } else if (errs && typeof errs === "object") {
-      Object.keys(errs).forEach(function (k) { out.push(label(k) + ": " + String(errs[k])); });
+      Object.keys(errs).forEach(function (k) { out.push(entry(k, errs[k])); });
     }
     return out.slice(0, MAX_ERRORS);
   }
@@ -43,7 +55,7 @@
 
   function classify(res, body) {
     if (res.status === 409) return { kind: "duplicate", status: 409 };
-    if (ACCEPTED.indexOf(res.status) > -1 && body.json) {
+    if (ACCEPTED.indexOf(res.status) > -1 && body.json && !Array.isArray(body.data)) {
       var id = body.data.event_id != null ? body.data.event_id : body.data.id;
       return { kind: "sent", status: res.status, eventId: id == null ? null : String(id) };
     }

@@ -18,6 +18,33 @@
     { id: "ruBody", box: "errRuBody", kind: "body", empty: "Русча матнни ёзинг.", what: "Матн" }
   ];
 
+  var SERVER_FIELD = {
+    "texts.uz.title": "uzTitle", "texts.uz.body": "uzBody", "texts.ru.title": "ruTitle", "texts.ru.body": "ruBody",
+    "audience.org_type": "orgType"
+  };
+  var BOX_OF = { uzTitle: "errUzTitle", uzBody: "errUzBody", ruTitle: "errRuTitle", ruBody: "errRuBody", orgType: "errOrgType" };
+  var server = [];
+
+  function scopeKey(state) { return [state.scope, state.regionId, state.districtId, state.mahallaId].join("|"); }
+
+  function setServerErrors(list, state) {
+    server = [];
+    list.forEach(function (e) {
+      var id = SERVER_FIELD[e.path];
+      if (id) server.push({ id: id, snap: $(id).value, msg: "Сервер: " + e.message });
+      else if (e.path.indexOf("audience") === 0) server.push({ id: "scope", snap: scopeKey(state), msg: "Сервер: " + e.message });
+    });
+  }
+
+  function serverErrors(state) {
+    server = server.filter(function (e) { return (e.id === "scope" ? scopeKey(state) : $(e.id).value) === e.snap; });
+    return server.map(function (e) {
+      return e.id === "scope"
+        ? { el: OM.scope.focusTarget(), box: $("scopeError"), kind: "rule", msg: e.msg }
+        : { el: $(e.id), box: $(BOX_OF[e.id]), kind: "rule", msg: e.msg };
+    });
+  }
+
   function textErrors() {
     var out = [];
     TEXT_RULES.forEach(function (r) {
@@ -45,7 +72,11 @@
     }
     var org = OM.fields.orgTypeError();
     if (org) errors.push(org);
-    return errors.concat(OM.fields.expiryErrors(nowMs));
+    errors = errors.concat(OM.fields.expiryErrors(nowMs));
+    serverErrors(state).forEach(function (e) {
+      if (!errors.some(function (x) { return x.box === e.box; })) errors.push(e);
+    });
+    return errors;
   }
 
   function sectionOf(e) { return e && e.box ? (SECTION_OF[e.box.id] || 0) : 0; }
@@ -121,7 +152,7 @@
   }
 
   OM.check = {
-    SECTION_NAME: SECTION_NAME, validate: validate, sectionOf: sectionOf, statusText: statusText,
+    SECTION_NAME: SECTION_NAME, validate: validate, setServerErrors: setServerErrors, sectionOf: sectionOf, statusText: statusText,
     showErrors: showErrors, initTouch: initTouch
   };
 })();

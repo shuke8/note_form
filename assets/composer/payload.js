@@ -9,8 +9,8 @@
   var ORG_TYPE_RE = /^[1-9]\d{0,5}$/;
   var LIMIT = { title: 120, body: 600 };
 
-  var EDGE = /^[\s\u200B-\u200D\u2060\uFEFF]+|[\s\u200B-\u200D\u2060\uFEFF]+$/g;
-  var BIDI = /[\u202A-\u202E\u2066-\u2069]/g;
+  var EDGE = /^[\s\u00AD\u034F\u115F\u1160\u180E\u200B-\u200D\u2060-\u2064\u3164\uFEFF\uFFA0]+|[\s\u00AD\u034F\u115F\u1160\u180E\u200B-\u200D\u2060-\u2064\u3164\uFEFF\uFFA0]+$/g;
+  var BIDI = /[\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069]/g;
 
   function clean(s) { return String(s == null ? "" : s).replace(BIDI, "").replace(EDGE, ""); }
 

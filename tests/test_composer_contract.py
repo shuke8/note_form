@@ -153,7 +153,7 @@ class ComposerContractTest(ComposerCase):
         page.wait_for_selector('.send-result[data-state="sending"]')
         self.assertTrue(page.is_disabled("#submitBtn"))
         page.clock.run_for(15500)
-        page.wait_for_selector('.send-result[data-state="failed"]')
+        page.wait_for_selector('.send-result[data-state="unknown"]')
         self.assertIn("жавоб бермади", page.inner_text(".send-sub"))
         self.assertFalse(page.is_disabled("#submitBtn"))
 
@@ -225,7 +225,7 @@ class ComposerContractTest(ComposerCase):
         self.page.click("#scopeAll")
         self.page.click("#submitBtn")
         shown = self.dialog_json()
-        self.page.click(".send-actions .btn-outline")
+        self.page.click("#copyJson")
         self.page.wait_for_selector(".toast")
         self.assertEqual(json.loads(self.page.evaluate("navigator.clipboard.readText()")), shown)
 

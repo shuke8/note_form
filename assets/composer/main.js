@@ -131,7 +131,8 @@
   }
 
   function boot() {
-    var ctx = { state: state, refresh: refresh, forget: forget };
+    var ctx = { state: state, refresh: refresh, forget: forget,
+      serverErrors: function (list) { OM.check.setServerErrors(list, state); } };
     OM.scope.init(ctx);
     OM.fields.init(ctx);
     OM.preview.init(ctx);

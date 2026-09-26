@@ -51,7 +51,10 @@
     $("submitLabel").textContent = on ? "Юборилмоқда…" : "Юбориш";
   }
 
+  var phaseNow = null;
+
   function render(phase, sub, extra) {
+    phaseNow = phase;
     OM.resultView.render(phase, sub, job, { send: send, copy: copyJson, cancel: closeDialog }, extra);
   }
 
@@ -81,9 +84,16 @@
   function finish(phase, sub, extra) {
     setBusy(false);
     job.inflight = false;
-    if (phase === "sent" || phase === "duplicate") { job.sent = { phase: phase, sub: sub }; ctx.refresh(); }
-    render(phase, sub, extra);
-    if (phase === "failed" || phase === "unknown") paintRetry();
+    job.last = { phase: phase, sub: sub, extra: extra || {} };
+    if (phase === "sent" || phase === "duplicate") job.sent = job.last;
+    ctx.serverErrors(extra && extra.fields ? extra.fields : []);
+    ctx.refresh();
+    showLast();
+  }
+
+  function showLast() {
+    render(job.last.phase, job.last.sub, job.last.extra);
+    if ((job.last.phase === "failed" || job.last.phase === "unknown") && job.last.extra.retry !== false) paintRetry();
   }
 
   function onOutcome(out) {
@@ -95,24 +105,19 @@
     }
     if (out.kind === "rejected") {
       return finish("failed", reasonOf(out.status) + (out.retry ? " Қайта уриниш мумкин." : " Маълумотни тузатиб, қайта юборинг."),
-        { errors: out.errors, retry: out.retry });
+        { errors: out.errors.map(function (e) { return e.label + ": " + e.message; }), fields: out.errors, retry: out.retry });
     }
-    finish("failed", OUTCOME_TEXT[out.kind] || OUTCOME_TEXT.network);
-  }
-
-  function freshExpiry() {
-    if (attempts.length || job.expiry === "custom") return;
-    var at = OM.fields.expiresAt(Date.now());
-    if (at != null) job.body.payload.expires_at = time.isoZ(at);
+    if (out.kind === "timeout") return finish("unknown", OUTCOME_TEXT.timeout);
+    finish("failed", OUTCOME_TEXT.network);
   }
 
   function send() {
     if (!job || job.inflight || retryWait(Date.now()) > 0) return;
-    if (!attempts.length && Date.now() - openedAt < CONFIRM_GRACE_MS) return;
-    freshExpiry();
+    if (phaseNow === "review" && Date.now() - openedAt < CONFIRM_GRACE_MS) return;
     var expires = Date.parse(job.body.payload.expires_at);
     if (!(expires > Date.now() + time.MINUTE)) {
       render("stale", "Амал қилиш муддати (" + time.moment(expires, Date.now()) + ") ўтиб кетган ёки бир дақиқадан кам қолган. Ойнани ёпиб, муддатни янгиланг.");
+      ctx.refresh();
       return;
     }
     attempts.push(Date.now());
@@ -145,14 +150,14 @@
     showDialog();
     if (same && prev.sent) { render(prev.sent.phase, prev.sent.sub); return; }
     if (!same) {
-      job = { body: body, selection: selection, expiry: expiry, key: newKey(), url: url, inflight: false, sent: null };
+      job = { body: body, selection: selection, expiry: expiry, key: newKey(), url: url, inflight: false, sent: null, last: null };
       attempts = [];
     }
     if (!url) {
       render("draft", "Сервер манзили созланмаган, шунинг учун хабар ҳеч қаерга кетмади. Уланганда серверга айнан шу маълумот юборилади.");
       return;
     }
-    if (same && retryWait(Date.now()) > 0) { render("failed", "Олдинги уриниш муваффақиятсиз тугади."); paintRetry(); return; }
+    if (same && job.last) { showLast(); return; }
     render("review", reviewText(selection));
   }
 

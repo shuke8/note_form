@@ -21,6 +21,7 @@
 .send-grid dd { margin: 0; font-size: var(--t-ui); font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
 
 .send-json { display: flex; flex-direction: column; gap: 8px; }
+.send-json-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .send-json-label { font-size: var(--t-sm); font-weight: 600; color: var(--ink-2); }
 .send-code {
   margin: 0; max-height: 260px; overflow: auto; padding: 14px 16px;
@@ -28,11 +29,14 @@
   font-family: ui-monospace, monospace; font-size: 13px; line-height: 1.55;
   color: var(--ink); white-space: pre; tab-size: 2;
 }
-.send-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.send-actions {
+  position: sticky; bottom: 0; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  margin: 0 -24px; padding: 12px 24px; background: var(--paper); box-shadow: 0 -1px 0 var(--hairline);
+}
 .send-actions .btn[disabled] { opacity: 0.6; cursor: not-allowed; }
 
 @media (width <= 40em) {
   .send-grid { grid-template-columns: minmax(0, 1fr); }
-  .send-actions .btn { flex: 1 1 auto; }
+  .send-actions .btn { flex: 1 1 0; }
 }
 .send-errors { display: flex; flex-direction: column; gap: 4px; margin: 8px 0 0; font-size: var(--t-sm); color: var(--crit); }

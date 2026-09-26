@@ -120,7 +120,7 @@ class ComposerTransportTest(ComposerCase):
         page.wait_for_selector('.send-result[data-state="sending"]')
         page.wait_for_timeout(500)
         page.clock.run_for(15500)
-        page.wait_for_selector('.send-result[data-state="failed"]', timeout=10000)
+        page.wait_for_selector('.send-result[data-state="unknown"]', timeout=10000)
         self.assertIn("жавоб бермади", page.inner_text(".send-sub"))
 
     def test_expiry_that_passes_during_review_is_refused(self):
