@@ -35,3 +35,4 @@
   .send-grid { grid-template-columns: minmax(0, 1fr); }
   .send-actions .btn { flex: 1 1 auto; }
 }
+.send-errors { display: flex; flex-direction: column; gap: 4px; margin: 8px 0 0; font-size: var(--t-sm); color: var(--crit); }

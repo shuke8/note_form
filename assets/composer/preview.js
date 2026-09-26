@@ -25,7 +25,7 @@
       $(k + "State").setAttribute("data-full", ok ? "true" : "false");
     });
     ["uzTitle", "uzBody", "ruTitle", "ruBody"].forEach(function (id) {
-      var n = OM.payload.clean($(id).value).length, max = OM.payload.LIMIT[/Title$/.test(id) ? "title" : "body"];
+      var n = OM.payload.size(OM.payload.clean($(id).value)), max = OM.payload.LIMIT[/Title$/.test(id) ? "title" : "body"];
       $(id + "Count").textContent = n + " / " + max;
       $(id + "Count").setAttribute("data-over", n > max ? "true" : "false");
     });

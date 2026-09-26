@@ -21,10 +21,20 @@
     draft: { icon: "i-info", title: "Юборишга тайёр", eyebrow: "Юборишдан олдин" },
     sending: { icon: "i-clock", title: "Юборилмоқда…", eyebrow: "Юбориш натижаси" },
     sent: { icon: "i-check", title: "Юборилди", eyebrow: "Юбориш натижаси" },
-    failed: { icon: "i-circle-alert", title: "Юборилмади", eyebrow: "Юбориш натижаси" }
+    duplicate: { icon: "i-check", title: "Аввал юборилган", eyebrow: "Юбориш натижаси" },
+    failed: { icon: "i-circle-alert", title: "Юборилмади", eyebrow: "Юбориш натижаси" },
+    unknown: { icon: "i-circle-alert", title: "Натижа номаълум", eyebrow: "Юбориш натижаси" },
+    stale: { icon: "i-clock", title: "Муддат ўтиб кетди", eyebrow: "Юборилмади" }
   };
 
-  function render(phase, sub, job, handlers) {
+  function errorList(errors) {
+    var ul = ui.node("ul", "send-errors");
+    errors.forEach(function (e) { ul.appendChild(ui.node("li", null, e)); });
+    return ul;
+  }
+
+  function render(phase, sub, job, handlers, extra) {
+    extra = extra || {};
     var host = $("resultSlot"), p = PHASE[phase];
     host.textContent = "";
     var box = ui.node("div", "send-result");
@@ -37,21 +47,22 @@
     var title = ui.node("h2", "send-title", p.title);
     title.id = "resultTitle";
     words.appendChild(title);
-    words.appendChild(ui.node("p", "send-sub", sub));
+    var subEl = ui.node("p", "send-sub", sub);
+    subEl.id = "resultSub";
+    words.appendChild(subEl);
+    if (extra.errors && extra.errors.length) words.appendChild(errorList(extra.errors));
     head.appendChild(mark);
     head.appendChild(words);
     box.appendChild(head);
     box.appendChild(summary(job.body, job.selection));
+    box.appendChild(actions(phase, handlers, extra));
     box.appendChild(jsonBlock(job.body));
-    box.appendChild(actions(phase, handlers));
     host.appendChild(box);
     $("resultEyebrow").textContent = p.eyebrow;
     $("resultDialog").setAttribute("aria-busy", phase === "sending" ? "true" : "false");
     $("resultDialog").scrollTop = 0;
-    if (phase === "sent" || phase === "failed" || phase === "draft") {
-      title.tabIndex = -1;
-      title.focus({ preventScroll: true });
-    }
+    title.tabIndex = -1;
+    title.focus({ preventScroll: true });
   }
 
   function summary(body, selection) {
@@ -86,17 +97,22 @@
     return b;
   }
 
-  function actions(phase, handlers) {
+  function actions(phase, handlers, extra) {
     var row = ui.node("div", "send-actions");
     if (phase === "review") {
       var go = button("btn-solid", null, "Ҳа, юбориш", function () { handlers.send(); });
       go.id = "confirmSend";
       row.appendChild(go);
     }
-    if (phase === "failed") {
+    if ((phase === "failed" || phase === "unknown") && extra.retry !== false) {
       var retry = button("btn-solid", "i-rotate-ccw", "Қайта уриниш", function () { handlers.send(); });
       retry.id = "retryBtn";
       row.appendChild(retry);
+    }
+    if (phase === "review" || phase === "stale") {
+      var cancel = button("btn-outline", null, phase === "review" ? "Бекор қилиш" : "Ёпиш", function () { handlers.cancel(); });
+      cancel.id = "cancelSend";
+      row.appendChild(cancel);
     }
     row.appendChild(button("btn-outline", "i-copy", "Нусха олиш", function () { handlers.copy(); }));
     return row;

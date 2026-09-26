@@ -98,6 +98,8 @@
 
   function consistent(sel) {
     if (sel.scope === "republic") return true;
+    var ids = [sel.regionId, sel.districtId, sel.mahallaId].filter(function (v) { return v != null; });
+    if (!ids.every(Number.isInteger)) return false;
     var r = db.index.region[sel.regionId];
     if (!r) return false;
     if (sel.scope === "region") return true;
@@ -112,7 +114,9 @@
     var r = db.regions.filter(function (x) { return x.name === names.region; })[0];
     if (!r) return null;
     var d = names.district ? listOf(r.districts).filter(function (x) { return x.name === names.district; })[0] : null;
+    if (names.district && !d) return null;
     var m = d && names.mahalla ? listOf(d.mahallas).filter(function (x) { return x.name === names.mahalla; })[0] : null;
+    if (names.mahalla && !m) return null;
     return { regionId: r.id, districtId: d ? d.id : null, mahallaId: m ? m.id : null,
       scope: m ? "mahalla" : d ? "district" : "region" };
   }

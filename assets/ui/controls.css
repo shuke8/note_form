@@ -116,6 +116,7 @@ label.btn:focus-within { box-shadow: var(--focus-ring); }
   transition: background-color var(--d-hover) var(--ease-out), color var(--d-hover) var(--ease-out);
 }
 .toggle-btn::after { content: ""; position: absolute; inset: -7px 0; }
+@media (pointer: coarse) { .toggle-btn { min-height: 44px; } .toggle-btn::after { inset: 0; } }
 .toggle-btn[aria-pressed="true"] { background: var(--paper); color: var(--primary-text); box-shadow: 0 0 0 1px var(--edge); }
 
 .note {

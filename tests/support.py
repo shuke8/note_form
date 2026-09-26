@@ -10,6 +10,10 @@ from playwright.sync_api import sync_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 READY = "document.querySelectorAll('.scope-row').length > 0"
+SQL_TEXTS = {
+    "uz": {"title": "Profilaktika ishlari", "body": "Tizimda texnik ishlar olib borish munosabati nosozliklar kuzatislishi mumkin"},
+    "ru": {"title": "Профилактические работы", "body": "В связи с проведением технических работ в системе возможны сбои в работе."},
+}
 
 
 @contextlib.contextmanager
@@ -113,6 +117,43 @@ class ComposerCase(unittest.TestCase):
     def leaving_is_held(self, page=None):
         return (page or self.page).evaluate(
             "() => { const e = new Event('beforeunload', { cancelable: true }); window.dispatchEvent(e); return e.defaultPrevented; }")
+
+    def fill_sql_texts(self, page=None):
+        page = page or self.page
+        for lang in ("uz", "ru"):
+            page.fill(f"#{lang}Title", SQL_TEXTS[lang]["title"])
+            page.fill(f"#{lang}Body", SQL_TEXTS[lang]["body"])
+
+    def capture(self, responses):
+        seen = []
+
+        def handle(route):
+            req = route.request
+            seen.append({"body": json.loads(req.post_data), "headers": req.headers})
+            reply = responses[min(len(seen), len(responses)) - 1]
+            if reply is None:
+                return
+            status, body = reply[0], reply[1]
+            headers = reply[2] if len(reply) > 2 else {}
+            kind = headers.pop("content-type", "application/json")
+            route.fulfill(status=status, content_type=kind, headers=headers,
+                          body=body if isinstance(body, str) else json.dumps(body))
+
+        self.context.route("**/api/announcements", handle)
+        return seen
+
+    def compose_sql_example(self):
+        self.fill_sql_texts()
+        self.pick("mahalla:606008")
+        self.to_custom()
+        self.type_date("15082027")
+        self.page.fill("#fTime", "18:00")
+
+    def confirm(self, page=None):
+        page = page or self.page
+        page.wait_for_selector('.send-result[data-state="review"]')
+        page.wait_for_timeout(650)
+        page.click("#confirmSend")
 
     def bars_bottom(self):
         return self.page.evaluate(

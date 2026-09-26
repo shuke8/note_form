@@ -1,47 +1,9 @@
 import json
 import unittest
 
-from support import READY, ComposerCase
-
-SQL_TEXTS = {
-    "uz": {"title": "Profilaktika ishlari", "body": "Tizimda texnik ishlar olib borish munosabati nosozliklar kuzatislishi mumkin"},
-    "ru": {"title": "Профилактические работы", "body": "В связи с проведением технических работ в системе возможны сбои в работе."},
-}
-
+from support import READY, SQL_TEXTS, ComposerCase
 
 class ComposerContractTest(ComposerCase):
-    def fill_sql_texts(self, page=None):
-        page = page or self.page
-        for lang in ("uz", "ru"):
-            page.fill(f"#{lang}Title", SQL_TEXTS[lang]["title"])
-            page.fill(f"#{lang}Body", SQL_TEXTS[lang]["body"])
-
-    def capture(self, responses):
-        seen = []
-
-        def handle(route):
-            req = route.request
-            seen.append({"body": json.loads(req.post_data), "headers": req.headers})
-            status, body = responses[min(len(seen), len(responses)) - 1]
-            if status is None:
-                return
-            route.fulfill(status=status, content_type="application/json", body=json.dumps(body))
-
-        self.context.route("**/api/announcements", handle)
-        return seen
-
-    def compose_sql_example(self):
-        self.fill_sql_texts()
-        self.pick("mahalla:606008")
-        self.to_custom()
-        self.type_date("15082027")
-        self.page.fill("#fTime", "18:00")
-
-    def confirm(self, page=None):
-        page = page or self.page
-        page.wait_for_selector('.send-result[data-state="review"]')
-        page.click("#confirmSend")
-
     def test_nothing_leaves_before_the_operator_confirms(self):
         seen = self.capture([(201, {"event_id": 1})])
         self.set_endpoint()
@@ -214,6 +176,7 @@ class ComposerContractTest(ComposerCase):
         self.page.click("#scopeAll")
         self.page.click("#submitBtn")
         self.page.wait_for_selector('.send-result[data-state="review"]')
+        self.page.wait_for_timeout(650)
         self.page.evaluate("() => { const b = document.getElementById('confirmSend'); b.click(); b.click(); b.click(); }")
         self.page.wait_for_selector('.send-result[data-state="sent"]')
         self.page.click("#resultClose")

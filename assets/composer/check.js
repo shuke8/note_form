@@ -23,9 +23,10 @@
     TEXT_RULES.forEach(function (r) {
       var v = OM.payload.clean($(r.id).value), max = OM.payload.LIMIT[r.kind];
       if (!v) out.push({ el: $(r.id), box: $(r.box), msg: r.empty });
-      else if (v.length > max) {
+      else if (OM.payload.size(v) > max) {
+        var n = OM.payload.size(v);
         out.push({ el: $(r.id), box: $(r.box), kind: "rule",
-          msg: r.what + " " + max + " белгидан ошмасин — ҳозир " + v.length + ". " + (v.length - max) + " белгини қисқартиринг." });
+          msg: r.what + " " + max + " белгидан ошмасин — ҳозир " + n + ". " + (n - max) + " белгини қисқартиринг." });
       }
     });
     return out;

@@ -9,7 +9,12 @@
   var ORG_TYPE_RE = /^[1-9]\d{0,5}$/;
   var LIMIT = { title: 120, body: 600 };
 
-  function clean(s) { return String(s == null ? "" : s).replace(/[\u200B-\u200D\u2060\uFEFF]/g, "").trim(); }
+  var EDGE = /^[\s\u200B-\u200D\u2060\uFEFF]+|[\s\u200B-\u200D\u2060\uFEFF]+$/g;
+  var BIDI = /[\u202A-\u202E\u2066-\u2069]/g;
+
+  function clean(s) { return String(s == null ? "" : s).replace(BIDI, "").replace(EDGE, ""); }
+
+  function size(s) { return Array.from(s).length; }
 
   function orgTypeOf(raw) {
     var s = String(raw == null ? "" : raw).trim();
@@ -52,12 +57,12 @@
     if (typeof input.expiresAt !== "number" || !isFinite(input.expiresAt)) return false;
     return ["uz", "ru"].every(function (k) {
       var t = text(input.texts[k] || {});
-      return t.title !== "" && t.body !== "" && t.title.length <= LIMIT.title && t.body.length <= LIMIT.body;
+      return t.title !== "" && t.body !== "" && size(t.title) <= LIMIT.title && size(t.body) <= LIMIT.body;
     });
   }
 
   OM.payload = {
-    TYPE: TYPE, LEVEL: LEVEL, SEVERITIES: SEVERITIES, LIMIT: LIMIT, clean: clean,
+    TYPE: TYPE, LEVEL: LEVEL, SEVERITIES: SEVERITIES, LIMIT: LIMIT, clean: clean, size: size,
     orgTypeOf: orgTypeOf, audience: audience, build: build, complete: complete
   };
 })();

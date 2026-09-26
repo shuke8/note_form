@@ -8,8 +8,14 @@
   var RETRY = { gapMs: 2500, windowMs: 30000, max: 5 };
   var HTTP_REASON = {
     400: "Сервер маълумотни қабул қилмади", 401: "Кириш муддати тугаган — қайта киринг", 403: "Бу амал учун рухсат йўқ",
-    409: "Бу хабар аввалроқ юборилган", 413: "Хабар жуда катта", 422: "Сервер маълумотни қабул қилмади",
+    413: "Хабар жуда катта", 422: "Сервер маълумотни қабул қилмади",
     429: "Сервер банд — бироздан кейин уриниб кўринг"
+  };
+  var CONFIRM_GRACE_MS = 600;
+  var OUTCOME_TEXT = {
+    timeout: "Сервер " + TIMEOUT_MS / 1000 + " сонияда жавоб бермади. Хабар етиб борган бўлиши мумкин — қайта уриниш такрорий юбормайди.",
+    network: "Серверга уланиб бўлмади ёки у бошқа саҳифага йўналтирди (масалан, кириш муддати тугаган). Қайта уриниш такрорий юбормайди.",
+    duplicate: "Сервер бу хабарни аввалроқ қабул қилган (409) — қайта юборилмади."
   };
 
   var ctx = null, job = null, attempts = [], tick = 0, openedAt = 0;
@@ -45,8 +51,13 @@
     $("submitLabel").textContent = on ? "Юборилмоқда…" : "Юбориш";
   }
 
-  function render(phase, sub) {
-    OM.resultView.render(phase, sub, job, { send: send, copy: copyJson });
+  function render(phase, sub, extra) {
+    OM.resultView.render(phase, sub, job, { send: send, copy: copyJson, cancel: closeDialog }, extra);
+  }
+
+  function closeDialog() {
+    var dlg = $("resultDialog");
+    if (!(job && job.inflight) && dlg.open) dlg.close();
   }
 
   function paintRetry() {
@@ -67,42 +78,49 @@
     else fail();
   }
 
-  function finish(phase, sub) {
+  function finish(phase, sub, extra) {
     setBusy(false);
     job.inflight = false;
-    if (phase === "sent") { job.sent = sub; ctx.refresh(); }
-    render(phase, sub);
-    if (phase === "failed") paintRetry();
+    if (phase === "sent" || phase === "duplicate") { job.sent = { phase: phase, sub: sub }; ctx.refresh(); }
+    render(phase, sub, extra);
+    if (phase === "failed" || phase === "unknown") paintRetry();
+  }
+
+  function onOutcome(out) {
+    if (out.kind === "sent") return finish("sent", out.eventId != null ? "Сервер қабул қилди · event_id " + out.eventId + "." : "Сервер қабул қилди.");
+    if (out.kind === "duplicate") return finish("duplicate", OUTCOME_TEXT.duplicate);
+    if (out.kind === "unknown") {
+      return finish("unknown", "Сервер кутилмаган жавоб берди (" + out.status + ", " + out.type +
+        "). Хабар етиб борган-бормаганини текширинг — қайта уриниш такрорий юбормайди.");
+    }
+    if (out.kind === "rejected") {
+      return finish("failed", reasonOf(out.status) + (out.retry ? " Қайта уриниш мумкин." : " Маълумотни тузатиб, қайта юборинг."),
+        { errors: out.errors, retry: out.retry });
+    }
+    finish("failed", OUTCOME_TEXT[out.kind] || OUTCOME_TEXT.network);
+  }
+
+  function freshExpiry() {
+    if (attempts.length || job.expiry === "custom") return;
+    var at = OM.fields.expiresAt(Date.now());
+    if (at != null) job.body.payload.expires_at = time.isoZ(at);
   }
 
   function send() {
     if (!job || job.inflight || retryWait(Date.now()) > 0) return;
-    if (navigator.onLine === false) { attempts.push(Date.now()); finish("failed", "Интернет алоқаси йўқ. Уланиш тиклангач қайта уриниб кўринг."); return; }
-    job.inflight = true;
+    if (!attempts.length && Date.now() - openedAt < CONFIRM_GRACE_MS) return;
+    freshExpiry();
+    var expires = Date.parse(job.body.payload.expires_at);
+    if (!(expires > Date.now() + time.MINUTE)) {
+      render("stale", "Амал қилиш муддати (" + time.moment(expires, Date.now()) + ") ўтиб кетган ёки бир дақиқадан кам қолган. Ойнани ёпиб, муддатни янгиланг.");
+      return;
+    }
     attempts.push(Date.now());
+    if (navigator.onLine === false) { finish("failed", "Интернет алоқаси йўқ. Уланиш тиклангач қайта уриниб кўринг."); return; }
+    job.inflight = true;
     setBusy(true);
     render("sending", "Сервер жавобини кутяпмиз.");
-    var ctrl = window.AbortController ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, TIMEOUT_MS);
-    fetch(job.url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Idempotency-Key": job.key },
-      body: JSON.stringify(job.body),
-      signal: ctrl ? ctrl.signal : undefined
-    }).then(function (res) {
-      clearTimeout(timer);
-      if (!res.ok) { finish("failed", reasonOf(res.status) + " Маълумот ўзгармаган — қайта уриниш мумкин."); return; }
-      return res.json().catch(function () { return {}; }).then(function (data) {
-        var id = data && (data.event_id != null ? data.event_id : data.id);
-        finish("sent", id != null ? "Сервер қабул қилди · event_id " + id + "." : "Сервер қабул қилди.");
-      });
-    }).catch(function (err) {
-      clearTimeout(timer);
-      var timeout = err && err.name === "AbortError";
-      finish("failed", timeout
-        ? "Сервер " + TIMEOUT_MS / 1000 + " сонияда жавоб бермади. Хабар етиб бормаган бўлиши мумкин — қайта уриниш такрорий юбормайди."
-        : "Серверга уланиб бўлмади. Қайта уриниш такрорий юбормайди.");
-    });
+    OM.transport.post(job.url, job.body, job.key, TIMEOUT_MS).then(onOutcome);
   }
 
   function sameMessage(prev, body, expiry) {
@@ -125,7 +143,7 @@
     var url = endpoint(), prev = job, same = sameMessage(prev, body, expiry);
     if (prev && prev.inflight) return;
     showDialog();
-    if (same && prev.sent) { render("sent", prev.sent); return; }
+    if (same && prev.sent) { render(prev.sent.phase, prev.sent.sub); return; }
     if (!same) {
       job = { body: body, selection: selection, expiry: expiry, key: newKey(), url: url, inflight: false, sent: null };
       attempts = [];
@@ -136,7 +154,6 @@
     }
     if (same && retryWait(Date.now()) > 0) { render("failed", "Олдинги уриниш муваффақиятсиз тугади."); paintRetry(); return; }
     render("review", reviewText(selection));
-    $("confirmSend").focus();
   }
 
   function reviewText(selection) {
@@ -158,7 +175,7 @@
       document.body.removeAttribute("data-modal");
       $("submitBtn").focus({ preventScroll: true });
     });
-    $("resultClose").addEventListener("click", function () { if (!(job && job.inflight)) dlg.close(); });
+    $("resultClose").addEventListener("click", closeDialog);
     dlg.addEventListener("click", function (e) {
       if (e.target !== dlg || (job && job.inflight) || Date.now() - openedAt < BACKDROP_GRACE_MS) return;
       var r = dlg.getBoundingClientRect();
