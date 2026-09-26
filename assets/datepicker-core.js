@@ -15,6 +15,11 @@
   function weekIndex(d) { return (d.getDay() + 6) % 7; }
   function sameDay(a, b) { return !!a && !!b && isoOf(a) === isoOf(b); }
 
+  function today() {
+    var n = new Date(), t = new Date(n.getTime() + (n.getTimezoneOffset() + 300) * 60000);
+    return new Date(t.getFullYear(), t.getMonth(), t.getDate(), 12, 0, 0);
+  }
+
   function fromIso(s) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
     return m ? build(+m[1], +m[2], +m[3]) : null;
@@ -43,7 +48,7 @@
   function typedStart(text, min) {
     var m = /^(\d{2})\.(\d{2})/.exec(text || "");
     if (!m || +m[2] < 1 || +m[2] > 12) return null;
-    var base = min || new Date();
+    var base = min || today();
     var year = base.getFullYear() + (+m[2] - 1 < base.getMonth() ? 1 : 0);
     var last = new Date(year, +m[2], 0).getDate();
     return new Date(year, +m[2] - 1, Math.min(Math.max(+m[1], 1), last), 12);
@@ -52,6 +57,6 @@
   window.OMDateCore = {
     MONTHS: MONTHS, MONTHS_OF: MONTHS_OF, WEEK: WEEK, WEEK_FULL: WEEK_FULL, PLACEHOLDER: PLACEHOLDER,
     isoOf: isoOf, displayOf: displayOf, weekIndex: weekIndex, sameDay: sameDay,
-    fromIso: fromIso, maskDigits: maskDigits, readTyped: readTyped, typedStart: typedStart
+    today: today, fromIso: fromIso, maskDigits: maskDigits, readTyped: readTyped, typedStart: typedStart
   };
 })();

@@ -54,15 +54,23 @@
 .notif-lock .notif-time { flex: none; }
 .notif-lock .notif-title { font-size: var(--t-sm); }
 .notif-lock .notif-text { font-size: var(--t-sm); line-height: 1.35; color: var(--ink); }
+.notif-lock .notif-title:empty::before, .notif-lock .notif-text:empty::before { color: var(--ink-2); }
 .side-head, .phone-stage { flex: none; }
 .side-card .fact-grid { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
 .side-card .fact-grid[data-more="true"] { border-bottom: 1px solid var(--hairline); box-shadow: inset 0 -14px 10px -10px var(--scroll-shade); }
 
-@media (height <= 53.75em) and (width > 60em) {
-  .phone-stage { height: 236px; padding-top: 16px; }
+@media (height <= 57.5em) and (width > 60em) {
+  .phone-stage { height: 226px; padding-top: 16px; }
   .lock-date { margin-top: 10px; }
   .lock-time { font-size: 42px; }
   .notif-lock { margin-top: 12px; }
+}
+@media (height <= 52.5em) and (width > 60em) {
+  .phone-stage { height: 208px; }
+  .phone-island { display: none; }
+  .lock-date { margin-top: 2px; }
+  .lock-time { font-size: 34px; }
+  .notif-lock { margin-top: 8px; }
 }
 
 @media (width <= 40em) {

@@ -18,7 +18,7 @@
 label.btn:focus-within { box-shadow: var(--focus-ring); }
 @media (hover: hover) {
   .btn-solid:hover, .btn-accent:hover { background: var(--primary-hover); }
-  .btn-secondary:hover, .btn-outline:hover, .btn-ghost:hover { background: var(--primary-soft); }
+  .btn-secondary:hover, .btn-outline:hover, .btn-ghost:hover { background: var(--primary-soft); color: var(--primary-text); }
   .btn-quiet:hover { color: var(--ink); background: var(--paper-sunk); }
 }
 
@@ -64,7 +64,7 @@ label.btn:focus-within { box-shadow: var(--focus-ring); }
   font-size: var(--t-body); line-height: 1.45;
   transition: border-color var(--d-hover) var(--ease-out), box-shadow var(--d-hover) var(--ease-out);
 }
-.textarea { min-height: 72px; padding-top: 8px; resize: vertical; line-height: var(--lh-body); }
+.textarea { min-height: 88px; max-height: 320px; padding-top: 8px; resize: vertical; line-height: var(--lh-body); field-sizing: content; }
 .input::placeholder, .textarea::placeholder { color: var(--ink-3); opacity: 1; }
 .input { text-overflow: ellipsis; }
 @media (hover: hover) { .input:hover, .textarea:hover { border-color: var(--edge-hover); } }
@@ -116,7 +116,7 @@ label.btn:focus-within { box-shadow: var(--focus-ring); }
   transition: background-color var(--d-hover) var(--ease-out), color var(--d-hover) var(--ease-out);
 }
 .toggle-btn::after { content: ""; position: absolute; inset: -7px 0; }
-.toggle-btn[aria-pressed="true"] { background: var(--paper); color: var(--primary-text); box-shadow: var(--lift-2); }
+.toggle-btn[aria-pressed="true"] { background: var(--paper); color: var(--primary-text); box-shadow: 0 0 0 1px var(--edge); }
 
 .note {
   display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px;
@@ -194,3 +194,5 @@ body[data-modal] { overflow: hidden; }
 .toast[data-tone="warn"] { background: #8a4b00; }
 .toast[data-leaving="true"] { opacity: 0; transform: translateY(-6px); }
 @keyframes toast-in { from { opacity: 0; transform: translateY(-8px); } }
+.char-count[data-over="true"] { color: var(--crit); font-weight: 600; }
+.badge[data-state="sent"] { background: var(--ok-soft); color: var(--ok); }

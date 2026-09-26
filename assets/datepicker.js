@@ -50,7 +50,7 @@
 
     this.prev.addEventListener("click", function () { self.shiftMonth(-1); });
     this.next.addEventListener("click", function () { self.shiftMonth(1); });
-    today.addEventListener("click", function () { self.pick(new Date()); });
+    today.addEventListener("click", function () { self.pick(C.today()); });
     this.grid.addEventListener("click", function (e) {
       var b = e.target.closest("[data-iso]");
       if (b && b.getAttribute("aria-disabled") !== "true") self.pick(fromIso(b.getAttribute("data-iso")));
@@ -63,7 +63,7 @@
   DatePicker.prototype.open = function () {
     var chosen = fromIso(this.input.dataset.iso);
     var min = this.minDate();
-    var start = chosen || typedStart(this.input.value, min) || (min && min > new Date() ? min : new Date());
+    var start = chosen || typedStart(this.input.value, min) || (min && min > C.today() ? min : C.today());
     this.focusDay = start;
     this.view = new Date(start.getFullYear(), start.getMonth(), 1, 12);
     this.render(true);
@@ -104,7 +104,7 @@
 
   DatePicker.prototype.render = function (moveFocus) {
     var y = this.view.getFullYear(), m = this.view.getMonth();
-    var min = this.minDate(), chosen = fromIso(this.input.dataset.iso), now = new Date();
+    var min = this.minDate(), chosen = fromIso(this.input.dataset.iso), now = C.today();
     this.title.textContent = MONTHS[m] + " " + y;
     this.prev.disabled = !!min && new Date(y, m, 0, 12) < min;
     this.grid.textContent = "";

@@ -46,7 +46,7 @@
 .page-grid > .section { grid-column: 1; }
 .page-side { grid-column: 2; grid-row: 1 / span 4; align-self: stretch; }
 .side-card {
-  position: sticky; top: 128px; max-height: calc(100vh - 200px);
+  position: sticky; top: 128px; max-height: calc(100vh - 180px);
   display: flex; flex-direction: column; gap: 16px; padding: 20px;
   background: var(--paper); border-radius: var(--r-card); box-shadow: var(--lift-card);
 }
@@ -71,6 +71,11 @@
 
 @media (height < 43.75em) {
   .side-card { position: static; max-height: none; }
+}
+
+@media (height < 30em) {
+  .topbar { position: static; }
+  .page-bar { top: 0; }
 }
 
 @media (width <= 40em) {

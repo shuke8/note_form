@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="uz-Cyrl" class="no-js">
+<html lang="uz-Cyrl">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Хабарнома композитори — Онлайн Маҳалла</title>
 <meta name="description" content="Қамровни танланг, матнни иккала тилда ёзинг ва телефонда қандай кўринишини шу ерда кўринг." />
 <meta name="color-scheme" content="light dark" />
+<meta name="om-announce-endpoint" content="" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#171f2c" media="(prefers-color-scheme: dark)" />
@@ -28,44 +29,27 @@
 <link rel="stylesheet" href="assets/ui/sections.css" />
 <link rel="stylesheet" href="assets/ui/steps.css" />
 <link rel="stylesheet" href="assets/ui/pickers.css" />
-<link rel="stylesheet" href="assets/natija.css" />
+<link rel="stylesheet" href="assets/ui/result.css" />
 </head>
 <body>
 <svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
-  <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5" /> <path d="m12 19-7-7 7-7" /></symbol>
-  <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
-  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0" /> <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /></symbol>
   <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v3" /> <path d="M16 2v3" /> <rect x="3" y="3" width="18" height="18" rx="2" /> <path d="M3 9h18" /></symbol>
   <symbol id="i-calendar-days" viewBox="0 0 24 24"><path d="M8 2v3" /> <path d="M16 2v3" /> <rect x="3" y="3" width="18" height="18" rx="2" /> <path d="M3 9h18" /> <path d="M8 13h.01" /> <path d="M12 13h.01" /> <path d="M16 13h.01" /> <path d="M8 17h.01" /> <path d="M12 17h.01" /> <path d="M16 17h.01" /></symbol>
-  <symbol id="i-calendar-x" viewBox="0 0 24 24"><path d="M8 2v3" /> <path d="M16 2v3" /> <rect x="3" y="3" width="18" height="18" rx="2" /> <path d="M3 9h18" /> <path d="m14 13-4 4" /> <path d="m10 13 4 4" /></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
-  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol>
   <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" /></symbol>
   <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol>
   <symbol id="i-circle-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <line x1="12" x2="12" y1="8" y2="12" /> <line x1="12" x2="12.01" y1="16" y2="16" /></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /> <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 6v6l4 2" /></symbol>
-  <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /> <path d="M14 2v5a1 1 0 0 0 1 1h5" /> <path d="M10 9H8" /> <path d="M16 13H8" /> <path d="M16 17H8" /></symbol>
-  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" /></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></symbol>
-  <symbol id="i-languages" viewBox="0 0 24 24"><path d="m5 8 6 6" /> <path d="m4 14 6-6 2-3" /> <path d="M2 5h12" /> <path d="M7 2h1" /> <path d="m22 22-5-10-5 10" /> <path d="M14 18h6" /></symbol>
-  <symbol id="i-list" viewBox="0 0 24 24"><path d="M3 5h.01" /> <path d="M3 12h.01" /> <path d="M3 19h.01" /> <path d="M8 5h13" /> <path d="M8 12h13" /> <path d="M8 19h13" /></symbol>
-  <symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /> <circle cx="12" cy="10" r="3" /></symbol>
-  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 5h16" /> <path d="M4 12h16" /> <path d="M4 19h16" /></symbol>
-  <symbol id="i-move-horizontal" viewBox="0 0 24 24"><path d="m18 8 4 4-4 4" /> <path d="M2 12h20" /> <path d="m6 8-4 4 4 4" /></symbol>
-  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14" /> <path d="M12 5v14" /></symbol>
-  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4" /> <path d="M3 11v-1a4 4 0 0 1 4-4h14" /> <path d="m7 22-4-4 4-4" /> <path d="M21 13v1a4 4 0 0 1-4 4H3" /></symbol>
   <symbol id="i-rotate-ccw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /> <path d="M3 3v5h5" /></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34" /> <circle cx="11" cy="11" r="8" /></symbol>
-  <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /></symbol>
-  <symbol id="i-shopping-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1" /> <circle cx="19" cy="21" r="1" /> <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /> <path d="M12 2v2" /> <path d="M12 20v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="m17.66 17.66 1.41 1.41" /> <path d="M2 12h2" /> <path d="M20 12h2" /> <path d="m6.34 17.66-1.41 1.41" /> <path d="m19.07 4.93-1.41 1.41" /></symbol>
-  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /> <circle cx="12" cy="12" r="6" /> <circle cx="12" cy="12" r="2" /></symbol>
   <symbol id="i-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /> <path d="M12 9v4" /> <path d="M12 17h.01" /></symbol>
-  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 3v12" /> <path d="m17 8-5-5-5 5" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></symbol>
   <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /> <path d="M16 3.128a4 4 0 0 1 0 7.744" /> <path d="M22 21v-2a4 4 0 0 0-3-3.87" /> <circle cx="9" cy="7" r="4" /></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></symbol>
-  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" /></symbol>
 </svg>
 
 <a class="skip" href="#h-sec-2">Формага ўтиш</a>
@@ -77,7 +61,7 @@
     <span class="topbar-crumb">8-маҳалла “Дўстлик”</span>
     <span class="topbar-spacer"></span>
     <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Қоронғи мавзуга ўтиш" title="Қоронғи мавзуга ўтиш">
-      <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sun" data-theme-icon/></svg>
     </button>
     <span class="avatar" title="Оператор Ш. Рўзибоев" aria-label="Оператор Ш. Рўзибоев" role="img">ШР</span>
   </div>
@@ -90,7 +74,7 @@
       <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
       <span aria-current="page">Янги хабарнома</span>
     </nav>
-    <div class="send-bar" id="actions">
+    <div class="send-bar" id="actions" role="group" aria-label="Хабар амаллари">
       <button type="button" class="btn btn-secondary" id="resetBtn" aria-label="Қораламани тозалаш" title="Қораламани тозалаш">
         <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
         <span>Тозалаш</span>
@@ -106,9 +90,9 @@
   <div class="page-head">
     <div class="page-title-row">
       <h1 class="page-title">Янги хабарнома</h1>
-      <span class="badge">Қоралама</span>
+      <span class="badge" id="draftBadge" data-state="draft">Қоралама</span>
     </div>
-    <p class="page-sub">Хабарни икки тилда ёзинг, кимга ва қачон кетишини танланг.</p>
+    <p class="page-sub">Хабарни икки тилда ёзинг, кимга кетишини, муҳимлигини ва қачонгача амал қилишини танланг.</p>
     <p class="page-status" id="status" role="status"><span id="statusText"></span></p>
   </div>
 
@@ -127,24 +111,24 @@
           <div class="field">
             <div class="label-row">
               <label class="label" for="uzTitle">Сарлавҳа <span class="req" aria-hidden="true">*</span></label>
-              <span class="char-count" id="uzTitleCount">0 белги</span>
+              <span class="char-count" id="uzTitleCount">0 / 120</span>
             </div>
             <input class="input" id="uzTitle" name="uzTitle" autocomplete="off" type="text" required
-                   placeholder="Масалан: Сув таъминоти вақтинча тўхтатилади"
+                   placeholder="Масалан: Сув ўчирилади"
                    aria-describedby="uzTitleHint errUzTitle" />
-            <p class="hint" id="uzTitleHint">Пушда бир қатор кўринади — қолганини фойдаланувчи хабарни очиб ўқийди.</p>
-            <p class="field-error" id="errUzTitle" role="alert" hidden></p>
+            <p class="hint" id="uzTitleHint">Пушда бир қатор кўринади · 120 белгигача.</p>
+            <p class="field-error" id="errUzTitle" hidden></p>
           </div>
           <div class="field">
             <div class="label-row">
               <label class="label" for="uzBody">Матн <span class="req" aria-hidden="true">*</span></label>
-              <span class="char-count" id="uzBodyCount">0 белги</span>
+              <span class="char-count" id="uzBodyCount">0 / 600</span>
             </div>
             <textarea class="textarea" id="uzBody" name="uzBody" autocomplete="off" required
                       placeholder="Сана, вақт ва сабаб."
                       aria-describedby="uzBodyHint errUzBody"></textarea>
-            <p class="hint" id="uzBodyHint">Пушда икки қатор кўринади — узунлиги чекланмаган.</p>
-            <p class="field-error" id="errUzBody" role="alert" hidden></p>
+            <p class="hint" id="uzBodyHint">Пушда икки қатор кўринади · 600 белгигача.</p>
+            <p class="field-error" id="errUzBody" hidden></p>
           </div>
         </div>
 
@@ -156,24 +140,24 @@
           <div class="field">
             <div class="label-row">
               <label class="label" for="ruTitle">Заголовок <span class="req" aria-hidden="true">*</span></label>
-              <span class="char-count" id="ruTitleCount">0 белги</span>
+              <span class="char-count" id="ruTitleCount">0 / 120</span>
             </div>
             <input class="input" id="ruTitle" name="ruTitle" autocomplete="off" type="text" required lang="ru"
-                   placeholder="Например: Водоснабжение будет временно отключено"
+                   placeholder="Например: Отключат воду"
                    aria-describedby="ruTitleHint errRuTitle" />
-            <p class="hint" id="ruTitleHint">В push-уведомлении видна одна строка — остальное пользователь прочитает, открыв сообщение.</p>
-            <p class="field-error" id="errRuTitle" role="alert" hidden></p>
+            <p class="hint" id="ruTitleHint">В push видна одна строка · до 120 символов.</p>
+            <p class="field-error" id="errRuTitle" hidden></p>
           </div>
           <div class="field">
             <div class="label-row">
               <label class="label" for="ruBody">Текст <span class="req" aria-hidden="true">*</span></label>
-              <span class="char-count" id="ruBodyCount">0 белги</span>
+              <span class="char-count" id="ruBodyCount">0 / 600</span>
             </div>
             <textarea class="textarea" id="ruBody" name="ruBody" autocomplete="off" required lang="ru"
                       placeholder="Дата, время и причина."
                       aria-describedby="ruBodyHint errRuBody"></textarea>
-            <p class="hint" id="ruBodyHint">В push видны две строки — длина не ограничена.</p>
-            <p class="field-error" id="errRuBody" role="alert" hidden></p>
+            <p class="hint" id="ruBodyHint">В push видны две строки · до 600 символов.</p>
+            <p class="field-error" id="errRuBody" hidden></p>
           </div>
         </div>
       </div>
@@ -214,24 +198,25 @@
             <span class="fact-ico" aria-hidden="true">
               <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-users"/></svg>
             </span>
-            <p class="eyebrow">Тахминий қамров</p>
+            <p class="eyebrow">Тахминий қамров<span id="rcReachNote" hidden> · намуна реестри</span></p>
             <p class="fact-big" id="rcReach" data-num="false">Қамров танланмаган</p>
             <p class="fact-unit" id="rcScope">«Ким олади» бўлимида ҳудудни танланг</p>
-            <p class="fact-hint" id="rcReachNote" hidden>Намуна реестридан тахмин — юборишда реестрдан янгиланади.</p>
           </div>
-          <div class="fact" id="rcWhenTile" data-empty="true">
+          <div class="fact" id="rcSevTile">
+            <span class="fact-ico" aria-hidden="true">
+              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-triangle-alert"/></svg>
+            </span>
+            <p class="eyebrow">Муҳимлиги</p>
+            <p class="fact-value" id="rcSev"></p>
+            <p class="fact-hint" id="rcSevNote"></p>
+          </div>
+          <div class="fact" id="rcExpTile" data-empty="true">
             <span class="fact-ico" aria-hidden="true">
               <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-calendar-days"/></svg>
             </span>
-            <p class="eyebrow">Юбориш</p>
-            <div id="rcDates"></div>
-          </div>
-          <div class="fact" id="rcFilesTile" data-empty="true">
-            <span class="fact-ico" aria-hidden="true">
-              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-file-text"/></svg>
-            </span>
-            <p class="eyebrow">Илова</p>
-            <div id="rcFiles"></div>
+            <p class="eyebrow">Амал қилади</p>
+            <p class="fact-value" id="rcExp"></p>
+            <p class="fact-hint" id="rcExpNote"></p>
           </div>
         </div>
       </div>
@@ -240,7 +225,7 @@
     <section class="section" id="sec-1" aria-labelledby="h-sec-1">
       <header class="section-head">
         <h2 class="section-title" id="h-sec-1" tabindex="-1">Ким олади</h2>
-        <p class="section-desc">Хабар юбориладиган ҳудудни танланг.</p>
+        <p class="section-desc">Хабар юбориладиган ҳудуд ва ташкилот турини танланг.</p>
       </header>
       <div class="section-body section-body-list">
         <div class="scope" id="scope" data-failed="false">
@@ -269,168 +254,98 @@
               </div>
             </div>
           </div>
-          <p class="field-error" id="scopeError" role="alert" hidden>
+          <p class="field-error" id="scopeError" hidden>
             <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg>
             Қамровни танланг — хабар кимга кетишини тизим тахмин қилмайди.
           </p>
           <p class="sr-only" role="status" id="scopeLive"></p>
+        </div>
+        <div class="field org-field">
+          <label class="label" for="orgType">Ташкилот тури коди <span class="req" aria-hidden="true">*</span></label>
+          <input class="input input-code" id="orgType" name="orgType" type="text" inputmode="numeric" autocomplete="off"
+                 maxlength="6" value="100" list="orgTypes" required aria-describedby="orgTypeHint errOrgType" />
+          <datalist id="orgTypes"><option value="100"></option><option value="200"></option><option value="300"></option></datalist>
+          <p class="hint" id="orgTypeHint">Хабарни оладиган ташкилот тури — тизимдаги рақамли код.</p>
+          <p class="field-error" id="errOrgType" hidden></p>
         </div>
       </div>
     </section>
 
     <section class="section" id="sec-3" aria-labelledby="h-sec-3">
       <header class="section-head">
-        <h2 class="section-title" id="h-sec-3" tabindex="-1">Қачон кетади</h2>
-        <p class="section-desc" id="whenLabel">Тошкент вақти бўйича · UTC+5</p>
+        <h2 class="section-title" id="h-sec-3" tabindex="-1">Муҳимлиги</h2>
+        <p class="section-desc">Хабар қанчалик шошилинч эканини белгилайди.</p>
       </header>
       <div class="section-body section-body-list">
-        <div class="choice-list" role="radiogroup" aria-labelledby="h-sec-3" aria-describedby="whenLabel" id="whenGroup">
+        <div class="choice-list" role="radiogroup" aria-labelledby="h-sec-3" id="sevGroup">
           <div class="choice">
-            <button type="button" class="choice-btn" role="radio" aria-checked="true" data-when="now">
+            <button type="button" class="choice-btn" role="radio" aria-checked="false" data-sev="info">
               <span class="choice-radio" aria-hidden="true"></span>
-              <span class="choice-text"><span class="choice-name">Ҳозироқ</span><span class="choice-sub">Юбориш тасдиқлангач дарҳол кетади</span></span>
+              <span class="choice-text"><span class="choice-name">Маълумот</span><span class="choice-sub">Оддий хабар</span></span>
             </button>
           </div>
-
           <div class="choice">
-            <button type="button" class="choice-btn" role="radio" aria-checked="false" data-when="later">
+            <button type="button" class="choice-btn" role="radio" aria-checked="true" data-sev="warning">
               <span class="choice-radio" aria-hidden="true"></span>
-              <span class="choice-text"><span class="choice-name">Белгиланган вақтда</span><span class="choice-sub">Бир марта, танланган сана ва соатда</span></span>
+              <span class="choice-text"><span class="choice-name">Огоҳлантириш</span><span class="choice-sub">Диққат талаб қилади</span></span>
             </button>
-            <div class="choice-body" id="whenLater" hidden>
-              <div class="when-grid">
-                <div class="field">
-                  <label class="label" for="fDate">Сана <span class="req" aria-hidden="true">*</span></label>
-                  <input class="input" id="fDate" name="fDate" autocomplete="off" type="date" data-datepicker aria-describedby="errDate" />
-                  <p class="field-error" id="errDate" role="alert" hidden></p>
-                </div>
-                <div class="field">
-                  <label class="label" for="fTime">Вақт <span class="req" aria-hidden="true">*</span></label>
-                  <input class="input" id="fTime" name="fTime" autocomplete="off" type="time" value="09:00" data-timepicker aria-describedby="errTime" />
-                  <p class="field-error" id="errTime" role="alert" hidden></p>
-                </div>
-              </div>
-            </div>
           </div>
-
           <div class="choice">
-            <button type="button" class="choice-btn" role="radio" aria-checked="false" data-when="repeat">
+            <button type="button" class="choice-btn" role="radio" aria-checked="false" data-sev="critical">
               <span class="choice-radio" aria-hidden="true"></span>
-              <span class="choice-text"><span class="choice-name">Такрорий</span><span class="choice-sub">Жадвал бўйича — ҳафта кунлари ва ойлар</span></span>
+              <span class="choice-text"><span class="choice-name">Критик</span><span class="choice-sub">Зудлик билан</span></span>
             </button>
-            <div class="choice-body" id="whenRepeat" hidden>
-              <div class="field">
-                <span class="label" id="dayLabel">Қайси кунлари <span class="req" aria-hidden="true">*</span></span>
-                <div class="chip-row" role="toolbar" aria-orientation="horizontal"
-                     aria-labelledby="dayLabel" aria-describedby="dayHint errDays" id="dayRow">
-                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="1" aria-label="Душанба">Ду</button>
-                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="2" aria-label="Сешанба">Се</button>
-                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="3" aria-label="Чоршанба">Чо</button>
-                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="4" aria-label="Пайшанба">Па</button>
-                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="5" aria-label="Жума">Жу</button>
-                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="6" aria-label="Шанба">Ша</button>
-                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="0" aria-label="Якшанба">Як</button>
-                </div>
-                <p class="hint" id="dayHint">Бир нечтасини танлаш мумкин · ўқ тугмалари билан юринг, Space билан танланг.</p>
-                <p class="field-error" id="errDays" hidden></p>
-              </div>
-
-              <div class="field when-time">
-                <label class="label" for="fRepeatTime">Вақт <span class="req" aria-hidden="true">*</span></label>
-                <input class="input" id="fRepeatTime" name="fRepeatTime" autocomplete="off" type="time" value="09:00" data-timepicker aria-describedby="repeatTimeHint errRepeatTime" />
-                <p class="hint" id="repeatTimeHint">Ҳар танланган кунда шу вақтда кетади.</p>
-                <p class="field-error" id="errRepeatTime" hidden></p>
-              </div>
-
-              <div class="field">
-                <span class="label" id="spanLabel">Амал қилиш даври <span class="req" aria-hidden="true">*</span></span>
-                <div class="segment" role="radiogroup" aria-labelledby="spanLabel" id="spanGroup">
-                  <button type="button" class="seg-btn" role="radio" aria-checked="true" data-span="months" aria-describedby="spanDescMonths">
-                    <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-calendar-days"/></svg>
-                    Танланган ойлар
-                  </button>
-                  <button type="button" class="seg-btn" role="radio" aria-checked="false" data-span="range" aria-describedby="spanDescRange">
-                    <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-move-horizontal"/></svg>
-                    Сана оралиғи
-                  </button>
-                </div>
-                <span class="sr-only" id="spanDescMonths">Ҳар йили фақат танланган ойларда қайтади. Фақат шу йилги бўлса, Сана оралиғи вариантини танланг.</span>
-                <span class="sr-only" id="spanDescRange">Танланган оралиқ тугагач бутунлай тўхтайди. Ҳар йили қайтариш учун Танланган ойлар вариантини танланг.</span>
-                <p class="hint" id="spanHint">Ҳар йили фақат танланган ойларда қайтади. Фақат шу йилги бўлса, «Сана оралиғи» ни танланг.</p>
-              </div>
-
-              <div class="field" id="spanMonths">
-                <span class="label" id="monthLabel">Қайси ойларда <span class="req" aria-hidden="true">*</span></span>
-                <div class="chip-row month-row" role="toolbar" aria-orientation="horizontal"
-                     aria-labelledby="monthLabel" aria-describedby="monthHint errMonths" id="monthRow">
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="1" aria-label="Январ">Ян</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="2" aria-label="Феврал">Фев</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="3" aria-label="Март">Мар</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="4" aria-label="Апрел">Апр</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="5">Май</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="6">Июн</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="7">Июл</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="8" aria-label="Август">Авг</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="9" aria-label="Сентябр">Сен</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="10" aria-label="Октябр">Окт</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="11" aria-label="Ноябр">Ной</button>
-                  <button type="button" class="seg-btn month-chip" aria-pressed="false" data-month="12" aria-label="Декабр">Дек</button>
-                </div>
-                <p class="hint" id="monthHint">Бир нечтасини танлаш мумкин. Ҳар йили шу ойларда қайтади.</p>
-                <p class="field-error" id="errMonths" hidden></p>
-              </div>
-
-              <div class="when-grid" id="spanRange" hidden>
-                <div class="field">
-                  <label class="label" for="fFrom">Бошланиш <span class="req" aria-hidden="true">*</span></label>
-                  <input class="input" id="fFrom" name="fFrom" autocomplete="off" type="date" data-datepicker aria-describedby="errFrom" />
-                  <p class="field-error" id="errFrom" hidden></p>
-                </div>
-                <div class="field">
-                  <label class="label" for="fTo">Тугаш <span class="req" aria-hidden="true">*</span></label>
-                  <input class="input" id="fTo" name="fTo" autocomplete="off" type="date" data-datepicker aria-describedby="untilHint errTo errRuns" />
-                  <p class="hint" id="untilHint">Шу кун ҳам киради (Тошкент бўйича 23:59).</p>
-                  <p class="field-error" id="errTo" hidden></p>
-                  <p class="field-error" id="errRuns" hidden></p>
-                </div>
-              </div>
-
-              <div class="field runs" id="runs" role="group" aria-labelledby="runsLabel">
-                <span class="label" id="runsLabel">Кейинги юборишлар</span>
-                <div class="runs-chips" id="runsChips" role="list" hidden></div>
-                <div class="empty" id="runsEmpty" hidden>
-                  <span class="empty-icon" aria-hidden="true"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-calendar-x"/></svg></span>
-                  <p class="empty-title">Ҳеч қачон юборилмайди</p>
-                  <p id="runsEmptyBody"></p>
-                </div>
-                <p class="hint runs-sum" id="runsSum"></p>
-              </div>
-            </div>
           </div>
         </div>
-        <p class="sr-only" id="whenLive" role="status"></p>
       </div>
     </section>
 
     <section class="section" id="sec-4" aria-labelledby="h-sec-4">
       <header class="section-head">
-        <h2 class="section-title" id="h-sec-4" tabindex="-1">Илова <span class="section-opt">ихтиёрий</span></h2>
-        <p class="section-desc">PDF, JPG ёки PNG · биттаси 10 MB гача · 5 тагача.</p>
+        <h2 class="section-title" id="h-sec-4" tabindex="-1">Амал қилиш муддати</h2>
+        <p class="section-desc" id="expiryLabel">Шу вақтгача хабар амалда бўлади · Тошкент вақти, UTC+5</p>
       </header>
-      <div class="section-body">
-        <div class="drop" id="drop">
-          <span class="empty-icon" aria-hidden="true">
-            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-upload"/></svg>
-          </span>
-          <p class="empty-title">Файл танланг ёки шу ерга тортиб ташланг</p>
-          <p class="hint">Қабул қилувчи хабарни очганда иловани кўради</p>
-          <label class="btn btn-ghost btn-sm" for="fFiles">
-            Файл танлаш
-            <input class="sr-only" id="fFiles" type="file" multiple accept=".pdf,.jpg,.jpeg,.png" />
-          </label>
+      <div class="section-body section-body-list">
+        <div class="choice-list" role="radiogroup" aria-labelledby="h-sec-4" aria-describedby="expiryLabel" id="expiryGroup">
+          <div class="choice">
+            <button type="button" class="choice-btn" role="radio" aria-checked="true" data-expiry="1d">
+              <span class="choice-radio" aria-hidden="true"></span>
+              <span class="choice-text"><span class="choice-name">1 кун</span><span class="choice-sub"></span></span>
+            </button>
+          </div>
+          <div class="choice">
+            <button type="button" class="choice-btn" role="radio" aria-checked="false" data-expiry="3d">
+              <span class="choice-radio" aria-hidden="true"></span>
+              <span class="choice-text"><span class="choice-name">3 кун</span><span class="choice-sub"></span></span>
+            </button>
+          </div>
+          <div class="choice">
+            <button type="button" class="choice-btn" role="radio" aria-checked="false" data-expiry="7d">
+              <span class="choice-radio" aria-hidden="true"></span>
+              <span class="choice-text"><span class="choice-name">1 ҳафта</span><span class="choice-sub"></span></span>
+            </button>
+          </div>
+          <div class="choice">
+            <button type="button" class="choice-btn" role="radio" aria-checked="false" data-expiry="custom">
+              <span class="choice-radio" aria-hidden="true"></span>
+              <span class="choice-text"><span class="choice-name">Аниқ сана ва вақт</span><span class="choice-sub">Масалан, профилактика тугайдиган пайт</span></span>
+            </button>
+            <div class="choice-body" id="expiryCustom" hidden>
+              <div class="when-grid">
+                <div class="field">
+                  <label class="label" for="fDate">Сана <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input" id="fDate" name="fDate" autocomplete="off" type="date" data-datepicker aria-describedby="errDate" />
+                  <p class="field-error" id="errDate" hidden></p>
+                </div>
+                <div class="field">
+                  <label class="label" for="fTime">Вақт <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input" id="fTime" name="fTime" autocomplete="off" type="time" value="18:00" data-timepicker aria-describedby="errTime" />
+                  <p class="field-error" id="errTime" hidden></p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="file-list" id="fileList" hidden></div>
-        <p class="field-error" id="errFiles" role="alert" hidden></p>
       </div>
     </section>
   </div>
@@ -439,7 +354,7 @@
 <dialog class="modal" id="resultDialog" aria-labelledby="resultTitle">
   <div class="modal-inner">
     <div class="modal-head">
-      <p class="eyebrow eyebrow-sm">Юбориш натижаси</p>
+      <p class="eyebrow eyebrow-sm" id="resultEyebrow">Юбориш натижаси</p>
       <button class="icon-btn" type="button" id="resultClose" aria-label="Ёпиш">
         <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
       </button>
@@ -454,6 +369,18 @@
 <script src="assets/datepicker.js" defer></script>
 <script src="assets/timepicker.js" defer></script>
 <script src="assets/composer-data.js" defer></script>
-<script src="assets/composer.js" defer></script>
+<script src="assets/composer/ui.js" defer></script>
+<script src="assets/composer/time.js" defer></script>
+<script src="assets/composer/geo.js" defer></script>
+<script src="assets/composer/payload.js" defer></script>
+<script src="assets/composer/fields.js" defer></script>
+<script src="assets/composer/scope-view.js" defer></script>
+<script src="assets/composer/scope.js" defer></script>
+<script src="assets/composer/check.js" defer></script>
+<script src="assets/composer/preview.js" defer></script>
+<script src="assets/composer/result-view.js" defer></script>
+<script src="assets/composer/submit.js" defer></script>
+<script src="assets/composer/draft.js" defer></script>
+<script src="assets/composer/main.js" defer></script>
 </body>
 </html>

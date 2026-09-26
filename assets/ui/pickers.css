@@ -2,7 +2,7 @@
 .pick-field .input { padding-inline-end: 46px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
 .pick-toggle {
   position: absolute; top: 1px; right: 1px; bottom: 1px; width: 40px;
-  display: grid; place-items: center; border-radius: 8px; color: var(--ink-2);
+  display: grid; place-items: center; border-radius: 5px; color: var(--ink-2);
   transition: background-color var(--d-hover) var(--ease-out), color var(--d-hover) var(--ease-out);
 }
 .pick-toggle::after { content: ""; position: absolute; inset: -2px; }
