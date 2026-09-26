@@ -97,7 +97,7 @@
     var probe = document.createElement("div");
     probe.style.cssText = "position:absolute;visibility:hidden;transition:none";
     document.body.appendChild(probe);
-    probe.style.background = getComputedStyle(document.documentElement).getPropertyValue("--backdrop").trim();
+    probe.style.background = getComputedStyle(document.documentElement).getPropertyValue("--paper").trim();
     meta.setAttribute("content", getComputedStyle(probe).backgroundColor);
     probe.remove();
     void theme;

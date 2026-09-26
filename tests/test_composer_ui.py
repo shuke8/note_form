@@ -68,7 +68,7 @@ class ComposerUiTest(unittest.TestCase):
         self.page.wait_for_selector("#whenLater:not([hidden])")
 
     def test_every_section_is_open_at_once(self):
-        for sel in ["#scopeList", "#uzTitle", "#ruBody", '[data-when="later"]', "#drop", ".phone"]:
+        for sel in ["#scopeAll", "#uzTitle", "#ruBody", '[data-when="later"]', "#drop", ".phone"]:
             self.assertTrue(self.page.is_visible(sel), sel)
         self.assertEqual(self.page.locator("[data-edit], [data-save]").count(), 0)
 
@@ -217,7 +217,7 @@ class ComposerUiTest(unittest.TestCase):
     def test_sticky_preview_stays_below_the_top_bar(self):
         first, box = self.pinned_card(1280, 720)
         self.assertEqual(first["y"], box["y"])
-        self.assertGreaterEqual(box["y"], 64)
+        self.assertGreaterEqual(box["y"], self.bars_bottom())
         self.assertLessEqual(box["y"] + box["height"], 720)
         toggle = self.page.locator("#pvUz").bounding_box()
         self.assertTrue(self.page.evaluate(
@@ -229,18 +229,18 @@ class ComposerUiTest(unittest.TestCase):
                 self.page.goto(self.url, wait_until="domcontentloaded")
                 first, box = self.pinned_card(width, height)
                 if first["y"] == box["y"]:
-                    self.assertGreaterEqual(box["y"], 64)
+                    self.assertGreaterEqual(box["y"], self.bars_bottom())
                     self.assertLessEqual(box["y"] + box["height"], height)
 
     def test_preview_facts_scroll_instead_of_overlapping(self):
-        self.pinned_card(1100, 600)
+        self.pinned_card(1280, 720)
         rects = self.page.eval_on_selector_all(".side-card .fact", "els => els.map(e => [e.getBoundingClientRect().top, e.getBoundingClientRect().bottom])")
         for (_, bottom), (top, _) in zip(rects, rects[1:]):
             self.assertLessEqual(bottom, top + 0.5)
         self.assertEqual(self.page.get_attribute(".side-card .fact-grid", "tabindex"), "0")
 
     def test_hidden_preview_facts_are_signalled(self):
-        self.pinned_card(1100, 600)
+        self.pinned_card(1280, 720)
         grid = ".side-card .fact-grid"
         self.assertEqual(self.page.get_attribute(grid, "data-more"), "true")
         self.page.eval_on_selector(grid, "g => g.scrollTop = g.scrollHeight")
@@ -248,7 +248,7 @@ class ComposerUiTest(unittest.TestCase):
         self.assertEqual(self.page.get_attribute(grid, "data-more"), "false")
 
     def test_preview_is_not_pinned_when_facts_would_not_fit(self):
-        self.page.set_viewport_size({"width": 1280, "height": 540})
+        self.page.set_viewport_size({"width": 1100, "height": 600})
         self.assertEqual(self.page.eval_on_selector(".side-card", "e => getComputedStyle(e).position"), "static")
 
     def test_a_lost_pointer_release_does_not_delay_keyboard_errors(self):
@@ -261,6 +261,7 @@ class ComposerUiTest(unittest.TestCase):
 
     def test_long_region_names_are_not_cut_on_phones(self):
         self.page.set_viewport_size({"width": 390, "height": 844})
+        self.page.click("#scopeArea")
         cut = self.page.eval_on_selector_all(".scope-name", "els => els.filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent)")
         self.assertEqual(cut, [])
 
@@ -277,17 +278,20 @@ class ComposerUiTest(unittest.TestCase):
     def test_uzbek_letters_render_in_the_interface_fonts(self):
         self.page.evaluate("document.querySelector('.scope-row').click()")
         for selector, family in [("#h-sec-3", "Onest"), ('[data-when="now"] .choice-name', "Onest"),
-                                 (".scope-name", "Onest"), ("label[for=uzTitle]", "Source")]:
+                                 (".scope-name", "Onest"), ("label[for=uzTitle]", "Onest")]:
             with self.subTest(selector=selector):
                 self.assertEqual(self.platform_fonts(selector), {family})
 
-    def test_top_bar_focus_ring_stands_out_on_green(self):
+    def test_page_actions_show_a_focus_ring(self):
         self.page.focus("#resetBtn")
         self.page.keyboard.press("Shift+Tab")
         self.page.keyboard.press("Tab")
         ring = self.page.eval_on_selector("#resetBtn", "e => getComputedStyle(e).boxShadow")
-        ink = self.page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--backdrop-ink').trim()")
-        self.assertIn(self.page.evaluate(f"(() => {{ const d = document.createElement('i'); d.style.color = '{ink}'; document.body.append(d); const c = getComputedStyle(d).color; d.remove(); return c; }})()"), ring)
+        focus = self.page.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--focus').trim()")
+        self.assertIn(self.page.evaluate(f"(() => {{ const d = document.createElement('i'); d.style.color = '{focus}'; document.body.append(d); const c = getComputedStyle(d).color; d.remove(); return c; }})()"), ring)
+
+    def bars_bottom(self):
+        return self.page.evaluate("Math.max(...[...document.querySelectorAll('.topbar, .page-bar')].map(e => getComputedStyle(e).position === 'sticky' ? e.getBoundingClientRect().bottom : 0))")
 
     def test_preview_stays_below_the_top_bar_at_the_page_end(self):
         self.page.click("#scopeAll")
@@ -298,8 +302,7 @@ class ComposerUiTest(unittest.TestCase):
         self.page.evaluate("scrollTo(0, document.documentElement.scrollHeight)")
         self.page.wait_for_timeout(200)
         card = self.page.locator(".side-card").bounding_box()
-        bar = self.page.locator(".topbar").bounding_box()
-        self.assertGreaterEqual(card["y"], bar["y"] + bar["height"])
+        self.assertGreaterEqual(card["y"], self.bars_bottom())
         last = self.page.locator("#sec-4").bounding_box()
         self.assertLessEqual(card["y"] + card["height"], last["y"] + last["height"] + 1)
 
@@ -331,6 +334,103 @@ class ComposerUiTest(unittest.TestCase):
         toast = self.page.locator(".toast").first.bounding_box()
         self.assertLess(toast["y"] + toast["height"], 320)
 
+    def test_region_mode_opens_a_searchable_list(self):
+        self.assertTrue(self.page.is_hidden("#scopeList"))
+        self.page.click("#scopeArea")
+        self.assertTrue(self.page.is_visible("#scopeSearch"))
+        self.assertTrue(self.page.is_visible("#scopeList"))
+        self.assertIn("«Ким олади»", self.page.inner_text("#status"))
+        self.page.fill("#scopeSearch", "урганч")
+        names = self.page.eval_on_selector_all(".scope-row .scope-name", "els => els.map(e => e.firstChild.textContent)")
+        self.assertIn("Урганч шаҳри", names)
+        self.page.click('.scope-row[data-kind="district"]')
+        self.assertEqual(self.page.input_value("#scopeSearch"), "")
+        self.assertIn("Урганч шаҳри", self.page.inner_text("#scopeCrumbs"))
+        self.assertNotIn("«Ким олади»", self.page.inner_text("#status"))
+        self.assertEqual(self.page.get_attribute("#scopeArea", "aria-checked"), "true")
+
+    def test_search_says_when_nothing_matches(self):
+        self.page.click("#scopeArea")
+        self.page.fill("#scopeSearch", "йўққишлоқ")
+        self.assertIn("топилмади", self.page.inner_text("#scopeList"))
+
+    def test_whole_republic_closes_the_region_list(self):
+        self.page.click("#scopeArea")
+        self.page.click('.scope-row[data-kind="region"] >> nth=0')
+        self.page.click("#scopeAll")
+        self.assertTrue(self.page.is_hidden("#scopeList"))
+        self.assertEqual(self.page.get_attribute("#scopeAll", "aria-checked"), "true")
+        self.assertEqual(self.page.get_attribute("#scopeArea", "aria-checked"), "false")
+
+    def found(self, query):
+        self.page.fill("#scopeSearch", query)
+        return self.page.eval_on_selector_all(".scope-row .scope-name", "els => els.map(e => e.firstChild.textContent)")
+
+    def test_search_works_on_russian_and_latin_keyboards(self):
+        self.page.click("#scopeArea")
+        for query, name in [("кашкадарё", "Қашқадарё вилояти"), ("фаргона", "Фарғона вилояти"),
+                            ("toshkent", "Тошкент шаҳри"), ("qashqadaryo", "Қашқадарё вилояти"),
+                            ("farg'ona", "Фарғона вилояти"), ("Samarqand", "Самарқанд вилояти")]:
+            with self.subTest(query=query):
+                self.assertIn(name, self.found(query))
+
+    def test_search_count_tells_when_results_are_cut(self):
+        self.page.click("#scopeArea")
+        self.found("а")
+        rows = self.page.locator(".scope-row").count()
+        label = self.page.inner_text("#scopeLvl")
+        if rows == 40:
+            self.assertRegex(label, r"40 / \d+")
+
+    def test_arrow_up_from_the_first_row_returns_to_search(self):
+        self.page.click("#scopeArea")
+        self.page.focus("#scopeSearch")
+        self.page.keyboard.press("ArrowDown")
+        self.page.keyboard.press("ArrowUp")
+        self.assertEqual(self.page.evaluate("document.activeElement.id"), "scopeSearch")
+
+    def test_switching_to_republic_and_back_keeps_the_region(self):
+        self.page.click("#scopeArea")
+        self.page.click('.scope-row[data-kind="region"] >> nth=6')
+        picked = self.page.inner_text("#scopeCrumbs")
+        self.page.click("#scopeAll")
+        self.page.click("#scopeArea")
+        self.assertEqual(self.page.inner_text("#scopeCrumbs"), picked)
+        self.assertNotIn("«Ким олади»", self.page.inner_text("#status"))
+
+    def test_field_boundaries_meet_three_to_one(self):
+        ratio = self.page.evaluate("""() => {
+          const rgb = s => s.match(/\\d+(\\.\\d+)?/g).slice(0, 3).map(Number);
+          const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+            const [r, g, b] = c.map(f); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+          const cr = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+          const out = {};
+          for (const sel of ['#uzTitle', '#scopeSearch', '[data-day="1"]']) {
+            const el = document.querySelector(sel); const box = sel === '#scopeSearch' ? el.closest('.search') : el;
+            const bg = getComputedStyle(box.closest('.section')).backgroundColor;
+            out[sel] = cr(rgb(getComputedStyle(box).borderTopColor), rgb(bg));
+          }
+          return out; }""")
+        for sel, value in ratio.items():
+            with self.subTest(sel=sel):
+                self.assertGreaterEqual(value, 3)
+
+    def test_search_tolerates_spelling_variants(self):
+        self.page.click("#scopeArea")
+        for query, name in [("Energetik", "Энергетик МФЙ"), ("Fargʼona", "Фарғона вилояти"), ("toshkent  shahri", "Тошкент шаҳри")]:
+            with self.subTest(query=query):
+                self.assertIn(name, self.found(query))
+
+    def test_clearing_the_region_is_not_undone_by_switching(self):
+        self.page.click("#scopeArea")
+        self.page.click('.scope-row[data-kind="region"] >> nth=6')
+        self.page.click("#scopeAll")
+        self.page.click("#scopeArea")
+        self.page.click('.scope-crumb-btn[data-up="root"]')
+        self.page.click("#scopeAll")
+        self.page.click("#scopeArea")
+        self.assertIn("«Ким олади»", self.page.inner_text("#status"))
+
     def test_status_tells_missing_from_wrong(self):
         self.to_later()
         self.page.fill("#fTime", "")
@@ -339,7 +439,7 @@ class ComposerUiTest(unittest.TestCase):
         self.leave_field()
         status = self.page.inner_text("#status")
         self.assertIn("Тузатиш керак: «Қачон кетади»", status)
-        self.assertIn("Тўлдириш керак: «Ким олади», «Хабар матни»", status)
+        self.assertIn("Тўлдириш керак: «Хабар матни», «Ким олади»", status)
 
     def test_switching_schedule_mode_clears_its_errors(self):
         self.to_later()
@@ -447,7 +547,7 @@ class ComposerUiTest(unittest.TestCase):
             self.page.click("#resetBtn")
         self.assertEqual(seen, ["confirm"])
         self.page.wait_for_function("document.querySelectorAll('.scope-row').length > 0")
-        self.assertIsNone(self.page.get_attribute("#scopeAll", "aria-current"))
+        self.assertEqual(self.page.get_attribute("#scopeAll", "aria-checked"), "false")
 
     def test_date_field_is_written_in_cyrillic(self):
         self.to_later()

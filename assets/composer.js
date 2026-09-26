@@ -32,7 +32,7 @@
   };
 
   var touched = {};
-  var REQUIRED_SECTIONS = [1, 2, 3];
+  var REQUIRED_SECTIONS = [2, 1, 3];
   var SECTION_NAME = { 1: "Ким олади", 2: "Хабар матни", 3: "Қачон кетади", 4: "Илова" };
 
   /* ---------------------------------------------------------------------------
@@ -141,46 +141,14 @@
     return parts.length ? parts : null;
   }
 
-  /* ---------------------------------------------------------------------------
-     01 QAMROV — XARITA
-     Qamrov = TURGAN JOYING. Daraja alohida tanlanmaydi: `goScope` darajani va
-     joyni BIR VAQTDA o'rnatadi, shuning uchun ekran bilan so'rov tanasi
-     bir-biridan uzilib qololmaydi.
-  ------------------------------------------------------------------------- */
-  /* O'zbekistonning HAQIQIY chegaralari: Natural Earth 10m admin-1 (jamoat
-     mulki) dan olinib, Albers TENG-YUZALI konus proyeksiyasida (standart
-     parallellar 38.5°N va 44.5°N) 480×320 viewBox ga tushirilgan va
-     Duglas-Peyker bilan 0.42 birlik dopuskda soddalashtirilgan.
-     Teng-yuzali proyeksiya ataylab: xaritada hududning KATTALIGI «qancha
-     joy» degan ma'noni beradi, Merkator esa Qoraqalpog'istonni bo'rttirib,
-     Surxondaryoni kichraytirib, raqam to'g'ri turib chizmani yolg'onchi
-     qilardi. Bu umumiy ma'lumot to'plami — RASMIY chegara hujjati emas.
-     Tartib: katta hudud OLDIN. SVG da keyingi element ustki bo'ladi, demak
-     kichik hudud kattaning ustida qoladi va bosish o'g'irlanmaydi.
-     [reestrdagi nom, path, yorliq X, yorliq Y, eng kichik o'lcham] */
-  var MAP_VIEWBOX = "0 0 480 320";
-  var MAP_SHAPES = [
-    ["Қорақалпоғистон Республикаси", "M98.5 15.4 147.6 52.0 148.7 53.8 149.2 57.4 150.6 60.0 171.3 85.1 172.4 85.6 175.1 90.5 176.4 91.8 183.8 94.2 167.3 124.8 166.5 132.8 170.0 140.1 163.0 144.2 181.8 173.0 174.1 176.3 165.6 165.2 162.9 163.1 155.0 161.0 153.5 161.7 151.4 164.6 149.5 164.0 147.5 160.7 144.8 159.8 135.6 151.2 133.5 146.8 130.7 146.0 128.8 142.0 128.2 138.7 124.3 137.4 122.2 138.9 120.3 139.3 120.6 140.8 119.9 141.9 118.6 140.2 114.0 138.8 114.1 137.4 116.3 136.8 116.2 131.9 117.8 130.5 114.8 128.1 113.3 126.0 108.6 125.5 101.5 125.9 99.9 124.4 97.9 123.9 96.8 122.8 96.5 119.3 94.6 116.8 93.9 116.3 90.9 116.8 87.9 115.6 80.4 106.2 78.6 111.1 76.1 111.2 71.3 109.3 67.5 111.4 68.1 112.6 72.2 115.2 76.5 123.9 74.0 124.1 73.9 120.5 72.5 118.8 69.3 117.2 67.4 117.6 66.1 115.9 64.4 115.7 61.4 118.0 61.9 120.8 60.3 124.1 58.6 125.2 59.1 126.5 52.8 127.6 46.5 126.5 43.9 127.6 41.6 129.5 38.7 133.6 34.9 135.3 34.0 136.3 34.2 140.6 33.6 144.3 34.7 147.6 34.6 150.9 35.9 153.6 38.2 154.8 35.8 156.3 34.3 158.3 28.0 156.8 6.0 153.6 19.0 20.9 85.8 6.0Z", 66.6, 60.2, 170.3],
-    ["Навоий вилояти", "M247.6 77.8 249.3 78.7 257.7 88.8 264.2 93.1 271.7 108.2 279.8 104.0 278.9 123.9 277.8 125.3 278.0 139.9 291.3 139.9 292.4 149.1 297.0 168.6 298.9 170.3 295.6 171.8 295.1 172.9 295.7 177.9 296.3 179.0 299.4 179.9 299.5 182.1 300.5 183.9 295.7 194.2 294.7 193.0 294.7 191.5 292.6 189.6 289.6 191.4 286.2 190.3 285.2 191.1 284.3 193.5 284.9 195.6 283.8 196.7 284.3 199.1 283.7 201.0 284.3 202.1 282.1 207.2 283.8 207.4 284.0 208.2 281.9 210.5 275.6 212.1 272.6 211.3 270.4 210.2 269.3 208.8 265.4 207.4 263.8 211.4 264.6 212.4 263.3 216.2 261.2 216.4 259.2 215.5 258.3 217.1 254.7 218.0 256.7 220.7 257.6 224.0 256.6 227.2 258.5 231.3 255.2 232.3 254.5 229.5 251.9 227.6 250.8 223.8 247.2 221.8 244.7 222.1 244.4 221.2 242.3 220.0 239.9 216.3 242.1 212.3 244.8 210.7 246.5 207.5 248.6 206.7 246.9 204.3 247.7 202.6 247.0 201.9 247.0 200.2 249.3 199.4 251.6 200.6 254.9 200.7 257.9 193.6 260.5 193.7 260.4 190.2 261.1 187.0 251.5 186.9 248.8 186.3 246.9 184.9 245.1 178.4 243.3 180.0 237.0 181.0 235.6 184.9 228.2 184.0 227.0 183.5 226.5 179.1 224.9 177.7 223.3 179.0 219.6 185.3 216.4 186.5 214.8 183.6 206.6 178.4 202.5 176.0 195.8 173.6 192.3 166.9 187.8 161.4 186.3 158.2 184.1 158.1 174.4 161.5 163.0 144.7 163.6 143.7 170.0 140.1 166.5 132.8 167.3 124.8 183.8 94.6 183.4 94.0 176.4 91.8 172.4 85.6 203.5 81.0 235.4 84.2Z", 225.5, 130.4, 137.4],
-    ["Бухоро вилояти", "M228.3 251.2 226.7 250.6 215.2 242.2 208.7 234.4 184.4 216.3 180.6 211.9 179.8 208.1 180.3 205.2 178.2 196.6 173.7 193.7 179.6 186.7 181.1 183.6 179.9 181.0 175.6 175.9 181.8 173.0 181.8 172.5 174.4 161.5 184.1 158.1 186.3 158.2 187.8 161.4 192.3 166.9 195.8 173.6 202.5 176.0 206.6 178.4 214.8 183.6 216.4 186.5 219.6 185.3 223.3 179.0 224.9 177.7 226.5 179.1 227.0 183.5 228.2 184.0 235.6 184.9 237.0 181.0 243.3 180.0 245.1 178.4 246.9 184.9 248.8 186.3 251.5 186.9 261.1 187.0 260.4 190.2 260.5 193.7 257.9 193.6 254.9 200.7 251.6 200.6 249.3 199.4 247.0 200.2 247.0 201.9 247.7 202.6 246.9 204.3 248.6 206.7 246.5 207.5 244.8 210.7 242.1 212.3 239.9 216.3 242.3 220.0 244.4 221.2 244.7 222.1 247.2 221.8 250.8 223.8 251.9 227.6 254.5 229.5 255.2 232.3 250.7 236.4 249.4 236.8 247.1 239.5 248.2 243.2 238.0 247.2 233.6 251.4 232.1 249.8Z", 217.4, 211.1, 87.4],
-    ["Қашқадарё вилояти", "M317.5 237.4 317.4 239.9 318.2 240.6 321.6 241.7 323.9 241.7 326.7 243.2 326.7 247.5 323.4 248.3 322.3 249.5 323.6 253.5 323.8 256.0 323.1 258.4 320.8 257.5 319.2 258.2 317.2 262.2 314.9 263.5 312.8 266.3 311.9 270.3 308.5 273.3 305.3 274.8 303.8 278.3 300.1 281.9 299.7 284.5 298.5 285.9 297.1 284.3 291.9 283.3 288.9 282.0 286.7 279.6 276.6 275.3 274.8 275.5 272.7 277.1 268.8 276.7 257.4 269.1 250.9 263.2 241.2 258.5 235.2 253.5 233.6 251.4 238.0 247.2 248.2 243.2 247.1 239.5 249.4 236.8 250.7 236.4 255.2 232.3 258.5 231.3 270.4 231.4 272.1 230.4 272.8 228.8 274.2 229.0 275.4 231.5 278.4 234.0 278.8 236.6 280.9 237.2 285.6 235.3 290.2 234.2 293.7 236.2 295.8 235.3 297.1 233.4 298.6 232.8 303.8 233.6 304.5 235.2 304.4 237.0 305.0 237.5 308.9 237.3 309.3 235.8Z", 290.8, 257.3, 57.2],
-    ["Жиззах вилояти", "M352.0 203.5 350.3 204.3 353.6 206.1 352.0 208.9 352.8 211.8 352.7 213.2 351.8 213.2 352.7 214.0 351.8 216.4 351.7 223.2 349.2 226.0 349.6 226.7 344.6 227.7 327.1 224.9 323.6 227.3 321.4 227.7 320.8 228.3 321.0 230.0 319.5 230.2 315.7 226.9 315.4 223.8 315.6 223.2 317.4 222.7 317.6 219.6 320.8 218.1 320.0 214.5 319.6 213.8 308.6 211.9 307.6 210.9 307.4 209.4 305.2 209.6 304.8 207.5 305.8 206.8 305.9 205.6 303.9 202.6 303.3 195.0 295.7 194.2 300.5 183.9 299.5 182.1 299.4 179.9 296.7 179.2 295.7 178.1 295.1 172.9 295.6 171.8 298.9 170.3 300.5 170.6 325.9 168.3 328.3 169.2 331.0 167.5 333.9 173.1 334.5 172.6 335.2 173.1 336.1 172.1 336.5 173.5 335.7 174.1 336.3 175.8 335.4 179.2 333.0 181.6 335.1 182.3 340.8 186.6 340.4 188.5 338.3 189.3 338.2 191.7 339.6 191.5 339.7 192.0 336.7 199.6 336.9 202.0 337.9 202.5 344.2 202.4 352.5 199.9 351.6 202.9Z", 320.3, 193.1, 58.5],
-    ["Сурхондарё вилояти", "M326.7 247.5 330.8 248.4 334.5 247.2 336.5 247.9 338.1 247.3 338.8 247.9 341.0 252.6 340.0 254.1 338.1 254.8 338.5 257.0 337.4 258.4 338.2 264.0 339.8 268.2 342.6 271.6 346.5 274.2 347.4 276.7 344.6 285.0 341.0 286.6 339.2 292.1 333.2 300.7 332.4 304.5 333.2 308.9 332.2 313.1 331.2 311.6 327.9 310.9 325.9 312.2 324.1 310.0 320.9 312.3 317.2 313.7 315.0 311.1 313.1 310.3 312.3 308.2 309.6 306.7 301.8 307.7 300.7 308.5 297.6 307.6 295.6 307.8 294.9 306.6 296.3 304.7 294.7 302.1 295.4 298.4 295.2 292.7 298.7 286.7 298.5 285.9 299.7 284.5 300.1 281.9 303.8 278.3 305.3 274.8 308.5 273.3 311.9 270.3 312.8 266.3 314.9 263.5 317.2 262.2 319.4 258.1 321.3 257.6 323.0 258.6 323.8 255.8 322.4 249.2 323.4 248.3Z", 318.7, 289.5, 52.7],
-    ["Самарқанд вилояти", "M319.5 230.2 318.1 237.3 309.3 235.8 308.9 237.3 305.0 237.5 304.4 237.0 304.5 235.2 303.8 233.6 298.6 232.8 297.1 233.4 295.8 235.3 293.7 236.2 290.2 234.2 285.6 235.3 280.9 237.2 278.8 236.6 278.4 234.0 275.4 231.5 273.9 228.8 272.2 229.0 272.1 230.4 270.4 231.4 258.5 231.3 256.6 227.2 257.6 224.0 256.7 220.7 254.6 218.2 258.3 217.1 259.2 215.5 261.2 216.4 263.3 216.2 264.6 212.4 263.8 211.4 265.4 207.4 269.3 208.8 270.4 210.2 272.6 211.3 275.6 212.1 281.9 210.5 284.0 208.2 283.8 207.4 282.1 207.2 284.3 202.1 283.7 201.0 284.3 199.1 283.8 196.7 284.9 195.6 284.3 193.5 284.9 191.5 286.2 190.3 289.6 191.4 292.6 189.6 294.7 191.5 294.8 193.1 296.0 194.4 303.3 195.0 303.9 202.6 305.9 205.6 305.8 206.8 304.8 207.5 305.2 209.6 307.4 209.4 307.6 210.9 308.6 211.9 319.6 213.8 320.0 214.5 320.8 218.1 317.6 219.6 317.4 222.7 315.6 223.2 315.4 223.8 315.7 226.9Z", 293.7, 219.0, 48.0],
-    ["Тошкент вилояти", "M418.3 126.1 418.0 127.5 414.9 129.1 411.4 132.2 407.9 133.0 407.3 137.0 403.0 138.5 399.4 142.5 398.2 145.2 390.8 150.6 390.3 151.6 391.9 153.2 395.8 153.3 399.4 156.3 397.6 160.0 397.9 161.2 398.9 161.7 398.3 164.0 399.7 166.1 400.0 170.5 398.4 169.7 397.4 170.0 396.9 173.9 395.5 175.8 388.4 180.6 382.9 182.9 379.9 185.8 378.7 185.2 374.7 180.8 372.6 179.9 370.8 180.5 369.4 182.8 369.5 187.6 366.6 188.9 370.1 196.8 370.0 198.6 367.4 198.6 367.5 199.6 369.6 201.3 369.7 202.2 367.3 202.8 363.8 201.7 364.2 199.8 363.5 198.0 364.7 192.8 363.9 191.1 364.4 190.8 363.3 190.6 364.4 188.2 362.9 188.4 363.5 187.4 362.4 185.7 360.8 186.0 361.0 184.7 359.4 185.1 359.6 184.1 358.1 183.2 357.6 181.7 355.1 179.5 353.5 179.4 352.5 177.2 350.8 175.7 352.4 174.4 354.0 170.6 355.8 169.7 356.7 168.0 358.4 167.5 360.7 165.8 361.2 161.9 360.6 159.8 363.0 158.9 365.3 156.4 370.3 155.6 369.6 154.1 369.9 153.1 372.1 151.9 375.9 148.3 383.6 146.2 385.1 144.2 388.7 141.7 390.9 137.6 392.6 136.4 394.7 132.7 397.7 131.5 399.5 133.8 400.8 134.0 401.6 133.5 404.5 127.1 407.4 127.1 411.7 123.3 413.4 123.4Z", 381.5, 166.6, 67.4],
-    ["Наманган вилояти", "M399.4 156.3 404.6 153.6 407.6 157.7 407.9 161.8 409.5 161.3 412.0 163.1 415.0 163.0 417.7 164.0 419.4 165.7 419.4 163.1 419.9 162.7 420.9 163.1 422.0 165.3 423.2 163.6 425.2 165.0 425.8 163.2 425.2 156.5 428.2 158.1 429.8 157.0 430.9 153.0 429.6 150.8 430.3 149.0 431.5 148.7 432.1 150.6 431.9 153.1 432.4 152.3 433.2 153.0 433.8 152.0 436.9 155.7 438.0 161.0 440.8 160.7 442.5 162.0 444.4 160.4 445.8 160.6 446.9 165.1 446.6 167.4 447.4 167.1 446.9 170.7 443.9 171.6 437.8 171.2 432.7 172.6 431.2 174.5 432.1 176.0 426.8 179.3 423.9 183.1 417.4 180.8 419.0 178.3 415.9 178.7 413.6 178.3 412.4 179.5 410.4 179.9 409.0 181.5 409.2 179.9 405.1 178.5 405.2 177.4 407.3 178.2 407.3 177.5 400.0 170.5 399.7 166.1 398.3 164.0 398.9 161.7 397.9 161.2 397.6 160.0Z", 413.5, 170.6, 34.4],
-    ["Фарғона вилояти", "M439.3 204.8 438.8 208.0 436.5 207.4 436.5 206.3ZM444.8 194.4 445.1 194.8 444.6 195.3 439.9 195.3 438.5 197.9 436.3 199.5 435.7 199.3 435.1 196.6 434.2 195.4 433.4 197.7 431.4 197.7 429.0 195.8 426.8 194.7 424.5 194.8 423.7 193.9 422.4 196.2 418.3 196.1 416.7 196.5 415.8 197.6 406.6 199.7 405.4 199.0 403.5 194.7 401.3 194.8 399.3 194.2 399.5 192.9 398.6 190.9 399.7 189.6 401.8 188.9 403.0 186.9 410.4 179.9 412.4 179.5 413.6 178.3 415.9 178.7 419.0 178.3 417.4 180.8 423.3 183.3 426.8 179.3 431.4 176.9 433.4 179.6 433.5 178.8 436.1 179.1 437.9 179.6 439.9 181.7 445.1 182.1 446.1 181.4 447.3 182.5 449.5 183.1 450.0 186.7 446.6 188.3 446.0 190.4 443.0 192.6 443.2 193.7ZM417.4 200.4 420.3 203.6 422.1 204.3 423.6 203.6 424.2 204.0 422.4 206.0 423.9 208.2 423.6 209.7 420.6 210.5 419.5 209.5 418.1 210.3 418.8 206.4 417.4 205.9 416.0 203.4 416.5 201.0Z", 413.8, 188.3, 33.6],
-    ["Хоразм вилояти", "M122.0 146.0 122.7 145.5 122.5 144.5 119.9 141.9 120.6 140.8 120.3 139.3 124.7 137.4 128.2 138.7 128.8 142.0 130.7 146.0 133.5 146.8 135.6 151.2 144.8 159.8 147.5 160.7 149.5 164.0 151.4 164.6 153.5 161.7 155.0 161.0 161.6 162.5 164.1 163.9 170.1 170.5 173.3 175.9 175.6 175.9 179.9 181.0 181.1 183.6 179.6 186.7 173.7 193.7 171.4 188.0 170.0 186.0 168.5 179.8 168.5 175.7 166.4 171.6 159.9 166.3 157.6 165.2 153.3 164.5 152.6 166.5 149.6 169.3 147.5 168.8 144.8 166.7 142.7 166.8 142.4 166.1 141.4 167.3 140.2 165.9 138.3 165.4 132.8 165.5 129.5 166.4 126.9 166.1 123.2 162.6 117.0 158.6 117.6 154.3 120.0 152.4 117.2 146.2 118.7 144.7Z", 128.7, 156.6, 56.3],
-    ["Сирдарё вилояти", "M363.8 201.7 362.3 201.2 356.3 203.0 352.0 203.5 351.6 202.9 352.4 199.9 344.2 202.4 337.9 202.5 336.9 202.0 336.7 199.6 339.7 192.0 339.6 191.5 338.2 191.7 338.3 189.1 340.4 188.5 340.8 186.6 346.3 189.2 347.7 187.9 349.9 188.5 350.4 188.1 350.0 187.4 350.7 186.0 350.1 184.3 348.9 183.7 348.3 180.0 348.7 177.1 349.2 177.4 350.2 175.9 350.8 175.7 352.2 176.9 353.5 179.4 355.1 179.5 357.6 181.7 358.1 183.2 359.6 184.1 359.4 185.1 361.0 184.7 360.8 186.0 362.4 185.7 363.5 187.4 362.9 188.4 364.4 188.2 363.3 190.6 364.4 190.8 363.9 191.1 364.7 192.8 363.5 198.0 364.2 199.8ZM360.0 204.5 361.3 205.3 361.4 207.4 358.8 207.3 356.9 208.5 355.8 207.1 355.5 207.8 359.1 214.3 357.9 214.8 355.5 210.7 356.5 214.3 355.5 216.3 353.7 214.9 352.5 215.7 352.7 214.0 351.8 213.2 352.8 213.0 352.0 209.2 352.5 207.7 353.6 206.1Z", 355.8, 193.4, 28.0],
-    ["Андижон вилояти", "M450.9 164.3 452.8 166.0 455.2 166.3 455.3 167.6 457.1 168.0 459.3 170.6 460.4 170.9 466.2 170.5 466.4 172.1 469.8 169.9 471.3 171.0 473.8 170.8 474.0 171.6 472.1 173.6 464.6 177.7 463.9 181.3 461.6 181.4 460.8 183.9 459.7 184.1 455.7 182.6 453.7 180.9 453.0 181.3 453.6 184.5 455.5 186.3 455.3 188.1 454.2 189.1 451.3 187.9 449.7 188.0 451.0 186.9 450.0 186.7 449.1 182.8 447.3 182.5 446.1 181.4 445.1 182.1 439.9 181.7 437.9 179.6 436.1 179.1 433.5 178.8 433.4 179.6 431.4 176.9 432.1 176.0 431.2 174.5 432.7 172.6 437.8 171.2 443.9 171.6 446.6 171.0 447.4 167.1 449.9 166.2Z", 452.6, 173.9, 24.8],
-    ["Тошкент шаҳри", "M366.5 158.4 369.0 159.5 368.8 160.8 369.6 162.1 366.5 165.1 365.7 165.0 365.4 163.9 365.0 164.3 364.0 162.8 363.4 163.0 364.2 160.0 365.6 158.5Z", 366.4, 161.5, 6.2]
-  ];
   var CHEV = '<svg class="ico scope-chev" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>';
   var SVG_NS = "http://www.w3.org/2000/svg";
-  var cells = {};
-  var scopeSig = null;      // oxirgi chizilgan qamrov holati
-  var wantFocus = false;    // fokus faqat QAMROV bilan ishlaganda ko'chadi
-  var preRow = null;        // sichqoncha bosishi fokusni blur qiladi — kim turganini eslaymiz
+  var scopeSig = null;
+  var wantFocus = false;
+  var preRow = null;
+  var areaMode = false;
+  var scopeQuery = "";
+  var areaStash = null;
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
@@ -188,56 +156,45 @@
     });
   }
   function pad(n) { return (n < 10 ? "0" : "") + n; }
-  function mkSvg(tag, attrs) {
-    var el = document.createElementNS(SVG_NS, tag);
-    for (var k in attrs) el.setAttribute(k, attrs[k]);
-    return el;
+  var LATIN = [["o‘", "у"], ["oʻ", "у"], ["oʼ", "у"], ["o'", "у"], ["o`", "у"], ["o’", "у"], ["g‘", "г"], ["gʻ", "г"], ["gʼ", "г"], ["g'", "г"], ["g`", "г"], ["g’", "г"],
+    ["sh", "ш"], ["ch", "ч"], ["yo", "е"], ["yu", "ю"], ["ya", "я"], ["ye", "е"], ["ts", "ц"],
+    ["a", "а"], ["b", "б"], ["c", "к"], ["d", "д"], ["e", "е"], ["f", "ф"], ["g", "г"], ["h", "х"], ["i", "и"],
+    ["j", "ж"], ["k", "к"], ["l", "л"], ["m", "м"], ["n", "н"], ["o", "о"], ["p", "п"], ["q", "к"], ["r", "р"],
+    ["s", "с"], ["t", "т"], ["u", "у"], ["v", "в"], ["w", "в"], ["x", "х"], ["y", "й"], ["z", "з"]];
+  var FOLD = { "қ": "к", "ғ": "г", "ҳ": "х", "ў": "у", "ё": "е", "э": "е", "ъ": "", "ь": "" };
+  function norm(s) {
+    var out = String(s).toLowerCase();
+    LATIN.forEach(function (pair) { out = out.split(pair[0]).join(pair[1]); });
+    return out.replace(/[қғҳўёэъь]/g, function (c) { return FOLD[c]; }).replace(/['‘ʻʼ`’]/g, "").replace(/\s+/g, " ");
   }
 
-  /* Shakli shundan kichik hudud ko'z bilan topilmaydi va aniq bosilmaydi.
-     Bunday hududga KO'RINADIGAN halqa va kattaroq bosish nishoni beriladi —
-     Toshkent shahri viloyat ichida 7px lik dog' bo'lib qolardi.
-     WCAG 2.5.8 (24×24) shu bilan qoplanadi; undan ham kichik qolsa
-     ro'yxatdagi 44px lik qator TENG QIYMATLI boshqaruv bo'lib xizmat qiladi. */
-  var TINY = 14;        // viewBox birligi
-  var TINY_HIT = 11;    // nishon radiusi: 504px lik ustunda ~23px, 537px da ~24.6px
-
-  function buildMap() {
-    var svg = $("scopeSvg");
-    svg.setAttribute("viewBox", MAP_VIEWBOX);
-    var box = MAP_VIEWBOX.split(" ");
-    /* Bosiladigan fon kataklardan OLDIN qo'yiladi: SVG da ustki element bosiladi,
-       demak katak ustidagi bosish hududni, tashqarisidagi bosish respublikani beradi. */
-    svg.appendChild(mkSvg("rect", { "class": "scope-back", x: "0", y: "0", width: box[2], height: box[3] }));
-    MAP_SHAPES.forEach(function (shape) {
-      var name = shape[0];
-      // Nom reestrda topilmasa shakl chizilmaydi — hech qayerga olib bormaydigan hudud bosilmasin.
-      if (NAMES.indexOf(name) < 0 || cells[name]) return;
-      var g = mkSvg("g", { "class": "scope-cell", "data-r": name, "data-state": "idle" });
-      var path = mkSvg("path", { "class": "scope-rg", d: shape[1] });
-      var title = mkSvg("title", {});
-      title.textContent = name + " · " + popText(GEO[name].pop) + " киши (тахминий)";
-      path.appendChild(title); g.appendChild(path);
-      if (shape[4] < TINY) {
-        g.appendChild(mkSvg("circle", { "class": "scope-mark", cx: shape[2], cy: shape[3], r: 6.5 }));
-        g.appendChild(mkSvg("circle", { "class": "scope-tap", cx: shape[2], cy: shape[3], r: TINY_HIT }));
-      }
-      svg.appendChild(g); cells[name] = g;
-    });
-  }
-
-  /* Reestrdagi bo'shliq JIM qolmasin: ekran «hammasi shu yerda» degan taassurot bermasin. */
   function reportGaps() {
-    var gaps = [], noCell = NAMES.filter(function (n) { return !cells[n]; });
-    if (NO_POP.length) gaps.push("аҳоли сони йўқ — " + NO_POP.join(", "));
-    if (noCell.length) gaps.push("харитада кўрсатилмаган — " + noCell.join(", "));
-    if (!gaps.length) return;
+    if (!NO_POP.length) return;
     $("scopeCrumbs").insertAdjacentHTML("beforebegin",
       '<p class="note note-warn"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-triangle-alert"/></svg>' +
-      '<span>Реестр тўлиқ эмас: ' + esc(gaps.join("; ")) + '. Бу ҳудудлар учун тахминий рақам ҳам, республика йиғиндиси ҳам кўрсатилмайди.</span></p>');
+      '<span>Реестр тўлиқ эмас: аҳоли сони йўқ — ' + esc(NO_POP.join(", ")) + '. Бу ҳудудлар учун тахминий рақам ҳам, республика йиғиндиси ҳам кўрсатилмайди.</span></p>');
+  }
+
+  function searchRows(q) {
+    var out = [];
+    NAMES.forEach(function (r) {
+      if (norm(r).indexOf(q) > -1) out.push({ kind: "region", name: r, pop: GEO[r].pop, region: r });
+      var ds = districtsOf(r);
+      Object.keys(ds).forEach(function (d) {
+        if (norm(d).indexOf(q) > -1) out.push({ kind: "district", name: d, pop: ds[d].pop, region: r, district: d, sub: r });
+        var ms = mahallasOf(r, d);
+        Object.keys(ms).forEach(function (m) {
+          if (norm(m).indexOf(q) > -1) out.push({ kind: "mahalla", name: m, pop: ms[m], region: r, district: d, mahalla: m, sub: d + " · " + r });
+        });
+      });
+    });
+    var shown = out.slice(0, 40).map(function (it, i) { it.idx = i + 1; return it; });
+    shown.total = out.length;
+    return shown;
   }
 
   function scopeRows() {
+    if (scopeQuery) return searchRows(scopeQuery);
     if (state.scope === "region") {
       var ds = districtsOf(state.region);
       return Object.keys(ds).map(function (n, i) { return { kind: "district", name: n, pop: ds[n].pop, idx: i + 1, deep: true }; });
@@ -255,15 +212,18 @@
   function renderScopeList() {
     var rows = scopeRows(), list = $("scopeList");
     if (!rows.length) {
-      list.innerHTML = '<li class="scope-empty hint">Реестрда бу поғона учун ёзув йўқ — қамров юқоридаги даражада қолади.</li>';
+      list.innerHTML = scopeQuery
+        ? '<li class="scope-empty hint">«' + esc($("scopeSearch").value.trim()) + '» бўйича ҳудуд топилмади — бошқача ёзиб кўринг.</li>'
+        : '<li class="scope-empty hint">Реестрда бу поғона учун ёзув йўқ — қамров юқоридаги даражада қолади.</li>';
       return rows;
     }
     list.innerHTML = rows.map(function (it) {
       var on = it.kind === "mahalla" && state.mahalla === it.name;
-      return '<li><button type="button" class="scope-row" data-kind="' + it.kind + '" data-name="' + esc(it.name) + '"' +
+      var path = it.region ? ' data-region="' + esc(it.region) + '" data-district="' + esc(it.district || "") + '" data-mahalla="' + esc(it.mahalla || "") + '"' : "";
+      return '<li><button type="button" class="scope-row" data-kind="' + it.kind + '" data-name="' + esc(it.name) + '"' + path +
         ' aria-describedby="scopeError"' + (on ? ' aria-current="true"' : "") + ">" +
         '<span class="scope-idx">' + pad(it.idx) + "</span>" +
-        '<span class="scope-name">' + esc(it.name) + "</span>" +
+        '<span class="scope-name">' + esc(it.name) + (it.sub ? '<span class="scope-sub">' + esc(it.sub) + "</span>" : "") + "</span>" +
         '<span class="scope-pop">' + popText(it.pop) + "</span>" + (it.deep ? CHEV : "") + "</button></li>";
     }).join("");
     return rows;
@@ -275,7 +235,7 @@
   function renderScopeCrumbs() {
     var el = $("scopeCrumbs");
     if (!state.scope) { el.innerHTML = '<span class="scope-crumb scope-crumb-off">Қамров ҳали танланмаган</span>'; return; }
-    var cr = [{ up: "republic", label: "Ўзбекистон", action: "Қамровни бутун республикага ўзгартириш" }];
+    var cr = [{ up: "root", label: "Барча ҳудудлар", action: "Ҳудудлар рўйхатига қайтиш" }];
     if (state.region) cr.push({ up: "region", label: state.region, action: "Қамровни бутун " + state.region + "га ўзгартириш" });
     if (state.scope !== "region" && state.district) cr.push({ up: "district", label: state.district, action: "Қамровни бутун " + state.district + "га ўзгартириш" });
     if (state.scope === "mahalla" && state.mahalla) cr.push({ label: state.mahalla });
@@ -301,7 +261,7 @@
 
   function renderScope() {
     if (state.dataFailed) return;
-    var sig = [state.scope, state.region, state.district, state.mahalla].join("|");
+    var sig = [state.scope, state.region, state.district, state.mahalla, scopeQuery, areaMode].join("|");
     // Matn yozilayotganda `refresh()` sekundiga o'nlab marta chaqiriladi —
     // qamrov o'zgarmagan bo'lsa ro'yxatni qayta qurish bekorga DOM churn va
     // fokusni ushlab turgan qatorni yo'q qilish xavfi.
@@ -316,14 +276,16 @@
     if (changed) renderScopeCrumbs();
     var rows = changed ? renderScopeList() : scopeRows();
 
-    Object.keys(cells).forEach(function (n) {
-      cells[n].setAttribute("data-state",
-        state.scope === "republic" ? "on" : !state.region ? "idle" : n === state.region ? "on" : "dim");
-    });
-    var all = $("scopeAll");
-    if (state.scope === "republic") all.setAttribute("aria-current", "true"); else all.removeAttribute("aria-current");
+    var all = $("scopeAll"), areaBtn = $("scopeArea");
+    var area = areaMode || (!!state.scope && state.scope !== "republic");
+    all.setAttribute("aria-checked", state.scope === "republic" ? "true" : "false");
+    areaBtn.setAttribute("aria-checked", area ? "true" : "false");
+    all.tabIndex = area ? -1 : 0;
+    areaBtn.tabIndex = area ? 0 : -1;
+    reveal($("scopeAreaBody"), area);
 
-    var count = state.scope === "region" ? "Туманлар ва шаҳарлар · " + rows.length
+    var count = scopeQuery ? "Қидирув натижалари · " + (rows.total > rows.length ? rows.length + " / " + rows.total : rows.length)
+      : state.scope === "region" ? "Туманлар ва шаҳарлар · " + rows.length
       : (state.scope === "district" || state.scope === "mahalla") ? "Маҳаллалар (МФЙ) · " + rows.length
       : "Ҳудудлар · " + NAMES.length;
     $("scopeLvl").textContent = count;
@@ -361,31 +323,32 @@
     // holat ekranni ham, so'rov tanasini ham yolg'onchi qilardi.
     if (level !== "republic" && !state[level]) return;
     state.scope = level;
+    areaMode = level !== "republic";
     $("scopeError").hidden = true;
     wantFocus = !!moveFocus;
     refresh();
   }
 
-  /* Xarita va ro'yxat bir-birini yoritadi — sichqoncha ostida ham, klaviatura fokusida ham. */
-  function hotlight(target) {
-    var near = target && target.closest && (target.closest(".scope-cell") || target.closest('.scope-row[data-kind="region"]'));
-    var name = near ? near.getAttribute("data-r") || near.getAttribute("data-name") : null;
-    /* Fon yoki doimiy tugma ustidagi kursor «hammasi» ni OLDINDAN ko'rsatadi:
-       butun xarita yumshoq alangaga bo'yaladi va yorliq chiqadi. */
-    var all = !near && !!(target && target.closest && (target.closest(".scope-back") || target.closest(".scope-all")));
-    $("scope").setAttribute("data-allhot", all ? "true" : "false");
-    $("scopeAll").setAttribute("data-hot", all ? "true" : "false");
-    /* Shakl ichiga raqam sig'maydi — haqiqiy chegaralarda Toshkent shahri 7px.
-       Shuning uchun ism xaritaning burchagidagi BITTA yorliqda chiqadi:
-       to'qnashuv ham yo'q, kichik hudud ham nomsiz qolmaydi. */
-    var hint = $("scopeHint"), label = all ? "Бутун республика"
-      : name ? pad(NAMES.indexOf(name) + 1) + " · " + name : "";
-    if (label) hint.textContent = label;
-    hint.setAttribute("data-show", label ? "true" : "false");
-    Object.keys(cells).forEach(function (k) { cells[k].setAttribute("data-hot", k === name ? "true" : "false"); });
-    $("scopeList").querySelectorAll('.scope-row[data-kind="region"]').forEach(function (b) {
-      b.setAttribute("data-hot", b.getAttribute("data-name") === name ? "true" : "false");
-    });
+  function pickPath(row) {
+    state.region = row.getAttribute("data-region") || "";
+    state.district = row.getAttribute("data-district") || "";
+    state.mahalla = row.getAttribute("data-mahalla") || "";
+    state.scope = row.getAttribute("data-kind");
+    areaMode = true;
+    scopeQuery = "";
+    $("scopeSearch").value = "";
+    $("scopeError").hidden = true;
+    wantFocus = true;
+    refresh();
+  }
+
+  function scopeRoot() {
+    areaStash = null;
+    state.scope = null;
+    state.region = state.district = state.mahalla = "";
+    areaMode = true;
+    wantFocus = true;
+    refresh();
   }
 
   /* `composer-data.js` yuklanmasa (deploy nomi o'zgargan, so'rov bloklangan)
@@ -415,7 +378,6 @@
 
   function initScope() {
     if (!NAMES.length) { reportDataFailure(); return; }
-    buildMap();
     reportGaps();
     /* Tugma yozuvi bir marta yoziladi va boshqa o'zgarmaydi: respublika
        yig'indisi ham, hudud soni ham reestr bilan qotgan. Shu sababli
@@ -426,6 +388,25 @@
       (REPUBLIC_POP == null ? " · жами сон номаълум" : "");
 
     var root = $("scope");
+    wireRadioGroup($("scopeGroup"), function (el) {
+      if (el.id === "scopeAll") {
+        if (state.scope && state.scope !== "republic") {
+          areaStash = { scope: state.scope, region: state.region, district: state.district, mahalla: state.mahalla };
+        }
+        return goScope("republic", null, false);
+      }
+      if (state.scope === "republic") state.scope = null;
+      if (areaStash && !state.scope) {
+        state.scope = areaStash.scope; state.region = areaStash.region;
+        state.district = areaStash.district; state.mahalla = areaStash.mahalla;
+      }
+      areaMode = true;
+      refresh();
+    });
+    $("scopeSearch").addEventListener("input", function () {
+      scopeQuery = norm(this.value.trim());
+      refresh();
+    });
     root.addEventListener("pointerdown", function () {
       preRow = $("scopeList").contains(document.activeElement) ? document.activeElement : null;
     });
@@ -433,29 +414,29 @@
       var t = e.target;
       var row = t.closest && t.closest(".scope-row");
       var up = t.closest && t.closest(".scope-crumb-btn");
-      var all = t.closest && t.closest(".scope-all");
-      var cell = t.closest && t.closest(".scope-cell");
-      var back = t.closest && t.closest(".scope-back");
-      if (row) goScope(row.getAttribute("data-kind"), row.getAttribute("data-name"), true);
+      if (row && row.hasAttribute("data-region")) pickPath(row);
+      else if (row) goScope(row.getAttribute("data-kind"), row.getAttribute("data-name"), true);
+      else if (up && up.getAttribute("data-up") === "root") scopeRoot();
       else if (up) goScope(up.getAttribute("data-up"), null, true);
-      /* Doimiy tugmada `moveFocus` YO'Q: tugma o'z joyida qoladi va `aria-current`
-         bilan tanlovni o'zi tasdiqlaydi — fokusni ro'yxatga uloqtirish kerak emas. */
-      else if (all) goScope("republic", null, false);
-      else if (cell) goScope("region", cell.getAttribute("data-r"), false);
-      else if (back) goScope("republic", null, false);
     });
     root.addEventListener("keydown", function (e) {
+      if (e.target.id === "scopeSearch" && e.key === "ArrowDown") {
+        var first = $("scopeList").querySelector(".scope-row");
+        if (first) { e.preventDefault(); first.focus(); }
+        return;
+      }
       var row = e.target.closest && e.target.closest(".scope-row");
       if (!row) return;
       var all = Array.prototype.slice.call($("scopeList").querySelectorAll(".scope-row"));
       var i = all.indexOf(row), to = -1, k = e.key;
       if (k === "ArrowDown") to = Math.min(i + 1, all.length - 1);
+      else if (k === "ArrowUp" && i === 0) { e.preventDefault(); $("scopeSearch").focus(); return; }
       else if (k === "ArrowUp") to = Math.max(i - 1, 0);
       else if (k === "Home") to = 0;
       else if (k === "End") to = all.length - 1;
       else if (k === "ArrowRight" && row.querySelector(".scope-chev")) {
         e.preventDefault();
-        return goScope(row.getAttribute("data-kind"), row.getAttribute("data-name"), true);
+        return row.hasAttribute("data-region") ? pickPath(row) : goScope(row.getAttribute("data-kind"), row.getAttribute("data-name"), true);
       }
       /* ArrowLeft faqat FOKUSNI yuqoriga ko'chiradi: o'q tugmasi qamrovni
          tasdiqlamasin — tasdiq Enter/Space/bosish bilan, ataylab bo'ladi. */
@@ -463,12 +444,6 @@
       else return;
       e.preventDefault();
       all[to].focus();
-    });
-    ["pointerover", "focusin"].forEach(function (t) {
-      root.addEventListener(t, function (e) { hotlight(e.target); });
-    });
-    ["pointerleave", "focusout"].forEach(function (t) {
-      root.addEventListener(t, function () { hotlight(null); });
     });
   }
 
@@ -1056,16 +1031,6 @@
   function validate() {
     var errors = [];
 
-    // Ma'lumot yo'q bo'lsa forma umuman yuborilmaydi; xabar `scopeError`
-    // da allaqachon turibdi, uni bosib ketmaymiz.
-    if (state.dataFailed) {
-      errors.push({
-        el: null, box: $("scopeError"),
-        msg: "Ҳудуд маълумотлари юкланмади. Саҳифани янгиланг; муаммо қолса администраторга хабар беринг."
-      });
-    }
-    else if (!state.scope) errors.push({ el: $("scopeAll"), box: $("scopeError"), msg: null });
-
     /* Yagona qoida — maydon BO'SH emasmi. Uzunlik uchun xato yo'q: uzun matn
        xato emas, u shunchaki push'da qisqarib ko'rinadi va foydalanuvchi
        xabarni ochib o'qiydi. */
@@ -1078,6 +1043,14 @@
     textRules.forEach(function (r) {
       if (!$(r.id).value.trim()) errors.push({ el: $(r.id), box: $(r.box), msg: r.empty });
     });
+
+    if (state.dataFailed) {
+      errors.push({
+        el: null, box: $("scopeError"),
+        msg: "Ҳудуд маълумотлари юкланмади. Саҳифани янгиланг; муаммо қолса администраторга хабар беринг."
+      });
+    }
+    else if (!state.scope) errors.push({ el: areaMode ? $("scopeSearch") : $("scopeAll"), box: $("scopeError"), msg: null });
 
     if (state.when === "later") {
       var date = dateIso("fDate"), time = timeVal("fTime");

@@ -7,8 +7,8 @@
 <meta name="description" content="Қамровни танланг, матнни иккала тилда ёзинг ва телефонда қандай кўринишини шу ерда кўринг." />
 <meta name="color-scheme" content="light dark" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-<meta name="theme-color" content="#34d399" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#0c3b2b" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#171f2c" media="(prefers-color-scheme: dark)" />
 <script>
   (function () {
     var t = null;
@@ -21,7 +21,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@1,8..60,400&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" />
 <link rel="stylesheet" href="assets/ui/tokens.css" />
 <link rel="stylesheet" href="assets/ui/controls.css" />
 <link rel="stylesheet" href="assets/ui/shell.css" />
@@ -68,29 +68,39 @@
   <symbol id="i-zap" viewBox="0 0 24 24"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" /></symbol>
 </svg>
 
-<a class="skip" href="#h-sec-1">Формага ўтиш</a>
+<a class="skip" href="#h-sec-2">Формага ўтиш</a>
 
 <header class="topbar">
   <div class="topbar-inner">
     <span class="topbar-brand">online-mahalla.uz</span>
     <span class="topbar-sep" aria-hidden="true"></span>
-    <span class="topbar-crumb">Хабарномалар</span>
+    <span class="topbar-crumb">8-маҳалла “Дўстлик”</span>
     <span class="topbar-spacer"></span>
-    <button type="button" class="btn btn-quiet btn-sm topbar-reset" id="resetBtn" aria-label="Қораламани тозалаш" title="Қораламани тозалаш">
-      <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
-      <span>Тозалаш</span>
-    </button>
     <button class="icon-btn" type="button" data-theme-toggle aria-pressed="false" aria-label="Қоронғи мавзуга ўтиш" title="Қоронғи мавзуга ўтиш">
       <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
     </button>
+    <span class="avatar" title="Оператор Ш. Рўзибоев" aria-label="Оператор Ш. Рўзибоев" role="img">ШР</span>
+  </div>
+</header>
+
+<div class="page-bar">
+  <div class="page-bar-inner">
+    <nav class="crumbs" aria-label="Йўл">
+      <span>Хабарномалар</span>
+      <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-chevron-right"/></svg>
+      <span aria-current="page">Янги хабарнома</span>
+    </nav>
     <div class="send-bar" id="actions">
+      <button type="button" class="btn btn-secondary" id="resetBtn" aria-label="Қораламани тозалаш" title="Қораламани тозалаш">
+        <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-rotate-ccw"/></svg>
+        <span>Тозалаш</span>
+      </button>
       <button type="button" class="btn btn-solid" id="submitBtn">
         <span id="submitLabel">Юбориш</span>
-        <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-arrow-up-right"/></svg>
       </button>
     </div>
   </div>
-</header>
+</div>
 
 <main class="page">
   <div class="page-head">
@@ -98,45 +108,11 @@
       <h1 class="page-title">Янги хабарнома</h1>
       <span class="badge">Қоралама</span>
     </div>
-    <p class="page-meta">8-маҳалла “Дўстлик” · Оператор Ш. Рўзибоев</p>
+    <p class="page-sub">Хабарни икки тилда ёзинг, кимга ва қачон кетишини танланг.</p>
     <p class="page-status" id="status" role="status"><span id="statusText"></span></p>
   </div>
 
   <div class="page-grid">
-    <section class="section" id="sec-1" aria-labelledby="h-sec-1">
-      <header class="section-head">
-        <h2 class="section-title" id="h-sec-1" tabindex="-1">Ким олади</h2>
-        <p class="section-desc">Бутун республика ёки аниқ вилоят, туман, маҳалла аҳолиси.</p>
-      </header>
-      <div class="section-body">
-        <div class="scope" id="scope" data-failed="false">
-          <div class="scope-panel">
-            <button type="button" class="scope-all" id="scopeAll" aria-describedby="scopeError">
-              <span class="scope-all-ring" aria-hidden="true"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-globe"/></svg></span>
-              <span class="scope-all-txt"><span class="scope-all-name">Бутун республика</span><span class="scope-all-sub" id="scopeAllSub"></span></span>
-              <span class="scope-all-pop" id="scopeAllPop">—</span>
-            </button>
-            <p class="field-error" id="scopeError" role="alert" hidden>
-              <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg>
-              Қамровни танланг — хабар кимга кетишини тизим тахмин қилмайди.
-            </p>
-            <nav class="scope-crumbs" id="scopeCrumbs" aria-label="Танланган қамров йўли"></nav>
-            <p class="eyebrow eyebrow-sm" id="scopeLvl"></p>
-            <ul class="scope-list" id="scopeList" role="list" aria-labelledby="scopeLvl"></ul>
-            <p class="sr-only" role="status" id="scopeLive"></p>
-          </div>
-
-          <figure class="scope-mapwrap" aria-hidden="true">
-            <svg class="scope-map" id="scopeSvg" viewBox="0 0 480 320" focusable="false"></svg>
-            <span class="scope-maphint" id="scopeHint">Бутун республика</span>
-            <figcaption class="scope-cap hint">Чегаралар Natural Earth (1:10 млн) умумий маълумот тўпламидан, тенг-юзали проексияда — расмий чегара ҳужжати эмас.
-              <span class="scope-cap-wide">Ҳудудни босинг; ҳудудлар ташқарисидаги бўш жой — бутун республика.</span><span class="scope-cap-narrow">Бу кенгликда харита катаги 44 px дан кичик — у фақат кўрсаткич; танлаш «Бутун республика» тугмаси ва рўйхатдан.</span>
-              Ҳудуд номи курсор остида юқорида чиқади; туман ва маҳалла харитада кўрсатилмайди — улар рўйхатда танланади.</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
     <section class="section" id="sec-2" aria-labelledby="h-sec-2">
       <header class="section-head">
         <h2 class="section-title" id="h-sec-2" tabindex="-1">Хабар матни</h2>
@@ -212,7 +188,6 @@
             <button type="button" class="toggle-btn" id="pvRu" aria-pressed="false">RU</button>
           </span>
         </div>
-
         <figure class="phone-stage">
           <div class="phone">
             <span class="phone-island" aria-hidden="true"></span>
@@ -234,7 +209,6 @@
           </div>
           <figcaption class="sr-only">Қулф экранида хабар келган пайтдаги кўриниш</figcaption>
         </figure>
-
         <div class="fact-grid" aria-label="Етказиш маълумотлари" role="group">
           <div class="fact" id="rcReachTile" data-empty="true">
             <span class="fact-ico" aria-hidden="true">
@@ -261,14 +235,55 @@
           </div>
         </div>
       </div>
-    </aside>
+</aside>
+
+    <section class="section" id="sec-1" aria-labelledby="h-sec-1">
+      <header class="section-head">
+        <h2 class="section-title" id="h-sec-1" tabindex="-1">Ким олади</h2>
+        <p class="section-desc">Хабар юбориладиган ҳудудни танланг.</p>
+      </header>
+      <div class="section-body section-body-list">
+        <div class="scope" id="scope" data-failed="false">
+          <div class="choice-list" role="radiogroup" aria-labelledby="h-sec-1" id="scopeGroup">
+            <div class="choice">
+              <button type="button" class="choice-btn" role="radio" aria-checked="false" id="scopeAll" aria-describedby="scopeError">
+                <span class="choice-radio" aria-hidden="true"></span>
+                <span class="choice-text"><span class="choice-name">Бутун республика</span><span class="choice-sub" id="scopeAllSub"></span></span>
+                <span class="choice-aside" id="scopeAllPop">—</span>
+              </button>
+            </div>
+            <div class="choice">
+              <button type="button" class="choice-btn" role="radio" aria-checked="false" id="scopeArea" aria-describedby="scopeError">
+                <span class="choice-radio" aria-hidden="true"></span>
+                <span class="choice-text"><span class="choice-name">Ҳудуд бўйича</span><span class="choice-sub">Вилоят, туман ёки маҳаллани танланг</span></span>
+              </button>
+              <div class="choice-body" id="scopeAreaBody" hidden>
+                <label class="search" for="scopeSearch">
+                  <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-search"/></svg>
+                  <span class="sr-only">Ҳудуд қидириш</span>
+                  <input class="search-input" id="scopeSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Вилоят, туман ёки маҳалла" />
+                </label>
+                <nav class="scope-crumbs" id="scopeCrumbs" aria-label="Танланган қамров йўли"></nav>
+                <p class="eyebrow eyebrow-sm" id="scopeLvl"></p>
+                <ul class="scope-list" id="scopeList" role="list" aria-labelledby="scopeLvl"></ul>
+              </div>
+            </div>
+          </div>
+          <p class="field-error" id="scopeError" role="alert" hidden>
+            <svg class="ico" aria-hidden="true" focusable="false"><use href="#i-circle-alert"/></svg>
+            Қамровни танланг — хабар кимга кетишини тизим тахмин қилмайди.
+          </p>
+          <p class="sr-only" role="status" id="scopeLive"></p>
+        </div>
+      </div>
+    </section>
 
     <section class="section" id="sec-3" aria-labelledby="h-sec-3">
       <header class="section-head">
         <h2 class="section-title" id="h-sec-3" tabindex="-1">Қачон кетади</h2>
         <p class="section-desc" id="whenLabel">Тошкент вақти бўйича · UTC+5</p>
       </header>
-      <div class="section-body">
+      <div class="section-body section-body-list">
         <div class="choice-list" role="radiogroup" aria-labelledby="h-sec-3" aria-describedby="whenLabel" id="whenGroup">
           <div class="choice">
             <button type="button" class="choice-btn" role="radio" aria-checked="true" data-when="now">
