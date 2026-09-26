@@ -104,10 +104,12 @@ class ComposerFormTest(ComposerCase):
     def test_invisible_characters_do_not_count_as_text(self):
         self.page.fill("#uzTitle", "\u200b\u200e\u00ad\u2063 ")
         self.page.fill("#ruTitle", "\u200f")
+        self.page.fill("#uzBody", "\u2800\u0301\ufe0f")
         self.leave_field()
         self.assertTrue(self.page.is_visible("#errUzTitle"))
         self.assertEqual(self.page.inner_text("#uzTitleCount"), "0 / 120")
         self.assertEqual(self.page.inner_text("#ruTitleCount"), "0 / 120")
+        self.assertEqual(self.page.inner_text("#uzBodyCount"), "0 / 600")
 
     def test_org_type_must_be_a_positive_code(self):
         for value, ok in [("", False), ("0", False), ("12a", False), ("-5", False), ("200", True)]:

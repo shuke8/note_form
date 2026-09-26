@@ -34,7 +34,7 @@
     if (out.length) return out;
     var at = time.fromWall(date, t);
     if (at == null) out.push({ el: $("fDate"), box: $("errDate"), kind: "rule", msg: "Бу сана мавжуд эмас — мавжуд санани танланг." });
-    else if (at <= nowMs) out.push({ el: $("fDate"), box: $("errDate"), kind: "rule", msg: "Бу вақт ўтиб кетган — келгуси сана ва вақтни танланг." });
+    else if (at <= nowMs + time.MINUTE) out.push({ el: $("fDate"), box: $("errDate"), kind: "rule", msg: "Бу вақт ўтиб кетган ёки жуда яқин — камида бир дақиқа кейинги вақтни танланг." });
     return out;
   }
 

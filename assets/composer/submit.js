@@ -7,7 +7,8 @@
   var TIMEOUT_MS = 15000;
   var RETRY = { gapMs: 2500, windowMs: 30000, max: 5 };
   var HTTP_REASON = {
-    400: "Сервер маълумотни қабул қилмади", 401: "Кириш муддати тугаган — қайта киринг", 403: "Бу амал учун рухсат йўқ",
+    400: "Сервер маълумотни қабул қилмади", 401: "Кириш муддати тугаган — бошқа вкладкада қайта киринг",
+    403: "Бу амал учун рухсат йўқ — рухсат берилгач қайта уриниш мумкин",
     413: "Хабар жуда катта", 422: "Сервер маълумотни қабул қилмади",
     429: "Сервер банд — бироздан кейин уриниб кўринг"
   };
@@ -104,7 +105,8 @@
         "). Хабар етиб борган-бормаганини текширинг — қайта уриниш такрорий юбормайди.");
     }
     if (out.kind === "rejected") {
-      return finish("failed", reasonOf(out.status) + (out.retry ? " Қайта уриниш мумкин." : " Маълумотни тузатиб, қайта юборинг."),
+      var tail = out.status === 401 || out.status === 403 ? "" : out.retry ? " Қайта уриниш мумкин." : " Маълумотни тузатиб, қайта юборинг.";
+      return finish("failed", reasonOf(out.status) + tail,
         { errors: out.errors.map(function (e) { return e.label + ": " + e.message; }), fields: out.errors, retry: out.retry });
     }
     if (out.kind === "timeout") return finish("unknown", OUTCOME_TEXT.timeout);
@@ -157,8 +159,14 @@
       render("draft", "Сервер манзили созланмаган, шунинг учун хабар ҳеч қаерга кетмади. Уланганда серверга айнан шу маълумот юборилади.");
       return;
     }
-    if (same && job.last) { showLast(); return; }
+    if (same && job.last) { showLast(); noteFrozenExpiry(); return; }
     render("review", reviewText(selection));
+  }
+
+  function noteFrozenExpiry() {
+    if (job.expiry === "custom" || job.sent) return;
+    var sub = document.getElementById("resultSub");
+    if (sub) sub.textContent += " Муддат биринчи уринишдагидек қолди: " + time.moment(Date.parse(job.body.payload.expires_at), Date.now()) + " гача.";
   }
 
   function reviewText(selection) {

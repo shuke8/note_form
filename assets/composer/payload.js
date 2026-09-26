@@ -9,10 +9,15 @@
   var ORG_TYPE_RE = /^[1-9]\d{0,5}$/;
   var LIMIT = { title: 120, body: 600 };
 
-  var EDGE = /^[\s\u00AD\u034F\u115F\u1160\u180E\u200B-\u200D\u2060-\u2064\u3164\uFEFF\uFFA0]+|[\s\u00AD\u034F\u115F\u1160\u180E\u200B-\u200D\u2060-\u2064\u3164\uFEFF\uFFA0]+$/g;
+  var EDGE = /^[\s\u00AD\u034F\u115F\u1160\u180E\u200B-\u200D\u2060-\u2064\u2800\u3164\uFEFF\uFFA0]+|[\s\u00AD\u034F\u115F\u1160\u180E\u200B-\u200D\u2060-\u2064\u2800\u3164\uFEFF\uFFA0]+$/g;
   var BIDI = /[\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069]/g;
 
-  function clean(s) { return String(s == null ? "" : s).replace(BIDI, "").replace(EDGE, ""); }
+  var MARKS = /[\p{M}\uFE00-\uFE0F]/gu;
+
+  function clean(s) {
+    var t = String(s == null ? "" : s).replace(BIDI, "").replace(EDGE, "");
+    return t.replace(MARKS, "").replace(EDGE, "") ? t : "";
+  }
 
   function size(s) { return Array.from(s).length; }
 

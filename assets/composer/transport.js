@@ -4,7 +4,7 @@
   var OM = window.OM = window.OM || {};
 
   var ACCEPTED = [200, 201, 202];
-  var RETRYABLE = [408, 425, 429];
+  var RETRYABLE = [401, 403, 408, 425, 429];
   var FIELD_NAME = {
     "texts.uz.title": "Ўзбекча сарлавҳа", "texts.uz.body": "Ўзбекча матн",
     "texts.ru.title": "Русча сарлавҳа", "texts.ru.body": "Русча матн",

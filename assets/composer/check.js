@@ -30,9 +30,9 @@
   function setServerErrors(list, state) {
     server = [];
     list.forEach(function (e) {
-      var id = SERVER_FIELD[e.path];
+      var id = Object.prototype.hasOwnProperty.call(SERVER_FIELD, e.path) ? SERVER_FIELD[e.path] : null;
       if (id) server.push({ id: id, snap: $(id).value, msg: "Сервер: " + e.message });
-      else if (e.path.indexOf("audience") === 0) server.push({ id: "scope", snap: scopeKey(state), msg: "Сервер: " + e.message });
+      else if (String(e.path).indexOf("audience") === 0) server.push({ id: "scope", snap: scopeKey(state), msg: "Сервер: " + e.message });
     });
   }
 

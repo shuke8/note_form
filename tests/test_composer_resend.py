@@ -97,11 +97,47 @@ class ComposerResendTest(ComposerCase):
                 self.page.click("#scopeAll")
                 self.page.click("#submitBtn")
                 self.page.wait_for_selector('.send-result[data-state="review"]')
-                box = self.page.locator("#confirmSend").bounding_box()
-                self.assertLessEqual(box["y"] + box["height"], size[1])
-                self.assertTrue(self.page.evaluate(
-                    f"document.getElementById('confirmSend').contains(document.elementFromPoint({box['x'] + 10}, {box['y'] + 10}))"))
+                for scroll in ["0", "document.getElementById('resultDialog').scrollHeight"]:
+                    self.page.evaluate(f"document.getElementById('resultDialog').scrollTop = {scroll}")
+                    self.page.wait_for_timeout(100)
+                    box = self.page.locator("#confirmSend").bounding_box()
+                    self.assertLessEqual(box["y"] + box["height"], size[1])
+                    self.assertTrue(self.page.evaluate(
+                        f"document.getElementById('confirmSend').contains(document.elementFromPoint({box['x'] + 10}, {box['y'] + 10}))"))
                 self.page.click("#cancelSend")
+
+    def test_odd_error_field_names_do_not_break_the_dialog(self):
+        self.capture([(422, {"errors": {"constructor": "а", "__proto__": "б", "toString": "в"}})])
+        self.set_endpoint()
+        self.fill_sql_texts()
+        self.page.click("#scopeAll")
+        self.page.click("#submitBtn")
+        self.confirm()
+        self.page.wait_for_selector('.send-result[data-state="failed"]')
+        self.assertIn("constructor: а", self.page.inner_text(".send-errors"))
+
+    def test_signing_in_again_allows_a_retry_with_the_same_key(self):
+        seen = self.capture([(401, {}), (201, {"event_id": 9})])
+        self.set_endpoint()
+        self.fill_sql_texts()
+        self.page.click("#scopeAll")
+        self.page.click("#submitBtn")
+        self.confirm()
+        self.page.wait_for_selector('.send-result[data-state="failed"]')
+        self.assertNotIn("тузатиб", self.page.inner_text(".send-sub"))
+        self.page.wait_for_function("!document.getElementById('retryBtn').disabled", timeout=5000)
+        self.page.click("#retryBtn")
+        self.page.wait_for_selector('.send-result[data-state="sent"]')
+        self.assertEqual(seen[0]["headers"]["idempotency-key"], seen[1]["headers"]["idempotency-key"])
+
+    def test_an_expiry_under_a_minute_away_is_refused_in_the_form(self):
+        page = self.clocked_page()
+        self.to_custom(page)
+        self.type_date("04032030", page)
+        page.fill("#fTime", "10:01")
+        page.click("#submitBtn")
+        self.assertIn("камида бир дақиқа", page.inner_text("#errDate"))
+        self.assertFalse(page.evaluate("document.getElementById('resultDialog').open"))
 
 
 if __name__ == "__main__":

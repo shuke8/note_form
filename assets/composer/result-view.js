@@ -55,9 +55,9 @@
     head.appendChild(words);
     box.appendChild(head);
     box.appendChild(summary(job.body, job.selection));
+    box.appendChild(jsonBlock(job.body, handlers));
     var row = actions(phase, handlers, extra);
     if (row.children.length) box.appendChild(row);
-    box.appendChild(jsonBlock(job.body, handlers));
     host.appendChild(box);
     $("resultEyebrow").textContent = p.eyebrow;
     $("resultDialog").setAttribute("aria-busy", phase === "sending" ? "true" : "false");
