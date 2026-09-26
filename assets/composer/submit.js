@@ -165,6 +165,8 @@
 
   function noteFrozenExpiry() {
     if (job.expiry === "custom" || job.sent) return;
+    var frozen = Date.parse(job.body.payload.expires_at), now = OM.fields.expiresAt(Date.now());
+    if (now != null && Math.abs(now - frozen) < time.MINUTE) return;
     var sub = document.getElementById("resultSub");
     if (sub) sub.textContent += " Муддат биринчи уринишдагидек қолди: " + time.moment(Date.parse(job.body.payload.expires_at), Date.now()) + " гача.";
   }
