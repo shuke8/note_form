@@ -1034,6 +1034,7 @@
       row.appendChild(del);
       host.appendChild(row);
     });
+    syncNextLabel();
   }
 
   /* ---------------------------------------------------------------------------
@@ -1208,6 +1209,8 @@
     var ruOk = $("ruTitle").value.trim() && $("ruBody").value.trim();
     $("uzState").textContent = uzOk ? "To‘liq" : "To‘liq emas";
     $("ruState").textContent = ruOk ? "To‘liq" : "To‘liq emas";
+    $("uzState").setAttribute("data-ok", uzOk ? "true" : "false");
+    $("ruState").setAttribute("data-ok", ruOk ? "true" : "false");
 
     // --- ko'rinish ---
     var lang = state.previewLang;
@@ -1221,6 +1224,7 @@
       : state.when === "repeat" ? $("fRepeatTime").value
       : $("fTime").value;
     $("pvTime").textContent = pvTime || "—";
+    renderPhoneClock();
 
     /* Ilgari bu chip «Matn kesiladi» deb OGOHLANTIRARDI — ya'ni uzun matnni
        xato deb ko'rsatardi. Chegara olib tashlangach u faqat FAKT aytadi:
@@ -1344,6 +1348,12 @@
     });
   }
 
+  function syncNextLabel() {
+    $("nextLabel").textContent = (currentStep === 4 && !state.files.length)
+      ? "O‘tkazib yuborish"
+      : "Keyingi";
+  }
+
   function paintWizard() {
     var errors = validate();
     var i;
@@ -1371,9 +1381,7 @@
     $("backBtn").hidden = currentStep === 1;
     $("nextBtn").hidden = currentStep === 5;
     $("submitBtn").hidden = currentStep !== 5;
-    $("nextLabel").textContent = (currentStep === 4 && !state.files.length)
-      ? "O‘tkazib yuborish"
-      : "Keyingi";
+    syncNextLabel();
     $("stepCount").textContent = currentStep + " / " + STEP_COUNT;
     document.body.setAttribute("data-step", String(currentStep));
   }
@@ -1524,6 +1532,29 @@
      emas — «tanlanmagan» va «O'zbekiston Respublikasi» ikkovi ham fakt.
      Manba `validate()` ning O'SHA natijasi, ya'ni karta bilan pastdagi
      holat qatori ikki xil gap ayta olmaydi. */
+  var PHONE_MONTHS = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul",
+    "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
+  var PHONE_DAYS = ["Yakshanba", "Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba"];
+
+  function tashkentNow() {
+    var d = new Date();
+    return new Date(d.getTime() + d.getTimezoneOffset() * 60000 + 5 * 3600000);
+  }
+
+  function renderPhoneClock() {
+    var at = tashkentNow();
+    if (state.when === "later" && $("fDate").value) {
+      var parts = $("fDate").value.split("-");
+      at = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+    }
+    var clock = state.when === "now"
+      ? String(tashkentNow().getHours()).padStart(2, "0") + ":" + String(tashkentNow().getMinutes()).padStart(2, "0")
+      : (state.when === "repeat" ? $("fRepeatTime").value : $("fTime").value) || "—";
+    $("pvClock").textContent = clock;
+    $("pvClockSmall").textContent = clock;
+    $("pvDate").textContent = PHONE_DAYS[at.getDay()] + ", " + at.getDate() + "-" + PHONE_MONTHS[at.getMonth()];
+  }
+
   function renderStepStates(errors) {
     var broken = {};
     errors.forEach(function (e) {
