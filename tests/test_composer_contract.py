@@ -1,4 +1,3 @@
-import json
 import unittest
 
 from support import READY, SQL_TEXTS, ComposerCase
@@ -58,8 +57,7 @@ class ComposerContractTest(ComposerCase):
                     self.page.click("#scopeAll")
                 else:
                     self.pick(key)
-                self.page.click("#submitBtn")
-                self.assertEqual(self.dialog_json()["payload"]["audience"], audience)
+                self.assertEqual(self.send_and_read()["payload"]["audience"], audience)
                 self.page.click("#resultClose")
 
     def test_expiry_is_sent_in_utc_whatever_the_browser_zone(self):
@@ -73,8 +71,7 @@ class ComposerContractTest(ComposerCase):
                     self.to_custom(page)
                     self.type_date("15082027", page)
                     page.fill("#fTime", "18:00")
-                    page.click("#submitBtn")
-                    self.assertEqual(self.dialog_json(page)["payload"]["expires_at"], "2027-08-15T13:00:00Z")
+                    self.assertEqual(self.send_and_read(page)["payload"]["expires_at"], "2027-08-15T13:00:00Z")
                 finally:
                     ctx.close()
 
@@ -86,8 +83,7 @@ class ComposerContractTest(ComposerCase):
         self.fill_sql_texts(page)
         page.click("#scopeAll")
         page.click('[data-expiry="3d"]')
-        page.click("#submitBtn")
-        self.assertEqual(self.dialog_json(page)["payload"]["expires_at"], "2030-03-07T04:58:00Z")
+        self.assertEqual(self.send_and_read(page)["payload"]["expires_at"], "2030-03-07T04:58:00Z")
 
     def test_past_expiry_is_refused_before_sending(self):
         seen = self.capture([(201, {})])
@@ -107,8 +103,7 @@ class ComposerContractTest(ComposerCase):
         self.page.click("#scopeAll")
         self.page.click('[data-sev="critical"]')
         self.page.fill("#orgType", "200")
-        self.page.click("#submitBtn")
-        body = self.dialog_json()["payload"]
+        body = self.send_and_read()["payload"]
         self.assertEqual(body["severity"], "critical")
         self.assertEqual(body["audience"]["org_type"], 200)
 
@@ -218,16 +213,6 @@ class ComposerContractTest(ComposerCase):
             self.page.click("#resetBtn")
         self.page.wait_for_function(READY)
         self.assertEqual(self.page.input_value("#uzTitle"), "")
-
-    def test_copy_puts_the_exact_json_on_the_clipboard(self):
-        self.context.grant_permissions(["clipboard-read", "clipboard-write"])
-        self.fill_sql_texts()
-        self.page.click("#scopeAll")
-        self.page.click("#submitBtn")
-        shown = self.dialog_json()
-        self.page.click("#copyJson")
-        self.page.wait_for_selector(".toast")
-        self.assertEqual(json.loads(self.page.evaluate("navigator.clipboard.readText()")), shown)
 
 
 if __name__ == "__main__":

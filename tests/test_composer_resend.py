@@ -22,7 +22,6 @@ class ComposerResendTest(ComposerCase):
         page = self.clocked_page()
         page.click("#submitBtn")
         page.wait_for_selector('.send-result[data-state="review"]')
-        reviewed = self.dialog_json(page)
         page.clock.fast_forward("02:00")
         page.click("#confirmSend")
         page.wait_for_selector('.send-result[data-state="failed"]')
@@ -31,8 +30,8 @@ class ComposerResendTest(ComposerCase):
         page.click("#retryBtn")
         page.wait_for_selector('.send-result[data-state="sent"]')
         self.assertEqual(len(seen), 2)
-        self.assertEqual(seen[0]["body"], reviewed)
-        self.assertEqual(seen[1]["body"], reviewed)
+        self.assertEqual(seen[0]["body"]["payload"]["expires_at"], "2030-03-05T05:00:00Z")
+        self.assertEqual(seen[1]["body"], seen[0]["body"])
         self.assertEqual(seen[0]["headers"]["idempotency-key"], seen[1]["headers"]["idempotency-key"])
 
     def test_reopening_a_failed_message_later_keeps_its_body(self):

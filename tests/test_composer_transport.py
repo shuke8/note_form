@@ -161,8 +161,7 @@ class ComposerTransportTest(ComposerCase):
         self.fill_sql_texts()
         self.page.fill("#uzTitle", "​Оила 👨‍👩‍👧 ‮тест​")
         self.page.click("#scopeAll")
-        self.page.click("#submitBtn")
-        title = self.dialog_json()["payload"]["texts"]["uz"]["title"]
+        title = self.send_and_read()["payload"]["texts"]["uz"]["title"]
         self.assertEqual(title, "Оила 👨‍👩‍👧 тест")
 
 

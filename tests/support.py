@@ -109,10 +109,21 @@ class ComposerCase(unittest.TestCase):
         (page or self.page).evaluate(
             "v => document.querySelector('meta[name=om-announce-endpoint]').setAttribute('content', v)", value)
 
-    def dialog_json(self, page=None):
+    def send_and_read(self, page=None):
         page = page or self.page
-        page.wait_for_selector("#resultDialog[open] .send-code")
-        return json.loads(page.inner_text(".send-code"))
+        seen = []
+
+        def handle(route):
+            seen.append(json.loads(route.request.post_data))
+            route.fulfill(status=201, content_type="application/json", body='{"event_id": 1}')
+
+        page.route("**/api/announcements", handle)
+        self.set_endpoint(page)
+        page.click("#submitBtn")
+        self.confirm(page)
+        page.wait_for_selector('.send-result[data-state="sent"]')
+        page.unroute("**/api/announcements", handle)
+        return seen[-1]
 
     def leaving_is_held(self, page=None):
         return (page or self.page).evaluate(

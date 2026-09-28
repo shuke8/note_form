@@ -178,7 +178,7 @@ class ComposerLayoutTest(ComposerCase):
         self.page.click("#scopeAll")
         self.fill_text()
         self.page.click("#submitBtn")
-        self.page.wait_for_selector("#resultDialog[open] .send-code")
+        self.page.wait_for_selector("#resultDialog[open] .send-result")
         dlg = self.page.locator("#resultDialog").bounding_box()
         self.assertGreaterEqual(dlg["x"], 0)
         self.assertLessEqual(dlg["x"] + dlg["width"], 360)

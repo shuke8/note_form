@@ -56,7 +56,7 @@
 
   function render(phase, sub, extra) {
     phaseNow = phase;
-    OM.resultView.render(phase, sub, job, { send: send, copy: copyJson, cancel: closeDialog }, extra);
+    OM.resultView.render(phase, sub, job, { send: send, cancel: closeDialog }, extra);
   }
 
   function closeDialog() {
@@ -72,14 +72,6 @@
     b.disabled = wait > 0;
     b.querySelector("span").textContent = wait > 0 ? "Қайта уриниш (" + Math.ceil(wait / 1000) + ")" : "Қайта уриниш";
     if (wait > 0) tick = setTimeout(paintRetry, Math.min(1000, wait));
-  }
-
-  function copyJson() {
-    var text = JSON.stringify(job.body, null, 2);
-    var done = function () { if (window.omToast) window.omToast("Маълумот нусхаланди", "ok"); };
-    var fail = function () { if (window.omToast) window.omToast("Нусха олиб бўлмади — матнни белгилаб олинг", "warn"); };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail);
-    else fail();
   }
 
   function finish(phase, sub, extra) {
@@ -156,7 +148,7 @@
       attempts = [];
     }
     if (!url) {
-      render("draft", "Сервер манзили созланмаган, шунинг учун хабар ҳеч қаерга кетмади. Уланганда серверга айнан шу маълумот юборилади.");
+      render("draft", "Сервер манзили созланмаган, шунинг учун хабар ҳеч қаерга кетмади.");
       return;
     }
     if (same && job.last) { showLast(); noteFrozenExpiry(); return; }
