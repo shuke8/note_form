@@ -9,7 +9,8 @@
     "texts.uz.title": "Ўзбекча сарлавҳа", "texts.uz.body": "Ўзбекча матн",
     "texts.ru.title": "Русча сарлавҳа", "texts.ru.body": "Русча матн",
     "audience.org_type": "Ташкилот тури", "audience": "Қамров",
-    "severity": "Муҳимлиги", "expires_at": "Амал қилиш муддати"
+    "severity": "Муҳимлиги", "expires_at": "Амал қилиш муддати",
+    "recurrence": "Жадвал", "recurrence.weekdays": "Жадвал кунлари", "recurrence.time": "Юбориш вақти"
   };
   var MAX_ERRORS = 5;
 

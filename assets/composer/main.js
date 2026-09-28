@@ -26,6 +26,7 @@
     OM.fields.paintPresets(now);
     OM.scope.render();
     var expiresAt = OM.fields.expiresAt(now);
+    if (state.expiry === "repeat") OM.recur.paintRuns(now);
     OM.preview.paint(state, expiresAt, now);
     var errors = OM.check.validate(state, now);
     $("status").setAttribute("data-tone", !errors.length ? "ok" : state.submitted ? "crit" : "");
@@ -52,6 +53,7 @@
       orgType: OM.payload.orgTypeOf($("orgType").value),
       severity: state.severity,
       expiresAt: OM.fields.expiresAt(Date.now()),
+      recurrence: state.expiry === "repeat" ? OM.recur.recurrence() : null,
       texts: {
         uz: { title: $("uzTitle").value, body: $("uzBody").value },
         ru: { title: $("ruTitle").value, body: $("ruBody").value }
@@ -135,6 +137,7 @@
       serverErrors: function (list) { OM.check.setServerErrors(list, state); } };
     OM.scope.init(ctx);
     OM.fields.init(ctx);
+    OM.recur.init(ctx);
     OM.preview.init(ctx);
     OM.submit.init(ctx);
     OM.check.initTouch(touched, refresh);

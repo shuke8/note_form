@@ -1,4 +1,5 @@
 import contextlib
+import datetime
 import functools
 import http.server
 import json
@@ -10,6 +11,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 READY = "document.querySelectorAll('.scope-row').length > 0"
+TASHKENT = datetime.timezone(datetime.timedelta(hours=5))
 SQL_TEXTS = {
     "uz": {"title": "Profilaktika ishlari", "body": "Tizimda texnik ishlar olib borish munosabati nosozliklar kuzatislishi mumkin"},
     "ru": {"title": "Профилактические работы", "body": "В связи с проведением технических работ в системе возможны сбои в работе."},
@@ -170,3 +172,23 @@ class ComposerCase(unittest.TestCase):
         return self.page.evaluate(
             "Math.max(...[...document.querySelectorAll('.topbar, .page-bar')]"
             ".map(e => getComputedStyle(e).position === 'sticky' ? e.getBoundingClientRect().bottom : 0))")
+
+    def to_repeat(self, page=None):
+        page = page or self.page
+        page.click('[data-expiry="repeat"]')
+        page.wait_for_selector("#expiryRepeat:not([hidden])")
+
+    def type_end(self, digits, page=None):
+        page = page or self.page
+        page.click("#fEndDate")
+        page.keyboard.type(digits)
+
+    def clocked_page(self, when):
+        page = self.context.new_page()
+        errors = []
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        self.addCleanup(lambda: self.assertEqual(errors, []))
+        page.clock.install(time=when)
+        page.goto(self.url, wait_until="domcontentloaded")
+        page.wait_for_function(READY)
+        return page

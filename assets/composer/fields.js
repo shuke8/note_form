@@ -20,11 +20,13 @@
   function expiresAt(nowMs) {
     var days = PRESET_DAYS[ctx.state.expiry];
     if (days) return time.floorMinute(nowMs) + days * time.DAY;
+    if (ctx.state.expiry === "repeat") return OM.recur.endAt();
     if (dateBad() || timeBad()) return null;
     return time.fromWall(dateIso(), timeVal());
   }
 
   function expiryErrors(nowMs) {
+    if (ctx.state.expiry === "repeat") return OM.recur.errors(nowMs);
     if (ctx.state.expiry !== "custom") return [];
     var out = [], date = dateIso(), t = timeVal();
     if (dateBad()) out.push({ el: $("fDate"), box: $("errDate"), kind: "rule", msg: "Бу сана мавжуд эмас — мавжуд санани танланг." });
@@ -56,7 +58,10 @@
     });
   }
 
-  function syncBounds(nowMs) { $("fDate").dataset.min = time.todayIso(nowMs); }
+  function syncBounds(nowMs) {
+    $("fDate").dataset.min = time.todayIso(nowMs);
+    $("fEndDate").dataset.min = time.todayIso(nowMs);
+  }
 
   function initSeverity() {
     ui.wireRadioGroup($("sevGroup"), function (el) {
@@ -69,17 +74,23 @@
     ui.wireRadioGroup($("expiryGroup"), function (el) {
       ctx.state.expiry = el.getAttribute("data-expiry");
       ui.reveal($("expiryCustom"), ctx.state.expiry === "custom");
-      ctx.forget(["errDate", "errTime"]);
+      ui.reveal($("expiryRepeat"), ctx.state.expiry === "repeat");
+      ctx.forget(["errDate", "errTime", "errDays", "errRepeatTime", "errEndDate", "errEndTime"]);
       ctx.refresh();
     });
     ["fDate", "fTime"].forEach(function (id) {
       ["input", "change"].forEach(function (ev) { $(id).addEventListener(ev, function () { ctx.refresh(); }); });
     });
-    var lastDate = $("fDate").value;
-    $("fDate").addEventListener("input", function () {
-      var el = this, filled = el.value.length === 10 && lastDate.length < 10;
-      lastDate = el.value;
-      if (filled && document.activeElement === el && el.dataset.bad !== "true" && el.dataset.iso) $("fTime").focus();
+    advanceWhenFull("fDate", "fTime");
+    advanceWhenFull("fEndDate", "fEndTime");
+  }
+
+  function advanceWhenFull(from, to) {
+    var last = $(from).value;
+    $(from).addEventListener("input", function () {
+      var el = this, filled = el.value.length === 10 && last.length < 10;
+      last = el.value;
+      if (filled && document.activeElement === el && el.dataset.bad !== "true" && el.dataset.iso) $(to).focus();
     });
   }
 

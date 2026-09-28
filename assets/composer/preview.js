@@ -4,10 +4,10 @@
   var OM = window.OM = window.OM || {};
   var ui = OM.ui, geo = OM.geo, time = OM.time, $ = ui.$;
 
-  function paintLock(nowMs) {
-    var day = time.weekday(nowMs);
-    $("lockTime").textContent = time.clock(nowMs);
-    $("lockDate").textContent = day.charAt(0).toUpperCase() + day.slice(1) + ", " + time.dateLabel(nowMs, nowMs);
+  function paintLock(atMs, nowMs) {
+    var day = time.weekday(atMs);
+    $("lockTime").textContent = time.clock(atMs);
+    $("lockDate").textContent = day.charAt(0).toUpperCase() + day.slice(1) + ", " + time.dateLabel(atMs, nowMs == null ? atMs : nowMs);
   }
 
   function paintText(lang) {
@@ -47,20 +47,22 @@
     $("rcSevNote").textContent = s ? s.sub : "«Муҳимлиги» бўлимида танланг";
   }
 
-  function paintExpiry(expiresAt, nowMs) {
+  function paintExpiry(state, expiresAt, nowMs) {
     var ok = expiresAt != null && expiresAt > nowMs;
     $("rcExpTile").setAttribute("data-empty", ok ? "false" : "true");
     $("rcExp").textContent = ok ? time.moment(expiresAt, nowMs) + " гача" : "Муддат танланмаган";
-    $("rcExpNote").textContent = ok ? "Тошкент вақти · UTC+5" : "«Амал қилиш муддати» бўлимида танланг";
+    $("rcExpNote").textContent = !ok ? "«Амал қилиш муддати» бўлимида танланг"
+      : state.expiry === "repeat" ? OM.recur.describe() + " · Тошкент вақти" : "Тошкент вақти · UTC+5";
   }
 
   function paint(state, expiresAt, nowMs) {
     paintLangState();
     paintText(state.previewLang);
-    paintLock(nowMs);
+    var first = state.expiry === "repeat" ? OM.recur.runs(nowMs, 1).list[0] : null;
+    paintLock(first || nowMs, nowMs);
     paintReach(state);
     paintSeverity(state);
-    paintExpiry(expiresAt, nowMs);
+    paintExpiry(state, expiresAt, nowMs);
   }
 
   function setLang(state, lang) {

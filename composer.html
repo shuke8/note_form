@@ -344,6 +344,60 @@
               </div>
             </div>
           </div>
+          <div class="choice">
+            <button type="button" class="choice-btn" role="radio" aria-checked="false" data-expiry="repeat">
+              <span class="choice-radio" aria-hidden="true"></span>
+              <span class="choice-text"><span class="choice-name">Такрорланувчи</span><span class="choice-sub">Жадвал бўйича қайта юборилади — муддат тугагунча</span></span>
+            </button>
+            <div class="choice-body" id="expiryRepeat" hidden>
+              <div class="field">
+                <span class="label" id="freqLabel">Қайтарилиш</span>
+                <div class="segment" role="radiogroup" aria-labelledby="freqLabel" aria-describedby="errFreq" id="freqGroup">
+                  <button type="button" class="seg-btn" role="radio" aria-checked="false" data-freq="daily">Ҳар куни</button>
+                  <button type="button" class="seg-btn" role="radio" aria-checked="true" data-freq="weekly">Ҳафтанинг кунлари</button>
+                </div>
+                <p class="field-error" id="errFreq" hidden></p>
+              </div>
+              <div class="field" id="daysField">
+                <span class="label" id="dayLabel">Қайси кунлари <span class="req" aria-hidden="true">*</span></span>
+                <div class="chip-row" role="toolbar" aria-orientation="horizontal" aria-labelledby="dayLabel" aria-describedby="dayHint errDays" id="dayRow">
+                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="1" aria-label="Душанба">Ду</button>
+                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="2" aria-label="Сешанба">Се</button>
+                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="3" aria-label="Чоршанба">Чо</button>
+                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="4" aria-label="Пайшанба">Па</button>
+                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="5" aria-label="Жума">Жу</button>
+                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="6" aria-label="Шанба">Ша</button>
+                  <button type="button" class="seg-btn day-chip" aria-pressed="false" data-day="7" aria-label="Якшанба">Як</button>
+                </div>
+                <p class="hint" id="dayHint">Бир нечтасини танлаш мумкин.</p>
+                <p class="field-error" id="errDays" hidden></p>
+              </div>
+              <div class="when-grid">
+                <div class="field">
+                  <label class="label" for="fRepeatTime">Юбориш вақти <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input" id="fRepeatTime" name="fRepeatTime" autocomplete="off" type="time" value="09:00" data-timepicker aria-describedby="errRepeatTime" />
+                  <p class="field-error" id="errRepeatTime" hidden></p>
+                </div>
+              </div>
+              <div class="when-grid">
+                <div class="field">
+                  <label class="label" for="fEndDate">Тугаш санаси <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input" id="fEndDate" name="fEndDate" autocomplete="off" type="date" data-datepicker aria-describedby="errEndDate" />
+                  <p class="field-error" id="errEndDate" hidden></p>
+                </div>
+                <div class="field">
+                  <label class="label" for="fEndTime">Тугаш вақти <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input" id="fEndTime" name="fEndTime" autocomplete="off" type="time" value="23:59" data-timepicker aria-describedby="errEndTime" />
+                  <p class="field-error" id="errEndTime" hidden></p>
+                </div>
+              </div>
+              <div class="field runs" role="group" aria-labelledby="runsLabel">
+                <span class="label" id="runsLabel">Кейинги юборишлар</span>
+                <ul class="runs-list" id="runsList" hidden></ul>
+                <p class="hint" id="runsSum" role="status"></p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -373,6 +427,7 @@
 <script src="assets/composer/geo.js" defer></script>
 <script src="assets/composer/payload.js" defer></script>
 <script src="assets/composer/fields.js" defer></script>
+<script src="assets/composer/recur.js" defer></script>
 <script src="assets/composer/scope-view.js" defer></script>
 <script src="assets/composer/scope.js" defer></script>
 <script src="assets/composer/check.js" defer></script>

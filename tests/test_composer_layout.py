@@ -130,7 +130,10 @@ class ComposerLayoutTest(ComposerCase):
         self.page.set_viewport_size({"width": 390, "height": 844})
         self.to_custom()
         self.page.click("#expiryCustom .pick-toggle")
-        self.page.wait_for_timeout(300)
+        self.page.wait_for_function(
+            "() => { const p = document.querySelector('#expiryCustom .date-pop'); if (!p) return false;"
+            " const top = p.getBoundingClientRect().top + window.scrollY; const same = window.__popTop === top;"
+            " window.__popTop = top; return same; }", polling=150)
         pop = self.page.locator("#expiryCustom .date-pop").bounding_box()
         bar = self.page.locator("#actions").bounding_box()
         self.assertLessEqual(pop["y"] + pop["height"], bar["y"])

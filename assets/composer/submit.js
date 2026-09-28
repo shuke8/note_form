@@ -114,6 +114,11 @@
       ctx.refresh();
       return;
     }
+    if (job.body.payload.recurrence && !OM.recur.planFor(job.body.payload, Date.now(), 1).count) {
+      render("stale", "Жадвалдаги юбориш вақтлари ўтиб кетди — кейинги юбориш йўқ. Ойнани ёпиб, вақтни ёки тугаш санасини янгиланг.");
+      ctx.refresh();
+      return;
+    }
     attempts.push(Date.now());
     if (navigator.onLine === false) { finish("failed", "Интернет алоқаси йўқ. Уланиш тиклангач қайта уриниб кўринг."); return; }
     job.inflight = true;
@@ -124,7 +129,7 @@
 
   function sameMessage(prev, body, expiry) {
     if (!prev || prev.url !== endpoint() || prev.expiry !== expiry) return false;
-    if (expiry === "custom") return JSON.stringify(prev.body) === JSON.stringify(body);
+    if (expiry === "custom" || expiry === "repeat") return JSON.stringify(prev.body) === JSON.stringify(body);
     var a = JSON.parse(JSON.stringify(prev.body)), b = JSON.parse(JSON.stringify(body));
     a.payload.expires_at = b.payload.expires_at = "";
     return JSON.stringify(a) === JSON.stringify(b) && Date.parse(prev.body.payload.expires_at) - Date.now() > time.MINUTE;
@@ -156,7 +161,7 @@
   }
 
   function noteFrozenExpiry() {
-    if (job.expiry === "custom" || job.sent) return;
+    if (job.expiry === "custom" || job.expiry === "repeat" || job.sent) return;
     var frozen = Date.parse(job.body.payload.expires_at), now = OM.fields.expiresAt(Date.now());
     if (now != null && Math.abs(now - frozen) < time.MINUTE) return;
     var sub = document.getElementById("resultSub");
@@ -166,7 +171,12 @@
   function reviewText(selection) {
     var reach = geo.reach(selection), path = geo.pathNames(selection);
     var who = (path ? path.join(" / ") : "Танланган ҳудуд") + (reach == null ? "" : " · тахминан " + geo.formatPop(reach) + " киши");
-    return who + ". Юборилгандан кейин хабарни қайтариб бўлмайди.";
+    var plan = "";
+    if (job.body.payload.recurrence) {
+      var r = OM.recur.planFor(job.body.payload, Date.now(), 1);
+      plan = r.list.length ? " Биринчи юбориш " + time.moment(r.list[0], Date.now()) + ", " + OM.recur.totalText(r.count) + "." : "";
+    }
+    return who + "." + plan + " Юборилгандан кейин хабарни қайтариб бўлмайди.";
   }
 
   function sentFor(body, expiry) {

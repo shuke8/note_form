@@ -9,7 +9,7 @@
   var SECTION_OF = {
     scopeError: 1, errOrgType: 1,
     errUzTitle: 2, errUzBody: 2, errRuTitle: 2, errRuBody: 2,
-    errDate: 4, errTime: 4
+    errDate: 4, errTime: 4, errFreq: 4, errDays: 4, errRepeatTime: 4, errEndDate: 4, errEndTime: 4
   };
   var TEXT_RULES = [
     { id: "uzTitle", box: "errUzTitle", kind: "title", empty: "Ўзбекча сарлавҳани ёзинг.", what: "Сарлавҳа" },
@@ -20,28 +20,40 @@
 
   var SERVER_FIELD = {
     "texts.uz.title": "uzTitle", "texts.uz.body": "uzBody", "texts.ru.title": "ruTitle", "texts.ru.body": "ruBody",
-    "audience.org_type": "orgType"
+    "audience.org_type": "orgType", "recurrence.time": "fRepeatTime",
+    "recurrence": "freq", "recurrence.freq": "freq", "recurrence.weekdays": "days"
   };
-  var BOX_OF = { uzTitle: "errUzTitle", uzBody: "errUzBody", ruTitle: "errRuTitle", ruBody: "errRuBody", orgType: "errOrgType" };
+  var BOX_OF = {
+    uzTitle: "errUzTitle", uzBody: "errUzBody", ruTitle: "errRuTitle", ruBody: "errRuBody", orgType: "errOrgType", fRepeatTime: "errRepeatTime"
+  };
   var server = [];
 
   function scopeKey(state) { return [state.scope, state.regionId, state.districtId, state.mahallaId].join("|"); }
+  function daysKey() { var r = OM.recur.get(); return r.freq + ":" + r.days.join(","); }
+  function snapOf(id, state) { return id === "scope" ? scopeKey(state) : id === "days" || id === "freq" ? daysKey() : $(id).value; }
+  var SCHEDULE_IDS = ["freq", "days", "fRepeatTime"];
 
   function setServerErrors(list, state) {
     server = [];
     list.forEach(function (e) {
       var id = Object.prototype.hasOwnProperty.call(SERVER_FIELD, e.path) ? SERVER_FIELD[e.path] : null;
-      if (id) server.push({ id: id, snap: $(id).value, msg: "Сервер: " + e.message });
+      if (id) server.push({ id: id, snap: snapOf(id, state), msg: "Сервер: " + e.message });
       else if (String(e.path).indexOf("audience") === 0) server.push({ id: "scope", snap: scopeKey(state), msg: "Сервер: " + e.message });
     });
   }
 
   function serverErrors(state) {
-    server = server.filter(function (e) { return (e.id === "scope" ? scopeKey(state) : $(e.id).value) === e.snap; });
+    server = server.filter(function (e) {
+      return snapOf(e.id, state) === e.snap && (state.expiry === "repeat" || SCHEDULE_IDS.indexOf(e.id) < 0);
+    });
+    var daily = OM.recur.get().freq === "daily";
     return server.map(function (e) {
-      return e.id === "scope"
-        ? { el: OM.scope.focusTarget(), box: $("scopeError"), kind: "rule", msg: e.msg }
-        : { el: $(e.id), box: $(BOX_OF[e.id]), kind: "rule", msg: e.msg };
+      if (e.id === "scope") return { el: OM.scope.focusTarget(), box: $("scopeError"), kind: "rule", msg: e.msg };
+      if (e.id === "freq" || (e.id === "days" && daily)) {
+        return { el: $("freqGroup").querySelector('[aria-checked="true"]'), box: $("errFreq"), kind: "rule", msg: e.msg };
+      }
+      if (e.id === "days") return { el: $("dayRow").querySelector("[data-day]"), box: $("errDays"), kind: "rule", msg: e.msg };
+      return { el: $(e.id), box: $(BOX_OF[e.id]), kind: "rule", msg: e.msg };
     });
   }
 

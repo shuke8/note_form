@@ -28,6 +28,8 @@
   function snapshot(state) {
     var d = { v: 2, texts: {}, orgType: $("orgType").value, severity: state.severity, expiry: state.expiry,
       date: $("fDate").dataset.iso || "", time: $("fTime").dataset.time || "",
+      repeat: { rule: OM.recur.get(), time: $("fRepeatTime").dataset.time || "",
+        endDate: $("fEndDate").dataset.iso || "", endTime: $("fEndTime").dataset.time || "" },
       scope: { scope: state.scope, regionId: state.regionId, districtId: state.districtId, mahallaId: state.mahallaId } };
     TEXT_IDS.forEach(function (id) { d.texts[id] = $(id).value; });
     return d;
@@ -59,7 +61,13 @@
     TEXT_IDS.forEach(function (id) { if (typeof texts[id] === "string") $(id).value = texts[id]; });
     if (typeof d.orgType === "string") $("orgType").value = d.orgType;
     if (OM.payload.SEVERITIES.indexOf(d.severity) > -1) pickRadio("sevGroup", "data-sev", d.severity);
-    if (/^(1d|3d|7d|custom)$/.test(d.expiry || "")) pickRadio("expiryGroup", "data-expiry", d.expiry);
+    if (/^(1d|3d|7d|custom|repeat)$/.test(d.expiry || "")) pickRadio("expiryGroup", "data-expiry", d.expiry);
+    if (d.expiry === "repeat" && d.repeat && typeof d.repeat === "object") {
+      OM.recur.set(d.repeat.rule);
+      setField("fRepeatTime", /^\d{2}:\d{2}$/.test(d.repeat.time || "") ? d.repeat.time : "");
+      setField("fEndDate", /^\d{4}-\d{2}-\d{2}$/.test(d.repeat.endDate || "") ? d.repeat.endDate.split("-").reverse().join(".") : "");
+      setField("fEndTime", /^\d{2}:\d{2}$/.test(d.repeat.endTime || "") ? d.repeat.endTime : "");
+    }
     if (d.expiry === "custom") {
       setField("fDate", /^\d{4}-\d{2}-\d{2}$/.test(d.date || "") ? d.date.split("-").reverse().join(".") : "");
       setField("fTime", /^\d{2}:\d{2}$/.test(d.time || "") ? d.time : "");

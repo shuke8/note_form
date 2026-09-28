@@ -40,7 +40,7 @@
   }
 
   function build(input) {
-    return {
+    return withRecurrence({
       type: TYPE,
       payload: {
         audience: audience(input.selection, input.orgType),
@@ -48,7 +48,22 @@
         expires_at: OM.time.isoZ(input.expiresAt),
         texts: { uz: text(input.texts.uz), ru: text(input.texts.ru) }
       }
-    };
+    }, input.recurrence);
+  }
+
+  function withRecurrence(body, recurrence) {
+    if (!recurrence) return body;
+    var p = body.payload;
+    body.payload = { audience: p.audience, severity: p.severity, expires_at: p.expires_at, recurrence: recurrence, texts: p.texts };
+    return body;
+  }
+
+  function recurrenceOk(r) {
+    if (!r) return true;
+    if (!/^\d{2}:\d{2}$/.test(r.time || "") || r.timezone !== "Asia/Tashkent") return false;
+    if (r.freq === "daily") return !r.weekdays;
+    return r.freq === "weekly" && Array.isArray(r.weekdays) && r.weekdays.length > 0 &&
+      r.weekdays.every(function (d, i) { return Number.isInteger(d) && d >= 1 && d <= 7 && r.weekdays.indexOf(d) === i; });
   }
 
   function complete(input) {
@@ -60,6 +75,7 @@
     if (level >= 4 && !sel.mahallaId) return false;
     if (SEVERITIES.indexOf(input.severity) < 0) return false;
     if (typeof input.expiresAt !== "number" || !isFinite(input.expiresAt)) return false;
+    if (!recurrenceOk(input.recurrence)) return false;
     return ["uz", "ru"].every(function (k) {
       var t = text(input.texts[k] || {});
       return t.title !== "" && t.body !== "" && size(t.title) <= LIMIT.title && size(t.body) <= LIMIT.body;

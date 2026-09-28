@@ -38,6 +38,13 @@
 .scope:has(#scopeError:not([hidden])) .choice-radio { border-color: var(--crit); }
 
 .when-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip-row .seg-btn { min-width: 52px; }
+.runs { gap: 8px; }
+.runs-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.run-chip { display: inline-flex; flex-direction: column; gap: 2px; padding: 8px 14px; border-radius: var(--r-panel); background: var(--paper-sunk); }
+.run-chip b { font-size: var(--t-sm); font-weight: 600; font-variant-numeric: tabular-nums; }
+.run-chip span { font-size: var(--t-mono-sm); color: var(--ink-2); }
 .org-field { margin-top: 8px; padding-top: 20px; padding-bottom: 12px; border-top: 1px solid var(--hairline); }
 .input-code { max-width: 180px; font-variant-numeric: tabular-nums; }
 

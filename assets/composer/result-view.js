@@ -13,7 +13,14 @@
       ["Ташкилот тури", String(p.audience.org_type)],
       ["Муҳимлиги", sev ? sev.name : p.severity],
       ["Амал қилади", time.moment(Date.parse(p.expires_at), Date.now()) + " гача"]
-    ];
+    ].concat(p.recurrence ? [["Жадвал", schedule(p.recurrence)]] : []);
+  }
+
+  var SHORT = { 1: "Ду", 2: "Се", 3: "Чо", 4: "Па", 5: "Жу", 6: "Ша", 7: "Як" };
+
+  function schedule(r) {
+    if (r.freq === "daily") return "Ҳар куни " + r.time;
+    return r.weekdays.map(function (d) { return SHORT[d]; }).join(", ") + " · " + r.time;
   }
 
   var PHASE = {

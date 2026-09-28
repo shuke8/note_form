@@ -91,7 +91,7 @@ class ComposerFormTest(ComposerCase):
         self.assertEqual(self.page.get_attribute('[data-expiry="1d"]', "aria-checked"), "true")
         self.page.focus('[data-expiry="1d"]')
         self.page.keyboard.press("ArrowUp")
-        self.assertEqual(self.page.get_attribute('[data-expiry="custom"]', "aria-checked"), "true")
+        self.assertEqual(self.page.get_attribute('[data-expiry="repeat"]', "aria-checked"), "true")
         self.assertEqual(self.page.get_attribute('[data-sev="critical"]', "aria-checked"), "true")
 
     def test_text_limits_are_named_with_the_overflow(self):
