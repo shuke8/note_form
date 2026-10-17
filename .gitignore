@@ -14,3 +14,6 @@ design/kompozitor-chastota-redizayn.html
 design/composer.js
 design/tags
 .probe/
+**/.claude-state/*-hit-inbox/
+**/.claude-state/CLIENT-HIT-QUEUE.jsonl
+**/.claude-state/CLIENT-HIT-PENDING.md
